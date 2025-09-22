@@ -2,21 +2,21 @@
 .footer {
   background: #1a1a1a;
   color: #F5E9D6;
-  padding: 48px 0 32px 0;
+  padding: 41px 0 27px 0;
   position: relative;
   animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1s both;
 }
 
 .footer-container {
-  max-width: 1200px;
+  max-width: 1020px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 20px;
 }
 
 .footer-content {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 48px;
+  gap: 41px;
   position: relative;
 }
 
@@ -34,8 +34,8 @@
 .footer-columns {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
-  margin-bottom: 32px;
+  gap: 27px;
+  margin-bottom: 27px;
 }
 
 .footer-column {
@@ -49,11 +49,11 @@
   color: var(--Ivory-colour-PAUL, #FFFAE6);
   text-align: center;
   font-family: "Sabon Next LT";
-  font-size: 20.7px;
+  font-size: 17.6px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin: 0 0 16px 0;
+  margin: 0 0 14px 0;
 }
 
 .footer-links {
@@ -66,14 +66,14 @@
 }
 
 .footer-links li {
-  margin-bottom: 10px;
+  margin-bottom: 9px;
   text-align: center;
 }
 
 .footer-link {
   color: var(--Ivory-colour-PAUL, #FFFAE6);
   font-family: "Parisine Pro Gris";
-  font-size: 15px;
+  font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -97,27 +97,27 @@
 .payment-logos {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .payment-text {
   color: #F5E9D6;
   font-family: "Sabon Next LT Pro", serif;
-  font-size: 18.4px;
+  font-size: 15.6px;
   font-weight: 600;
   letter-spacing: 2px;
 }
 
 .mastercard-logo {
-  width: 36.8px;
-  height: 23px;
+  width: 31px;
+  height: 20px;
   background: linear-gradient(45deg, #eb001b, #f79e1b);
-  border-radius: 4px;
+  border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 11.5px;
+  font-size: 10px;
   font-weight: 700;
   font-family: "Sabon Next LT Pro", serif;
 }
@@ -126,14 +126,14 @@
 .footer-right {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 27px;
 }
 
 /* Newsletter */
 .newsletter-section {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 11px;
 }
 
 .newsletter-header {
@@ -145,7 +145,7 @@
 .newsletter-title {
   color: #F5E9D6;
   font-family: "Sabon Next LT Pro", serif;
-  font-size: 16.1px;
+  font-size: 14px;
   font-weight: 600;
   margin: 0;
   text-transform: uppercase;
@@ -160,7 +160,7 @@
 .newsletter-description {
   color: #F5E9D6;
   font-family: "Parisine Pro Clair", sans-serif;
-  font-size: 12.65px;
+  font-size: 11px;
   font-weight: 400;
   opacity: 0.8;
   margin: 0;
@@ -169,8 +169,8 @@
 .newsletter-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-width: 200px;
+  gap: 9px;
+  max-width: 170px;
   margin: 0 auto;
 }
 
@@ -178,10 +178,10 @@
   background: #F5E9D6;
   border: 1px solid #F5E9D6;
   color: #1a1a1a;
-  padding: 11.5px 15px;
-  border-radius: 4px;
+  padding: 10px 13px;
+  border-radius: 3px;
   font-family: "Parisine Pro Clair", sans-serif;
-  font-size: 12.65px;
+  font-size: 11px;
   outline: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -199,10 +199,10 @@
   background: #F5E9D6;
   color: #1a1a1a;
   border: 1px solid #F5E9D6;
-  padding: 11.5px 22px;
-  border-radius: 4px;
+  padding: 10px 19px;
+  border-radius: 3px;
   font-family: "Sabon Next LT Pro", serif;
-  font-size: 12.65px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -220,7 +220,7 @@
 /* Social Media */
 .social-media {
   display: flex;
-  gap: 16px;
+  gap: 14px;
 }
 
 .social-link {
@@ -230,8 +230,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36.8px;
-  height: 36.8px;
+  width: 31px;
+  height: 31px;
   border-radius: 50%;
   border: 1px solid rgba(245, 233, 214, 0.3);
 }
@@ -247,16 +247,16 @@
 /* Адаптивность */
 @media (max-width: 1024px) {
   .footer {
-    padding: 40px 0 24px 0;
+    padding: 34px 0 20px 0;
   }
   
   .footer-content {
-    gap: 32px;
+    gap: 27px;
   }
   
   .footer-columns {
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    gap: 20px;
   }
   
   .footer-content::before {
@@ -266,117 +266,117 @@
 
 @media (max-width: 768px) {
   .footer {
-    padding: 32px 0 16px 0;
+    padding: 27px 0 14px 0;
   }
   
   .footer-container {
-    padding: 0 13px;
+    padding: 0 11px;
   }
   
   .footer-content {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 20px;
   }
   
   .footer-columns {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 14px;
   }
   
   .footer-title {
-    font-size: 18.4px;
+    font-size: 15.6px;
     font-family: "Sabon Next LT";
     font-weight: 400;
-    margin-bottom: 15px;
+    margin-bottom: 13px;
   }
   
   .footer-link {
-    font-size: 13.8px;
+    font-size: 12px;
     font-family: "Parisine Pro Gris";
     font-weight: 400;
   }
   
   .newsletter-title {
-    font-size: 17.25px;
+    font-size: 15px;
   }
   
   .newsletter-description {
-    font-size: 13.23px;
+    font-size: 11px;
   }
   
   .newsletter-form {
-    max-width: 160px;
+    max-width: 136px;
   }
   
   .newsletter-input,
   .newsletter-button {
-    font-size: 11.5px;
-    padding: 9.2px 12.65px;
+    font-size: 10px;
+    padding: 8px 11px;
   }
   
   .social-media {
-    gap: 13px;
+    gap: 11px;
   }
   
   .social-link {
-    width: 33.35px;
-    height: 33.35px;
+    width: 28px;
+    height: 28px;
   }
 }
 
 @media (max-width: 480px) {
   .footer {
-    padding: 24px 0 12px 0;
+    padding: 20px 0 10px 0;
   }
   
   .footer-columns {
-    gap: 13px;
+    gap: 11px;
   }
   
   .footer-title {
-    font-size: 16.1px;
+    font-size: 14px;
     font-family: "Sabon Next LT";
     font-weight: 400;
-    margin-bottom: 11.5px;
+    margin-bottom: 10px;
   }
   
   .footer-link {
-    font-size: 12.65px;
+    font-size: 11px;
     font-family: "Parisine Pro Gris";
     font-weight: 400;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
   }
   
   .newsletter-title {
-    font-size: 14.55px;
+    font-size: 12px;
   }
   
   .newsletter-description {
-    font-size: 13.23px;
+    font-size: 11px;
   }
   
   .newsletter-form {
-    max-width: 140px;
+    max-width: 119px;
   }
   
   .newsletter-input,
   .newsletter-button {
-    font-size: 11.5px;
-    padding: 6.9px 11.5px;
+    font-size: 10px;
+    padding: 6px 10px;
   }
   
   .social-link {
-    width: 29.9px;
-    height: 29.9px;
+    width: 25px;
+    height: 25px;
   }
   
   .payment-text {
-    font-size: 12.65px;
+    font-size: 11px;
   }
   
   .mastercard-logo {
-    width: 25.3px;
-    height: 16.1px;
-    font-size: 8.05px;
+    width: 22px;
+    height: 14px;
+    font-size: 7px;
   }
 }

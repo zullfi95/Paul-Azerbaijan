@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 // Debounce hook for search and input optimization
 export function useDebounce<T>(value: T, delay: number): T {
@@ -167,5 +167,3 @@ export const preloading = {
   },
 };
 
-// React import for the utilities
-import React from 'react';

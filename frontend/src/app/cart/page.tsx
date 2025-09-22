@@ -24,20 +24,20 @@ const QuantitySelector = ({ quantity, onUpdate }: { quantity: number; onUpdate: 
     <div style={{
       display: 'flex',
       alignItems: 'center',
-      gap: '8px',
+      gap: '7px',
       backgroundColor: '#FFFAE6',
       border: '1px solid #000',
-      borderRadius: '4px',
-      padding: '4px'
+      borderRadius: '3px',
+      padding: '3px'
     }}>
       <button
         onClick={handleDecrease}
         style={{
-          width: '28px',
-          height: '28px',
+          width: '24px',
+          height: '24px',
           backgroundColor: 'transparent',
           border: 'none',
-          fontSize: '16px',
+          fontSize: '14px',
           fontWeight: 'bold',
           cursor: 'pointer',
           display: 'flex',
@@ -48,9 +48,9 @@ const QuantitySelector = ({ quantity, onUpdate }: { quantity: number; onUpdate: 
         –
       </button>
       <span style={{
-        fontSize: '16px',
+        fontSize: '14px',
         fontWeight: 'bold',
-        minWidth: '20px',
+        minWidth: '17px',
         textAlign: 'center'
       }}>
         {quantity}
@@ -58,11 +58,11 @@ const QuantitySelector = ({ quantity, onUpdate }: { quantity: number; onUpdate: 
       <button
         onClick={handleIncrease}
         style={{
-          width: '28px',
-          height: '28px',
+          width: '24px',
+          height: '24px',
           backgroundColor: 'transparent',
           border: 'none',
-          fontSize: '16px',
+          fontSize: '14px',
           fontWeight: 'bold',
           cursor: 'pointer',
           display: 'flex',
@@ -219,7 +219,7 @@ export default function CartPage() {
                 alignItems: 'center'
                       }}>
                         <span style={{
-                  fontSize: '1.125rem',
+                  fontSize: '0.96rem',
                   fontWeight: '600',
                           color: '#1A1A1A',
                           fontFamily: '"Sabon Next LT Pro", serif'
@@ -289,8 +289,8 @@ export default function CartPage() {
                           🗑️
                        </button>
                         <div style={{
-                          width: '204px',
-                          height: '204px',
+                          width: '173px',
+                          height: '173px',
                           overflow: 'hidden',
                           flexShrink: 0
                         }}>
@@ -308,25 +308,25 @@ export default function CartPage() {
                         </div>
                         <div>
                           <h3 style={{
-                            fontSize: '1.406rem',
+                            fontSize: '1.2rem',
                             fontWeight: 600,
                             color: '#1A1A1A',
-                            margin: '0 0 0.5rem 0',
+                            margin: '0 0 0.4rem 0',
                             fontFamily: '"Sabon Next LT Pro", serif'
                           }}>
                             {item.name}
                           </h3>
                           <p style={{
-                            fontSize: '1.094rem',
+                            fontSize: '0.93rem',
                             color: '#6b7280',
-                            margin: '0 0 0.5rem 0'
+                            margin: '0 0 0.4rem 0'
                           }}>
                             {item.description}
                           </p>
                           <p style={{
-                            fontSize: '1.094rem',
+                            fontSize: '0.93rem',
                             color: '#374151',
-                            margin: '0 0 0.75rem 0',
+                            margin: '0 0 0.64rem 0',
                             fontWeight: 500
                           }}>
                             {item.price} ₼
@@ -388,8 +388,8 @@ export default function CartPage() {
                           🗑️
                       </button>
                         <div style={{
-                          width: '204px',
-                          height: '204px',
+                          width: '173px',
+                          height: '173px',
                           overflow: 'hidden',
                           flexShrink: 0
                         }}>
@@ -407,25 +407,25 @@ export default function CartPage() {
                         </div>
                         <div>
                           <h3 style={{
-                            fontSize: '1.406rem',
+                            fontSize: '1.2rem',
                             fontWeight: 600,
                             color: '#1A1A1A',
-                            margin: '0 0 0.5rem 0',
+                            margin: '0 0 0.4rem 0',
                             fontFamily: '"Sabon Next LT Pro", serif'
                           }}>
                             {item.name}
                           </h3>
                           <p style={{
-                            fontSize: '1.094rem',
+                            fontSize: '0.93rem',
                             color: '#6b7280',
-                            margin: '0 0 0.5rem 0'
+                            margin: '0 0 0.4rem 0'
                           }}>
                             {item.description}
                           </p>
                           <p style={{
-                            fontSize: '1.094rem',
+                            fontSize: '0.93rem',
                             color: '#374151',
-                            margin: '0 0 0.75rem 0',
+                            margin: '0 0 0.64rem 0',
                             fontWeight: 500
                           }}>
                             {item.price} ₼
@@ -483,8 +483,8 @@ export default function CartPage() {
                           🗑️
                       </button>
                         <div style={{
-                          width: '153px',
-                          height: '153px',
+                          width: '130px',
+                          height: '130px',
                           overflow: 'hidden',
                           flexShrink: 0
                         }}>
@@ -502,25 +502,25 @@ export default function CartPage() {
                         </div>
                         <div style={{ flex: 1 }}>
                           <h3 style={{
-                            fontSize: '1.25rem',
+                            fontSize: '1.06rem',
                             fontWeight: 600,
                             color: '#1A1A1A',
-                            margin: '0 0 0.25rem 0',
+                            margin: '0 0 0.21rem 0',
                             fontFamily: '"Sabon Next LT Pro", serif'
                           }}>
                             {item.name}
                           </h3>
                           <p style={{
-                            fontSize: '0.938rem',
+                            fontSize: '0.8rem',
                             color: '#6b7280',
-                            margin: '0 0 0.25rem 0'
+                            margin: '0 0 0.21rem 0'
                           }}>
                             {item.description}
                           </p>
                           <p style={{
-                            fontSize: '0.938rem',
+                            fontSize: '0.8rem',
                             color: '#374151',
-                            margin: '0 0 0.5rem 0',
+                            margin: '0 0 0.43rem 0',
                             fontWeight: 500
                           }}>
                             {item.price} ₼

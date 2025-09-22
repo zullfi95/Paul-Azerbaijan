@@ -1,27 +1,27 @@
 /* Feedback Button Styles */
 .feedback-button-container {
   position: fixed;
-  right: 20px;
+  right: 17px;
   top: 50%;
   transform: translateY(-50%) rotate(90deg);
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
 }
 
 .feedback-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  width: 120px;
-  height: 45px;
+  gap: 5px;
+  width: 102px;
+  height: 38px;
   background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 12px;
+  border-radius: 7px;
+  font-size: 10px;
   font-weight: 600;
   cursor: pointer;
   box-shadow: none;
@@ -57,10 +57,10 @@
 
 .feedback-close {
   position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 20px;
-  height: 20px;
+  top: -5px;
+  right: -5px;
+  width: 17px;
+  height: 17px;
   background: #ef4444;
   color: white;
   border: none;
@@ -102,13 +102,13 @@
 /* Адаптивность */
 @media (max-width: 768px) {
   .feedback-button-container {
-    right: 16px;
+    right: 14px;
   }
   
   .feedback-button {
-    width: 90px;
-    height: 40px;
-    font-size: 11px;
+    width: 77px;
+    height: 34px;
+    font-size: 9px;
   }
   
   .feedback-button span {
@@ -118,11 +118,11 @@
 
 @media (max-width: 480px) {
   .feedback-button-container {
-    right: 12px;
+    right: 10px;
   }
   
   .feedback-button {
-    width: 70px;
-    height: 35px;
+    width: 60px;
+    height: 30px;
   }
 }

@@ -68,38 +68,38 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Кастомные классы */
 .container-paul {
-  max-width: 80rem;
+  max-width: 68rem;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 0.85rem;
 }
 
 @media (min-width: 768px) {
   .container-paul {
-    padding: 0 3rem;
+    padding: 0 2.55rem;
   }
 }
 
 .section-padding {
-  padding: 4rem 0;
+  padding: 3.4rem 0;
 }
 
 @media (min-width: 768px) {
   .section-padding {
-    padding: 6rem 0;
+    padding: 5.1rem 0;
   }
 }
 
 .navbar-spacing {
-  padding-top: 10px;
+  padding-top: 9px;
 }
 
 /* Кнопки */
 .btn-primary {
   background-color: #1A1A1A;
   color: #F5E9D6;
-  padding: 12px 32px;
+  padding: 10px 27px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   font-family: "Sabon Next LT Pro", sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -137,9 +137,9 @@ h1, h2, h3, h4, h5, h6 {
 .btn-secondary {
   background-color: transparent;
   color: #1A1A1A;
-  padding: 12px 32px;
+  padding: 10px 27px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   font-family: "Sabon Next LT Pro", sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -178,8 +178,8 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 768px) {
   .btn-primary,
   .btn-secondary {
-    padding: 10px 24px;
-    font-size: 12px;
+    padding: 9px 20px;
+    font-size: 10px;
     letter-spacing: 0.03em;
   }
 }
@@ -187,8 +187,8 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 480px) {
   .btn-primary,
   .btn-secondary {
-    padding: 8px 20px;
-    font-size: 11px;
+    padding: 7px 17px;
+    font-size: 9px;
     letter-spacing: 0.02em;
   }
 }
@@ -196,26 +196,26 @@ h1, h2, h3, h4, h5, h6 {
 /* Медиа-запросы для мобильных устройств */
 @media (max-width: 768px) {
   .container-paul {
-    padding: 0 1rem;
+    padding: 0 0.85rem;
   }
   
   .section-padding {
-    padding: 2rem 0;
+    padding: 1.7rem 0;
   }
   
   .navbar-spacing {
-    padding-top: 10px;
+    padding-top: 9px;
   }
   
   h1 {
-    font-size: 1.875rem !important;
+    font-size: 1.59rem !important;
   }
   
   h2 {
-    font-size: 1.5rem !important;
+    font-size: 1.28rem !important;
   }
   
   h3 {
-    font-size: 1.25rem !important;
+    font-size: 1.06rem !important;
   }
 }

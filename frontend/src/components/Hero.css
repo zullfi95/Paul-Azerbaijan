@@ -6,7 +6,7 @@
   padding: 0;
   position: relative;
   overflow: hidden;
-  min-height: 80vh;
+  min-height: 68vh;
   display: flex;
   align-items: center;
   animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -18,7 +18,7 @@
 
 .hero-container {
   width: 100%;
-  padding: 0 24px;
+  padding: 0 20px;
   position: relative;
   z-index: 1;
   display: flex;
@@ -30,18 +30,18 @@
   grid-template-columns: 1.2fr 0.8fr;
   gap: 0;
   align-items: stretch;
-  min-height: 64vh;
+  min-height: 54vh;
   position: relative;
   overflow: hidden;
-  margin: 32px 0;
-  max-width: 1600px;
+  margin: 27px 0;
+  max-width: 1020px;
   width: 100%;
 }
 
 /* Left Column - Image */
 .hero-image-column {
   position: relative;
-  height: 64vh;
+  height: 54vh;
   background: linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%);
 }
 
@@ -66,20 +66,20 @@
 
 .hero-overlay-label {
   position: absolute;
-  top: 24px;
-  left: 24px;
+  top: 20px;
+  left: 20px;
   background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(45, 45, 45, 0.8));
   color: white;
-  padding: 10px 20px;
-  border-radius: 25px;
-  font-size: 11px;
+  padding: 9px 17px;
+  border-radius: 21px;
+  font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   backdrop-filter: blur(15px);
   z-index: 2;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -93,7 +93,7 @@
 .hero-text-column {
   display: flex;
   align-items: center;
-  padding: 64px 48px;
+  padding: 54px 41px;
   background: linear-gradient(135deg, #ffffff 0%, #FEF4E6 50%, #fdfaf6 100%);
   position: relative;
 }
@@ -113,8 +113,8 @@
 .hero-text {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  max-width: 420px;
+  gap: 20px;
+  max-width: 357px;
   position: relative;
   z-index: 1;
 }
@@ -124,7 +124,7 @@
   leading-trim: both;
   text-edge: cap;
   font-family: "Sabon Next LT Pro";
-  font-size: 53px;
+  font-size: 45px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -137,10 +137,10 @@
 .hero-title::after {
   content: '';
   position: absolute;
-  bottom: -12px;
+  bottom: -10px;
   left: 0;
-  width: 80px;
-  height: 4px;
+  width: 68px;
+  height: 3px;
   background: linear-gradient(90deg, #d4af37, #f4d03f, #d4af37);
   border-radius: 3px;
   animation: shimmer 2s ease-in-out infinite;
@@ -172,19 +172,19 @@
   leading-trim: both;
   text-edge: cap;
   font-family: "Sabon Next LT Pro";
-  font-size: 53px;
+  font-size: 45px;
   font-style: normal;
   font-weight: 300;
   line-height: normal;
-  margin-top: 8px;
+  margin-top: 7px;
 }
 
 .hero-description {
-  font-size: 0.95rem;
+  font-size: 0.81rem;
   line-height: 1.5;
   color: #4b5563;
   margin: 0;
-  max-width: 420px;
+  max-width: 357px;
 }
 
 .hero-buttons {
@@ -194,9 +194,9 @@
 }
 
 .hero-btn {
-  font-size: 1.2rem;
+  font-size: 1.02rem;
   font-weight: 600;
-  padding: 20px 40px;
+  padding: 17px 34px;
   border-radius: 0;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -204,13 +204,13 @@
   border: none;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 13px rgba(0, 0, 0, 0.1);
 }
 
 .hero-btn.primary {
   background: #1a1a1a;
   color: #F5E9D6;
-  box-shadow: 0 6px 20px rgba(26, 26, 26, 0.3);
+  box-shadow: 0 5px 17px rgba(26, 26, 26, 0.3);
 }
 
 
@@ -259,8 +259,8 @@
 }
 
 .hero-nav-btn {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: #1a1a1a;
   border: 1px solid #1a1a1a;
@@ -269,7 +269,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 17px rgba(0, 0, 0, 0.3);
   color: white;
 }
 
@@ -294,19 +294,19 @@
 @media (max-width: 1024px) {
   .hero-content {
     grid-template-columns: 1.1fr 0.9fr;
-    gap: 40px;
+    gap: 34px;
   }
   
   .hero-title {
-    font-size: 42px;
+    font-size: 36px;
   }
   
   .hero-subtitle {
-    font-size: 42px;
+    font-size: 36px;
   }
   
   .hero-description {
-    font-size: 0.9rem;
+    font-size: 0.77rem;
   }
 }
 
@@ -325,20 +325,20 @@
   }
   
   .hero-image-column {
-    height: 240px;
+    height: 204px;
   }
   
   .hero-text-column {
-    padding: 32px 16px;
+    padding: 27px 14px;
     text-align: center;
   }
   
   .hero-title {
-    font-size: 32px;
+    font-size: 27px;
   }
   
   .hero-subtitle {
-    font-size: 32px;
+    font-size: 27px;
   }
   
   .hero-buttons {
@@ -347,18 +347,18 @@
   }
   
   .hero-btn {
-    padding: 16px 32px;
-    font-size: 1rem;
+    padding: 14px 27px;
+    font-size: 0.85rem;
   }
   
   .hero-navigation {
-    bottom: 10px;
-    right: 10px;
+    bottom: 9px;
+    right: 9px;
   }
   
   .hero-nav-btn {
-    width: 40px;
-    height: 40px;
+    width: 34px;
+    height: 34px;
   }
 }
 
@@ -368,23 +368,23 @@
   }
   
   .hero-image-column {
-    height: 200px;
+    height: 170px;
   }
   
   .hero-text-column {
-    padding: 24px 12px;
+    padding: 20px 10px;
   }
   
   .hero-title {
-    font-size: 28px;
+    font-size: 24px;
   }
   
   .hero-subtitle {
-    font-size: 28px;
+    font-size: 24px;
   }
   
   .hero-description {
-    font-size: 0.85rem;
+    font-size: 0.72rem;
   }
   
   .hero-buttons {
@@ -394,13 +394,13 @@
   
   .hero-btn {
     width: 100%;
-    max-width: 280px;
+    max-width: 238px;
   }
   
   .hero-overlay-label {
-    top: 10px;
-    left: 10px;
-    padding: 6px 12px;
-    font-size: 10px;
+    top: 9px;
+    left: 9px;
+    padding: 5px 10px;
+    font-size: 9px;
   }
 }

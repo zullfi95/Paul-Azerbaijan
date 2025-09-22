@@ -1,0 +1,276 @@
+/* Art of Bread Section Styles */
+.art-of-bread {
+  padding: 64px 0;
+  background: #ffffff;
+  position: relative;
+  margin: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s both;
+}
+
+.art-container {
+  width: 90%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Верхняя часть - изображение с наложенным текстом */
+.art-image-section {
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.art-image-wrapper {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.art-image {
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.art-image-wrapper:hover .art-image {
+  transform: scale(1.05);
+}
+
+.art-overlay-text {
+  position: absolute;
+  top: 50%;
+  left: 40px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+}
+
+.art-text-small {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 19px;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+.art-text-medium {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+.art-text-large {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 38px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+/* Нижняя часть - контент */
+.art-content-section {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.art-title {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 29px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 24px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.art-description {
+  color: #000;
+  font-family: "Parisine Pro Clair", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.6;
+  margin: 0 0 32px 0;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.art-button {
+  background: #000;
+  color: #F5E9D6;
+  border: none;
+  padding: 20px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Sabon Next LT Pro", serif;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.art-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.art-button:hover::before {
+  left: 100%;
+}
+
+.art-button:hover {
+  background: #2d2d2d;
+  color: #F5E9D6;
+  transform: translateY(-2px);
+  box-shadow: none;
+}
+
+.art-button:active {
+  transform: translateY(0);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .art-of-bread {
+    padding: 48px 0;
+  }
+  
+  .art-image-wrapper {
+    height: 320px;
+  }
+  
+  .art-overlay-text {
+    left: 24px;
+  }
+  
+  .art-text-small {
+    font-size: 16px;
+  }
+  
+  .art-text-medium {
+    font-size: 19px;
+  }
+  
+  .art-text-large {
+    font-size: 32px;
+  }
+  
+  .art-title {
+    font-size: 26px;
+  }
+  
+  .art-description {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .art-of-bread {
+    padding: 40px 0;
+  }
+  
+  .art-container {
+    padding: 0 13px;
+  }
+  
+  .art-image-wrapper {
+    height: 240px;
+  }
+  
+  .art-overlay-text {
+    left: 16px;
+    gap: 5px;
+  }
+  
+  .art-text-small {
+    font-size: 14px;
+  }
+  
+  .art-text-medium {
+    font-size: 16px;
+  }
+  
+  .art-text-large {
+    font-size: 26px;
+  }
+  
+  .art-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  
+  .art-description {
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+  
+  .art-button {
+    padding: 16px 32px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .art-of-bread {
+    padding: 32px 0;
+  }
+  
+  .art-image-wrapper {
+    height: 200px;
+  }
+  
+  .art-overlay-text {
+    left: 12px;
+    gap: 3px;
+  }
+  
+  .art-text-small {
+    font-size: 13px;
+  }
+  
+  .art-text-medium {
+    font-size: 14px;
+  }
+  
+  .art-text-large {
+    font-size: 22px;
+  }
+  
+  .art-title {
+    font-size: 19px;
+    margin-bottom: 16px;
+  }
+  
+  .art-description {
+    font-size: 11px;
+    margin-bottom: 20px;
+  }
+  
+  .art-button {
+    padding: 14px 28px;
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,497 @@
+/* Product Page Styles */
+
+.productPage {
+  min-height: 100vh;
+  background: #ffffff;
+  padding-top: 10px; /* Small top spacing as per user preference */
+}
+
+/* Notification */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  animation: slideInRight 0.3s ease;
+}
+
+.notificationContent {
+  background: #1a1a1a;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  font-family: "Sabon Next LT Pro", serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+  background: #f8f9fa;
+  padding: 16px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.breadcrumbs a {
+  color: #6c757d;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumbs a:hover {
+  color: #1a1a1a;
+}
+
+.breadcrumbs span {
+  color: #6c757d;
+  margin: 0 8px;
+}
+
+/* Main Product Section */
+.mainSection {
+  padding: 40px 0;
+}
+
+.productContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+/* Image Column */
+.imageColumn {
+  position: relative;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+.imageWrapper:hover .productImage {
+  transform: scale(1.05);
+}
+
+/* Details Column */
+.detailsColumn {
+  display: flex;
+  align-items: flex-start;
+}
+
+.productDetails {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.productName {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.2;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.price {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.weightStorage {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.description {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4b5563;
+  margin: 0;
+}
+
+/* Quantity Selector */
+.quantitySelector {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.quantityBtn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: #1a1a1a;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantityBtn:hover {
+  background: #1a1a1a;
+  color: white;
+}
+
+.quantity {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Add to Cart Button */
+.addToCartBtn {
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: "Sabon Next LT Pro", serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.addToCartBtn:hover {
+  background: #2d2d2d;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(26, 26, 26, 0.3);
+}
+
+/* Accordion */
+.accordion {
+  margin-top: 24px;
+}
+
+.accordionItem {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.accordionItem:last-child {
+  border-bottom: none;
+}
+
+.accordionHeader {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 20px 0;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  transition: color 0.3s ease;
+}
+
+.accordionHeader:hover {
+  color: #6c757d;
+}
+
+.accordionIcon {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.accordionContent {
+  padding: 0 0 20px 0;
+  animation: slideDown 0.3s ease;
+  font-family: "Sabon Next LT Pro", serif;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 200px;
+  }
+}
+
+.allergensList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.allergenTag {
+  background: #f8f9fa;
+  color: #1a1a1a;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid #e9ecef;
+}
+
+.allergensText {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Related Products Section */
+.relatedSection {
+  background: #f8f9fa;
+  padding: 60px 0;
+}
+
+.relatedTitle {
+  text-align: center;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 40px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.relatedCard {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.relatedCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.relatedImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: #f8f9fa;
+  overflow: hidden;
+}
+
+.relatedImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+.relatedCard:hover .relatedImage {
+  transform: scale(1.05);
+}
+
+.relatedCartBtn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.relatedCartBtn:hover {
+  background: #2d2d2d;
+  transform: scale(1.1);
+}
+
+.relatedName {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 16px 16px 8px 16px;
+  line-height: 1.3;
+}
+
+.relatedPrice {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 16px 16px 16px;
+}
+
+/* Not Found */
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+}
+
+.notFound h1 {
+  font-size: 2rem;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+.notFound a {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: 2px solid #1a1a1a;
+  transition: all 0.3s ease;
+}
+
+.notFound a:hover {
+  background: #1a1a1a;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .productContent {
+    gap: 40px;
+  }
+  
+  .relatedGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+  
+  .productContent {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  .imageWrapper {
+    height: 300px;
+  }
+  
+  .productName {
+    font-size: 2rem;
+  }
+  
+  .price {
+    font-size: 1.5rem;
+  }
+  
+  .relatedGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .relatedTitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .breadcrumbs {
+    padding: 12px 0;
+  }
+  
+  .mainSection {
+    padding: 24px 0;
+  }
+  
+  .imageWrapper {
+    height: 250px;
+  }
+  
+  .productName {
+    font-size: 1.5rem;
+  }
+  
+  .price {
+    font-size: 1.25rem;
+  }
+  
+  .addToCartBtn {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+  
+  .relatedGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .relatedSection {
+    padding: 40px 0;
+  }
+}

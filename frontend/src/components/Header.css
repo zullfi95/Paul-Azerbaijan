@@ -1,0 +1,412 @@
+/* Header Styles */
+
+.header {
+  width: 100%;
+  background-color: transparent;
+  border-bottom: none;
+  position: relative;
+  z-index: 50;
+}
+
+.header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Top Navigation Bar */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  position: relative;
+  background-color: white;
+  border-radius: 8px;
+  margin: 8px 0;
+  padding: 0 16px;
+  box-shadow: none;
+}
+
+/* Logo */
+.logo {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo-image {
+  height: 35px;
+  width: auto;
+  margin-bottom: 1px;
+}
+
+.logo-caption {
+  font-size: 10px;
+  color: #6b7280;
+  margin: 0;
+  margin-top: -2px;
+  font-weight: 400;
+}
+
+/* Main Navigation */
+.main-nav {
+  display: none;
+  gap: 20px;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-link {
+  color: #000;
+  font-family: "Sabon Next LT Pro";
+  font-size: 20.7px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.nav-link:hover {
+  color: #1a1a1a;
+  background-color: rgba(26, 26, 26, 0.05);
+  transform: translateY(-1px);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #1a1a1a;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 80%;
+}
+
+/* Right Side Actions */
+.right-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Search */
+.search-container {
+  display: none;
+  position: relative;
+}
+
+.search-input {
+  width: 180px;
+  padding: 8px 16px 8px 40px;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  font-size: 16.1px;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #fafafa;
+}
+
+.search-input:focus {
+  border-color: #1a1a1a;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+  transform: scale(1.02);
+}
+
+.search-input:hover {
+  border-color: #9ca3af;
+  background-color: white;
+  transform: scale(1.01);
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18.4px;
+  height: 18.4px;
+  color: #9ca3af;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-container:hover .search-icon {
+  color: #6b7280;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Icons */
+.icon-button {
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.icon-button:hover {
+  color: #1a1a1a;
+  background-color: rgba(26, 26, 26, 0.05);
+  transform: translateY(-1px);
+}
+
+.icon-button:active {
+  transform: translateY(0);
+  background-color: rgba(26, 26, 26, 0.1);
+}
+
+.cart-button {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.icon {
+  width: 23px;
+  height: 23px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-button:hover .icon {
+  color: #1a1a1a;
+  transform: scale(1.1);
+}
+
+/* Mobile Menu Button */
+.mobile-menu-button {
+  display: block;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+}
+
+.mobile-menu-button:hover {
+  color: #1a1a1a;
+  background-color: rgba(26, 26, 26, 0.05);
+  transform: scale(1.1);
+}
+
+.mobile-menu-button:active {
+  transform: scale(0.95);
+}
+
+.mobile-menu-button .icon {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-menu-button:hover .icon {
+  color: #1a1a1a;
+  transform: scale(1.1);
+}
+
+/* Language Selector in Header */
+.right-actions .language-selector {
+  position: relative;
+  z-index: 10;
+}
+
+.right-actions .language-button {
+  padding: 6px 10px;
+  font-size: 13px;
+  min-width: 70px;
+  height: 36px;
+  border-radius: 6px;
+}
+
+.right-actions .language-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.right-actions .globe-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Action Buttons Row */
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 8px 0;
+  border-top: none;
+  background: transparent;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.action-button:hover {
+  background-color: #1a1a1a;
+  border-color: #1a1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.action-button:hover::before {
+  left: 100%;
+}
+
+.action-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-button-icon {
+  width: 11.5px;
+  height: 11.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-button:hover .action-button-icon {
+  color: white;
+  transform: scale(1.1);
+}
+
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .main-nav {
+    display: flex;
+  }
+  
+  .search-container {
+    display: block;
+  }
+  
+  .mobile-menu-button {
+    display: none;
+  }
+  
+  .action-buttons {
+    justify-content: center;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-container {
+    padding: 0 16px;
+  }
+  
+  .nav-bar {
+    height: 44px;
+    margin: 6px 0;
+    padding: 0 12px;
+  }
+  
+  .logo-image {
+    height: 30px;
+  }
+  
+  .nav-link {
+    font-size: 18.4px;
+    font-family: "Sabon Next LT Pro";
+    font-weight: 500;
+  }
+  
+  .right-actions {
+    gap: 8px;
+  }
+  
+  .right-actions .language-button {
+    padding: 4px 8px;
+    font-size: 11px;
+    min-width: 60px;
+    height: 32px;
+  }
+  
+  .right-actions .language-text {
+    font-size: 10px;
+  }
+  
+  .right-actions .globe-icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .action-buttons {
+    gap: 10px;
+    padding: 6px 0;
+  }
+  
+  .action-button {
+    padding: 4px 8px;
+    font-size: 12.65px;
+    font-family: "Sabon Next LT";
+    font-weight: 400;
+  }
+}

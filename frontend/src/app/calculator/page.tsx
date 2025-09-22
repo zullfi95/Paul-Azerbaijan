@@ -356,27 +356,29 @@ export default function CalculatorPage() {
                   </div>
                   
                   {budget > 0 && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '14px', color: '#6b7280' }}>
-                        Budget:
-                      </span>
-                      <span style={{ fontSize: '14px', color: '#6b7280' }}>
-                        ₼{budget.toFixed(2)}
-                      </span>
-                    </div>
-                    
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: '14px', color: '#6b7280' }}>
-                        Remaining:
-                      </span>
-                      <span style={{ 
-                        fontSize: '14px', 
-                        fontWeight: '600',
-                        color: budget - totalCost >= 0 ? '#059669' : '#DC2626'
-                      }}>
-                        ₼{(budget - totalCost).toFixed(2)}
-                      </span>
-                    </div>
+                    <>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                        <span style={{ fontSize: '14px', color: '#6b7280' }}>
+                          Budget:
+                        </span>
+                        <span style={{ fontSize: '14px', color: '#6b7280' }}>
+                          ₼{budget.toFixed(2)}
+                        </span>
+                      </div>
+                      
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '14px', color: '#6b7280' }}>
+                          Remaining:
+                        </span>
+                        <span style={{ 
+                          fontSize: '14px', 
+                          fontWeight: '600',
+                          color: budget - totalCost >= 0 ? '#059669' : '#DC2626'
+                        }}>
+                          ₼{(budget - totalCost).toFixed(2)}
+                        </span>
+                      </div>
+                    </>
                   )}
                 </div>
 

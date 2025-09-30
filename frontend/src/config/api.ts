@@ -46,42 +46,27 @@ export const getAuthHeaders = (token?: string): Record<string, string> => {
 
 // ===== TYPES =====
 
-// User Types
+// User Types - единая модель для всех пользователей
 export interface User {
   id: number;
   name: string;
+  last_name?: string;
   email: string;
   phone?: string;
+  address?: string;
+  company_name?: string;
+  position?: string;
+  contact_person?: string;
   email_verified_at?: string;
   user_type: 'client' | 'staff';
   staff_role?: 'coordinator' | 'observer';
+  client_category?: 'corporate' | 'one_time';
   status: 'active' | 'inactive' | 'suspended';
   created_at: string;
   updated_at: string;
-  // Additional fields for extended user data
-  user_group?: 'staff' | 'client';
-  client_category?: 'corporate' | 'one_time';
-  company_name?: string;
-  position?: string;
-  address?: string;
-  contact_person?: string;
 }
 
-// Client Types
-export interface Client {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string;
-  address?: string;
-  company_name?: string;
-  position?: string;
-  contact_person?: string;
-  client_category: 'corporate' | 'one_time';
-  status: 'active' | 'inactive' | 'suspended';
-  created_at: string;
-  updated_at: string;
-}
+// Client Types - теперь это User с user_type: 'client'
 
 // Application Types
 export interface Application {
@@ -100,13 +85,15 @@ export interface Application {
   status: 'new' | 'processing' | 'approved' | 'rejected';
   coordinator_comment?: string;
   coordinator_id?: number;
+  client_id?: number;
   processed_at?: string;
   created_at: string;
   updated_at: string;
   coordinator?: User;
+  client?: User;
 }
 
-// Menu Item Types
+// Menu Item Types - базовый интерфейс для всех элементов меню
 export interface MenuItem {
   id: string;
   name: string;
@@ -114,23 +101,74 @@ export interface MenuItem {
   price: number;
 }
 
-// Cart Item Types (alias for backward compatibility)
-export type CartItem = MenuItem;
+// Cart Item Types - расширенный интерфейс для корзины с дополнительными полями
+export interface CartItem extends MenuItem {
+  description: string;
+  image: string;
+  category: string;
+  available: boolean;
+  isSet: boolean;
+  persons?: number;
+}
+
+// Product Item Types - для отображения продуктов в каталоге
+export interface ProductItem extends CartItem {
+  // Дополнительные поля для продуктов, если нужны
+}
 
 // Order Types
 export interface Order {
   id: number;
   company_name: string;
   client_type?: 'corporate' | 'one_time';
+  customer?: any;
+  employees?: any;
   menu_items: MenuItem[];
   comment?: string;
   status: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled';
+  coordinator_id?: number;
+  client_id?: number;
   total_amount: number;
+  discount_fixed?: number;
+  discount_percent?: number;
+  discount_amount?: number;
+  items_total?: number;
+  final_amount?: number;
   delivery_date?: string;
   delivery_time?: string;
+  delivery_type?: 'delivery' | 'pickup' | 'buffet';
   delivery_address?: string;
-  coordinator_id?: number;
+  delivery_cost?: number;
+  recurring_schedule?: {
+    enabled: boolean;
+    frequency: 'weekly' | 'monthly';
+    days: string[];
+    delivery_time: string;
+    notes: string;
+  };
+  // Новые поля
+  equipment_required?: number;
+  staff_assigned?: number;
+  special_instructions?: string;
+  beo_file_path?: string;
+  beo_generated_at?: string;
+  preparation_timeline?: any;
+  is_urgent?: boolean;
+  order_deadline?: string;
+  modification_deadline?: string;
+  application_id?: number;
+  // Поля для платежей
+  algoritma_order_id?: string;
+  payment_status?: 'pending' | 'authorized' | 'charged' | 'failed' | 'refunded' | 'credited';
+  payment_url?: string;
+  payment_attempts?: number;
+  payment_created_at?: string;
+  payment_completed_at?: string;
+  payment_details?: any;
+  // Связи
   coordinator?: User;
+  client?: User;
+  application?: Application;
   created_at: string;
   updated_at: string;
 }

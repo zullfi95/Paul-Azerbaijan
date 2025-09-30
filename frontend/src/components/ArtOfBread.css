@@ -8,7 +8,7 @@
 }
 
 .art-container {
-  width: 90%;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -98,7 +98,7 @@
 
 .art-description {
   color: #000;
-  font-family: "Parisine Pro Clair", sans-serif;
+  font-family: "Parisine Pro Gris";
   font-size: 12px;
   font-style: normal;
   font-weight: 400;

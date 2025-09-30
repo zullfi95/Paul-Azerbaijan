@@ -7,14 +7,12 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use App\Models\Application;
-use App\Models\Client;
+use App\Models\User;
 use App\Services\NotificationService;
-use App\Services\ClientService;
-use App\Mail\ClientAccountCreated;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -117,9 +115,53 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $data = $request->all();
+        Log::info('Initial request data', ['data' => $data]);
+        Log::info('Request content', ['content' => $request->getContent()]);
+        Log::info('Request isJson', ['is_json' => $request->isJson()]);
+        
+        // Handle cases where data is double-encoded JSON string
+        if ($request->isJson() && is_string($request->getContent())) {
+             $decoded = json_decode($request->getContent(), true);
+             Log::info('Direct JSON decode attempt', ['decoded' => $decoded, 'is_string' => is_string($decoded)]);
+             
+             // If first decode results in a string, try to decode it again (double-encoded JSON)
+             if (is_string($decoded)) {
+                 $doubleDecoded = json_decode($decoded, true);
+                 Log::info('Double JSON decode attempt', ['decoded' => $doubleDecoded, 'is_array' => is_array($doubleDecoded)]);
+                 if (is_array($doubleDecoded)) {
+                     $data = $doubleDecoded;
+                 }
+             } elseif (is_array($decoded)) {
+                $data = $decoded;
+             }
+        }
+        
+        // Handle cases where data comes wrapped in a 'data' array with JSON string
+        if (isset($data['data']) && is_array($data['data']) && count($data['data']) === 1 && is_string($data['data'][0])) {
+            Log::info('Attempting to decode JSON from data array', ['json_string' => $data['data'][0]]);
+            $decodedData = json_decode($data['data'][0], true);
+            if (is_array($decodedData)) {
+                Log::info('JSON decoded successfully', ['decoded_keys' => array_keys($decodedData)]);
+                $data = $decodedData;
+            } else {
+                Log::error('Failed to decode JSON', ['json_error' => json_last_error_msg()]);
+            }
+        } else {
+            Log::info('Data structure check', [
+                'has_data_key' => isset($data['data']),
+                'is_array' => isset($data['data']) ? is_array($data['data']) : false,
+                'count' => isset($data['data']) && is_array($data['data']) ? count($data['data']) : 0,
+                'first_is_string' => isset($data['data'][0]) ? is_string($data['data'][0]) : false
+            ]);
+        }
+        
+        Log::info('Order creation request received', ['data' => $data]);
+        Log::info('Order creation - parsed data keys', ['keys' => array_keys($data)]);
+
+        $validator = Validator::make($data, [
             // Клиент
-            'client_id' => 'required|exists:clients,id',
+            'client_id' => 'required|exists:users,id,user_type,client',
             
             // Товары
             'menu_items' => 'required|array|min:1',
@@ -147,20 +189,33 @@ class OrderController extends Controller
             'recurring_schedule.delivery_time' => 'nullable|date_format:H:i',
             'recurring_schedule.notes' => 'nullable|string|max:500',
             
+            // Дополнительные поля
+            'equipment_required' => 'nullable|integer|min:0',
+            'staff_assigned' => 'nullable|integer|min:0',
+            'special_instructions' => 'nullable|string',
+            
             // Комментарий
             'comment' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
+            Log::error('Order creation validation failed', ['errors' => $validator->errors()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Ошибка валидации',
                 'errors' => $validator->errors()
             ], 422);
         }
+        
+        Log::info('Order creation validation passed');
 
-    // Получаем клиента
-    $client = Client::find($request->client_id);
+        // Получаем клиента
+        $client = User::where('id', $data['client_id'])
+                    ->where('user_type', 'client')
+                    ->first();
+        
+        Log::info('Client lookup result', ['client_found' => $client ? $client->toArray() : null]);
+
         if (!$client) {
             return response()->json([
                 'success' => false,
@@ -170,7 +225,7 @@ class OrderController extends Controller
         }
 
         // Resolve menu items prices from catalog (if exists) and compute authoritative subtotal
-        $requestedItems = $request->menu_items ?? [];
+        $requestedItems = $data['menu_items'] ?? [];
         $resolvedItems = $this->resolveMenuItems($requestedItems);
 
         $subtotal = collect($resolvedItems)->sum(function ($item) {
@@ -179,12 +234,19 @@ class OrderController extends Controller
             return round($item['quantity'] * $price, 2);
         });
 
-        $discountFixed = (float) ($request->discount_fixed ?? 0);
-        $discountPercent = (float) ($request->discount_percent ?? 0);
+        $discountFixed = (float) ($data['discount_fixed'] ?? 0);
+        $discountPercent = (float) ($data['discount_percent'] ?? 0);
         $discountAmount = $discountFixed + ($subtotal * $discountPercent / 100);
         $itemsTotal = max(0, $subtotal - $discountAmount);
-        $deliveryCost = (float) ($request->delivery_cost ?? 0);
+        $deliveryCost = (float) ($data['delivery_cost'] ?? 0);
         $finalAmount = $itemsTotal + $deliveryCost;
+
+        Log::info('Calculated order amounts', [
+            'subtotal' => $subtotal,
+            'finalAmount' => $finalAmount,
+            'client_company' => $client->company_name,
+            'client_category' => $client->client_category
+        ]);
 
         $order = Order::create([
             'client_id' => $client->id,
@@ -192,7 +254,7 @@ class OrderController extends Controller
             'client_type' => $client->client_category,
             // store resolved menu items (authoritative prices included)
             'menu_items' => $resolvedItems,
-            'comment' => $request->comment,
+            'comment' => $data['comment'],
             'status' => 'submitted',
             'coordinator_id' => $request->user()->id,
             'total_amount' => round($subtotal, 2),
@@ -201,14 +263,19 @@ class OrderController extends Controller
             'discount_amount' => $discountAmount,
             'items_total' => $itemsTotal,
             'final_amount' => round($finalAmount, 2),
-            'delivery_date' => $request->delivery_date,
-            'delivery_time' => $request->delivery_date && $request->delivery_time 
-                ? $request->delivery_date . ' ' . $request->delivery_time 
+            'delivery_date' => $data['delivery_date'] ?? null,
+            'delivery_time' => ($data['delivery_date'] && $data['delivery_time'])
+                ? $data['delivery_date'] . ' ' . $data['delivery_time'] 
                 : null,
-            'delivery_type' => $request->delivery_type ?? 'delivery',
-            'delivery_address' => $request->delivery_address,
+            'delivery_type' => $data['delivery_type'] ?? 'delivery',
+            'delivery_address' => $data['delivery_address'] ?? null,
             'delivery_cost' => $deliveryCost,
-            'recurring_schedule' => $request->recurring_schedule,
+            'recurring_schedule' => $data['recurring_schedule'] ?? null,
+            
+            // Дополнительные поля
+            'equipment_required' => $data['equipment_required'] ?? 0,
+            'staff_assigned' => $data['staff_assigned'] ?? 0,
+            'special_instructions' => $data['special_instructions'] ?? null,
         ]);
 
         // Отправляем уведомления о новом заказе
@@ -309,6 +376,11 @@ class OrderController extends Controller
             'recurring_schedule.delivery_time' => 'nullable|date_format:H:i',
             'recurring_schedule.notes' => 'nullable|string|max:500',
             
+            // Дополнительные поля
+            'equipment_required' => 'nullable|integer|min:0',
+            'staff_assigned' => 'nullable|integer|min:0',
+            'special_instructions' => 'nullable|string',
+            
             // Статус и комментарий
             'status' => 'sometimes|in:draft,submitted,processing,completed,cancelled',
             'comment' => 'nullable|string',
@@ -325,7 +397,8 @@ class OrderController extends Controller
         $updateData = $request->only([
             'client_type', 'company_name', 'customer', 'employees',
             'comment', 'status', 'delivery_date', 'delivery_type', 
-            'delivery_address', 'delivery_cost', 'recurring_schedule'
+            'delivery_address', 'delivery_cost', 'recurring_schedule',
+            'equipment_required', 'staff_assigned', 'special_instructions'
         ]);
 
         // Пересчитываем суммы если изменились товары или скидки
@@ -391,7 +464,7 @@ class OrderController extends Controller
     public function createFromApplication(Request $request, Application $application)
     {
         $validator = Validator::make($request->all(), [
-            'client_id' => 'nullable|exists:clients,id', // Существующий клиент
+            'client_id' => 'nullable|exists:users,id,user_type,client', // Существующий клиент
             'menu_items' => 'required|array|min:1',
             'menu_items.*.id' => 'required|string',
             'menu_items.*.name' => 'required|string',
@@ -411,6 +484,11 @@ class OrderController extends Controller
             'recurring_schedule.days' => 'nullable|array',
             'recurring_schedule.delivery_time' => 'nullable|date_format:H:i',
             'recurring_schedule.notes' => 'nullable|string|max:500',
+            
+            // Дополнительные поля
+            'equipment_required' => 'nullable|integer|min:0',
+            'staff_assigned' => 'nullable|integer|min:0',
+            'special_instructions' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -421,34 +499,26 @@ class OrderController extends Controller
             ], 422);
         }
 
-        $clientService = new ClientService();
-        $client = null;
-        $generatedPassword = null;
+        // Требуем обязательного указания client_id
+        if (!$request->client_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Необходимо указать ID клиента',
+                'errors' => ['client_id' => ['Поле client_id обязательно для заполнения']]
+            ], 422);
+        }
 
-        // Если передан client_id, используем существующего клиента
-        if ($request->client_id) {
-            $client = Client::find($request->client_id);
-            if (!$client) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Клиент не найден',
-                    'errors' => ['client_id' => ['Клиент с указанным ID не существует']]
-                ], 422);
-            }
-        } else {
-            // Создаем нового клиента на основе данных заявки
-            $clientData = [
-                'first_name' => $application->first_name,
-                'last_name' => $application->last_name,
-                'email' => $application->email,
-                'phone' => $application->phone ?? null,
-                'address' => $application->event_address ?? null,
-                'company_name' => $application->company_name ?? ($application->first_name . ' ' . $application->last_name),
-                'client_category' => 'one_time', // По умолчанию разовый клиент
-            ];
-
-            $client = $clientService->findOrCreateClient($clientData);
-            $generatedPassword = $client->generated_password ?? null;
+        // Ищем существующего клиента
+        $client = User::where('id', $request->client_id)
+                    ->where('user_type', 'client')
+                    ->first();
+        
+        if (!$client) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Клиент не найден',
+                'errors' => ['client_id' => ['Клиент с указанным ID не существует']]
+            ], 422);
         }
 
         // Resolve menu items and compute authoritative subtotal
@@ -489,17 +559,16 @@ class OrderController extends Controller
             'delivery_address' => $request->delivery_address,
             'delivery_cost' => $deliveryCost,
             'recurring_schedule' => $request->recurring_schedule,
+            
+            // Дополнительные поля
+            'equipment_required' => $request->equipment_required ?? 0,
+            'staff_assigned' => $request->staff_assigned ?? 0,
+            'special_instructions' => $request->special_instructions ?? null,
         ]);
 
-        // Отправляем email новому клиенту
-        if ($generatedPassword && $client->email) {
-            $notificationData = $clientService->getClientNotificationData($client);
-            Mail::to($client->email)->send(new ClientAccountCreated(
-                $client,
-                $generatedPassword,
-                $notificationData['login_url']
-            ));
-        }
+        // Отправляем уведомления о новом заказе
+        $notificationService = new NotificationService();
+        $notificationService->sendNewOrderNotifications($order);
 
         // Обновляем статус заявки на "approved" и привязываем клиента
         $application->update([
@@ -514,8 +583,7 @@ class OrderController extends Controller
             'message' => 'Заказ создан на основе заявки',
             'data' => [
                 'order' => $order->load(['coordinator', 'client']),
-                'application' => $application->fresh()->load('client'),
-                'client_created' => !is_null($generatedPassword)
+                'application' => $application->fresh()->load('client')
             ]
         ], 201);
     }
@@ -582,6 +650,29 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'data' => $stats
+        ]);
+    }
+
+    /**
+     * Получение заказа клиента по ID (с проверкой прав доступа)
+     */
+    public function showClientOrder(Request $request, Order $order)
+    {
+        $user = $request->user();
+        
+        // Проверяем, что заказ принадлежит клиенту
+        if ($order->client_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Доступ запрещен. Заказ не принадлежит клиенту.'
+            ], 403);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'order' => $order->load('coordinator')
+            ]
         ]);
     }
 }

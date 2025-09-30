@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         // Запускаем сидеры для пользователей и клиентов
         $this->call([
             UserSeeder::class,
-            ClientSeeder::class,
         ]);
     }
 }

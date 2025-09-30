@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -34,12 +33,8 @@ class AuthController extends Controller
 
         $group = $request->user_group ?? 'client';
 
-        // Add conditional uniqueness depending on group
-        if ($group === 'staff') {
-            $baseRules['email'] .= '|unique:users,email';
-        } else {
-            $baseRules['email'] .= '|unique:clients,email';
-        }
+        // All users are now in the same table
+        $baseRules['email'] .= '|unique:users,email';
 
         $validator = Validator::make($request->all(), $baseRules);
 
@@ -59,6 +54,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'staff_role' => $request->staff_role ?? 'observer',
                 'status' => 'active',
+                'user_type' => 'staff',
             ]);
 
             return response()->json([
@@ -71,7 +67,7 @@ class AuthController extends Controller
         }
 
         // Иначе — это клиент
-        $client = Client::create([
+        $client = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -79,7 +75,8 @@ class AuthController extends Controller
             'company_name' => $request->company_name ?? null,
             'position' => $request->position ?? null,
             'contact_person' => $request->contact_person ?? null,
-            'client_category' => 'one_time',
+            'user_type' => 'client',
+            'client_category' => $request->client_category ?? 'one_time',
             'status' => 'active',
         ]);
 
@@ -87,7 +84,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Клиент успешно зарегистрирован',
             'data' => [
-                'client' => $client,
+                'user' => $client,
             ]
         ], 201);
     }
@@ -110,22 +107,14 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Проверяем сначала в таблице users (сотрудники)
+        // Проверяем в таблице users (все пользователи)
         $user = User::where('email', $request->email)->first();
         $authenticatedUser = null;
         $userType = null;
 
         if ($user && Hash::check($request->password, $user->password) && $user->isActive()) {
             $authenticatedUser = $user;
-            $userType = 'staff';
-        } else {
-            // Проверяем в таблице clients (клиенты)
-            $client = Client::where('email', $request->email)->first();
-
-            if ($client && Hash::check($request->password, $client->password) && $client->isActive()) {
-                $authenticatedUser = $client;
-                $userType = 'client';
-            }
+            $userType = $user->user_type;
         }
 
         if (!$authenticatedUser) {
@@ -171,7 +160,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $userType = $user instanceof User ? 'staff' : 'client';
+        $userType = $user->user_type;
 
         // Добавляем user_type и staff_role в объект пользователя для фронтенда
         $userArray = $user->toArray();
@@ -234,7 +223,8 @@ class AuthController extends Controller
                 
                 // Проверяем в таблице clients
                 if (!$emailExists) {
-                    $emailExists = Client::where('email', $updateData['email'])
+                    $emailExists = User::where('email', $updateData['email'])
+                        ->where('user_type', 'client')
                         ->where('id', '!=', $user->id)
                         ->exists();
                 }
@@ -251,7 +241,7 @@ class AuthController extends Controller
             $user->update($updateData);
 
             // Определяем тип пользователя
-            $userType = $user instanceof User ? 'staff' : 'client';
+            $userType = $user->user_type;
 
             // Подготавливаем данные для ответа
             $userArray = $user->toArray();

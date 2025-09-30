@@ -2,51 +2,54 @@
 
 namespace App\Services;
 
-use App\Models\Client;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class ClientService
 {
     /**
-     * Найти существующего клиента по email или создать нового
+     * Найти существующего пользователя-клиента по email или создать нового
      */
-    public function findOrCreateClient(array $clientData): Client
+    public function findOrCreateUser(array $userData): User
     {
-        $email = $clientData['email'] ?? null;
+        $email = $userData['email'] ?? null;
 
         if (!$email) {
-            throw new \InvalidArgumentException('Email обязателен для создания клиента');
+            throw new \InvalidArgumentException('Email обязателен для создания пользователя');
         }
 
-        // Ищем существующего клиента по email
-        $existingClient = Client::where('email', $email)->first();
+        // Ищем существующего пользователя по email
+        $existingUser = User::where('email', $email)
+                          ->where('user_type', 'client')
+                          ->first();
 
-        if ($existingClient) {
-            return $existingClient;
+        if ($existingUser) {
+            return $existingUser;
         }
 
-        // Создаем нового клиента
+        // Создаем нового пользователя
         $password = $this->generatePassword();
 
-        $client = Client::create([
-            'name' => trim(($clientData['first_name'] ?? '') . ''),
-            'last_name' => trim($clientData['last_name'] ?? ''),
+        $user = User::create([
+            'name' => trim($userData['name'] ?? ''),
+            'last_name' => trim($userData['last_name'] ?? ''),
             'email' => $email,
             'password' => Hash::make($password),
-            'phone' => $clientData['phone'] ?? null,
-            'address' => $clientData['address'] ?? null,
-            'company_name' => $clientData['company_name'] ?? null,
-            'position' => $clientData['position'] ?? null,
-            'contact_person' => $clientData['contact_person'] ?? null,
-            'client_category' => $clientData['client_category'] ?? 'one_time',
-            'status' => 'active',
+            'phone' => $userData['phone'] ?? null,
+            'address' => $userData['address'] ?? null,
+            'company_name' => $userData['company_name'] ?? null,
+            'position' => $userData['position'] ?? null,
+            'contact_person' => $userData['contact_person'] ?? null,
+            'user_type' => 'client',
+            'client_category' => $userData['client_category'] ?? 'one_time',
+            'status' => $userData['status'] ?? 'active',
         ]);
 
         // Сохраняем сгенерированный пароль для отправки по email
-        $client->generated_password = $password;
+        $user->generated_password = $password;
 
-        return $client;
+        return $user;
     }
 
     /**
@@ -60,11 +63,11 @@ class ClientService
     /**
      * Получить данные для email уведомления
      */
-    public function getClientNotificationData(Client $client): array
+    public function getClientNotificationData(User $user): array
     {
         return [
-            'client' => $client,
-            'password' => $client->generated_password ?? 'Установите новый пароль',
+            'client' => $user,
+            'password' => $user->generated_password ?? 'Установите новый пароль',
             'login_url' => config('app.url') . '/login',
         ];
     }

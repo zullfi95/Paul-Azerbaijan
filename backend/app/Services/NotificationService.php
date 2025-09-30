@@ -9,6 +9,7 @@ use App\Mail\ApplicationReceived;
 use App\Mail\ApplicationStatusChanged;
 use App\Mail\OrderCreated;
 use App\Mail\StaffNotification;
+use App\Mail\PaymentSuccess;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
@@ -257,10 +258,9 @@ class NotificationService
             ";
 
             // Отправляем email
-            Mail::send([], [], function ($message) use ($order, $emailContent) {
+            Mail::html($emailContent, function ($message) use ($order) {
                 $message->to($order->client->email, $order->client->name)
-                        ->subject('Sifariş yaradıldı - Ödəniş gözlənilir - PAUL Catering')
-                        ->setBody($emailContent, 'text/html');
+                        ->subject('Sifariş yaradıldı - Ödəniş gözlənilir - PAUL Catering');
             });
 
             Log::info('Payment required email sent', [
@@ -511,6 +511,29 @@ class NotificationService
                 'error' => $e->getMessage()
             ]);
             return false;
+        }
+    }
+
+    /**
+     * Отправка уведомления об успешной оплате
+     */
+    public function sendPaymentSuccessNotification(Order $order): void
+    {
+        try {
+            // Уведомление клиенту
+            if ($order->client && $order->client->email) {
+                Mail::to($order->client->email)->send(new PaymentSuccess($order));
+            }
+            
+            // Уведомления персоналу
+            $this->sendStaffNotifications('payment_success', $order);
+            
+            Log::info('Payment success notifications sent', ['order_id' => $order->id]);
+        } catch (\Exception $e) {
+            Log::error('Failed to send payment success notifications', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage()
+            ]);
         }
     }
 }

@@ -74,8 +74,8 @@ class UserController extends Controller
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password,
-            'user_group' => 'staff',
+            'password' => Hash::make($request->password),
+            'user_type' => 'staff',
             'staff_role' => $request->staff_role,
             'status' => $request->status ?? 'active',
         ];
@@ -112,7 +112,7 @@ class UserController extends Controller
         }
 
         $updateData = $request->only(['name', 'email', 'staff_role', 'status']);
-        $updateData['user_group'] = 'staff';
+        $updateData['user_type'] = 'staff';
 
         $user->update($updateData);
 

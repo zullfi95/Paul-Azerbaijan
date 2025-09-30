@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Globe } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import './LanguageSelector.css';
 
@@ -10,9 +9,9 @@ const LanguageSelector: React.FC = () => {
   const { language: selectedLanguage, setLanguage } = useLanguage();
 
   const languages = [
-    { code: 'az', name: 'Azərbaycan', flag: '🇦🇿' },
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ru', name: 'Русский', flag: '🇷🇺' }
+    { code: 'az', name: 'AZ' },
+    { code: 'en', name: 'EN' },
+    { code: 'ru', name: 'RU' }
   ];
 
   const currentLanguage = languages.find(lang => lang.code === selectedLanguage) || languages[1];
@@ -29,23 +28,7 @@ const LanguageSelector: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Select Language"
       >
-        <Globe className="globe-icon" size={18} />
-        <span className="language-text">{currentLanguage.flag} {currentLanguage.code.toUpperCase()}</span>
-        <svg 
-          className={`dropdown-arrow ${isOpen ? 'open' : ''}`} 
-          width="12" 
-          height="12" 
-          viewBox="0 0 12 12" 
-          fill="none"
-        >
-          <path 
-            d="M3 4.5L6 7.5L9 4.5" 
-            stroke="currentColor" 
-            strokeWidth="1.5" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          />
-        </svg>
+        <span className="language-text">{currentLanguage.code.toUpperCase()}</span>
       </button>
 
       {isOpen && (
@@ -56,19 +39,7 @@ const LanguageSelector: React.FC = () => {
               className={`language-option ${selectedLanguage === language.code ? 'selected' : ''}`}
               onClick={() => handleLanguageSelect(language.code)}
             >
-              <span className="language-flag">{language.flag}</span>
               <span className="language-name">{language.name}</span>
-              {selectedLanguage === language.code && (
-                <svg className="check-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path 
-                    d="M13.5 4.5L6 12L2.5 8.5" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              )}
             </button>
           ))}
         </div>

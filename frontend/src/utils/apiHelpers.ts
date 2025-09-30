@@ -82,7 +82,7 @@ export async function makeApiRequest<T>(
         ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
       },
       credentials: 'include', // Оставляем для совместимости с CSRF, если нужно
-      body: body ? JSON.stringify(body) : undefined,
+      body: body,
     });
 
     console.log('📡 API Response:', {

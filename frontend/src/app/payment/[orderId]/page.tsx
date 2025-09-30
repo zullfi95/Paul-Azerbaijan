@@ -26,7 +26,8 @@ export default function PaymentPage() {
 
   const loadOrder = useCallback(async () => {
     try {
-      const response = await fetch(`${API_CONFIG.BASE_URL}/orders/${orderId}`, {
+      // Используем endpoint для клиентов
+      const response = await fetch(`${API_CONFIG.BASE_URL}/client/orders/${orderId}`, {
         headers: getAuthHeaders(),
       });
       
@@ -59,24 +60,23 @@ export default function PaymentPage() {
     setError('');
 
     try {
-      // Здесь будет интеграция с платежным API
-      // Пока что имитируем успешную оплату
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Обновляем статус заказа на "processing"
-      const response = await fetch(`${API_CONFIG.BASE_URL}/orders/${orderId}`, {
-        method: 'PUT',
+      // Создаем платеж через Algoritma API
+      const response = await fetch(`${API_CONFIG.BASE_URL}/payment/orders/${orderId}/create`, {
+        method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify({
-          status: 'processing'
-        })
       });
 
       if (response.ok) {
-        alert('Ödəniş uğurla tamamlandı! Sifarişiniz hazırlanma prosesinə keçdi.');
-        router.push('/profile');
+        const data = await response.json();
+        if (data.success && data.data.payment_url) {
+          // Перенаправляем на Payment Page Algoritma
+          window.location.href = data.data.payment_url;
+        } else {
+          setError(data.message || 'Ödəniş yaradıla bilmədi');
+        }
       } else {
-        setError('Ödəniş tamamlandı, lakin sifariş statusu yenilənə bilmədi');
+        const errorData = await response.json();
+        setError(errorData.message || 'Ödəniş yaradıla bilmədi');
       }
     } catch (error) {
       console.error('Payment error:', error);

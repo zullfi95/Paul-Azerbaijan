@@ -5,7 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Client;
+use App\Models\User;
+use App\Models\Application;
 
 class Order extends Model
 {
@@ -32,17 +33,39 @@ class Order extends Model
         'delivery_address',
         'delivery_cost',
         'recurring_schedule',
+        'equipment_required',
+        'staff_assigned',
+        'special_instructions',
+        'beo_file_path',
+        'beo_generated_at',
+        'preparation_timeline',
+        'is_urgent',
+        'order_deadline',
+        'modification_deadline',
+        'application_id',
+        // Поля для платежей
+        'algoritma_order_id',
+        'payment_status',
+        'payment_url',
+        'payment_attempts',
+        'payment_created_at',
+        'payment_completed_at',
+        'payment_details',
     ];
-
-    protected $appends = ['client_type'];
 
     protected $casts = [
         'menu_items' => 'array',
         'customer' => 'array',
         'employees' => 'array',
         'recurring_schedule' => 'array',
+        'equipment_required' => 'integer',
+        'staff_assigned' => 'integer',
+        'preparation_timeline' => 'array',
         'delivery_date' => 'date',
         'delivery_time' => 'datetime',
+        'beo_generated_at' => 'datetime',
+        'order_deadline' => 'datetime',
+        'modification_deadline' => 'datetime',
         'total_amount' => 'float',
         'discount_fixed' => 'float',
         'discount_percent' => 'float',
@@ -50,6 +73,12 @@ class Order extends Model
         'items_total' => 'float',
         'final_amount' => 'float',
         'delivery_cost' => 'float',
+        'is_urgent' => 'boolean',
+        // Поля для платежей
+        'payment_attempts' => 'integer',
+        'payment_created_at' => 'datetime',
+        'payment_completed_at' => 'datetime',
+        'payment_details' => 'array',
     ];
 
     /**
@@ -65,7 +94,15 @@ class Order extends Model
      */
     public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class, 'client_id');
+        return $this->belongsTo(User::class, 'client_id');
+    }
+
+    /**
+     * Заявка, на основе которой создан заказ
+     */
+    public function application(): BelongsTo
+    {
+        return $this->belongsTo(Application::class, 'application_id');
     }
 
     /**
@@ -96,10 +133,53 @@ class Order extends Model
     }
 
     /**
-     * Получить тип клиента
+     * Проверяет, ожидает ли заказ оплаты
      */
-    public function getClientTypeAttribute(): ?string
+    public function isPendingPayment(): bool
     {
-        return $this->client ? $this->client->client_category : null;
+        return $this->payment_status === 'pending' && $this->status === 'submitted';
+    }
+
+    /**
+     * Проверяет, оплачен ли заказ
+     */
+    public function isPaid(): bool
+    {
+        return in_array($this->payment_status, ['charged', 'authorized']);
+    }
+
+    /**
+     * Проверяет, можно ли попробовать оплатить снова
+     */
+    public function canRetryPayment(): bool
+    {
+        return $this->payment_attempts < 3 && $this->payment_status === 'failed';
+    }
+
+    /**
+     * Увеличивает счетчик попыток оплаты
+     */
+    public function incrementPaymentAttempts(): void
+    {
+        $this->increment('payment_attempts');
+    }
+
+    /**
+     * Обновляет статус платежа
+     */
+    public function updatePaymentStatus(string $status, array $details = []): void
+    {
+        $this->update([
+            'payment_status' => $status,
+            'payment_details' => $details,
+            'payment_completed_at' => $status === 'charged' ? now() : null,
+        ]);
+
+        // Обновляем статус заказа в зависимости от статуса платежа
+        if ($status === 'charged') {
+            $this->update(['status' => 'paid']);
+        } elseif ($status === 'failed' && $this->payment_attempts >= 3) {
+            $this->update(['status' => 'cancelled']);
+        }
     }
 }

@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\User;
-use App\Models\Client;
 
 class CheckUsersCommand extends Command
 {
@@ -40,7 +39,7 @@ class CheckUsersCommand extends Command
         
         // Проверяем клиентов
         $this->info('Клиенты:');
-        $clients = Client::all();
+        $clients = User::where('user_type', 'client')->get();
         foreach ($clients as $client) {
             $category = $client->isCorporate() ? 'Корпоративный' : 'Разовый';
             $this->line("- {$client->name} ({$client->email}) - {$category} - {$client->status}");
@@ -51,7 +50,7 @@ class CheckUsersCommand extends Command
         
         $this->newLine();
         $this->info("Всего пользователей персонала: " . User::count());
-        $this->info("Всего клиентов: " . Client::count());
+        $this->info("Всего клиентов: " . User::where('user_type', 'client')->count());
         
         // Проверяем методы моделей
         $this->newLine();
@@ -66,7 +65,7 @@ class CheckUsersCommand extends Command
             $this->line("- isActive(): " . ($coordinator->isActive() ? 'true' : 'false'));
         }
         
-        $corporateClient = Client::where('client_category', 'corporate')->first();
+        $corporateClient = User::where('user_type', 'client')->where('client_category', 'corporate')->first();
         if ($corporateClient) {
             $this->info("Корпоративный клиент {$corporateClient->name}:");
             $this->line("- isCorporate(): " . ($corporateClient->isCorporate() ? 'true' : 'false'));

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Client;
+use App\Models\User;
 
 class Application extends Model
 {
@@ -45,11 +45,11 @@ class Application extends Model
     }
 
     /**
-     * Клиент, созданный из этой заявки
+     * Клиент, создавший заявку
      */
     public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class, 'client_id');
+        return $this->belongsTo(User::class, 'client_id');
     }
 
     /**

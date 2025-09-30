@@ -1,4 +1,4 @@
-import { Order, Application, User, MenuItem } from '../config/api';
+import { Order, Application, User, MenuItem, CartItem } from '../config/api';
 
 // Response types for paginated data
 export interface OrdersResponse {
@@ -41,7 +41,7 @@ export interface OrderCreateRequest {
   };
   
   // Common fields
-  menu_items: MenuItem[];
+  menu_items: CartItem[];
   comment?: string;
   delivery_date?: string;
   delivery_time?: string;
@@ -79,7 +79,7 @@ export interface ApplicationCreateRequest {
   event_time?: string;
   event_lat?: number;
   event_lng?: number;
-  cart_items?: MenuItem[];
+  cart_items?: CartItem[];
 }
 
 export interface ApplicationUpdateRequest extends Partial<ApplicationCreateRequest> {

@@ -34,11 +34,12 @@ class ClientMiddleware
             ], 401);
         }
 
-        // Проверяем, что пользователь является клиентом (модель Client)
-        if (!($user instanceof \App\Models\Client)) {
+        // Проверяем, что пользователь является клиентом
+        if (!$user->isClient()) {
             \Log::warning('ClientMiddleware: User is not a client', [
                 'user_id' => $user->id,
-                'user_class' => get_class($user)
+                'user_type' => $user->user_type ?? 'not_set',
+                'staff_role' => $user->staff_role ?? 'not_set'
             ]);
             return response()->json([
                 'success' => false,

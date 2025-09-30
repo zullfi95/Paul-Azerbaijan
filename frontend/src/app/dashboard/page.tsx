@@ -22,6 +22,7 @@ import {
   UsersIcon,
   ShoppingBagIcon,
   CalendarIcon,
+  ChartBarIcon,
   XIcon 
 } from "../../components/Icons";
 
@@ -52,8 +53,15 @@ export default function DashboardPage() {
   
   const { scrollToElement } = useSmoothScroll();
 
-  // Auth guard - только для аутентификации, права доступа проверяются в UI
-  useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, () => true, router);
+  // Auth guard - проверяем тип пользователя
+  useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, (user) => {
+    // Если пользователь клиент, редиректим на профиль
+    if (user.user_type === 'client') {
+      router.push('/profile');
+      return false;
+    }
+    return true;
+  }, router);
 
   // Data fetching с оптимизацией
   const loadApplications = useCallback(async () => {
@@ -413,6 +421,36 @@ export default function DashboardPage() {
           >
             <CalendarIcon size={18} />
             <span>Календарь</span>
+          </Link>
+          <Link 
+            href="/dashboard/reports" 
+            style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+              padding: "12px 16px",
+            textDecoration: "none",
+            color: pathname?.startsWith("/dashboard/reports") ? paul.black : paul.gray,
+            background: pathname?.startsWith("/dashboard/reports") ? paul.beige : "transparent",
+            borderRight: pathname?.startsWith("/dashboard/reports") ? `3px solid ${paul.black}` : "3px solid transparent",
+              transition: "all 0.2s ease",
+              minHeight: "44px", // Touch-friendly
+            }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            onMouseEnter={(e) => {
+              if (!pathname?.startsWith("/dashboard/reports")) {
+                e.currentTarget.style.backgroundColor = "#f3f4f6";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!pathname?.startsWith("/dashboard/reports")) {
+                e.currentTarget.style.backgroundColor = "transparent";
+              }
+            }}
+            aria-label="Отчеты и аналитика"
+          >
+            <ChartBarIcon size={18} />
+            <span>Отчеты</span>
           </Link>
         </nav>
 

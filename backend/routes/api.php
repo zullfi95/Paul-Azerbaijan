@@ -8,6 +8,9 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\IikoController;
+use App\Http\Controllers\Api\MenuController;
+use App\Http\Controllers\Api\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +29,16 @@ Route::post('/login', [AuthController::class, 'login']); // Убираем web m
 
 // Публичный endpoint для получения координаторов (для создания заявок)
 Route::get('/coordinators', [UserController::class, 'getCoordinators']);
+
+// Публичные маршруты для меню (доступны всем)
+Route::prefix('menu')->group(function () {
+    Route::get('/categories', [MenuController::class, 'getCategories']);
+    Route::get('/items', [MenuController::class, 'getMenuItems']);
+    Route::get('/full', [MenuController::class, 'getFullMenu']);
+    Route::get('/items/{id}', [MenuController::class, 'getMenuItem']);
+    Route::get('/search', [MenuController::class, 'searchMenu']);
+    Route::get('/stats', [MenuController::class, 'getMenuStats']);
+});
 
 // Тестовый маршрут удалён (безопасность)
 
@@ -70,6 +83,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/orders/{order}', [OrderController::class, 'destroy']); // Удаление заказа
         Route::post('/applications/{application}/create-order', [OrderController::class, 'createFromApplication']); // Создание заказа из заявки
         Route::get('/orders/statistics', [OrderController::class, 'statistics']); // Статистика заказов
+
+        // iiko API интеграция
+        Route::prefix('iiko')->group(function () {
+            Route::get('/test-connection', [IikoController::class, 'testConnection']); // Проверка подключения
+            Route::get('/organizations', [IikoController::class, 'getOrganizations']); // Список организаций
+            Route::get('/menu', [IikoController::class, 'getMenu']); // Получение меню
+            Route::get('/external-menu', [IikoController::class, 'getExternalMenu']); // Получение внешнего меню
+            Route::get('/price-categories', [IikoController::class, 'getPriceCategories']); // Категории цен
+            Route::post('/sync-menu', [IikoController::class, 'syncMenu']); // Синхронизация меню
+        });
+        // (перемещено ниже, вне группы coordinator)
+
     });
 
     // Маршруты для клиентов
@@ -77,11 +102,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Заказы клиента
         Route::get('/client/orders', [OrderController::class, 'getClientOrders']); // Все заказы клиента
         Route::get('/client/orders/active', [OrderController::class, 'getClientActiveOrders']); // Активные заказы клиента
+        Route::get('/client/orders/{order}', [OrderController::class, 'showClientOrder']); // Просмотр конкретного заказа клиента
         
         // Уведомления клиента
         Route::get('/client/notifications', [NotificationController::class, 'getClientNotifications']); // Уведомления клиента
         Route::get('/client/notifications/unread-count', [NotificationController::class, 'getUnreadNotifications']); // Количество непрочитанных
         Route::patch('/client/notifications/{notification}/read', [NotificationController::class, 'markAsRead']); // Отметить как прочитанное
         Route::patch('/client/notifications/read-all', [NotificationController::class, 'markAllAsRead']); // Отметить все как прочитанные
+    });
+    
+    // Algoritma Payment API интеграция (для всех аутентифицированных; права проверяются в контроллере)
+    Route::prefix('payment')->group(function () {
+        Route::get('/test-connection', [PaymentController::class, 'testConnection']);
+        Route::get('/test-cards', [PaymentController::class, 'getTestCards']);
+        Route::post('/orders/{order}/create', [PaymentController::class, 'createPayment']);
+        Route::get('/orders/{order}/info', [PaymentController::class, 'getPaymentInfo']);
+        Route::post('/orders/{order}/success', [PaymentController::class, 'handleSuccess']);
+        Route::post('/orders/{order}/failure', [PaymentController::class, 'handleFailure']);
     });
 });

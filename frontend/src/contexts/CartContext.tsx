@@ -2,19 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useAuth } from './AuthContext';
-
-export interface CartItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-  available: boolean;
-  isSet: boolean;
-  persons?: number;
-  quantity: number;
-}
+import { CartItem } from '../config/api';
 
 type GuestCartItem = Partial<CartItem> & { id: string; quantity?: number; price?: number };
 

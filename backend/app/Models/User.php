@@ -21,10 +21,18 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
         'email',
         'password',
+        'phone',
+        'address',
+        'company_name',
+        'position',
+        'contact_person',
         'staff_role',
         'status',
+        'user_type', // 'staff' or 'client'
+        'client_category', // 'corporate' | 'one_time'
     ];
 
     /**
@@ -52,11 +60,10 @@ class User extends Authenticatable
 
     /**
      * Проверяет, является ли пользователь персоналом
-     * Все пользователи в таблице users являются персоналом
      */
     public function isStaff(): bool
     {
-        return true;
+        return $this->user_type === 'staff';
     }
 
     /**
@@ -64,7 +71,7 @@ class User extends Authenticatable
      */
     public function isCoordinator(): bool
     {
-        return $this->staff_role === 'coordinator';
+        return $this->isStaff() && $this->staff_role === 'coordinator';
     }
 
     /**
@@ -72,7 +79,42 @@ class User extends Authenticatable
      */
     public function isObserver(): bool
     {
-        return $this->staff_role === 'observer';
+        return $this->isStaff() && $this->staff_role === 'observer';
+    }
+
+    /**
+     * Проверяет, является ли пользователь клиентом
+     */
+    public function isClient(): bool
+    {
+        return $this->user_type === 'client';
+    }
+
+    /**
+     * Проверяет, корпоративный ли клиент
+     */
+    public function isCorporate(): bool
+    {
+        return $this->client_category === 'corporate';
+    }
+
+    /**
+     * Проверяет, разовый ли клиент
+     */
+    public function isOneTime(): bool
+    {
+        return $this->client_category === 'one_time';
+    }
+
+    /**
+     * Полное имя пользователя (клиента или сотрудника)
+     */
+    public function getFullNameAttribute(): string
+    {
+        if ($this->isClient() && !empty($this->last_name)) {
+            return trim($this->name . ' ' . $this->last_name);
+        }
+        return $this->name;
     }
 
 
@@ -118,9 +160,25 @@ class User extends Authenticatable
     /**
      * Заказы, созданные координатором
      */
-    public function orders(): HasMany
+    public function createdOrders(): HasMany
     {
         return $this->hasMany(Order::class, 'coordinator_id');
+    }
+
+    /**
+     * Заказы клиента (если пользователь - клиент)
+     */
+    public function clientOrders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'client_id');
+    }
+
+    /**
+     * Заявки клиента (если пользователь - клиент)
+     */
+    public function clientApplications(): HasMany
+    {
+        return $this->hasMany(Application::class, 'client_id');
     }
 
 

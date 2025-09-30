@@ -140,6 +140,7 @@ export default function OrderPage() {
       newErrors.eventTime = 'Tədbir vaxtını seçin';
     }
 
+
     // Проверяем временные ограничения
     if (formData.eventDate) {
       const validation = validateOrderData({
@@ -372,6 +373,7 @@ export default function OrderPage() {
               </p>
             </div>
 
+
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
@@ -395,6 +397,7 @@ export default function OrderPage() {
                 }}>
                   Əlaqə məlumatları
                 </h2>
+
 
                 {/* Информационное сообщение для авторизованных клиентов */}
                 {isAuthenticated && user && user.user_type === 'client' && (
@@ -660,6 +663,7 @@ export default function OrderPage() {
                       </span>
                     )}
                   </div>
+
 
                   <div style={{
                     height: '1px',
@@ -1173,6 +1177,7 @@ export default function OrderPage() {
           </div>
         </section>
       </div>
+
 
       {/* Красивое попап-окно успеха */}
       {showSuccessPopup && (

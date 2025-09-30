@@ -5,7 +5,7 @@ import { getApiUrl, getAuthHeaders, User } from '../config/api';
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ ok: boolean; user: User | null }>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => Promise<boolean>;
   isAuthenticated: boolean;
@@ -225,7 +225,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.log('🔐 Login attempt:', { 
         email, 
         url,
-        baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+        baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
       });
       
       // CSRF отключен для API, но оставляем cookie для совместимости
@@ -256,7 +256,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         } catch (parseError) {
           console.error('❌ Login failed - Could not parse response as JSON:', parseError);
         }
-        return false;
+        return { ok: false, user: null };
       }
 
       const responseText = await response.text();
@@ -267,7 +267,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         data = JSON.parse(responseText);
       } catch (parseError) {
         console.error('❌ Could not parse successful response as JSON:', parseError);
-        return false;
+        return { ok: false, user: null };
       }
 
       if (data.success && data.data) {
@@ -284,14 +284,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         console.log('✅ Login successful, user:', data.data.user.name);
         console.log('✅ User type:', data.data.user.user_type);
         console.log('✅ Staff role:', data.data.user.staff_role);
-        return true;
+        return { ok: true, user: data.data.user };
       } else {
         console.warn('⚠️ Unexpected login response format:', data);
-        return false;
+        return { ok: false, user: null };
       }
     } catch (error) {
       console.error('🌐 Login network error:', error);
-      return false;
+      return { ok: false, user: null };
     }
   }, []);
 

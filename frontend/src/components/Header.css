@@ -2,14 +2,14 @@
 
 .header {
   width: 100%;
-  background-color: transparent;
+  background-color: #FFFCF8;
   border-bottom: none;
   position: relative;
   z-index: 50;
 }
 
 .header-container {
-  max-width: 1088px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -19,12 +19,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 41px;
+  min-height: 60px;
   position: relative;
-  background-color: white;
+  background-color: FFFCF8;
   border-radius: 7px;
   margin: 7px 0;
-  padding: 0 14px;
+  padding: 10px 14px;
   box-shadow: none;
 }
 
@@ -37,8 +37,9 @@
 }
 
 .logo-image {
-  height: 30px;
+  height: 50px;
   width: auto;
+  margin-top: 5px;
   margin-bottom: 1px;
 }
 
@@ -58,6 +59,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 3;
 }
 
 .nav-link {
@@ -100,50 +102,77 @@
 .right-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 8px;
   position: relative;
-  z-index: 1;
+  z-index: 3;
 }
 
 /* Search */
 .search-container {
   display: none;
   position: relative;
+  z-index: 1;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-container.expanded {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  z-index: 10;
+}
+
+.search-container form {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
-  width: 153px;
-  padding: 7px 14px 7px 34px;
+  width: 40px;
+  height: 40px;
+  padding: 0 0 0 40px;
   border: 1px solid #d1d5db;
-  border-radius: 17px;
+  border-radius: 20px;
   font-size: 13.7px;
   outline: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   background-color: #fafafa;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.search-container.expanded .search-input {
+  width: 200px;
+  padding: 0 20px 0 40px;
+  border-color: #1a1a1a;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .search-input:focus {
   border-color: #1a1a1a;
   background-color: white;
   box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
-  transform: scale(1.02);
 }
 
 .search-input:hover {
   border-color: #9ca3af;
   background-color: white;
-  transform: scale(1.01);
 }
 
 .search-icon {
   position: absolute;
-  left: 10px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 15.6px;
-  height: 15.6px;
+  width: 16px;
+  height: 16px;
   color: #000;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .search-container:hover .search-icon {
@@ -314,6 +343,44 @@
   color: white;
 }
 
+/* Plan an Event special styling */
+.action-button.plan-event {
+  background-color: #000000;
+  border-color: #000000;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden; /* prevent badge from causing layout issues */
+  margin-right: 5px; /* add space for badge */
+}
+
+.action-button.plan-event:hover {
+  background-color: #000000;
+  border-color: #000000;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Small exclamation badge on Plan Event */
+.plan-event-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1;
+  border: 1px solid #000000;
+  z-index: 10;
+}
+
 .action-button:hover::before {
   left: 100%;
 }
@@ -361,13 +428,13 @@
   }
   
   .nav-bar {
-    height: 37px;
+    min-height: 50px;
     margin: 5px 0;
-    padding: 0 10px;
+    padding: 8px 10px;
   }
   
   .logo-image {
-    height: 26px;
+    height: 28px;
   }
   
   .nav-link {
@@ -406,5 +473,16 @@
     font-size: 11px;
     font-family: "Sabon Next LT";
     font-weight: 400;
+  }
+  
+  .search-container.expanded .search-input {
+    width: 120px;
+  }
+}
+
+/* Medium screens - prevent overlap */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .search-container.expanded .search-input {
+    width: 150px;
   }
 }

@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\User;
-use App\Models\Client;
 use App\Models\Application;
 use App\Models\Order;
 
@@ -33,7 +32,7 @@ class TestRelationsCommand extends Command
         
         // Получаем пользователей и клиентов
         $coordinator = User::where('staff_role', 'coordinator')->first();
-        $client = Client::where('client_category', 'corporate')->first();
+        $client = User::where('user_type', 'client')->where('client_category', 'corporate')->first();
         
         if (!$coordinator || !$client) {
             $this->error('Не найдены координатор или клиент для тестирования');

@@ -11,27 +11,27 @@ import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/a
 import { OrderCreateRequest } from "../../../types/api";
 import { Button, Card, CardHeader, CardTitle, CardContent, LoadingState } from "../../../components/ui";
 
-// Типы для калькулятора стоимости
+// Types for pricing calculator
 interface PricingRules {
   markups: {
-    corporate_discount: number; // Скидка для корпоративных клиентов
-    peak_hours_markup: number; // Наценка за часы пик
-    weekend_markup: number; // Наценка за выходные
-    express_delivery_markup: number; // Наценка за срочную доставку
-    catering_service_markup: number; // Наценка за обслуживание
+    corporate_discount: number; // Corporate client discount
+    peak_hours_markup: number; // Peak hours markup
+    weekend_markup: number; // Weekend markup
+    express_delivery_markup: number; // Express delivery markup
+    catering_service_markup: number; // Catering service markup
   };
   delivery_rates: {
-    base_rate: number; // Базовая стоимость доставки
-    per_km: number; // За километр
-    free_delivery_threshold: number; // Порог бесплатной доставки
+    base_rate: number; // Base delivery rate
+    per_km: number; // Per kilometer
+    free_delivery_threshold: number; // Free delivery threshold
   };
   time_based_pricing: {
-    peak_hours: string[]; // Часы пик
-    peak_days: string[]; // Дни с повышенным спросом
+    peak_hours: string[]; // Peak hours
+    peak_days: string[]; // Days with high demand
   };
 }
 
-// Типы для группировки заказов
+// Types for order grouping
 interface OrderGroup {
   key: string;
   label: string;
@@ -40,7 +40,7 @@ interface OrderGroup {
   count: number;
 }
 
-// Типы для отчетов
+// Types for reports
 interface OrderAnalytics {
   totalRevenue: number;
   totalOrders: number;
@@ -62,7 +62,7 @@ interface OrderAnalytics {
   }>;
 }
 
-// Используем Order из API конфига
+// Using Order from API config
 type Order = ApiOrder;
 
 type OrderFormData = OrderCreateRequest;
@@ -84,36 +84,36 @@ export default function OrdersPage() {
     status: 'pending',
   });
 
-  // Состояние для фильтров и поиска
+  // State for filters and search
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled'>('all');
   const [sortBy, setSortBy] = useState<'created_at' | 'company_name' | 'total_amount'>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [viewMode, setViewMode] = useState<'grid' | 'table' | 'kanban'>('grid');
   
-  // Состояние для группировки и аналитики
+  // State for grouping and analytics
   const [groupBy, setGroupBy] = useState<'none' | 'status' | 'client' | 'date' | 'company' | 'amount'>('none');
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
   const [selectedOrdersForCopy, setSelectedOrdersForCopy] = useState<Set<number>>(new Set());
   
-  // Правила ценообразования
+  // Pricing rules
   const pricingRules: PricingRules = useMemo(() => ({
     markups: {
-      corporate_discount: -0.1, // 10% скидка для корпоративных клиентов
-      peak_hours_markup: 0.15, // 15% наценка за часы пик
-      weekend_markup: 0.2, // 20% наценка за выходные
-      express_delivery_markup: 0.25, // 25% наценка за срочную доставку
-      catering_service_markup: 0.1, // 10% наценка за обслуживание
+      corporate_discount: -0.1, // 10% discount for corporate clients
+      peak_hours_markup: 0.15, // 15% markup for peak hours
+      weekend_markup: 0.2, // 20% markup for weekends
+      express_delivery_markup: 0.25, // 25% markup for express delivery
+      catering_service_markup: 0.1, // 10% markup for catering service
     },
     delivery_rates: {
-      base_rate: 15, // Базовая стоимость доставки
-      per_km: 2, // За километр
-      free_delivery_threshold: 100, // Бесплатная доставка от 100₼
+      base_rate: 15, // Base delivery rate
+      per_km: 2, // Per kilometer
+      free_delivery_threshold: 100, // Free delivery threshold from 100 AZN
     },
     time_based_pricing: {
-      peak_hours: ['08:00', '09:00', '12:00', '13:00', '18:00', '19:00'], // Часы пик
-      peak_days: ['friday', 'saturday', 'sunday'], // Дни с повышенным спросом
+      peak_hours: ['08:00', '09:00', '12:00', '13:00', '18:00', '19:00'], // Peak hours
+      peak_days: ['friday', 'saturday', 'sunday'], // Days with high demand
     },
   }), []);
 
@@ -131,13 +131,13 @@ export default function OrdersPage() {
         console.error('Failed to load orders:', handleApiError(result));
       }
     } catch (error) {
-      console.error('Ошибка загрузки заказов:', error);
+        console.error('Error loading orders:', error);
     } finally {
       setOrdersLoading(false);
     }
   }, []);
 
-  // Auth guard с проверкой прав доступа
+  // Auth guard with access rights check
   const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, canManageOrders, router);
 
   useEffect(() => {
@@ -167,11 +167,11 @@ export default function OrdersPage() {
         });
         loadOrders();
       } else {
-        alert(handleApiError(result, 'Ошибка создания заказа'));
+        alert(handleApiError(result, 'Error creating order'));
       }
     } catch (error) {
-      console.error('Ошибка создания заказа:', error);
-      alert('Произошла ошибка при создании заказа');
+      console.error('Error creating order:', error);
+      alert('An error occurred while creating the order');
     }
   };
 
@@ -198,16 +198,16 @@ export default function OrdersPage() {
         });
         loadOrders();
       } else {
-        alert(handleApiError(result, 'Ошибка обновления заказа'));
+        alert(handleApiError(result, 'Error updating order'));
       }
     } catch (error) {
-      console.error('Ошибка обновления заказа:', error);
-      alert('Произошла ошибка при обновлении заказа');
+      console.error('Error updating order:', error);
+      alert('An error occurred while updating the order');
     }
   };
 
   const handleDeleteOrder = async (orderId: number) => {
-    if (!confirm('Вы уверены, что хотите удалить этот заказ?')) return;
+    if (!confirm('Are you sure you want to delete this order?')) return;
 
     try {
       const result = await makeApiRequest(`orders/${orderId}`, {
@@ -217,11 +217,11 @@ export default function OrdersPage() {
       if (result.success) {
         loadOrders();
       } else {
-        alert(handleApiError(result, 'Ошибка удаления заказа'));
+        alert(handleApiError(result, 'Error deleting order'));
       }
     } catch (error) {
-      console.error('Ошибка удаления заказа:', error);
-      alert('Произошла ошибка при удалении заказа');
+      console.error('Error deleting order:', error);
+      alert('An error occurred while deleting the order');
     }
   };
 
@@ -230,7 +230,17 @@ export default function OrdersPage() {
     setFormData({
       company_name: order.company_name,
       client_type: order.client_type || 'corporate',
-      menu_items: order.menu_items,
+      menu_items: order.menu_items.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity ?? 1,
+        price: item.price ?? 0,
+        description: item.description ?? '',
+        image: item.image ?? '',
+        category: item.category ?? '',
+        available: item.available ?? true,
+        isSet: item.isSet ?? false,
+      })),
       comment: order.comment || '',
       delivery_date: order.delivery_date ? order.delivery_date.split(' ')[0] : '',
       delivery_time: order.delivery_time ? order.delivery_time.split(' ')[1] : '',
@@ -243,10 +253,19 @@ export default function OrdersPage() {
       ...formData,
       menu_items: [
         ...formData.menu_items,
-        { id: '', name: '', quantity: 1, price: 0 }
+        {
+          id: '',
+          name: '',
+          quantity: 1,
+          price: 0,
+          description: '',
+          image: '',
+          category: '',
+          available: true,
+          isSet: false,
+        }
       ]
     });
-  };
 
   const removeMenuItem = (index: number) => {
     setFormData({
@@ -261,7 +280,7 @@ export default function OrdersPage() {
     setFormData({ ...formData, menu_items: newMenuItems });
   };
 
-  // Мемоизированная фильтрация и сортировка заказов
+  // Memoized filtering and sorting of orders
   const filteredAndSortedOrders = useMemo(() => {
     const filtered = orders.filter(order => {
       const matchesSearch = !searchTerm || 
@@ -273,7 +292,7 @@ export default function OrdersPage() {
       return matchesSearch && matchesStatus;
     });
 
-    // Сортировка
+    // Sorting
     filtered.sort((a, b) => {
       let aValue, bValue;
       
@@ -301,7 +320,7 @@ export default function OrdersPage() {
     return filtered;
   }, [orders, searchTerm, statusFilter, sortBy, sortOrder]);
 
-  // Функции калькулятора стоимости
+  // Pricing calculator functions
   const calculatePriceWithMarkups = useCallback((
     basePrice: number, 
     options: {
@@ -316,50 +335,50 @@ export default function OrdersPage() {
     let finalPrice = basePrice;
     const appliedMarkups: Array<{ name: string; rate: number; amount: number }> = [];
 
-    // Скидка для корпоративных клиентов
+    // Corporate client discount
     if (options.isCorporate) {
       const markup = pricingRules.markups.corporate_discount;
       const amount = basePrice * markup;
       finalPrice += amount;
-      appliedMarkups.push({ name: 'Корпоративная скидка', rate: markup, amount });
+      appliedMarkups.push({ name: 'Corporate discount', rate: markup, amount });
     }
 
-    // Наценка за часы пик
+    // Peak hours markup
     if (options.deliveryTime && pricingRules.time_based_pricing.peak_hours.includes(options.deliveryTime)) {
       const markup = pricingRules.markups.peak_hours_markup;
       const amount = basePrice * markup;
       finalPrice += amount;
-      appliedMarkups.push({ name: 'Часы пик', rate: markup, amount });
+      appliedMarkups.push({ name: 'Peak hours', rate: markup, amount });
     }
 
-    // Наценка за выходные
+    // Weekend markup
     if (options.deliveryDate) {
       const dayOfWeek = new Date(options.deliveryDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
       if (pricingRules.time_based_pricing.peak_days.includes(dayOfWeek)) {
         const markup = pricingRules.markups.weekend_markup;
         const amount = basePrice * markup;
         finalPrice += amount;
-        appliedMarkups.push({ name: 'Выходной день', rate: markup, amount });
+        appliedMarkups.push({ name: 'Weekend', rate: markup, amount });
       }
     }
 
-    // Наценка за срочную доставку
+    // Express delivery markup
     if (options.isExpress) {
       const markup = pricingRules.markups.express_delivery_markup;
       const amount = basePrice * markup;
       finalPrice += amount;
-      appliedMarkups.push({ name: 'Срочная доставка', rate: markup, amount });
+      appliedMarkups.push({ name: 'Express delivery', rate: markup, amount });
     }
 
-    // Наценка за обслуживание
+    // Catering service markup
     if (options.needsCatering) {
       const markup = pricingRules.markups.catering_service_markup;
       const amount = basePrice * markup;
       finalPrice += amount;
-      appliedMarkups.push({ name: 'Обслуживание', rate: markup, amount });
+      appliedMarkups.push({ name: 'Catering service', rate: markup, amount });
     }
 
-    // Расчет доставки
+    // Delivery calculation
     let deliveryFee = 0;
     if (options.distance && finalPrice < pricingRules.delivery_rates.free_delivery_threshold) {
       deliveryFee = pricingRules.delivery_rates.base_rate + (options.distance * pricingRules.delivery_rates.per_km);
@@ -375,7 +394,7 @@ export default function OrdersPage() {
     };
   }, [pricingRules]);
 
-  // Функция для копирования заказа
+  // Function for copying order
   const handleCopyOrder = useCallback(async (orderId: number) => {
     try {
       const result = await makeApiRequest(`orders/${orderId}/copy`, {
@@ -383,10 +402,10 @@ export default function OrdersPage() {
       });
 
       if (result.success) {
-        alert('Заказ успешно скопирован!');
+        alert('Order successfully copied!');
         loadOrders();
       } else {
-        alert(handleApiError(result, 'Ошибка копирования заказа'));
+        alert(handleApiError(result, 'Error copying order'));
       }
     } catch (error) {
       console.error('Ошибка копирования заказа:', error);
@@ -2229,7 +2248,7 @@ const GroupedOrdersDisplay: React.FC<GroupedOrdersDisplayProps> = ({
       ))}
     </div>
   );
-};
+}
 
 // Компонент Kanban отображения заказов
 interface KanbanOrdersViewProps {
@@ -2406,6 +2425,6 @@ const KanbanOrdersView: React.FC<KanbanOrdersViewProps> = ({
           </div>
         </Card>
       ))}
-    </div>
+      </div>
   );
 };

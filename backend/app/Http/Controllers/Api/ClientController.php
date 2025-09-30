@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Client;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,7 +11,7 @@ class ClientController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Client::query();
+        $query = User::where('user_type', 'client');
 
         if ($request->filled('client_category')) {
             $query->where('client_category', $request->client_category);
@@ -33,8 +33,16 @@ class ClientController extends Controller
         ]);
     }
 
-    public function show(Client $client)
+    public function show(User $client)
     {
+        // Проверяем, что это клиент
+        if ($client->user_type !== 'client') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Пользователь не является клиентом',
+            ], 404);
+        }
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -47,7 +55,7 @@ class ClientController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:clients',
+            'email' => 'required|string|email|max:255|unique:users,email',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'company_name' => 'nullable|string|max:255',
@@ -65,7 +73,11 @@ class ClientController extends Controller
             ], 422);
         }
 
-        $client = Client::create($validator->validated());
+        $clientData = $validator->validated();
+        $clientData['user_type'] = 'client';
+        $clientData['password'] = bcrypt('password123'); // Временный пароль
+        
+        $client = User::create($clientData);
 
         return response()->json([
             'success' => true,
@@ -76,11 +88,19 @@ class ClientController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Client $client)
+    public function update(Request $request, User $client)
     {
+        // Проверяем, что это клиент
+        if ($client->user_type !== 'client') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Пользователь не является клиентом',
+            ], 404);
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:clients,email,' . $client->id,
+            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $client->id,
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'company_name' => 'nullable|string|max:255',
@@ -109,8 +129,16 @@ class ClientController extends Controller
         ]);
     }
 
-    public function destroy(Client $client)
+    public function destroy(User $client)
     {
+        // Проверяем, что это клиент
+        if ($client->user_type !== 'client') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Пользователь не является клиентом',
+            ], 404);
+        }
+
         $client->delete();
 
         return response()->json([
@@ -122,12 +150,12 @@ class ClientController extends Controller
     public function statistics()
     {
         $stats = [
-            'total' => Client::count(),
-            'corporate' => Client::where('client_category', 'corporate')->count(),
-            'one_time' => Client::where('client_category', 'one_time')->count(),
-            'active' => Client::where('status', 'active')->count(),
-            'inactive' => Client::where('status', 'inactive')->count(),
-            'suspended' => Client::where('status', 'suspended')->count(),
+            'total' => User::where('user_type', 'client')->count(),
+            'corporate' => User::where('user_type', 'client')->where('client_category', 'corporate')->count(),
+            'one_time' => User::where('user_type', 'client')->where('client_category', 'one_time')->count(),
+            'active' => User::where('user_type', 'client')->where('status', 'active')->count(),
+            'inactive' => User::where('user_type', 'client')->where('status', 'inactive')->count(),
+            'suspended' => User::where('user_type', 'client')->where('status', 'suspended')->count(),
         ];
 
         return response()->json([

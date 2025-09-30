@@ -40,6 +40,9 @@ return new class extends Migration
             $table->index(['company_name', 'status']);
             $table->index(['coordinator_id', 'created_at']);
             $table->index('delivery_date');
+            
+            // Внешние ключи
+            $table->foreign('coordinator_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -48,6 +51,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropForeign(['coordinator_id']);
+        });
         Schema::dropIfExists('orders');
     }
 };

@@ -34,7 +34,8 @@ class ApplicationController extends Controller
             'cart_items.*.name' => 'required_with:cart_items|string',
             'cart_items.*.quantity' => 'required_with:cart_items|integer|min:1',
             'cart_items.*.price' => 'required_with:cart_items|numeric|min:0',
-            'coordinator_id' => 'nullable|exists:users,id',
+            'coordinator_id' => 'nullable|exists:users,id,user_type,staff,staff_role,coordinator',
+            'client_id' => 'nullable|exists:users,id,user_type,client',
         ]);
 
         if ($validator->fails()) {
@@ -59,6 +60,7 @@ class ApplicationController extends Controller
             'event_lng' => $request->event_lng,
             'cart_items' => $request->cart_items,
             'status' => 'new',
+            'client_id' => $request->client_id,
         ]);
 
         // Отправляем уведомления
@@ -81,13 +83,19 @@ class ApplicationController extends Controller
     {
         \Log::info('ApplicationController::index called', [
             'user_id' => $request->user()?->id,
-            'user_group' => $request->user()?->user_group,
+            'user_type' => $request->user()?->user_type,
             'staff_role' => $request->user()?->staff_role,
         ]);
 
-        $applications = Application::with('coordinator')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        // Если пользователь клиент, показываем только его заявки
+        $query = Application::with(['coordinator', 'client']);
+        
+        if ($request->user()->isClient()) {
+            $query->where('client_id', $request->user()->id);
+        }
+        
+        $applications = $query->orderBy('created_at', 'desc')
+                            ->paginate(20);
 
         \Log::info('ApplicationController::index - found applications', [
             'count' => $applications->count(),

@@ -3,23 +3,26 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Search, User, MapPin, ShoppingBag, FileText, Calculator } from 'lucide-react';
+import { Search, User, MapPin, ShoppingBag, FileText, Calendar } from 'lucide-react';
 import BasketIcon from './BasketIcon';
 import LanguageSelector from './LanguageSelector';
 import CartModal from './CartModal';
+import EventPlanningModal from './EventPlanningModal';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCart } from '../contexts/CartContext';
 import { useCartModal } from '../contexts/CartModalContext';
 import { useAuth } from '../contexts/AuthContext';
 import './Header.css';
 
-const Header: React.FC = React.memo(() => {
+const Header: React.FC = React.memo(function Header() {
   const router = useRouter();
   const { t } = useLanguage();
   const { getTotalItems } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   const handleLogin = useCallback(() => {
     if (isAuthenticated) {
@@ -39,8 +42,19 @@ const Header: React.FC = React.memo(() => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setIsSearchExpanded(false);
     }
   }, [searchQuery, router]);
+
+  const handleSearchClick = useCallback(() => {
+    setIsSearchExpanded(true);
+  }, []);
+
+  const handleSearchBlur = useCallback(() => {
+    if (!searchQuery.trim()) {
+      setIsSearchExpanded(false);
+    }
+  }, [searchQuery]);
 
   const handleActionClick = useCallback((action: string) => {
     switch (action) {
@@ -53,8 +67,8 @@ const Header: React.FC = React.memo(() => {
       case 'Catering Menu':
         router.push('/catering');
         break;
-      case 'Calculate budget':
-        router.push('/calculator');
+      case 'Plan an Event':
+        setIsEventModalOpen(true);
         break;
       default:
         console.log('Действие:', action);
@@ -67,40 +81,43 @@ const Header: React.FC = React.memo(() => {
         {/* Top Navigation Bar */}
         <div className="nav-bar">
           {/* Logo */}
-          <div className="logo">
+          <div className="logo" onClick={() => router.push('/')} style={{ cursor: 'pointer' }}>
             <Image
               src="/images/logo.png"
               alt="PAUL"
-              width={150}
-              height={50}
+              width={220}
+              height={75}
               className="logo-image"
             />
-            <p className="logo-caption">depuis 1889</p>
           </div>
 
           {/* Main Navigation */}
           <nav className="main-nav">
-            <a href="#" className="nav-link">{t('nav.cakes')}</a>
-            <a href="#" className="nav-link">{t('nav.platters')}</a>
-            <a href="#" className="nav-link">{t('nav.patisserie')}</a>
-            <a href="#" className="nav-link">{t('nav.tarts')}</a>
-            <a href="#" className="nav-link">{t('nav.bread')}</a>
-            <a href="#" className="nav-link">{t('nav.macarons')}</a>
+            <a href="/cakes" className="nav-link">Cakes&Pies</a>
+            <a href="/viennoiserie" className="nav-link">Viennoiserie</a>
+            <a href="/patisserie" className="nav-link">Patisserie</a>
+            <a href="/platters" className="nav-link">Platters</a>
+            <a href="/bread" className="nav-link">Bread</a>
+            <a href="/macarons" className="nav-link">Macarons</a>
           </nav>
 
           {/* Right Side Actions */}
           <div className="right-actions">
             {/* Search */}
-            <form className="search-container" onSubmit={handleSearch}>
-              <input
-                type="text"
-                placeholder={t('search.placeholder')}
-                className="search-input"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className="search-icon" size={18} />
-            </form>
+            <div className={`search-container ${isSearchExpanded ? 'expanded' : ''}`}>
+              <form onSubmit={handleSearch}>
+                <input
+                  type="text"
+                  placeholder={isSearchExpanded ? t('search.placeholder') : ''}
+                  className="search-input"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onClick={handleSearchClick}
+                  onBlur={handleSearchBlur}
+                />
+                <Search className="search-icon" size={18} />
+              </form>
+            </div>
 
             {/* Language Selector */}
             <LanguageSelector />
@@ -164,13 +181,13 @@ const Header: React.FC = React.memo(() => {
             <span>{t('action.catering_menu')}</span>
           </button>
 
-          {/* Calculate Budget */}
+          {/* Plan an Event */}
           <button 
-            className="action-button"
-            onClick={() => handleActionClick('Calculate budget')}
+            className="action-button plan-event"
+            onClick={() => handleActionClick('Plan an Event')}
           >
-            <Calculator className="action-button-icon" size={12} />
-            <span>{t('action.calculate_budget')}</span>
+            <span>{t('action.plan_event')}</span>
+            <span className="plan-event-badge">!</span>
           </button>
         </div>
       </div>
@@ -179,6 +196,12 @@ const Header: React.FC = React.memo(() => {
       <CartModal 
         isOpen={isCartModalOpen} 
         onClose={closeCartModal} 
+      />
+      
+      {/* Модальное окно планирования мероприятия */}
+      <EventPlanningModal 
+        isOpen={isEventModalOpen} 
+        onClose={() => setIsEventModalOpen(false)} 
       />
     </header>
   );

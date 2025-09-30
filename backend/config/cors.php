@@ -19,9 +19,13 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_filter(array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS', 'http://localhost:3000')))),
+    'allowed_origins' => array_filter(array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://localhost:3001,https://paul.az,https://www.paul.az')))),
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '/^https?:\/\/.*\.paul\.az$/',
+        '/^https?:\/\/.*\.vercel\.app$/',
+        '/^https?:\/\/.*\.netlify\.app$/',
+    ],
 
     'allowed_headers' => ['*'],
 

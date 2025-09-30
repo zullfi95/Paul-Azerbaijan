@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 import FeaturesSection from '../../../components/FeaturesSection';
@@ -10,6 +10,7 @@ import { useCart } from '../../../contexts/CartContext';
 import Link from 'next/link';
 import styles from './ProductPage.module.css';
 import Image from "next/image";
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -137,9 +138,10 @@ const relatedProducts: RelatedProduct[] = [
 
 export default function ProductPage() {
   const params = useParams();
+  const router = useRouter();
   const { addItem, updateQuantity, getItemQuantity } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [activeAccordion, setActiveAccordion] = useState<string | null>('allergens'); // По умолчанию открыта секция аллергенов
   const [showAddedNotification, setShowAddedNotification] = useState(false);
 
   const productId = params.id as string;
@@ -197,7 +199,7 @@ export default function ProductPage() {
       {showAddedNotification && (
         <div className={styles.notification}>
           <div className={styles.notificationContent}>
-            <span>✓ Товар добавлен в корзину!</span>
+            <span>✓ Product added to cart!</span>
           </div>
         </div>
       )}
@@ -233,79 +235,85 @@ export default function ProductPage() {
             {/* Right Column - Product Details */}
             <div className={styles.detailsColumn}>
               <div className={styles.productDetails}>
-                <h1 className={styles.productName}>{product.name}</h1>
-                <div className={styles.price}>₼{product.price}</div>
-                <div className={styles.weightStorage}>
-                  {product.weight}, {product.storage}
-                </div>
-                <p className={styles.description}>{product.description}</p>
-
-                {/* Quantity Selector */}
-                <div className={styles.quantitySelector}>
-                  <button 
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className={styles.quantityBtn}
-                  >
-                    -
-                  </button>
-                  <span className={styles.quantity}>{quantity}</span>
-                  <button 
-                    onClick={() => setQuantity(quantity + 1)}
-                    className={styles.quantityBtn}
-                  >
-                    +
-                  </button>
+                {/* Product Info Section */}
+                <div className={styles.productInfo}>
+                  <h1 className={styles.productName}>{product.name}</h1>
+                  <div className={styles.price}>₼{product.price}</div>
+                  <div className={styles.weightStorage}>
+                    {product.weight}, {product.storage}
+                  </div>
+                  <p className={styles.description}>{product.description}</p>
                 </div>
 
-                {/* Add to Cart Button */}
-                <button 
-                  onClick={handleAddToCart}
-                  className={styles.addToCartBtn}
-                >
-                  Добавить в корзину
-                </button>
-
-                {/* Accordion Sections */}
-                <div className={styles.accordion}>
-                  <div className={styles.accordionItem}>
+                {/* Product Actions Section */}
+                <div className={styles.productActions}>
+                  {/* Quantity Selector */}
+                  <div className={styles.quantitySelector}>
                     <button 
-                      className={styles.accordionHeader}
-                      onClick={() => toggleAccordion('nutritional')}
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className={styles.quantityBtn}
                     >
-                      <span>Nutritional information</span>
-                      <span className={styles.accordionIcon}>
-                        {activeAccordion === 'nutritional' ? '▲' : '▼'}
-                      </span>
+                      -
                     </button>
-                    {activeAccordion === 'nutritional' && (
-                      <div className={styles.accordionContent}>
-                        <p>{product.nutritionalInfo}</p>
-                      </div>
-                    )}
+                    <span className={styles.quantity}>{quantity}</span>
+                    <button 
+                      onClick={() => setQuantity(quantity + 1)}
+                      className={styles.quantityBtn}
+                    >
+                      +
+                    </button>
                   </div>
 
-                  <div className={styles.accordionItem}>
-                    <button 
-                      className={styles.accordionHeader}
-                      onClick={() => toggleAccordion('allergens')}
-                    >
-                      <span>Allergens</span>
-                      <span className={styles.accordionIcon}>
-                        {activeAccordion === 'allergens' ? '▲' : '▼'}
-                      </span>
-                    </button>
-                    {activeAccordion === 'allergens' && (
-                      <div className={styles.accordionContent}>
-                        <div className={styles.allergensList}>
-                          {product.allergens.map((allergen, index) => (
-                            <span key={index} className={styles.allergenTag}>
-                              {allergen}
-                            </span>
-                          ))}
+                  {/* Add to Cart Button */}
+                  <button 
+                    onClick={handleAddToCart}
+                    className={styles.addToCartBtn}
+                  >
+                    Add to cart
+                  </button>
+
+                  {/* Accordion Sections */}
+                  <div className={styles.accordion}>
+                    <div className={styles.accordionItem}>
+                      <button 
+                        className={styles.accordionHeader}
+                        onClick={() => toggleAccordion('nutritional')}
+                      >
+                        <span>Nutritional information</span>
+                        <span className={styles.accordionIcon}>
+                          {activeAccordion === 'nutritional' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
+                      </button>
+                      {activeAccordion === 'nutritional' && (
+                        <div className={styles.accordionContent}>
+                          <p>{product.nutritionalInfo}</p>
                         </div>
-                        <p className={styles.allergensText}>{product.allergensText}</p>
-                      </div>
-                    )}
+                      )}
+                    </div>
+
+                    <div className={styles.accordionItem}>
+                      <button 
+                        className={styles.accordionHeader}
+                        onClick={() => toggleAccordion('allergens')}
+                      >
+                        <span>Allergens</span>
+                        <span className={styles.accordionIcon}>
+                          {activeAccordion === 'allergens' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
+                      </button>
+                      {activeAccordion === 'allergens' && (
+                        <div className={styles.accordionContent}>
+                          <div className={styles.allergensList}>
+                            {product.allergens.map((allergen, index) => (
+                              <span key={index} className={styles.allergenTag}>
+                                {allergen}
+                              </span>
+                            ))}
+                          </div>
+                          <p className={styles.allergensText}>{product.allergensText}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -320,7 +328,11 @@ export default function ProductPage() {
           <h2 className={styles.relatedTitle}>Related products</h2>
           <div className={styles.relatedGrid}>
             {relatedProducts.map((item) => (
-              <div key={item.id} className={styles.relatedCard}>
+              <div 
+                key={item.id} 
+                className={styles.relatedCard}
+                onClick={() => router.push(`/product/${item.id}`)}
+              >
                 <div className={styles.relatedImageWrapper}>
                   <Image
                     src={item.image}
@@ -331,7 +343,8 @@ export default function ProductPage() {
                   />
                   <button 
                     className={styles.relatedCartBtn}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       addItem({
                         id: item.id,
                         name: item.name,
@@ -346,7 +359,7 @@ export default function ProductPage() {
                       setTimeout(() => setShowAddedNotification(false), 3000);
                     }}
                   >
-                    <BasketIcon />
+                    <BasketIcon size={16} />
                   </button>
                 </div>
                 <h3 className={styles.relatedName}>{item.name}</h3>

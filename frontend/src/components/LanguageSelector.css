@@ -8,42 +8,31 @@
 .language-button {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 8px;
+  gap: 2px;
+  padding: 4px 6px;
   background: transparent;
   border: none;
   cursor: pointer;
   transition: opacity 0.2s ease;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
   color: #6b7280;
-  min-width: 50px;
-  justify-content: space-between;
+  min-width: 25px;
+  justify-content: center;
 }
 
 .language-button:hover {
   opacity: 0.7;
 }
 
-.globe-icon {
-  color: #6b7280;
-  transition: opacity 0.2s ease;
-}
+/* removed globe icon */
 
 .language-text {
   font-family: "Sabon Next LT", sans-serif;
   font-weight: 400;
 }
 
-.dropdown-arrow {
-  color: #9ca3af;
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.dropdown-arrow.open {
-  transform: rotate(180deg);
-}
+/* removed dropdown arrow */
 
 /* Dropdown Menu */
 .language-dropdown {
@@ -52,7 +41,7 @@
   left: 0;
   right: 0;
   background: white;
-  border: 1px solid #e5e7eb;
+  border: none;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   z-index: 9999;
@@ -75,14 +64,14 @@
 .language-option {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
-  padding: 8px 10px;
+  padding: 6px 8px;
   background: none;
   border: none;
   cursor: pointer;
   transition: background-color 0.15s ease;
-  font-size: 12px;
+  font-size: 11px;
   color: #374151;
   text-align: left;
   position: relative;
@@ -98,10 +87,7 @@
   font-weight: 500;
 }
 
-.language-flag {
-  font-size: 14px;
-  flex-shrink: 0;
-}
+/* removed flags */
 
 .language-name {
   flex: 1;
@@ -123,18 +109,18 @@
 /* Responsive Design */
 @media (max-width: 767px) {
   .language-button {
-    padding: 4px 6px;
-    font-size: 11px;
-    min-width: 45px;
+    padding: 3px 4px;
+    font-size: 10px;
+    min-width: 20px;
   }
   
   .language-option {
-    padding: 6px 8px;
-    font-size: 11px;
+    padding: 4px 6px;
+    font-size: 10px;
   }
   
   .language-flag {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 

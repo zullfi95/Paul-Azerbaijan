@@ -2,19 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import FeaturesSection from '../../components/FeaturesSection';
+import FeedbackButton from '../../components/FeedbackButton';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import { Order, API_CONFIG, getAuthHeaders } from '../../config/api';
+import styles from './ProfilePage.module.css';
 
 export default function ProfilePage() {
   const { user, isAuthenticated, isLoading, updateUser, logout } = useAuth();
   const { items: cartItems, getTotalPrice, getTotalItems, clearCart } = useCart();
   const router = useRouter();
   
-  // Состояние для модального окна редактирования
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // Состояние для форм редактирования
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
@@ -22,11 +25,49 @@ export default function ProfilePage() {
     phone: ''
   });
   const [editError, setEditError] = useState('');
+  
+  // Состояние для адресов
+  const [billingAddress, setBillingAddress] = useState({
+    street: '',
+    city: '',
+    postal_code: '',
+    country: 'Azerbaijan'
+  });
+  const [shippingAddress, setShippingAddress] = useState({
+    street: '',
+    city: '',
+    postal_code: '',
+    country: 'Azerbaijan'
+  });
+  
+  // Состояние для подписок
+  const [newsletterSubscriptions, setNewsletterSubscriptions] = useState({
+    general: true,
+    promotions: true,
+    order_updates: true
+  });
+  
+  // Состояние для смены пароля
+  const [passwordForm, setPasswordForm] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: ''
+  });
+  const [passwordError, setPasswordError] = useState('');
 
   // Состояние для активных заказов и уведомлений
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loadingOrders, setLoadingOrders] = useState(false);
+  
+  // Состояние для активной секции в сайдбаре
+  const [activeSection, setActiveSection] = useState('my-account');
+  
+  // Состояние для валидации форм
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  
+  // Состояние для фильтра заказов
+  const [orderFilter, setOrderFilter] = useState<'all' | 'delivered' | 'in-progress' | 'payment-pending'>('all');
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -120,6 +161,7 @@ export default function ProfilePage() {
       }
     };
 
+
     console.log('🔄 useEffect triggered:', { isAuthenticated, userType: user?.user_type, userId: user?.id });
     if (isAuthenticated && user?.user_type === 'client') {
       console.log('✅ Loading client data...');
@@ -131,22 +173,15 @@ export default function ProfilePage() {
     }
   }, [isAuthenticated, user]);
 
-  // Функция для открытия модального окна редактирования
-  const openEditModal = () => {
+  // Функция для инициализации формы редактирования
+  const initializeEditForm = () => {
     setEditForm({
       name: user?.name || '',
       email: user?.email || '',
       phone: user?.phone || ''
     });
     setEditError('');
-    setIsEditModalOpen(true);
-  };
-
-  // Функция для закрытия модального окна
-  const closeEditModal = () => {
-    setIsEditModalOpen(false);
-    setEditError('');
-    setIsSubmitting(false);
+    setFormErrors({});
   };
 
   // Функция для обработки изменений в форме
@@ -156,6 +191,48 @@ export default function ProfilePage() {
       ...prev,
       [name]: value
     }));
+    
+    // Очищаем ошибку для этого поля
+    if (formErrors[name]) {
+      setFormErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+  
+  // Функция для валидации формы
+  const validateForm = (formData: any, formType: string) => {
+    const errors: Record<string, string> = {};
+    
+    if (formType === 'edit') {
+      if (!formData.name.trim()) {
+        errors.name = 'Name is required';
+      }
+      if (!formData.email.trim()) {
+        errors.email = 'Email is required';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        errors.email = 'Please enter a valid email';
+      }
+      if (formData.phone && !/^[\+]?[0-9\s\-\(\)]{10,}$/.test(formData.phone)) {
+        errors.phone = 'Please enter a valid phone number';
+      }
+    } else if (formType === 'password') {
+      if (!formData.current_password) {
+        errors.current_password = 'Current password is required';
+      }
+      if (!formData.new_password) {
+        errors.new_password = 'New password is required';
+      } else if (formData.new_password.length < 8) {
+        errors.new_password = 'Password must be at least 8 characters';
+      }
+      if (formData.new_password !== formData.confirm_password) {
+        errors.confirm_password = 'Passwords do not match';
+      }
+    }
+    
+    return errors;
   };
 
   // Функция для форматирования телефона
@@ -175,6 +252,14 @@ export default function ProfilePage() {
   // Функция для отправки формы редактирования
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Валидация
+    const errors = validateForm(editForm, 'edit');
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    
     setIsSubmitting(true);
     setEditError('');
 
@@ -192,8 +277,8 @@ export default function ProfilePage() {
       const success = await updateUser(updateData);
       
       if (success) {
-        // Закрываем модальное окно
-        closeEditModal();
+        // Переключаемся на основную секцию
+        setActiveSection('my-account');
         
         // Показываем уведомление об успехе
         alert('Məlumatlar uğurla yeniləndi!');
@@ -208,21 +293,126 @@ export default function ProfilePage() {
       setIsSubmitting(false);
     }
   };
+  
+  // Функция для смены пароля
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Валидация
+    const errors = validateForm(passwordForm, 'password');
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setPasswordError('');
+    
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/auth/change-password`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(passwordForm)
+      });
+      
+      if (response.ok) {
+        setPasswordForm({ current_password: '', new_password: '', confirm_password: '' });
+        setActiveSection('my-account');
+        alert('Password changed successfully!');
+      } else {
+        const errorData = await response.json();
+        setPasswordError(errorData.message || 'Failed to change password');
+      }
+    } catch (error) {
+      console.error('Password change error:', error);
+      setPasswordError('An error occurred while changing password');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  // Функция для сохранения адресов
+  const handleAddressSubmit = async (type: 'billing' | 'shipping') => {
+    setIsSubmitting(true);
+    
+    try {
+      const addressData = type === 'billing' ? billingAddress : shippingAddress;
+      const response = await fetch(`${API_CONFIG.BASE_URL}/user/address/${type}`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(addressData)
+      });
+      
+      if (response.ok) {
+        alert(`${type === 'billing' ? 'Billing' : 'Shipping'} address saved successfully!`);
+      } else {
+        alert(`Failed to save ${type} address`);
+      }
+    } catch (error) {
+      console.error('Address save error:', error);
+      alert('An error occurred while saving address');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  // Функция для обновления подписок
+  const handleNewsletterUpdate = async () => {
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/user/newsletter-subscriptions`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(newsletterSubscriptions)
+      });
+      
+      if (response.ok) {
+        alert('Newsletter preferences updated successfully!');
+      } else {
+        alert('Failed to update newsletter preferences');
+      }
+    } catch (error) {
+      console.error('Newsletter update error:', error);
+      alert('An error occurred while updating preferences');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Функция для прямого создания платежа и редиректа на Algoritma
+  const handleDirectPayment = async (orderId: number) => {
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/payment/orders/${orderId}/create`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data.payment_url) {
+          // Перенаправляем на Payment Page Algoritma
+          window.location.href = data.data.payment_url;
+        } else {
+          alert(data.message || 'Ödəniş yaradıla bilmədi');
+        }
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || 'Ödəniş yaradıla bilmədi');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Ödəniş zamanı xəta baş verdi');
+    }
+  };
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ 
-            width: '2rem', 
-            height: '2rem', 
-            border: '3px solid #f3f3f3', 
-            borderTop: '3px solid #D4AF37', 
-            borderRadius: '50%', 
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 1rem'
-          }} />
-          <p style={{ color: '#4A4A4A' }}>Yüklənir...</p>
+      <div className={styles.profilePage}>
+        <Header />
+        <div className={styles.loadingState}>
+          <div className={styles.loadingSpinner} />
+          <span>Loading...</span>
         </div>
       </div>
     );
@@ -232,1391 +422,666 @@ export default function ProfilePage() {
     return null;
   }
 
+  // New My Account layout (PAUL design) - two-column, header-width container
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div className={styles.profilePage}>
       <Header />
       
       <div className="navbar-spacing">
-        {/* Заголовок */}
-        <section style={{
-          padding: '4rem 0',
-          background: 'linear-gradient(135deg, #F9F9F6 0%, #F5F1EB 100%)',
-          borderBottom: '1px solid rgba(0,0,0,0.06)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          {/* Декоративные элементы */}
-          <div style={{
-            position: 'absolute',
-            top: '-50px',
-            right: '-50px',
-            width: '200px',
-            height: '200px',
-            background: 'radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%)',
-            borderRadius: '50%',
-            animation: 'float 6s ease-in-out infinite'
-          }} />
-          <div style={{
-            position: 'absolute',
-            bottom: '-30px',
-            left: '-30px',
-            width: '150px',
-            height: '150px',
-            background: 'radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%)',
-            borderRadius: '50%',
-            animation: 'float 8s ease-in-out infinite reverse'
-          }} />
-          
-          <div className="container-paul">
-            <div style={{ 
-              textAlign: 'center',
-              position: 'relative',
-              zIndex: 1
-            }}>
-              <h1 style={{
-                fontSize: '3rem',
-                fontFamily: 'Playfair Display, serif',
-                fontWeight: 'bold',
-                color: '#1A1A1A',
-                marginBottom: '1.5rem',
-                opacity: 0,
-                animation: 'fadeInUp 1s ease-out 0.2s forwards',
-                textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-              }}>
-                Şəxsi Kabinet
-              </h1>
-              <p style={{
-                color: '#4A4A4A',
-                fontSize: '1.25rem',
-                maxWidth: '48rem',
-                margin: '0 auto',
-                opacity: 0,
-                animation: 'fadeInUp 1s ease-out 0.4s forwards',
-                lineHeight: 1.6
-              }}>
-                Salam, <span style={{ 
-                  color: '#D4AF37', 
-                  fontWeight: 600,
-                  textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                }}>{user?.name}</span>! Burada sizin sifarişlərinizi və hesab məlumatlarınızı idarə edə bilərsiniz.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* Breadcrumbs */}
+        <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+          <ol className={styles.breadcrumbList}>
+            <li className={styles.breadcrumbItem}>
+              <Link href="/" className={styles.breadcrumbLink}>Home</Link>
+            </li>
+            <li className={styles.breadcrumbItem}>
+              <span>My Account</span>
+            </li>
+          </ol>
+        </nav>
 
-        {/* Основной контент */}
-        <section style={{
-          padding: '5rem 0',
-          backgroundColor: 'white',
-          position: 'relative'
-        }}>
-          <div className="container-paul">
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: '2.5rem',
-              maxWidth: '1200px',
-              margin: '0 auto'
-            }}>
-              {/* Информация о пользователе */}
-              <div style={{
-                background: 'linear-gradient(145deg, #ffffff 0%, #F9F9F6 100%)',
-                padding: '2.5rem',
-                borderRadius: '1.5rem',
-                border: '1px solid rgba(0,0,0,0.08)',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.1), 0 1px 8px rgba(0,0,0,0.05)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                opacity: 0,
-                animation: 'fadeInUp 0.8s ease-out 0.6s forwards',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15), 0 1px 8px rgba(0,0,0,0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1), 0 1px 8px rgba(0,0,0,0.05)';
-              }}>
-                {/* Декоративная полоска */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '4px',
-                  background: 'linear-gradient(90deg, #D4AF37 0%, #F4D03F 50%, #D4AF37 100%)',
-                  borderRadius: '1.5rem 1.5rem 0 0'
-                }} />
-                <h2 style={{
-                  fontSize: '1.75rem',
-                  fontFamily: 'Playfair Display, serif',
-                  fontWeight: 600,
-                  color: '#1A1A1A',
-                  marginBottom: '2rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                }}>
-                  <div style={{
-                    padding: '0.75rem',
-                    background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
-                    borderRadius: '0.75rem',
-                    boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
-                  }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/>
-                    </svg>
-                  </div>
-                  Şəxsi Məlumatlar
-                </h2>
-                
-                {/* Кнопка редактирования */}
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'flex-end', 
-                  marginBottom: '1.5rem' 
-                }}>
+
+
+        {/* Main content: sidebar 405px + content auto */}
+        <div className={styles.mainContent}>
+          {/* Sidebar */}
+          <aside className={styles.sidebar} role="navigation" aria-label="Account navigation">
+            <nav className={styles.sidebarNav}>
                   <button
-                    onClick={openEditModal}
-                    style={{
-                      padding: '0.75rem 1.5rem',
-                      background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
-                      color: '#1A1A1A',
-                      border: 'none',
-                      borderRadius: '0.75rem',
-                      fontWeight: 600,
-                      fontSize: '0.875rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(212, 175, 55, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.3)';
-                    }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
-                    Redaktə et
+                className={`${styles.sidebarButton} ${activeSection === 'my-account' ? styles.active : ''}`}
+                onClick={() => setActiveSection('my-account')}
+                aria-current={activeSection === 'my-account' ? 'page' : undefined}
+              >
+                My Account
                   </button>
-                </div>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  <div style={{
-                    padding: '1.25rem',
-                    background: 'rgba(255, 255, 255, 0.7)',
-                    borderRadius: '1rem',
-                    border: '1px solid rgba(0,0,0,0.05)',
-                    transition: 'all 0.2s ease',
-                    position: 'relative'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
-                    e.currentTarget.style.transform = 'translateX(4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }}>
-                    <label style={{ 
-                      display: 'block', 
-                      fontSize: '0.875rem', 
-                      fontWeight: 600, 
-                      color: '#D4AF37', 
-                      marginBottom: '0.5rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}>
-                      Ad və Soyad
-                    </label>
-                    <p style={{ 
-                      color: '#1A1A1A', 
-                      fontSize: '1.125rem', 
-                      fontWeight: 500,
-                      margin: 0,
-                      textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                    }}>
-                      {user?.name}
-                    </p>
-                  </div>
-                  <div style={{
-                    padding: '1.25rem',
-                    background: 'rgba(255, 255, 255, 0.7)',
-                    borderRadius: '1rem',
-                    border: '1px solid rgba(0,0,0,0.05)',
-                    transition: 'all 0.2s ease',
-                    position: 'relative'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
-                    e.currentTarget.style.transform = 'translateX(4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }}>
-                    <label style={{ 
-                      display: 'block', 
-                      fontSize: '0.875rem', 
-                      fontWeight: 600, 
-                      color: '#D4AF37', 
-                      marginBottom: '0.5rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}>
-                      E-poçt
-                    </label>
-                    <p style={{ 
-                      color: '#1A1A1A', 
-                      fontSize: '1.125rem',
-                      margin: 0,
-                      textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                    }}>
-                      {user?.email}
-                    </p>
-                  </div>
-                  <div style={{
-                    padding: '1.25rem',
-                    background: 'rgba(255, 255, 255, 0.7)',
-                    borderRadius: '1rem',
-                    border: '1px solid rgba(0,0,0,0.05)',
-                    transition: 'all 0.2s ease',
-                    position: 'relative'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
-                    e.currentTarget.style.transform = 'translateX(4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }}>
-                    <label style={{ 
-                      display: 'block', 
-                      fontSize: '0.875rem', 
-                      fontWeight: 600, 
-                      color: '#D4AF37', 
-                      marginBottom: '0.5rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}>
-                      Telefon
-                    </label>
-                    <p style={{ 
-                      color: '#1A1A1A', 
-                      fontSize: '1.125rem',
-                      margin: 0,
-                      textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                    }}>
-                      {user?.phone || 'Təyin edilməyib'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Текущая корзина */}
-              <div style={{
-                background: 'linear-gradient(145deg, #ffffff 0%, #F9F9F6 100%)',
-                padding: '2.5rem',
-                borderRadius: '1.5rem',
-                border: '1px solid rgba(0,0,0,0.08)',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.1), 0 1px 8px rgba(0,0,0,0.05)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                opacity: 0,
-                animation: 'fadeInUp 0.8s ease-out 0.8s forwards',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15), 0 1px 8px rgba(0,0,0,0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1), 0 1px 8px rgba(0,0,0,0.05)';
-              }}>
-                {/* Декоративная полоска */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '4px',
-                  background: 'linear-gradient(90deg, #D4AF37 0%, #F4D03F 50%, #D4AF37 100%)',
-                  borderRadius: '1.5rem 1.5rem 0 0'
-                }} />
-                <h2 style={{
-                  fontSize: '1.75rem',
-                  fontFamily: 'Playfair Display, serif',
-                  fontWeight: 600,
-                  color: '#1A1A1A',
-                  marginBottom: '2rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                }}>
-                  <div style={{
-                    padding: '0.75rem',
-                    background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
-                    borderRadius: '0.75rem',
-                    boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
-                  }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m0 0h6.5" />
-                      <circle cx="9" cy="19" r="1" />
-                      <circle cx="20" cy="19" r="1" />
-                    </svg>
-                  </div>
-                  Cari Səbət
-                </h2>
-                
-                {cartItems.length > 0 ? (
-                  <div>
-                    <div style={{ 
-                      marginBottom: '2rem',
-                      padding: '1.5rem',
-                      background: 'rgba(255, 255, 255, 0.8)',
-                      borderRadius: '1rem',
-                      border: '1px solid rgba(0,0,0,0.05)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-                    }}>
-                      <p style={{ 
-                        color: '#4A4A4A', 
-                        fontSize: '0.875rem',
-                        marginBottom: '0.75rem',
-                        fontWeight: 500,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        {getTotalItems()} məhsul səbətdə
-                      </p>
-                      <p style={{ 
-                        color: '#1A1A1A', 
-                        fontSize: '1.75rem',
-                        fontFamily: 'Playfair Display, serif',
-                        fontWeight: 'bold',
-                        margin: 0,
-                        textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                      }}>
-                        Ümumi: <span style={{ color: '#D4AF37' }}>{getTotalPrice()} ₼</span>
-                      </p>
-                    </div>
-                    
-                    <div style={{ marginBottom: '2rem' }}>
-                      {cartItems.slice(0, 3).map((cartItem, index) => (
-                        <div key={cartItem.id} style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          padding: '1rem',
-                          marginBottom: '0.75rem',
-                          background: 'rgba(255, 255, 255, 0.6)',
-                          borderRadius: '0.75rem',
-                          border: '1px solid rgba(0,0,0,0.05)',
-                          transition: 'all 0.2s ease',
-                          animation: `fadeInUp 0.5s ease-out ${1 + index * 0.1}s forwards`,
-                          opacity: 0
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
-                          e.currentTarget.style.transform = 'translateX(4px)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.6)';
-                          e.currentTarget.style.transform = 'translateX(0)';
-                        }}>
-                          <div>
-                            <p style={{ 
-                              color: '#1A1A1A', 
-                              fontSize: '1rem',
-                              fontWeight: 600,
-                              margin: 0,
-                              textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                            }}>
-                              {cartItem.name}
-                            </p>
-                            <p style={{ 
-                              color: '#D4AF37', 
-                              fontSize: '0.875rem',
-                              margin: 0,
-                              fontWeight: 500
-                            }}>
-                              {cartItem.quantity} ədəd
-                            </p>
-                          </div>
-                          <p style={{ 
-                            color: '#1A1A1A', 
-                            fontSize: '1rem',
-                            fontWeight: 600,
-                            margin: 0,
-                            textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                          }}>
-                            {cartItem.price * cartItem.quantity} ₼
-                          </p>
-                        </div>
-                      ))}
-                      {cartItems.length > 3 && (
-                        <div style={{
-                          textAlign: 'center',
-                          padding: '0.75rem',
-                          background: 'rgba(212, 175, 55, 0.1)',
-                          borderRadius: '0.75rem',
-                          border: '1px solid rgba(212, 175, 55, 0.2)'
-                        }}>
-                          <p style={{ 
-                            color: '#D4AF37', 
-                            fontSize: '0.875rem',
-                            margin: 0,
-                            fontWeight: 600
-                          }}>
-                            +{cartItems.length - 3} əlavə məhsul
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                    
                     <button
-                      onClick={() => router.push('/catering')}
-                      style={{
-                        width: '100%',
-                        padding: '1rem 1.5rem',
-                        background: 'linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '1rem',
-                        fontWeight: 600,
-                        fontSize: '1rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        position: 'relative',
-                        overflow: 'hidden'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)';
-                        e.currentTarget.style.color = '#1A1A1A';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(212, 175, 55, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%)';
-                        e.currentTarget.style.color = 'white';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+                className={`${styles.sidebarButton} ${activeSection === 'my-orders' ? styles.active : ''}`}
+                onClick={() => setActiveSection('my-orders')}
+                aria-current={activeSection === 'my-orders' ? 'page' : undefined}
+              >
+                My Orders
+                    </button>
+                    <button
+                className={`${styles.sidebarButton} ${activeSection === 'address-information' ? styles.active : ''}`}
+                onClick={() => setActiveSection('address-information')}
+                aria-current={activeSection === 'address-information' ? 'page' : undefined}
+              >
+                Address Information
+                    </button>
+                  <button
+                className={`${styles.sidebarButton} ${activeSection === 'account-information' ? styles.active : ''}`}
+                onClick={() => setActiveSection('account-information')}
+                aria-current={activeSection === 'account-information' ? 'page' : undefined}
+              >
+                Account Information
+                  </button>
+                  <button
+                className={`${styles.sidebarButton} ${activeSection === 'edit-profile' ? styles.active : ''}`}
+                onClick={() => {
+                  setActiveSection('edit-profile');
+                  initializeEditForm();
+                }}
+                aria-current={activeSection === 'edit-profile' ? 'page' : undefined}
+              >
+                Edit Profile
+                  </button>
+                  <button
+                className={`${styles.sidebarButton} ${activeSection === 'change-password' ? styles.active : ''}`}
+                onClick={() => setActiveSection('change-password')}
+                aria-current={activeSection === 'change-password' ? 'page' : undefined}
+              >
+                Change Password
+                  </button>
+                  <button
+                className={`${styles.sidebarButton} ${activeSection === 'newsletter-subscription' ? styles.active : ''}`}
+                onClick={() => setActiveSection('newsletter-subscription')}
+                aria-current={activeSection === 'newsletter-subscription' ? 'page' : undefined}
+              >
+                Newsletter Subscription
+                  </button>
+              <button 
+                className={styles.sidebarButton}
+                onClick={() => logout()}
+              >
+                Log out
+              </button>
+            </nav>
+          </aside>
+
+          {/* Content */}
+          <main className={styles.content}>
+            {/* My Account */}
+            {activeSection === 'my-account' && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>My Account</h2>
+                <div className={styles.infoBlock}>
+                  <p className={styles.infoText}>
+                    Welcome back, <strong>{user?.name}</strong>! Here you can manage your account settings, 
+                    view your order history, and update your personal information.
+                  </p>
+                  <div className={styles.actionButtons}>
+                  <button
+                      className={styles.actionButton}
+                      onClick={() => {
+                        setActiveSection('edit-profile');
+                        initializeEditForm();
                       }}
                     >
-                      Səbəti gör
+                      Edit Profile
                     </button>
-                  </div>
-                ) : (
-                  <div style={{ 
-                    textAlign: 'center',
-                    padding: '2rem 1rem'
-                  }}>
-                    <div style={{
-                      width: '80px',
-                      height: '80px',
-                      margin: '0 auto 1.5rem',
-                      background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(244, 208, 63, 0.1) 100%)',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      animation: 'pulse 2s ease-in-out infinite'
-                    }}>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m0 0h6.5" />
-                        <circle cx="9" cy="19" r="1" />
-                        <circle cx="20" cy="19" r="1" />
-                      </svg>
-                    </div>
-                    <p style={{ 
-                      color: '#4A4A4A', 
-                      fontSize: '1rem',
-                      marginBottom: '2rem',
-                      fontWeight: 500
-                    }}>
-                      Səbətdə məhsul yoxdur
-                    </p>
-                    <button
-                      onClick={() => router.push('/catering')}
-                      style={{
-                        width: '100%',
-                        padding: '1rem 1.5rem',
-                        background: 'linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '1rem',
-                        fontWeight: 600,
-                        fontSize: '1rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)';
-                        e.currentTarget.style.color = '#1A1A1A';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(212, 175, 55, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%)';
-                        e.currentTarget.style.color = 'white';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-                      }}
+                    <button 
+                      className={styles.actionButton}
+                      onClick={() => setActiveSection('change-password')}
                     >
-                      Sifariş et
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Быстрые действия */}
-              <div style={{
-                background: 'linear-gradient(145deg, #ffffff 0%, #F9F9F6 100%)',
-                padding: '2.5rem',
-                borderRadius: '1.5rem',
-                border: '1px solid rgba(0,0,0,0.08)',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.1), 0 1px 8px rgba(0,0,0,0.05)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                opacity: 0,
-                animation: 'fadeInUp 0.8s ease-out 1s forwards',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15), 0 1px 8px rgba(0,0,0,0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1), 0 1px 8px rgba(0,0,0,0.05)';
-              }}>
-                {/* Декоративная полоска */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '4px',
-                  background: 'linear-gradient(90deg, #D4AF37 0%, #F4D03F 50%, #D4AF37 100%)',
-                  borderRadius: '1.5rem 1.5rem 0 0'
-                }} />
-                <h2 style={{
-                  fontSize: '1.75rem',
-                  fontFamily: 'Playfair Display, serif',
-                  fontWeight: 600,
-                  color: '#1A1A1A',
-                  marginBottom: '2rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                }}>
-                  <div style={{
-                    padding: '0.75rem',
-                    background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
-                    borderRadius: '0.75rem',
-                    boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
-                  }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                    </svg>
-                  </div>
-                  Sürətli Əməliyyatlar
-                </h2>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  <button
-                    onClick={() => router.push('/catering')}
-                    style={{
-                      width: '100%',
-                      padding: '1rem 1.5rem',
-                      background: 'linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '1rem',
-                      fontWeight: 600,
-                      fontSize: '1rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.75rem',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)';
-                      e.currentTarget.style.color = '#1A1A1A';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 8px 20px rgba(212, 175, 55, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%)';
-                      e.currentTarget.style.color = 'white';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-                    }}
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m0 0h6.5" />
-                      <circle cx="9" cy="19" r="1" />
-                      <circle cx="20" cy="19" r="1" />
-                    </svg>
-                    Katerinq Menyusu
-                  </button>
-                  
-                  <button
-                    onClick={() => router.push('/orders/history')}
-                    style={{
-                      width: '100%',
-                      padding: '1rem 1.5rem',
-                      background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
-                      color: '#1A1A1A',
-                      border: 'none',
-                      borderRadius: '1rem',
-                      fontWeight: 600,
-                      fontSize: '1rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.75rem',
-                      boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%)';
-                      e.currentTarget.style.color = 'white';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)';
-                      e.currentTarget.style.color = '#1A1A1A';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.3)';
-                    }}
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 3h18v18H3zM9 9h6v6H9z"/>
-                      <path d="M9 1v6M15 1v6M9 17v6M15 17v6"/>
-                    </svg>
-                    Sifariş Tarixçəsi
-                  </button>
-                  
-                  <button
-                    onClick={() => router.push('/')}
-                    style={{
-                      width: '100%',
-                      padding: '1rem 1.5rem',
-                      background: 'transparent',
-                      color: '#1A1A1A',
-                      border: '2px solid #1A1A1A',
-                      borderRadius: '1rem',
-                      fontWeight: 600,
-                      fontSize: '1rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.75rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#1A1A1A';
-                      e.currentTarget.style.color = 'white';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.color = '#1A1A1A';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                      <polyline points="9,22 9,12 15,12 15,22"/>
-                    </svg>
-                    Ana Səhifə
+                      Change Password
                   </button>
                 </div>
               </div>
-            </div>
+              </section>
+            )}
 
-            {/* Активные за-orders */}
-            <div style={{
-              background: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%)',
-              borderRadius: '1.5rem',
-              padding: '2rem',
-              boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              backdropFilter: 'blur(10px)',
-              animation: 'fadeInUp 0.6s ease-out'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+            {/* My Orders */}
+            {activeSection === 'my-orders' && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>My Orders</h2>
+                
+                {/* Order Filters */}
+                <div className={styles.orderFilters}>
                 <button
-                  onClick={async () => {
-                    try {
-                      await logout();
-                    } catch (err) {
-                      console.error('Logout failed', err);
-                    }
-                    try { clearCart(); } catch (_e) {}
-                    router.push('/');
-                  }}
-                  style={{
-                    width: '100%',
-                    maxWidth: '220px',
-                    padding: '1rem 1.5rem',
-                    background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '1rem',
-                    fontWeight: 600,
-                    fontSize: '1rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.75rem',
-                    boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}
-                >
-                  Çıxış
+                    className={`${styles.filterButton} ${orderFilter === 'all' ? styles.active : ''}`}
+                    onClick={() => setOrderFilter('all')}
+                  >
+                    All Orders
+                  </button>
+                <button
+                    className={`${styles.filterButton} ${orderFilter === 'delivered' ? styles.active : ''}`}
+                    onClick={() => setOrderFilter('delivered')}
+                  >
+                    Delivered
+                  </button>
+                  <button 
+                    className={`${styles.filterButton} ${orderFilter === 'in-progress' ? styles.active : ''}`}
+                    onClick={() => setOrderFilter('in-progress')}
+                  >
+                    Currently in progress
+                </button>
+                <button 
+                    className={`${styles.filterButton} ${orderFilter === 'payment-pending' ? styles.active : ''}`}
+                    onClick={() => setOrderFilter('payment-pending')}
+                  >
+                    Payment Pending
                 </button>
               </div>
-              <h2 style={{
-                fontSize: '1.5rem',
-                fontWeight: '700',
-                color: '#1A1A1A',
-                marginBottom: '1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                fontFamily: 'Playfair Display, serif'
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                  borderRadius: '1rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
-                }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 11H5a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h4m0-7v7m0-7h10a2 2 0 0 1 2 2v3c0 1.1-.9 2-2 2H9m0-7V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
-                  </svg>
-                </div>
-                Aktiv Sifarişlər
-                {unreadCount > 0 && (
-                  <span style={{
-                    background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-                    color: 'white',
-                    fontSize: '0.75rem',
-                    fontWeight: '600',
-                    padding: '0.25rem 0.5rem',
-                    borderRadius: '0.5rem',
-                    minWidth: '20px',
-                    textAlign: 'center',
-                    boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)'
-                  }}>
-                    {unreadCount}
-                  </span>
-                )}
-              </h2>
 
               {loadingOrders ? (
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '2rem',
-                  color: '#6B7280'
-                }}>
-                  <div style={{
-                    width: '24px',
-                    height: '24px',
-                    border: '2px solid #E5E7EB',
-                    borderTop: '2px solid #3B82F6',
-                    borderRadius: '50%',
-                    animation: 'spin 1s linear infinite',
-                    marginRight: '0.5rem'
-                  }}></div>
-                  Yüklənir...
+                  <div className={styles.loadingState}>
+                    <div className={styles.loadingSpinner} />
+                    <span>Loading orders...</span>
                 </div>
-              ) : (() => {
-                console.log('🎯 Rendering active orders:', { activeOrdersCount: activeOrders.length, activeOrders });
-                return activeOrders.length > 0;
-              })() ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {activeOrders.map((order) => (
-                    <div key={order.id} style={{
-                      background: 'white',
-                      borderRadius: '1rem',
-                      padding: '1.5rem',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                      border: '1px solid #E5E7EB',
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-                    }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                        <div>
-                          <h3 style={{
-                            fontSize: '1.125rem',
-                            fontWeight: '600',
-                            color: '#1A1A1A',
-                            margin: '0 0 0.25rem 0'
-                          }}>
-                            Sifariş #{order.id}
-                          </h3>
-                          <p style={{
-                            fontSize: '0.875rem',
-                            color: '#6B7280',
-                            margin: 0
-                          }}>
-                            {order.company_name}
-                          </p>
-                        </div>
-                        <span style={{
-                          padding: '0.375rem 0.75rem',
-                          borderRadius: '0.5rem',
-                          fontSize: '0.75rem',
-                          fontWeight: '600',
-                          background: order.status === 'submitted' ? '#FEF3C7' : '#D1FAE5',
-                          color: order.status === 'submitted' ? '#D97706' : '#059669'
-                        }}>
-                          {order.status === 'submitted' ? 'Ödəniş gözlənilir' : 'Hazırlanır'}
-                        </span>
-                      </div>
+                ) : activeOrders.length > 0 ? (
+                  <div className={styles.ordersList}>
+                    {activeOrders
+                      .filter((order) => {
+                        if (orderFilter === 'delivered') {
+                          return order.status === 'completed';
+                        } else if (orderFilter === 'in-progress') {
+                          return order.status === 'processing';
+                        } else if (orderFilter === 'payment-pending') {
+                          return order.status === 'submitted';
+                        }
+                        return true; // 'all' - показать все заказы
+                      })
+                      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                      .map((order) => {
+                      // Получаем первый товар для отображения изображения и названия
+                      const firstItem = order.menu_items[0];
+                      const orderDate = new Date(order.created_at);
+                      const deliveryDate = order.delivery_date ? new Date(order.delivery_date) : null;
                       
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <p style={{
-                            fontSize: '0.875rem',
-                            color: '#6B7280',
-                            margin: '0 0 0.25rem 0'
-                          }}>
-                            {order.menu_items.length} məhsul
-                          </p>
-                          {order.delivery_date && (
-                            <p style={{
-                              fontSize: '0.875rem',
-                              color: '#6B7280',
-                              margin: 0
-                            }}>
-                              Çatdırılma: {new Date(order.delivery_date).toLocaleDateString('az-AZ')}
-                            </p>
-                          )}
+                      // Определяем статус заказа
+                      const getOrderStatus = (status: string) => {
+                        switch (status) {
+                          case 'completed':
+                            return { text: 'Delivered', icon: '✓', isDelivered: true, needsPayment: false };
+                          case 'processing':
+                            return { text: 'In Progress', icon: '⏳', isDelivered: false, needsPayment: false };
+                          case 'submitted':
+                            return { text: 'Payment Pending', icon: '💳', isDelivered: false, needsPayment: true };
+                          case 'draft':
+                            return { text: 'Draft', icon: '📝', isDelivered: false, needsPayment: false };
+                          case 'cancelled':
+                            return { text: 'Cancelled', icon: '❌', isDelivered: false, needsPayment: false };
+                          default:
+                            return { text: status.charAt(0).toUpperCase() + status.slice(1), icon: '📋', isDelivered: false, needsPayment: false };
+                        }
+                      };
+                      
+                      const orderStatus = getOrderStatus(order.status);
+                      
+                      return (
+                        <div key={order.id} className={styles.orderCard}>
+                          <div className={styles.orderImage}>
+                            <img 
+                              src="/images/cake1.png" 
+                              alt={firstItem?.name || "Order item"} 
+                              className={styles.productImage}
+                            />
+                          </div>
+                          <div className={styles.orderDetails}>
+                            <h3 className={styles.orderProductName}>
+                              {firstItem?.name || `Order #${order.id}`}
+                              {order.menu_items.length > 1 && ` +${order.menu_items.length - 1} more`}
+                          </h3>
+                            <div className={styles.orderInfo}>
+                              <p className={styles.orderInfoItem}>
+                                <span className={styles.orderInfoLabel}>Order date:</span>
+                                <span>{orderDate.toLocaleDateString('en-GB')}</span>
+                              </p>
+                              <p className={styles.orderInfoItem}>
+                                <span className={styles.orderInfoLabel}>Delivery type:</span>
+                                <span>
+                                  {order.delivery_type === 'delivery' ? 'Courier delivery' : 
+                                   order.delivery_type === 'pickup' ? 'Pickup' : 
+                                   order.delivery_type === 'buffet' ? 'Buffet service' : 
+                                   'Standard delivery'}
+                        </span>
+                              </p>
+                              <p className={styles.orderInfoItem}>
+                                {order.status === 'submitted' ? 'Payment pending' : 'Payment completed'}
+                              </p>
                         </div>
-                        <div style={{
-                          fontSize: '1.25rem',
-                          fontWeight: '700',
-                          color: '#D4AF37',
-                          fontFamily: 'Playfair Display, serif'
-                        }}>
-                          {order.total_amount.toFixed(2)} ₼
+                            <div className={styles.orderTime}>
+                              {orderDate.toLocaleTimeString('en-GB', { 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                              })}
                         </div>
                       </div>
-
-                      {order.status === 'submitted' && (
-                        <div style={{ marginTop: '1rem' }}>
+                          <div className={styles.orderPrice}>
+                            <span className={styles.priceAmount}>
+                              {order.final_amount || order.total_amount}
+                            </span>
+                            <span className={styles.currency}>₼</span>
+                          </div>
+                          <div className={styles.orderStatus}>
+                            <div className={`${styles.statusBadge} ${orderStatus.isDelivered ? styles.delivered : styles.pending}`}>
+                              <span className={styles.statusText}>{orderStatus.text}</span>
+                              <div className={styles.statusIcon}>{orderStatus.icon}</div>
+                            </div>
+                      {orderStatus.needsPayment && (
                           <button
-                            onClick={() => router.push(`/payment/${order.id}`)}
-                            style={{
-                              width: '100%',
-                              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '0.75rem',
-                              padding: '0.75rem 1rem',
-                              fontSize: '0.875rem',
-                              fontWeight: '600',
-                              cursor: 'pointer',
-                              transition: 'all 0.3s ease',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '0.5rem',
-                              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 8px 25px rgba(16, 185, 129, 0.4)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = 'translateY(0)';
-                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-                            }}
-                          >
-                            💳 Ödəniş Et
+                                className={styles.completePaymentButton}
+                            onClick={() => handleDirectPayment(order.id)}
+                              >
+                                Complete Payment
                           </button>
-                        </div>
                       )}
                     </div>
-                  ))}
                 </div>
-              ) : (
-                <div style={{
-                  textAlign: 'center',
-                  padding: '2rem',
-                  color: '#6B7280'
-                }}>
-                  <div style={{
-                    fontSize: '3rem',
-                    marginBottom: '1rem',
-                    opacity: 0.6
-                  }}>
-                    📋
+                      );
+                    })}
                   </div>
-                  <p style={{
-                    fontSize: '1rem',
-                    fontWeight: '500',
-                    margin: 0
-                  }}>
-                    Hal-hazırda aktiv sifariş yoxdur
-                  </p>
+                ) : (
+                  <div className={styles.emptyState}>
+                    <div className={styles.emptyStateIcon}>📋</div>
+                    <p className={styles.emptyStateText}>
+                      You have no active orders at the moment.
+                    </p>
+                    <button 
+                      className={styles.emptyStateButton}
+                      onClick={() => router.push('/catering')}
+                    >
+                      Browse Menu
+                    </button>
                 </div>
               )}
-            </div>
-          </div>
         </section>
-      </div>
+            )}
 
+            {/* Address Information */}
+            {activeSection === 'address-information' && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Address Information</h2>
+                <div className={styles.singleColumnGrid}>
+                  <div className={styles.infoBlock}>
+                    <h3 className={styles.infoTitle}>Default Billing Address</h3>
+                    <form onSubmit={(e) => { e.preventDefault(); handleAddressSubmit('billing'); }} className={styles.addressForm}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Street Address</label>
+                        <input
+                          type="text"
+                          className={styles.formInput}
+                          value={billingAddress.street}
+                          onChange={(e) => setBillingAddress(prev => ({ ...prev, street: e.target.value }))}
+                          placeholder="Enter street address"
+                        />
+                      </div>
+                      <div className={styles.formRow}>
+                        <div className={styles.formGroup}>
+                          <label className={styles.formLabel}>City</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            value={billingAddress.city}
+                            onChange={(e) => setBillingAddress(prev => ({ ...prev, city: e.target.value }))}
+                            placeholder="Enter city"
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label className={styles.formLabel}>Postal Code</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            value={billingAddress.postal_code}
+                            onChange={(e) => setBillingAddress(prev => ({ ...prev, postal_code: e.target.value }))}
+                            placeholder="Enter postal code"
+                          />
+                        </div>
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Country</label>
+                        <select
+                          className={styles.formInput}
+                          value={billingAddress.country}
+                          onChange={(e) => setBillingAddress(prev => ({ ...prev, country: e.target.value }))}
+                        >
+                          <option value="Azerbaijan">Azerbaijan</option>
+                          <option value="Turkey">Turkey</option>
+                          <option value="Georgia">Georgia</option>
+                        </select>
+                      </div>
+                      <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+                        {isSubmitting ? 'Saving...' : 'Save Billing Address'}
+                      </button>
+                    </form>
+                  </div>
+                  
+                  <div className={styles.infoBlock}>
+                    <h3 className={styles.infoTitle}>Default Shipping Address</h3>
+                    <form onSubmit={(e) => { e.preventDefault(); handleAddressSubmit('shipping'); }} className={styles.addressForm}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Street Address</label>
+                        <input
+                          type="text"
+                          className={styles.formInput}
+                          value={shippingAddress.street}
+                          onChange={(e) => setShippingAddress(prev => ({ ...prev, street: e.target.value }))}
+                          placeholder="Enter street address"
+                        />
+                      </div>
+                      <div className={styles.formRow}>
+                        <div className={styles.formGroup}>
+                          <label className={styles.formLabel}>City</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            value={shippingAddress.city}
+                            onChange={(e) => setShippingAddress(prev => ({ ...prev, city: e.target.value }))}
+                            placeholder="Enter city"
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label className={styles.formLabel}>Postal Code</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            value={shippingAddress.postal_code}
+                            onChange={(e) => setShippingAddress(prev => ({ ...prev, postal_code: e.target.value }))}
+                            placeholder="Enter postal code"
+                          />
+                        </div>
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Country</label>
+                        <select
+                          className={styles.formInput}
+                          value={shippingAddress.country}
+                          onChange={(e) => setShippingAddress(prev => ({ ...prev, country: e.target.value }))}
+                        >
+                          <option value="Azerbaijan">Azerbaijan</option>
+                          <option value="Turkey">Turkey</option>
+                          <option value="Georgia">Georgia</option>
+                        </select>
+                      </div>
+                      <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+                        {isSubmitting ? 'Saving...' : 'Save Shipping Address'}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* Account Information */}
+            {activeSection === 'account-information' && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Account Information</h2>
+                <div className={styles.twoColumnGrid}>
+                  <div className={styles.infoBlock}>
+                    <h3 className={styles.infoTitle}>Personal Details</h3>
+                    <p className={styles.infoText}>
+                      <strong>Name:</strong> {user?.name}<br />
+                      <strong>Email:</strong> {user?.email || 'Not provided'}<br />
+                      <strong>Phone:</strong> {user?.phone || 'Not provided'}
+                    </p>
+                  </div>
+                  <div className={styles.actionButtons}>
+                  <button
+                      className={styles.actionButton}
+                      onClick={() => {
+                        setActiveSection('edit-profile');
+                        initializeEditForm();
+                      }}
+                    >
+                      Edit Details
+                  </button>
+                  </div>
+                </div>
+              </section>
+            )}
+            
+            {/* Edit Profile */}
+            {activeSection === 'edit-profile' && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Edit Profile</h2>
+                <form onSubmit={handleEditSubmit} className={styles.profileForm}>
+                  {editError && (
+                    <div className={styles.errorMessage}>
+                      {editError}
+                    </div>
+                  )}
+                  
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Full Name *</label>
+                    <input
+                      type="text"
+                      name="name"
+                      className={`${styles.formInput} ${formErrors.name ? styles.inputError : ''}`}
+                      value={editForm.name}
+                      onChange={handleEditFormChange}
+                      placeholder="Enter your full name"
+                    />
+                    {formErrors.name && (
+                      <span className={styles.fieldError}>{formErrors.name}</span>
+                    )}
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Email Address *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      className={`${styles.formInput} ${formErrors.email ? styles.inputError : ''}`}
+                      value={editForm.email}
+                      onChange={handleEditFormChange}
+                      placeholder="Enter your email address"
+                    />
+                    {formErrors.email && (
+                      <span className={styles.fieldError}>{formErrors.email}</span>
+                    )}
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Phone Number</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      className={`${styles.formInput} ${formErrors.phone ? styles.inputError : ''}`}
+                      value={editForm.phone}
+                      onChange={handleEditFormChange}
+                      placeholder="Enter your phone number"
+                    />
+                    {formErrors.phone && (
+                      <span className={styles.fieldError}>{formErrors.phone}</span>
+                    )}
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button
+                      type="button"
+                      className={styles.cancelButton}
+                      onClick={() => setActiveSection('my-account')}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className={styles.submitButton}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  </div>
+                </form>
+              </section>
+            )}
+            
+            {/* Change Password */}
+            {activeSection === 'change-password' && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Change Password</h2>
+                <form onSubmit={handlePasswordSubmit} className={styles.profileForm}>
+                  {passwordError && (
+                    <div className={styles.errorMessage}>
+                      {passwordError}
+                    </div>
+                  )}
+                  
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Current Password *</label>
+                    <input
+                      type="password"
+                      name="current_password"
+                      className={`${styles.formInput} ${formErrors.current_password ? styles.inputError : ''}`}
+                      value={passwordForm.current_password}
+                      onChange={(e) => setPasswordForm(prev => ({ ...prev, current_password: e.target.value }))}
+                      placeholder="Enter your current password"
+                    />
+                    {formErrors.current_password && (
+                      <span className={styles.fieldError}>{formErrors.current_password}</span>
+                    )}
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>New Password *</label>
+                    <input
+                      type="password"
+                      name="new_password"
+                      className={`${styles.formInput} ${formErrors.new_password ? styles.inputError : ''}`}
+                      value={passwordForm.new_password}
+                      onChange={(e) => setPasswordForm(prev => ({ ...prev, new_password: e.target.value }))}
+                      placeholder="Enter your new password"
+                    />
+                    {formErrors.new_password && (
+                      <span className={styles.fieldError}>{formErrors.new_password}</span>
+                    )}
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Confirm New Password *</label>
+                    <input
+                      type="password"
+                      name="confirm_password"
+                      className={`${styles.formInput} ${formErrors.confirm_password ? styles.inputError : ''}`}
+                      value={passwordForm.confirm_password}
+                      onChange={(e) => setPasswordForm(prev => ({ ...prev, confirm_password: e.target.value }))}
+                      placeholder="Confirm your new password"
+                    />
+                    {formErrors.confirm_password && (
+                      <span className={styles.fieldError}>{formErrors.confirm_password}</span>
+                    )}
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button
+                      type="button"
+                      className={styles.cancelButton}
+                      onClick={() => setActiveSection('my-account')}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className={styles.submitButton}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Changing...' : 'Change Password'}
+                    </button>
+                  </div>
+                </form>
+              </section>
+            )}
+
+            {/* Newsletter Subscription */}
+            {activeSection === 'newsletter-subscription' && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Newsletter Subscription</h2>
+                <div className={styles.newsletterSection}>
+                  <div className={styles.infoBlock}>
+                    <h3 className={styles.infoTitle}>Email Preferences</h3>
+                    <p className={styles.infoText}>
+                      Manage your email subscription preferences. You can choose which types of emails you'd like to receive.
+                    </p>
+                  </div>
+                  
+                  <form onSubmit={(e) => { e.preventDefault(); handleNewsletterUpdate(); }} className={styles.newsletterForm}>
+                    <div className={styles.subscriptionOptions}>
+                      <div className={styles.subscriptionItem}>
+                        <label className={styles.checkboxLabel}>
+                          <input
+                            type="checkbox"
+                            checked={newsletterSubscriptions.general}
+                            onChange={(e) => setNewsletterSubscriptions(prev => ({ ...prev, general: e.target.checked }))}
+                            className={styles.checkbox}
+                          />
+                          <span className={styles.checkboxText}>
+                            <strong>General Newsletter</strong>
+                            <small>Company news, updates, and general information</small>
+                          </span>
+                        </label>
+                      </div>
+                      
+                      <div className={styles.subscriptionItem}>
+                        <label className={styles.checkboxLabel}>
+                          <input
+                            type="checkbox"
+                            checked={newsletterSubscriptions.promotions}
+                            onChange={(e) => setNewsletterSubscriptions(prev => ({ ...prev, promotions: e.target.checked }))}
+                            className={styles.checkbox}
+                          />
+                          <span className={styles.checkboxText}>
+                            <strong>Promotional Emails</strong>
+                            <small>Special offers, discounts, and promotional content</small>
+                          </span>
+                        </label>
+                      </div>
+                      
+                      <div className={styles.subscriptionItem}>
+                        <label className={styles.checkboxLabel}>
+                          <input
+                            type="checkbox"
+                            checked={newsletterSubscriptions.order_updates}
+                            onChange={(e) => setNewsletterSubscriptions(prev => ({ ...prev, order_updates: e.target.checked }))}
+                            className={styles.checkbox}
+                          />
+                          <span className={styles.checkboxText}>
+                            <strong>Order Updates</strong>
+                            <small>Order confirmations, shipping notifications, and delivery updates</small>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <div className={styles.formActions}>
+                      <button
+                        type="submit"
+                        className={styles.submitButton}
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Updating...' : 'Update Preferences'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </section>
+            )}
+          </main>
+          </div>
+
+        {/* Features section */}
+        <FeaturesSection />
+        </div>
+
+      {/* Footer */}
       <Footer />
 
-      {/* Модальное окно редактирования */}
-      {isEditModalOpen && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          padding: '2rem',
-          animation: 'fadeIn 0.3s ease-out'
-        }}
-        onClick={closeEditModal}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '1.5rem',
-            padding: '2.5rem',
-            width: '100%',
-            maxWidth: '500px',
-            maxHeight: '90vh',
-            overflow: 'auto',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
-            position: 'relative',
-            animation: 'slideInUp 0.3s ease-out'
-          }}
-          onClick={(e) => e.stopPropagation()}>
-            
-            {/* Заголовок модального окна */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '2rem',
-              paddingBottom: '1rem',
-              borderBottom: '2px solid #F9F9F6'
-            }}>
-              <h2 style={{
-                fontSize: '1.75rem',
-                fontFamily: 'Playfair Display, serif',
-                fontWeight: 600,
-                color: '#1A1A1A',
-                margin: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem'
-              }}>
-                <div style={{
-                  padding: '0.5rem',
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
-                  borderRadius: '0.5rem',
-                  boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
-                }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                  </svg>
-                </div>
-                Məlumatları Redaktə Et
-              </h2>
-              <button
-                onClick={closeEditModal}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '1.5rem',
-                  color: '#4A4A4A',
-                  cursor: 'pointer',
-                  padding: '0.5rem',
-                  borderRadius: '0.5rem',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#F5F5F5';
-                  e.currentTarget.style.color = '#1A1A1A';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = '#4A4A4A';
-                }}
-              >
-                ×
-              </button>
-            </div>
-
-            {/* Форма редактирования */}
-            <form onSubmit={handleEditSubmit}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                
-                {/* Поле имени */}
-                <div>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: '#D4AF37',
-                    marginBottom: '0.5rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Ad və Soyad
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={editForm.name}
-                    onChange={handleEditFormChange}
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '1rem',
-                      border: '2px solid #E5E7EB',
-                      borderRadius: '0.75rem',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'all 0.2s ease',
-                      backgroundColor: '#FAFAFA'
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = '#D4AF37';
-                      e.currentTarget.style.backgroundColor = 'white';
-                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = '#E5E7EB';
-                      e.currentTarget.style.backgroundColor = '#FAFAFA';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                    placeholder="Ad və soyadınızı daxil edin"
-                  />
-                </div>
-
-                {/* Поле email */}
-                <div>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: '#D4AF37',
-                    marginBottom: '0.5rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    E-poçt
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={editForm.email}
-                    onChange={handleEditFormChange}
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '1rem',
-                      border: '2px solid #E5E7EB',
-                      borderRadius: '0.75rem',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'all 0.2s ease',
-                      backgroundColor: '#FAFAFA'
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = '#D4AF37';
-                      e.currentTarget.style.backgroundColor = 'white';
-                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = '#E5E7EB';
-                      e.currentTarget.style.backgroundColor = '#FAFAFA';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                    placeholder="E-poçt ünvanınızı daxil edin"
-                  />
-                </div>
-
-                {/* Поле телефона */}
-                <div>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: '#D4AF37',
-                    marginBottom: '0.5rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Telefon
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={editForm.phone}
-                    onChange={(e) => {
-                      const formatted = formatAzPhone(e.target.value);
-                      setEditForm(prev => ({ ...prev, phone: formatted }));
-                    }}
-                    style={{
-                      width: '100%',
-                      padding: '1rem',
-                      border: '2px solid #E5E7EB',
-                      borderRadius: '0.75rem',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'all 0.2s ease',
-                      backgroundColor: '#FAFAFA'
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = '#D4AF37';
-                      e.currentTarget.style.backgroundColor = 'white';
-                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = '#E5E7EB';
-                      e.currentTarget.style.backgroundColor = '#FAFAFA';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                    placeholder="+994 XX XXX XX XX"
-                  />
-                </div>
-
-                {/* Ошибка */}
-                {editError && (
-                  <div style={{
-                    backgroundColor: '#FEE2E2',
-                    color: '#DC2626',
-                    padding: '1rem',
-                    borderRadius: '0.75rem',
-                    fontSize: '0.875rem',
-                    border: '1px solid #FECACA'
-                  }}>
-                    {editError}
-                  </div>
-                )}
-
-                {/* Кнопки */}
-                <div style={{
-                  display: 'flex',
-                  gap: '1rem',
-                  marginTop: '1rem'
-                }}>
-                  <button
-                    type="button"
-                    onClick={closeEditModal}
-                    style={{
-                      flex: 1,
-                      padding: '1rem 1.5rem',
-                      background: 'transparent',
-                      color: '#4A4A4A',
-                      border: '2px solid #E5E7EB',
-                      borderRadius: '1rem',
-                      fontWeight: 600,
-                      fontSize: '1rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#4A4A4A';
-                      e.currentTarget.style.color = '#1A1A1A';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = '#E5E7EB';
-                      e.currentTarget.style.color = '#4A4A4A';
-                    }}
-                  >
-                    Ləğv et
-                  </button>
-                  
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    style={{
-                      flex: 1,
-                      padding: '1rem 1.5rem',
-                      background: isSubmitting 
-                        ? 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)'
-                        : 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
-                      color: isSubmitting ? '#E5E7EB' : '#1A1A1A',
-                      border: 'none',
-                      borderRadius: '1rem',
-                      fontWeight: 600,
-                      fontSize: '1rem',
-                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      boxShadow: isSubmitting 
-                        ? '0 4px 12px rgba(156, 163, 175, 0.3)'
-                        : '0 4px 12px rgba(212, 175, 55, 0.3)'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isSubmitting) {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(212, 175, 55, 0.4)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isSubmitting) {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.3)';
-                      }
-                    }}
-                  >
-                    {isSubmitting ? 'Yenilənir...' : 'Yenilə'}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Стили для анимаций */}
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes fadeInUp {
-          0% {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-        
-        @keyframes pulse {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: scale(1.05);
-            opacity: 0.8;
-          }
-        }
-        
-        @keyframes fadeIn {
-          0% {
-            opacity: 0;
-          }
-          100% {
-            opacity: 1;
-          }
-        }
-        
-        @keyframes slideInUp {
-          0% {
-            opacity: 0;
-            transform: translateY(50px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        /* Плавные переходы для всех элементов */
-        * {
-          transition: all 0.2s ease;
-        }
-        
-        /* Улучшенные тени */
-        .card-shadow {
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 1px 8px rgba(0,0,0,0.05);
-        }
-        
-        .card-shadow:hover {
-          box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 1px 8px rgba(0,0,0,0.1);
-        }
-      `}</style>
+      {/* Feedback Button */}
+      <FeedbackButton />
     </div>
   );
+
+
+
+
+
 }

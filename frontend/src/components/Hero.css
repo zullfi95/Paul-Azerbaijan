@@ -34,7 +34,7 @@
   position: relative;
   overflow: hidden;
   margin: 27px 0;
-  max-width: 1020px;
+  max-width: 1140px;
   width: 100%;
 }
 
@@ -66,19 +66,18 @@
 
 .hero-overlay-label {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(45, 45, 45, 0.8));
-  color: white;
+  top: 0;
+  left: 0;
+  background: #FEF4E6;
+  color: #000;
   padding: 9px 17px;
-  border-radius: 21px;
+  border-radius: 0 0 3px 0;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
-  backdrop-filter: blur(15px);
+  font-family: "Sabon Next LT Pro";
   z-index: 2;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -86,8 +85,10 @@
 .hero-overlay-label:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  background: linear-gradient(135deg, rgba(26, 26, 26, 1), rgba(45, 45, 45, 0.9));
+  background: #F5E9D6;
 }
+
+
 
 /* Right Column - Text */
 .hero-text-column {
@@ -121,17 +122,22 @@
 
 .hero-title {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 45px;
   font-style: normal;
-  font-weight: 700;
-  line-height: normal;
+  line-height: 1.1;
   margin: 0;
   position: relative;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-title-bold {
+  font-weight: 700;
+}
+
+.hero-title-normal {
+  font-weight: 300;
 }
 
 .hero-title::after {
@@ -166,20 +172,122 @@
   }
 }
 
+/* Complex Transition Animations */
+.hero.transitioning {
+  pointer-events: none;
+}
+
+.hero-img.fade-out {
+  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-img.fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-title.slide-out-left {
+  animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-title.slide-in-right {
+  animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-description.fade-out {
+  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-description.fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-btn.scale-out {
+  animation: scaleOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-btn.scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .hero-subtitle {
   display: block;
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 45px;
   font-style: normal;
   font-weight: 300;
-  line-height: normal;
+  line-height: 1.1;
   margin-top: 7px;
 }
 
 .hero-description {
+  font-family: "Parisine Pro Gris";
   font-size: 0.81rem;
   line-height: 1.5;
   color: #4b5563;
@@ -249,12 +357,14 @@
   box-shadow: 0 12px 30px rgba(26, 26, 26, 0.3);
 }
 
-/* Navigation Arrow */
+/* Navigation Arrows */
 .hero-navigation {
   position: absolute;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   display: flex;
+  flex-direction: row;
+  gap: 10px;
   z-index: 3;
 }
 
@@ -269,7 +379,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 5px 17px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
   color: white;
 }
 
@@ -277,12 +387,27 @@
   background: #2d2d2d;
   color: white;
   transform: scale(1.15) translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
   border-color: #2d2d2d;
 }
 
 .hero-nav-btn:active {
   transform: scale(0.95);
+}
+
+
+/* Disabled state for navigation buttons */
+.hero-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+  pointer-events: none;
+}
+
+.hero-nav-btn:disabled:hover {
+  background: #1a1a1a;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Decorative elements */

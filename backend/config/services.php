@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'iiko' => [
+        'api_key' => env('IIKO_API_KEY'),
+        'base_url' => env('IIKO_BASE_URL', 'https://api-ru.iiko.services'),
+    ],
+
+    'algoritma' => [
+        'api_key' => env('ALGORITMA_API_KEY'),
+        'api_secret' => env('ALGORITMA_API_SECRET'),
+        'base_url' => env('ALGORITMA_BASE_URL', 'https://api.box:5001'),
+        'environment' => env('ALGORITMA_ENVIRONMENT', 'test'),
+    ],
+
 ];

@@ -7,7 +7,7 @@
 }
 
 .tastes-container {
-  max-width: 1020px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 0 17px;
 }
@@ -101,7 +101,7 @@
 /* Описание */
 .tastes-description {
   color: #000;
-  font-family: "Parisine Pro Clair";
+  font-family: "Parisine Pro Gris";
   font-size: 15px;
   font-style: normal;
   font-weight: 400;
@@ -219,7 +219,7 @@
   
   .tastes-description {
     font-size: 14px;
-    font-family: "Parisine Pro Clair";
+    font-family: "Parisine Pro Gris";
     font-weight: 400;
     margin-bottom: 17px;
   }
@@ -261,7 +261,7 @@
   
   .tastes-description {
     font-size: 12px;
-    font-family: "Parisine Pro Clair";
+    font-family: "Parisine Pro Gris";
     font-weight: 400;
     line-height: normal;
   }

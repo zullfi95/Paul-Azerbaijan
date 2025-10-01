@@ -111,14 +111,14 @@ const categories = [
   { name: 'Coffee Breaks & Afternoon Teas', icon: '🍞', image: '/images/category5.png' }
 ];
 
-// Интерфейс для выбранных позиций Brunch Menu
+// Интерфейс для выбранных позиций Brunch Menu (только одна позиция из каждой категории)
 interface BrunchSelection {
-  canapes: string[];
-  sandwiches: string[];
-  wraps: string[];
-  salads: string[];
-  desserts: string[];
-  drinks: string[];
+  canapes: string | null;
+  sandwiches: string | null;
+  wraps: string | null;
+  salads: string | null;
+  desserts: string | null;
+  drinks: string | null;
 }
 
 export default function CateringPage() {
@@ -129,38 +129,36 @@ export default function CateringPage() {
   
   // Состояние для выбранных позиций Brunch Menu
   const [brunchSelections, setBrunchSelections] = useState<BrunchSelection>({
-    canapes: [],
-    sandwiches: [],
-    wraps: [],
-    salads: [],
-    desserts: [],
-    drinks: []
+    canapes: null,
+    sandwiches: null,
+    wraps: null,
+    salads: null,
+    desserts: null,
+    drinks: null
   });
 
-  // Функции для управления выбором позиций Brunch Menu
+  // Функции для управления выбором позиций Brunch Menu (только одна позиция из каждой категории)
   const toggleBrunchSelection = (category: keyof BrunchSelection, item: string) => {
     setBrunchSelections(prev => ({
       ...prev,
-      [category]: prev[category].includes(item)
-        ? prev[category].filter(selected => selected !== item)
-        : [...prev[category], item]
+      [category]: prev[category] === item ? null : item
     }));
   };
 
   const isBrunchItemSelected = (category: keyof BrunchSelection, item: string) => {
-    return brunchSelections[category].includes(item);
+    return brunchSelections[category] === item;
   };
 
   const getTotalSelectedItems = () => {
-    return Object.values(brunchSelections).reduce((total, category) => total + category.length, 0);
+    return Object.values(brunchSelections).filter(item => item !== null).length;
   };
 
   const addBrunchToCart = () => {
     const selectedItems = [];
     
     // Собираем все выбранные позиции
-    Object.entries(brunchSelections).forEach(([category, items]) => {
-      items.forEach(item => {
+    Object.entries(brunchSelections).forEach(([category, item]) => {
+      if (item !== null) {
         selectedItems.push({
           id: `${category}-${item.toLowerCase().replace(/\s+/g, '-')}`,
           name: item,
@@ -172,7 +170,7 @@ export default function CateringPage() {
           available: true,
           isSet: true
         });
-      });
+      }
     });
 
     if (selectedItems.length > 0) {
@@ -314,9 +312,9 @@ export default function CateringPage() {
             <h1 style={{
               color: '#000',
               fontFamily: '"Sabon Next LT Pro"',
-              fontSize: '20px',
+              fontSize: '44px',
               fontStyle: 'normal',
-              fontWeight: '500',
+              fontWeight: 'bold',
               lineHeight: 'normal',
               marginBottom: '2rem'
             } as React.CSSProperties}>
@@ -328,7 +326,7 @@ export default function CateringPage() {
                   display: 'flex',
               justifyContent: 'flex-start',
               gap: '2rem',
-              marginBottom: '3rem'
+              marginBottom: '1rem'
             }}>
               <button 
                       style={{
@@ -416,8 +414,8 @@ export default function CateringPage() {
             {selectedCategory === 'Brunch Menu' && (
               <div style={{
                 backgroundColor: '#FFFAE6',
-                padding: '3rem 0',
-                marginBottom: '3rem'
+                padding: '1rem 0',
+                marginBottom: '1rem'
               }}>
                 <div style={{
                   padding: '0 20px'
@@ -518,7 +516,8 @@ export default function CateringPage() {
                                   border: isBrunchItemSelected('canapes', item) ? '1px solid #1A1A1A' : '1px solid transparent'
                                 }}>
                                   <input
-                                    type="checkbox"
+                                    type="radio"
+                                    name="canapes"
                                     checked={isBrunchItemSelected('canapes', item)}
                                     onChange={() => toggleBrunchSelection('canapes', item)}
                                     style={{
@@ -581,7 +580,8 @@ export default function CateringPage() {
                                   border: isBrunchItemSelected('sandwiches', item) ? '1px solid #1A1A1A' : '1px solid transparent'
                                 }}>
                                   <input
-                                    type="checkbox"
+                                    type="radio"
+                                    name="sandwiches"
                                     checked={isBrunchItemSelected('sandwiches', item)}
                                     onChange={() => toggleBrunchSelection('sandwiches', item)}
                                     style={{
@@ -644,7 +644,8 @@ export default function CateringPage() {
                                   border: isBrunchItemSelected('wraps', item) ? '1px solid #1A1A1A' : '1px solid transparent'
                                 }}>
                                   <input
-                                    type="checkbox"
+                                    type="radio"
+                                    name="wraps"
                                     checked={isBrunchItemSelected('wraps', item)}
                                     onChange={() => toggleBrunchSelection('wraps', item)}
                                     style={{
@@ -708,7 +709,8 @@ export default function CateringPage() {
                                   border: isBrunchItemSelected('salads', item) ? '1px solid #1A1A1A' : '1px solid transparent'
                                 }}>
                                   <input
-                                    type="checkbox"
+                                    type="radio"
+                                    name="salads"
                                     checked={isBrunchItemSelected('salads', item)}
                                     onChange={() => toggleBrunchSelection('salads', item)}
                                     style={{
@@ -771,7 +773,8 @@ export default function CateringPage() {
                                   border: isBrunchItemSelected('desserts', item) ? '1px solid #1A1A1A' : '1px solid transparent'
                                 }}>
                                   <input
-                                    type="checkbox"
+                                    type="radio"
+                                    name="desserts"
                                     checked={isBrunchItemSelected('desserts', item)}
                                     onChange={() => toggleBrunchSelection('desserts', item)}
                                     style={{
@@ -834,7 +837,8 @@ export default function CateringPage() {
                                   border: isBrunchItemSelected('drinks', item) ? '1px solid #1A1A1A' : '1px solid transparent'
                                 }}>
                                   <input
-                                    type="checkbox"
+                                    type="radio"
+                                    name="drinks"
                                     checked={isBrunchItemSelected('drinks', item)}
                                     onChange={() => toggleBrunchSelection('drinks', item)}
                                     style={{
@@ -1303,6 +1307,11 @@ export default function CateringPage() {
           
           .hero-padding h1 {
             font-size: 1.75rem !important;
+          }
+          
+          /* Catering Menu Title Mobile */
+          h1 {
+            font-size: 28px !important;
           }
           
           .hero-padding p {

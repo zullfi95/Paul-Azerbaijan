@@ -1,4 +1,5 @@
 import Header from "../components/Header";
+import ProductCategories from "../components/ProductCategories";
 import Hero from "../components/Hero";
 import MenuSection from "../components/MenuSection";
 import TastesSection from "../components/TastesSection";
@@ -11,6 +12,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-white">
       <Header />
+      <ProductCategories />
       <Hero />
       <MenuSection />
       <TastesSection />

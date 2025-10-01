@@ -316,7 +316,7 @@
   line-height: normal;
   border: 1px solid #d1d5db;
   border-radius: 14px;
-  background: #FFFAE6;
+  background: white;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;

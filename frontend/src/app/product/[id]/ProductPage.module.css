@@ -2,7 +2,7 @@
 
 .productPage {
   min-height: 100vh;
-  background: #FFFCF8;
+  background: #FFFAE6;
   font-family: 'Sabon Next LT Pro', serif;
   padding-top: 0;
 }
@@ -82,7 +82,7 @@
 .imageWrapper {
   width: 450px;
   height: 450px;
-  background: #FFFCF8;
+  background: #FFFAE6;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
@@ -327,7 +327,7 @@
 }
 
 .relatedCard {
-  background: #FFFCF8;
+  background: #FFFAE6;
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
@@ -344,7 +344,7 @@
   position: relative;
   width: 100%;
   height: 250px;
-  background: #FFFCF8;
+  background: #FFFAE6;
   overflow: hidden;
 }
 

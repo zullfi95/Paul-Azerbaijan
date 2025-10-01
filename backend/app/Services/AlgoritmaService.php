@@ -288,27 +288,47 @@ class AlgoritmaService
     public function testConnection(): array
     {
         try {
+            Log::info('Algoritma testConnection attempt', [
+                'api_key' => $this->apiKey,
+                'api_secret' => $this->apiSecret,
+                'base_url' => $this->baseUrl,
+                'endpoint' => $this->baseUrl . '/ping'
+            ]);
+
             $response = Http::withBasicAuth($this->apiKey, $this->apiSecret)
                 ->withHeaders([
                     'Accept' => 'application/json',
                 ])
                 ->get($this->baseUrl . '/ping');
 
+            Log::info('Algoritma testConnection response', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'headers' => $response->headers()
+            ]);
+
             if ($response->successful()) {
                 $data = $response->json();
                 return [
                     'success' => true,
                     'message' => $data['message'] ?? 'PONG!',
-                    'date' => $data['date'] ?? null
+                    'date' => $data['date'] ?? null,
+                    'response_data' => $data
                 ];
             } else {
                 return [
                     'success' => false,
                     'error' => 'Connection failed',
-                    'status' => $response->status()
+                    'status' => $response->status(),
+                    'response_body' => $response->body()
                 ];
             }
         } catch (\Exception $e) {
+            Log::error('Algoritma testConnection exception', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return [
                 'success' => false,
                 'error' => 'Connection failed',

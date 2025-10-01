@@ -2,7 +2,7 @@
 
 .loginPage {
   min-height: 100vh;
-  background: #FFFCF8;
+  background: #FFFAE6;
   font-family: 'Sabon Next LT Pro', serif;
   position: relative;
 }
@@ -108,7 +108,7 @@
 .formField input {
   width: 98%;
   height: 45px;
-  background: #FFFCF8;
+  background: #FFFAE6;
   border: 0.5px solid rgba(0, 0, 0, 0.5);
   border-radius: 4px;
   padding: 0 15px;

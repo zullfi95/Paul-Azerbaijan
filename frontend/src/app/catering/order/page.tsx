@@ -343,7 +343,7 @@ export default function OrderPage() {
     <div style={{ minHeight: '100vh' }}>
       <Header />
       
-      <div className="navbar-spacing" style={{ paddingTop: '10px' }}>
+      <div className="navbar-spacing">
         <section style={{
           padding: '3rem 0',
           backgroundColor: '#F9F9F6'

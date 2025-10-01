@@ -90,7 +90,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .navbar-spacing {
-  padding-top: 9px;
+  padding-top: 0;
 }
 
 /* Кнопки */
@@ -204,7 +204,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .navbar-spacing {
-    padding-top: 9px;
+    padding-top: 0;
   }
   
   h1 {

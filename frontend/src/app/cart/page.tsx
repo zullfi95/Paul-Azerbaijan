@@ -100,7 +100,7 @@ export default function CartPage() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header />
       
-      <main style={{ flex: 1, paddingTop: '10px' }}>
+      <main style={{ flex: 1, paddingTop: '0' }}>
         <div className="container-paul" style={{ padding: '2rem 0' }}>
           {/* Breadcrumbs */}
           <div style={{

@@ -261,14 +261,14 @@ export default function CakesPage() {
   }, [showSortMenu]);
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FFFCF8' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFAE6' }}>
       <Header />
       
-      <div className="navbar-spacing" style={{ paddingTop: '10px' }}>
+      <div className="navbar-spacing">
         {/* Breadcrumbs */}
         <div style={{
           padding: '1rem 0',
-          backgroundColor: '#FFFCF8',
+          backgroundColor: '#FFFAE6',
           borderBottom: '1px solid rgba(0,0,0,0.06)'
         }}>
           <div className="container-paul">
@@ -367,7 +367,7 @@ export default function CakesPage() {
         <div style={{
           position: 'relative',
           height: '440px',
-          backgroundColor: '#FFFCF8',
+          backgroundColor: '#FFFAE6',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -427,7 +427,7 @@ export default function CakesPage() {
         {/* Introductory Text */}
         <div style={{
           padding: '3rem 0',
-          backgroundColor: '#FFFCF8',
+          backgroundColor: '#FFFAE6',
           textAlign: 'center'
         }}>
           <div className="container-paul">
@@ -527,7 +527,7 @@ export default function CakesPage() {
                   <div 
                     style={{
                       height: '300px',
-                      backgroundColor: '#FFFCF8',
+                      backgroundColor: '#FFFAE6',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',

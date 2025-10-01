@@ -41,9 +41,9 @@ return [
     ],
 
     'algoritma' => [
-        'api_key' => env('ALGORITMA_API_KEY'),
-        'api_secret' => env('ALGORITMA_API_SECRET'),
-        'base_url' => env('ALGORITMA_BASE_URL', 'https://api.box:5001'),
+        'api_key' => env('ALGORITMA_API_KEY', 'Zulfi'),
+        'api_secret' => env('ALGORITMA_API_SECRET', 'Zulfi01102025'),
+        'base_url' => env('ALGORITMA_BASE_URL', 'https://api.testalgoritma.az'),
         'environment' => env('ALGORITMA_ENVIRONMENT', 'test'),
     ],
 

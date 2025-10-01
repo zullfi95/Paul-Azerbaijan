@@ -2,7 +2,7 @@
 
 .cakesPage {
   min-height: 100vh;
-  background: #FFFCF8; /* PAUL Primary 1 */
+  background: #FFFAE6; /* PAUL Primary 1 */
   font-family: 'Sabon Next LT Pro', serif;
 }
 
@@ -10,7 +10,7 @@
 .heroSection {
   position: relative;
   height: 440px;
-  background: #FFFCF8;
+  background: #FFFAE6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,7 +79,7 @@
 
 .productImage {
   height: 300px;
-  background: #FFFCF8;
+  background: #FFFAE6;
   display: flex;
   align-items: center;
   justify-content: center;

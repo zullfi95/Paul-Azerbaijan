@@ -111,20 +111,100 @@ const categories = [
   { name: 'Coffee Breaks & Afternoon Teas', icon: '🍞', image: '/images/category5.png' }
 ];
 
+// Интерфейс для выбранных позиций Brunch Menu
+interface BrunchSelection {
+  canapes: string[];
+  sandwiches: string[];
+  wraps: string[];
+  salads: string[];
+  desserts: string[];
+  drinks: string[];
+}
+
 export default function CateringPage() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('Brunch Menu');
   const [sortBy, setSortBy] = useState('name');
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Состояние для выбранных позиций Brunch Menu
+  const [brunchSelections, setBrunchSelections] = useState<BrunchSelection>({
+    canapes: [],
+    sandwiches: [],
+    wraps: [],
+    salads: [],
+    desserts: [],
+    drinks: []
+  });
+
+  // Функции для управления выбором позиций Brunch Menu
+  const toggleBrunchSelection = (category: keyof BrunchSelection, item: string) => {
+    setBrunchSelections(prev => ({
+      ...prev,
+      [category]: prev[category].includes(item)
+        ? prev[category].filter(selected => selected !== item)
+        : [...prev[category], item]
+    }));
+  };
+
+  const isBrunchItemSelected = (category: keyof BrunchSelection, item: string) => {
+    return brunchSelections[category].includes(item);
+  };
+
+  const getTotalSelectedItems = () => {
+    return Object.values(brunchSelections).reduce((total, category) => total + category.length, 0);
+  };
+
+  const addBrunchToCart = () => {
+    const selectedItems = [];
+    
+    // Собираем все выбранные позиции
+    Object.entries(brunchSelections).forEach(([category, items]) => {
+      items.forEach(item => {
+        selectedItems.push({
+          id: `${category}-${item.toLowerCase().replace(/\s+/g, '-')}`,
+          name: item,
+          description: `Brunch Menu - ${category}`,
+          price: 0, // Цена фиксированная за весь brunch
+          quantity: 1,
+          image: '/images/brunch.jpg',
+          category: 'Brunch Menu',
+          available: true,
+          isSet: true
+        });
+      });
+    });
+
+    if (selectedItems.length > 0) {
+      // Добавляем brunch как один набор
+      const brunchItem = {
+        id: 'brunch-set',
+        name: 'Brunch Menu Set',
+        description: `Selected items: ${selectedItems.map(item => item.name).join(', ')}`,
+        price: 19,
+        quantity: 1,
+        image: '/images/brunch.jpg',
+        category: 'Brunch Menu',
+        available: true,
+        isSet: true,
+        selectedItems: selectedItems
+      };
+      
+      addItem(brunchItem);
+      showNotification('Brunch Menu добавлен в корзину!', 'success');
+    } else {
+      showNotification('Пожалуйста, выберите хотя бы одну позицию', 'warning');
+    }
+  };
 
   useEffect(() => {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkIsMobile();
     window.addEventListener('resize', checkIsMobile);
-    
+
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
   const [showSortMenu, setShowSortMenu] = useState(false);
@@ -184,14 +264,14 @@ export default function CateringPage() {
   }, [showSortMenu]);
 
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFAE6' }}>
       <Header />
       
-      <div className="navbar-spacing" style={{ paddingTop: '10px' }}>
+      <div className="navbar-spacing">
         {/* Breadcrumbs */}
         <div style={{
           padding: '1rem 0',
-          backgroundColor: '#FFFCF8',
+          backgroundColor: '#FFFAE6',
           borderBottom: '1px solid rgba(0,0,0,0.06)'
         }}>
           <div style={{
@@ -223,7 +303,7 @@ export default function CateringPage() {
         {/* Page Title */}
         <div style={{
           padding: '2rem 0',
-          backgroundColor: '#FFFCF8',
+          backgroundColor: '#FFFAE6',
           textAlign: 'center'
         }}>
           <div style={{
@@ -246,7 +326,7 @@ export default function CateringPage() {
             {/* Menu Type Navigation */}
             <div className="menu-type-navigation" style={{
                   display: 'flex',
-              justifyContent: 'center',
+              justifyContent: 'flex-start',
               gap: '2rem',
               marginBottom: '3rem'
             }}>
@@ -335,7 +415,7 @@ export default function CateringPage() {
             {/* Brunch Menu Section */}
             {selectedCategory === 'Brunch Menu' && (
               <div style={{
-                backgroundColor: '#FFFCF8',
+                backgroundColor: '#FFFAE6',
                 padding: '3rem 0',
                 marginBottom: '3rem'
               }}>
@@ -424,16 +504,44 @@ export default function CateringPage() {
                             } as React.CSSProperties}>
                               (Choose of one)
                             </p>
-                            <p style={{
-                              fontSize: '16px',
-                    color: '#4A4A4A',
-                              lineHeight: '1.6',
-                              fontFamily: '"Sabon Next LT Pro"'
-                            }}>
-                              Mini Éclair Selection<br />
-                              Mini Tartine Selection<br />
-                              Mini Quiche Selection
-                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                              {['Mini Éclair Selection', 'Mini Tartine Selection', 'Mini Quiche Selection'].map((item) => (
+                                <label key={item} style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  cursor: 'pointer',
+                                  padding: '0.375rem 0.5rem',
+                                  borderRadius: '0',
+                                  transition: 'all 0.2s ease',
+                                  backgroundColor: isBrunchItemSelected('canapes', item) ? '#1A1A1A' : 'transparent',
+                                  border: isBrunchItemSelected('canapes', item) ? '1px solid #1A1A1A' : '1px solid transparent'
+                                }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={isBrunchItemSelected('canapes', item)}
+                                    onChange={() => toggleBrunchSelection('canapes', item)}
+                                    style={{
+                                      width: '16px',
+                                      height: '16px',
+                                      accentColor: '#1A1A1A',
+                                      cursor: 'pointer',
+                                      flexShrink: 0
+                                    }}
+                                  />
+                                  <span style={{
+                                    fontSize: '15px',
+                                    color: isBrunchItemSelected('canapes', item) ? '#FFFFFF' : '#1A1A1A',
+                                    fontFamily: '"Sabon Next LT Pro"',
+                                    fontWeight: isBrunchItemSelected('canapes', item) ? '500' : '400',
+                                    lineHeight: '1.4',
+                                    flex: 1
+                                  }}>
+                                    {item}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
                 </div>
                           
                           <div style={{ marginBottom: '1.25rem' }}>
@@ -459,18 +567,44 @@ export default function CateringPage() {
                             } as React.CSSProperties}>
                               (Choose of one)
                             </p>
-                            <p style={{
-                              color: '#4A4A4A',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '16px',
-                              fontStyle: 'normal',
-                              fontWeight: 'normal',
-                              lineHeight: '1.6'
-                            } as React.CSSProperties}>
-                              Tomato & Mozzarella<br />
-                              Tuna & Sweetcorn<br />
-                              Ham and Cheese
-                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                              {['Tomato & Mozzarella', 'Tuna & Sweetcorn', 'Ham and Cheese'].map((item) => (
+                                <label key={item} style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  cursor: 'pointer',
+                                  padding: '0.375rem 0.5rem',
+                                  borderRadius: '0',
+                                  transition: 'all 0.2s ease',
+                                  backgroundColor: isBrunchItemSelected('sandwiches', item) ? '#1A1A1A' : 'transparent',
+                                  border: isBrunchItemSelected('sandwiches', item) ? '1px solid #1A1A1A' : '1px solid transparent'
+                                }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={isBrunchItemSelected('sandwiches', item)}
+                                    onChange={() => toggleBrunchSelection('sandwiches', item)}
+                                    style={{
+                                      width: '16px',
+                                      height: '16px',
+                                      accentColor: '#1A1A1A',
+                                      cursor: 'pointer',
+                                      flexShrink: 0
+                                    }}
+                                  />
+                                  <span style={{
+                                    fontSize: '15px',
+                                    color: isBrunchItemSelected('sandwiches', item) ? '#FFFFFF' : '#1A1A1A',
+                                    fontFamily: '"Sabon Next LT Pro"',
+                                    fontWeight: isBrunchItemSelected('sandwiches', item) ? '500' : '400',
+                                    lineHeight: '1.4',
+                                    flex: 1
+                                  }}>
+                                    {item}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
             </div>
                           
                           <div style={{ marginBottom: '1.25rem' }}>
@@ -496,18 +630,44 @@ export default function CateringPage() {
                             } as React.CSSProperties}>
                               (Choose of one)
                             </p>
-                            <p style={{
-                              color: '#4A4A4A',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '16px',
-                              fontStyle: 'normal',
-                              fontWeight: 'normal',
-                              lineHeight: '1.6'
-                            } as React.CSSProperties}>
-                              Ham&Cheese<br />
-                              Crispy Chicken<br />
-                              Beef with Vegetable
-                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                              {['Ham&Cheese', 'Crispy Chicken', 'Beef with Vegetable'].map((item) => (
+                                <label key={item} style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  cursor: 'pointer',
+                                  padding: '0.375rem 0.5rem',
+                                  borderRadius: '0',
+                                  transition: 'all 0.2s ease',
+                                  backgroundColor: isBrunchItemSelected('wraps', item) ? '#1A1A1A' : 'transparent',
+                                  border: isBrunchItemSelected('wraps', item) ? '1px solid #1A1A1A' : '1px solid transparent'
+                                }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={isBrunchItemSelected('wraps', item)}
+                                    onChange={() => toggleBrunchSelection('wraps', item)}
+                                    style={{
+                                      width: '16px',
+                                      height: '16px',
+                                      accentColor: '#1A1A1A',
+                                      cursor: 'pointer',
+                                      flexShrink: 0
+                                    }}
+                                  />
+                                  <span style={{
+                                    fontSize: '15px',
+                                    color: isBrunchItemSelected('wraps', item) ? '#FFFFFF' : '#1A1A1A',
+                                    fontFamily: '"Sabon Next LT Pro"',
+                                    fontWeight: isBrunchItemSelected('wraps', item) ? '500' : '400',
+                                    lineHeight: '1.4',
+                                    flex: 1
+                                  }}>
+                                    {item}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
           </div>
 
                         {/* Right Column */}
@@ -534,18 +694,44 @@ export default function CateringPage() {
                             } as React.CSSProperties}>
                               (Choose of one)
                             </p>
-                            <p style={{
-                              color: '#4A4A4A',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '16px',
-                              fontStyle: 'normal',
-                              fontWeight: 'normal',
-                              lineHeight: '1.6'
-                            } as React.CSSProperties}>
-                              Chicken Pasta Salad<br />
-                              Greek Salad<br />
-                              Smoked Salmon Salad
-                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                              {['Chicken Pasta Salad', 'Greek Salad', 'Smoked Salmon Salad'].map((item) => (
+                                <label key={item} style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  cursor: 'pointer',
+                                  padding: '0.375rem 0.5rem',
+                                  borderRadius: '0',
+                                  transition: 'all 0.2s ease',
+                                  backgroundColor: isBrunchItemSelected('salads', item) ? '#1A1A1A' : 'transparent',
+                                  border: isBrunchItemSelected('salads', item) ? '1px solid #1A1A1A' : '1px solid transparent'
+                                }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={isBrunchItemSelected('salads', item)}
+                                    onChange={() => toggleBrunchSelection('salads', item)}
+                                    style={{
+                                      width: '16px',
+                                      height: '16px',
+                                      accentColor: '#1A1A1A',
+                                      cursor: 'pointer',
+                                      flexShrink: 0
+                                    }}
+                                  />
+                                  <span style={{
+                                    fontSize: '15px',
+                                    color: isBrunchItemSelected('salads', item) ? '#FFFFFF' : '#1A1A1A',
+                                    fontFamily: '"Sabon Next LT Pro"',
+                                    fontWeight: isBrunchItemSelected('salads', item) ? '500' : '400',
+                                    lineHeight: '1.4',
+                                    flex: 1
+                                  }}>
+                                    {item}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
                           </div>
                           
                           <div style={{ marginBottom: '1.25rem' }}>
@@ -571,17 +757,44 @@ export default function CateringPage() {
                             } as React.CSSProperties}>
                               (Choose of one)
                             </p>
-                            <p style={{
-                              fontSize: '16px',
-                    color: '#4A4A4A',
-                              lineHeight: '1.6',
-                              fontFamily: '"Sabon Next LT Pro"'
-                            }}>
-                              Seasonal Fruits<br />
-                              Flavored Natural Yoghurt<br />
-                              Mini sweets<br />
-                              Mini Viennoiseries
-                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                              {['Seasonal Fruits', 'Flavored Natural Yoghurt', 'Mini sweets', 'Mini Viennoiseries'].map((item) => (
+                                <label key={item} style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  cursor: 'pointer',
+                                  padding: '0.375rem 0.5rem',
+                                  borderRadius: '0',
+                                  transition: 'all 0.2s ease',
+                                  backgroundColor: isBrunchItemSelected('desserts', item) ? '#1A1A1A' : 'transparent',
+                                  border: isBrunchItemSelected('desserts', item) ? '1px solid #1A1A1A' : '1px solid transparent'
+                                }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={isBrunchItemSelected('desserts', item)}
+                                    onChange={() => toggleBrunchSelection('desserts', item)}
+                                    style={{
+                                      width: '16px',
+                                      height: '16px',
+                                      accentColor: '#1A1A1A',
+                                      cursor: 'pointer',
+                                      flexShrink: 0
+                                    }}
+                                  />
+                                  <span style={{
+                                    fontSize: '15px',
+                                    color: isBrunchItemSelected('desserts', item) ? '#FFFFFF' : '#1A1A1A',
+                                    fontFamily: '"Sabon Next LT Pro"',
+                                    fontWeight: isBrunchItemSelected('desserts', item) ? '500' : '400',
+                                    lineHeight: '1.4',
+                                    flex: 1
+                                  }}>
+                                    {item}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
                           </div>
                           
                           <div style={{ marginBottom: '1.25rem' }}>
@@ -607,34 +820,62 @@ export default function CateringPage() {
                             } as React.CSSProperties}>
                               (Choose of one)
                             </p>
-                            <p style={{
-                              color: '#4A4A4A',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '16px',
-                              fontStyle: 'normal',
-                              fontWeight: 'normal',
-                              lineHeight: '1.6'
-                            } as React.CSSProperties}>
-                              Hot Beverages<br />
-                              Soft drinks<br />
-                              Fruit juices
-                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                              {['Hot Beverages', 'Soft drinks', 'Fruit juices'].map((item) => (
+                                <label key={item} style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  cursor: 'pointer',
+                                  padding: '0.375rem 0.5rem',
+                                  borderRadius: '0',
+                                  transition: 'all 0.2s ease',
+                                  backgroundColor: isBrunchItemSelected('drinks', item) ? '#1A1A1A' : 'transparent',
+                                  border: isBrunchItemSelected('drinks', item) ? '1px solid #1A1A1A' : '1px solid transparent'
+                                }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={isBrunchItemSelected('drinks', item)}
+                                    onChange={() => toggleBrunchSelection('drinks', item)}
+                                    style={{
+                                      width: '16px',
+                                      height: '16px',
+                                      accentColor: '#1A1A1A',
+                                      cursor: 'pointer',
+                                      flexShrink: 0
+                                    }}
+                                  />
+                                  <span style={{
+                                    fontSize: '15px',
+                                    color: isBrunchItemSelected('drinks', item) ? '#FFFFFF' : '#1A1A1A',
+                                    fontFamily: '"Sabon Next LT Pro"',
+                                    fontWeight: isBrunchItemSelected('drinks', item) ? '500' : '400',
+                                    lineHeight: '1.4',
+                                    flex: 1
+                                  }}>
+                                    {item}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
                           </div>
                       </div>
                     </div>
                     
-                    {/* Brunch Image */}
+                    {/* Brunch Image and Add to Cart */}
                     <div style={{
                       display: 'flex',
+                      flexDirection: 'column',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      height: '100%'
+                      height: '100%',
+                      gap: '1.5rem'
                     }}>
                       <div style={{
                         width: '100%',
                         height: '100%',
-                        maxHeight: '400px',
-                        borderRadius: '0.5rem',
+                        maxHeight: '300px',
+                        borderRadius: '0',
                         overflow: 'hidden',
                         boxShadow: '0 8px 20px rgba(0,0,0,0.15)'
                       }}>
@@ -650,6 +891,44 @@ export default function CateringPage() {
                           }}
                         />
                       </div>
+                      
+                      
+                      {/* Add to Cart Button */}
+                      <button
+                        onClick={addBrunchToCart}
+                        disabled={getTotalSelectedItems() === 0}
+                        style={{
+                          backgroundColor: getTotalSelectedItems() > 0 ? '#1A1A1A' : '#D1D5DB',
+                          color: getTotalSelectedItems() > 0 ? '#FFFFFF' : '#9CA3AF',
+                          border: 'none',
+                          borderRadius: '0',
+                          padding: '0.75rem 1.5rem',
+                          fontSize: '15px',
+                          fontFamily: '"Sabon Next LT Pro"',
+                          fontWeight: '500',
+                          cursor: getTotalSelectedItems() > 0 ? 'pointer' : 'not-allowed',
+                          transition: 'all 0.3s ease',
+                          boxShadow: getTotalSelectedItems() > 0 ? '0 2px 8px rgba(26, 26, 26, 0.25)' : 'none',
+                          width: '100%',
+                          letterSpacing: '0.025em'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (getTotalSelectedItems() > 0) {
+                            e.currentTarget.style.backgroundColor = '#000000';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(26, 26, 26, 0.35)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (getTotalSelectedItems() > 0) {
+                            e.currentTarget.style.backgroundColor = '#1A1A1A';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(26, 26, 26, 0.25)';
+                          }
+                        }}
+                      >
+                        {getTotalSelectedItems() > 0 ? 'Add Brunch to Cart' : 'Select Items First'}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -795,7 +1074,7 @@ export default function CateringPage() {
                               backgroundColor: '#1A1A1A',
                               color: 'white',
                               border: 'none',
-                              borderRadius: '0.5rem',
+                              borderRadius: '0',
                 fontSize: '1rem',
                               fontWeight: 500,
                               cursor: 'pointer',

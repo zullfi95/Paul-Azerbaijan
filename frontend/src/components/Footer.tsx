@@ -49,7 +49,7 @@ const Footer: React.FC = () => {
               <div className="footer-column">
                 <h3 className="footer-title">Company</h3>
                 <ul className="footer-links">
-                  <li><a href="#" className="footer-link">Our Story</a></li>
+                  <li><a href="/our-story" className="footer-link">Our Story</a></li>
                   <li><a href="#" className="footer-link">Sustainability</a></li>
                   <li><a href="#" className="footer-link">Franchise</a></li>
                 </ul>

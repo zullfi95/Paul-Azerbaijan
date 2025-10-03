@@ -93,12 +93,12 @@ const Header: React.FC = React.memo(function Header() {
 
           {/* Main Navigation */}
           <nav className="main-nav">
-            <a href="/cakes" className="nav-link">Cakes&Pies</a>
-            <a href="/viennoiserie" className="nav-link">Viennoiserie</a>
-            <a href="/patisserie" className="nav-link">Patisserie</a>
-            <a href="/platters" className="nav-link">Platters</a>
-            <a href="/bread" className="nav-link">Bread</a>
-            <a href="/macarons" className="nav-link">Macarons</a>
+            <a href="/cakes" className="nav-link">{t('nav.cakes_pies')}</a>
+            <a href="/viennoiserie" className="nav-link">{t('nav.viennoiserie')}</a>
+            <a href="/patisserie" className="nav-link">{t('nav.patisserie')}</a>
+            <a href="/platters" className="nav-link">{t('nav.platters')}</a>
+            <a href="/bread" className="nav-link">{t('nav.bread')}</a>
+            <a href="/macarons" className="nav-link">{t('nav.macarons')}</a>
           </nav>
 
           {/* Right Side Actions */}

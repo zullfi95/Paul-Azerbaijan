@@ -102,13 +102,58 @@ const menuItems: CartItem[] = [
     category: 'Lunch Menu',
     available: true,
     isSet: false
+  },
+  {
+    id: '9',
+    name: 'Business Meeting Set',
+    description: 'Complete set for 10 people',
+    price: 150,
+    quantity: 1,
+    image: '/images/menuitem1.png',
+    category: 'Sets',
+    available: true,
+    isSet: true
+  },
+  {
+    id: '10',
+    name: 'Corporate Event Set',
+    description: 'Premium set for 20 people',
+    price: 280,
+    quantity: 1,
+    image: '/images/menuitem2.png',
+    category: 'Sets',
+    available: true,
+    isSet: true
+  },
+  {
+    id: '11',
+    name: 'Conference Break Set',
+    description: 'Light refreshments for 15 people',
+    price: 200,
+    quantity: 1,
+    image: '/images/menuitem3.png',
+    category: 'Sets',
+    available: true,
+    isSet: true
+  },
+  {
+    id: '12',
+    name: 'Executive Lunch Set',
+    description: 'Elegant lunch for 8 people',
+    price: 180,
+    quantity: 1,
+    image: '/images/menuitem4.png',
+    category: 'Sets',
+    available: true,
+    isSet: true
   }
 ];
 
 const categories = [
   { name: 'Brunch Menu', icon: '🥐', image: '/images/category4.png' },
   { name: 'Lunch Menu', icon: '🥖', image: '/images/category3.png' },
-  { name: 'Coffee Breaks & Afternoon Teas', icon: '🍞', image: '/images/category5.png' }
+  { name: 'Coffee Breaks & Afternoon Teas', icon: '🍞', image: '/images/category5.png' },
+  { name: 'Sets', icon: '🍽️', image: '/images/category1.png' }
 ];
 
 // Интерфейс для выбранных позиций Brunch Menu (только одна позиция из каждой категории)
@@ -119,6 +164,12 @@ interface BrunchSelection {
   salads: string | null;
   desserts: string | null;
   drinks: string | null;
+}
+
+// Интерфейс для выбранных опций Lunch Menu
+interface LunchSelection {
+  selectedOption: string | null;
+  quantity: number;
 }
 
 export default function CateringPage() {
@@ -135,6 +186,21 @@ export default function CateringPage() {
     salads: null,
     desserts: null,
     drinks: null
+  });
+
+  // Состояние для выбранных опций Lunch Menu
+  const [lunchSelections, setLunchSelections] = useState<{[key: string]: LunchSelection}>({
+    'option1': { selectedOption: null, quantity: 1 },
+    'option2': { selectedOption: null, quantity: 1 },
+    'option3': { selectedOption: null, quantity: 1 },
+    'option4': { selectedOption: null, quantity: 1 },
+    'option5': { selectedOption: null, quantity: 1 }
+  });
+
+  // Состояние для чекбоксов в опциях с выбором
+  const [lunchChoices, setLunchChoices] = useState<{[key: string]: {[key: string]: boolean}}>({
+    'option1': { 'salad': false, 'sandwiches': false },
+    'option3': { 'salads': false, 'mainDishes': false }
   });
 
   // Функции для управления выбором позиций Brunch Menu (только одна позиция из каждой категории)
@@ -154,7 +220,10 @@ export default function CateringPage() {
   };
 
   const addBrunchToCart = () => {
-    const selectedItems = [];
+    const selectedItems: {
+      id: string; name: any; description: string; price: number; // Цена фиксированная за весь brunch
+      quantity: number; image: string; category: string; available: boolean; isSet: boolean;
+    }[] = [];
     
     // Собираем все выбранные позиции
     Object.entries(brunchSelections).forEach(([category, item]) => {
@@ -191,7 +260,91 @@ export default function CateringPage() {
       addItem(brunchItem);
       showNotification('Brunch Menu добавлен в корзину!', 'success');
     } else {
-      showNotification('Пожалуйста, выберите хотя бы одну позицию', 'warning');
+      showNotification('Пожалуйста, выберите хотя бы одну позицию', 'info');
+    }
+  };
+
+  // Функции для управления Lunch Menu
+  const toggleLunchOption = (optionKey: string, optionName: string) => {
+    setLunchSelections(prev => ({
+      ...prev,
+      [optionKey]: {
+        ...prev[optionKey],
+        selectedOption: prev[optionKey].selectedOption === optionName ? null : optionName
+      }
+    }));
+  };
+
+  const updateLunchQuantity = (optionKey: string, quantity: number) => {
+    if (quantity < 1) return;
+    setLunchSelections(prev => ({
+      ...prev,
+      [optionKey]: {
+        ...prev[optionKey],
+        quantity: quantity
+      }
+    }));
+  };
+
+  // Функция для управления чекбоксами
+  const toggleLunchChoice = (optionKey: string, choiceKey: string) => {
+    setLunchChoices(prev => ({
+      ...prev,
+      [optionKey]: {
+        ...prev[optionKey],
+        [choiceKey]: !prev[optionKey][choiceKey]
+      }
+    }));
+  };
+
+  const toggleLunchChoiceExclusive = (optionKey: string, choiceKey: string) => {
+    setLunchChoices(prev => ({
+      ...prev,
+      [optionKey]: {
+        salads: choiceKey === 'salads',
+        mainDishes: choiceKey === 'mainDishes'
+      }
+    }));
+  };
+
+  const addLunchToCart = (optionKey: string, optionName: string, price: number) => {
+    const selection = lunchSelections[optionKey];
+    const choices = lunchChoices[optionKey];
+    
+    // Проверяем, есть ли выбранные опции для опций с чекбоксами
+    let hasValidSelection = true;
+    if (choices) {
+      const hasAnyChoice = Object.values(choices).some(choice => choice);
+      hasValidSelection = hasAnyChoice;
+    }
+    
+    if (hasValidSelection && selection.quantity > 0) {
+      let description = optionName;
+      if (choices) {
+        const selectedChoices = Object.entries(choices)
+          .filter(([_, selected]) => selected)
+          .map(([key, _]) => key);
+        if (selectedChoices.length > 0) {
+          description += ` (${selectedChoices.join(', ')})`;
+        }
+      }
+      
+      const lunchItem = {
+        id: `lunch-${optionKey}`,
+        name: optionName,
+        description: description,
+        price: price,
+        quantity: selection.quantity,
+        image: '/images/lunch.jpg',
+        category: 'Lunch Menu',
+        available: true,
+        isSet: true
+      };
+      
+      addItem(lunchItem);
+      showNotification(`${optionName} добавлен в корзину!`, 'success');
+    } else {
+      showNotification('Пожалуйста, выберите опцию', 'info');
     }
   };
 
@@ -199,10 +352,10 @@ export default function CateringPage() {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-
+    
     checkIsMobile();
     window.addEventListener('resize', checkIsMobile);
-
+    
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
   const [showSortMenu, setShowSortMenu] = useState(false);
@@ -298,6 +451,82 @@ export default function CateringPage() {
             </div>
           </div>
               </div>
+
+        {/* Category Navigation */}
+        <div style={{
+          padding: '1.5rem 0',
+          backgroundColor: '#FFFAE6'
+        }}>
+          <div style={{
+            maxWidth: '1140px',
+            margin: '0 auto',
+            padding: '0 20px'
+          }}>
+            <div className="category-navigation" style={{
+              display: 'flex',
+              gap: '1rem',
+              justifyContent: 'center',
+              flexWrap: 'nowrap'
+            }}>
+              {categories.map((category) => (
+                <div
+                  key={category.name}
+                  className="category-item"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    padding: '1.5rem',
+                    backgroundColor: 'transparent',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    minWidth: '140px',
+                    flex: '1'
+                  }}
+                  onClick={() => setSelectedCategory(category.name)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <div style={{
+                    width: '60px',
+                    height: '60px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '0.5rem'
+                  }}>
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      width={60}
+                      height={60}
+                      style={{
+                        objectFit: 'contain'
+                      }}
+                    />
+                  </div>
+                  <span style={{
+                    fontSize: '0.875rem',
+                    textAlign: 'center',
+                    lineHeight: '1.2',
+                    color: selectedCategory === category.name ? '#1A1A1A' : '#4A4A4A',
+                    fontWeight: selectedCategory === category.name ? 'bold' : '500',
+                    fontFamily: '"Sabon Next LT Pro"'
+                  }}>
+                    {category.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Page Title */}
         <div style={{
           padding: '2rem 0',
@@ -320,95 +549,6 @@ export default function CateringPage() {
             } as React.CSSProperties}>
               Catering Menu
             </h1>
-            
-            {/* Menu Type Navigation */}
-            <div className="menu-type-navigation" style={{
-                  display: 'flex',
-              justifyContent: 'flex-start',
-              gap: '2rem',
-              marginBottom: '1rem'
-            }}>
-              <button 
-                      style={{
-                  fontSize: '17.6px',
-                  fontFamily: '"Sabon Next LT Pro"',
-                  fontWeight: selectedCategory === 'Brunch Menu' ? 'bold' : '500',
-                  color: '#000',
-                  background: 'none',
-                  border: 'none',
-                        cursor: 'pointer',
-                  textDecoration: selectedCategory === 'Brunch Menu' ? 'underline' : 'none',
-                  padding: '5px 9px',
-                  borderRadius: '5px',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-                onClick={() => setSelectedCategory('Brunch Menu')}
-                      onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(26, 26, 26, 0.05)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                      }}
-                      onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.transform = 'translateY(0)';
-                  }}
-                >
-                Brunch Menu
-              </button>
-              <button 
-                      style={{
-                  fontSize: '17.6px',
-                  fontFamily: '"Sabon Next LT Pro"',
-                  fontWeight: selectedCategory === 'Lunch Menu' ? 'bold' : '500',
-                  color: '#000',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  textDecoration: selectedCategory === 'Lunch Menu' ? 'underline' : 'none',
-                  padding: '5px 9px',
-                  borderRadius: '5px',
-                  opacity: selectedCategory === 'Lunch Menu' ? 1 : 0.6,
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-                onClick={() => setSelectedCategory('Lunch Menu')}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(26, 26, 26, 0.05)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                Lunch Menu
-              </button>
-              <button 
-                style={{
-                  fontSize: '17.6px',
-                  fontFamily: '"Sabon Next LT Pro"',
-                  fontWeight: selectedCategory === 'Coffee Breaks & Afternoon Teas' ? 'bold' : '500',
-                  color: '#000',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  textDecoration: selectedCategory === 'Coffee Breaks & Afternoon Teas' ? 'underline' : 'none',
-                  padding: '5px 9px',
-                  borderRadius: '5px',
-                  opacity: selectedCategory === 'Coffee Breaks & Afternoon Teas' ? 1 : 0.6,
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-                onClick={() => setSelectedCategory('Coffee Breaks & Afternoon Teas')}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(26, 26, 26, 0.05)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                Coffee Breaks & Afternoon Teas
-              </button>
-                  </div>
             
             {/* Brunch Menu Section */}
             {selectedCategory === 'Brunch Menu' && (
@@ -595,7 +735,7 @@ export default function CateringPage() {
                                   <span style={{
                                     fontSize: '15px',
                                     color: isBrunchItemSelected('sandwiches', item) ? '#FFFFFF' : '#1A1A1A',
-                                    fontFamily: '"Sabon Next LT Pro"',
+                              fontFamily: '"Sabon Next LT Pro"',
                                     fontWeight: isBrunchItemSelected('sandwiches', item) ? '500' : '400',
                                     lineHeight: '1.4',
                                     flex: 1
@@ -659,7 +799,7 @@ export default function CateringPage() {
                                   <span style={{
                                     fontSize: '15px',
                                     color: isBrunchItemSelected('wraps', item) ? '#FFFFFF' : '#1A1A1A',
-                                    fontFamily: '"Sabon Next LT Pro"',
+                              fontFamily: '"Sabon Next LT Pro"',
                                     fontWeight: isBrunchItemSelected('wraps', item) ? '500' : '400',
                                     lineHeight: '1.4',
                                     flex: 1
@@ -724,7 +864,7 @@ export default function CateringPage() {
                                   <span style={{
                                     fontSize: '15px',
                                     color: isBrunchItemSelected('salads', item) ? '#FFFFFF' : '#1A1A1A',
-                                    fontFamily: '"Sabon Next LT Pro"',
+                              fontFamily: '"Sabon Next LT Pro"',
                                     fontWeight: isBrunchItemSelected('salads', item) ? '500' : '400',
                                     lineHeight: '1.4',
                                     flex: 1
@@ -852,7 +992,7 @@ export default function CateringPage() {
                                   <span style={{
                                     fontSize: '15px',
                                     color: isBrunchItemSelected('drinks', item) ? '#FFFFFF' : '#1A1A1A',
-                                    fontFamily: '"Sabon Next LT Pro"',
+                              fontFamily: '"Sabon Next LT Pro"',
                                     fontWeight: isBrunchItemSelected('drinks', item) ? '500' : '400',
                                     lineHeight: '1.4',
                                     flex: 1
@@ -938,6 +1078,1254 @@ export default function CateringPage() {
                 </div>
               </div>
               )}
+
+            {/* Lunch Menu Section */}
+            {selectedCategory === 'Lunch Menu' && (
+              <div style={{
+                backgroundColor: '#FFFAE6',
+                padding: '2rem 0',
+                marginBottom: '1rem'
+              }}>
+                <div style={{
+                  padding: '0 20px'
+                }}>
+                  <h2 style={{
+                    color: '#000',
+                    fontFamily: '"Sabon Next LT Pro"',
+                    fontSize: '20px',
+                    fontStyle: 'normal',
+                    fontWeight: '500',
+                    lineHeight: 'normal',
+                    textAlign: 'center',
+                    marginBottom: '1rem'
+                  } as React.CSSProperties}>
+                    Lunch Menu
+                  </h2>
+                  
+                  {/* Divider Line */}
+                  <div style={{
+                    width: '100%',
+                    height: '2px',
+                    backgroundColor: '#D1D5DB',
+                    margin: '0 auto 2rem auto',
+                    maxWidth: '1200px'
+                  }}></div>
+                  
+                  {/* Lunch Options Grid */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: isMobile ? (window.innerWidth < 640 ? '1fr' : 'repeat(2, 1fr)') : 'repeat(5, 1fr)',
+                    gap: '1.5rem',
+                    maxWidth: '1400px',
+                    margin: '0 auto',
+                    padding: '0 1rem'
+                  }}>
+                    
+                    {/* Option I */}
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      backgroundColor: 'transparent',
+                      borderRadius: '12px',
+                      padding: '1.5rem',
+                      boxShadow: 'none',
+                      border: 'none',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      cursor: 'pointer',
+                      height: 'auto',
+                      minHeight: '500px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                    }}>
+                      
+                      {/* Header */}
+                      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        <h3 style={{
+                          fontFamily: '"Sabon Next LT Pro"',
+                          fontSize: '18px',
+                          fontWeight: 'bold',
+                          color: '#1A1A1A',
+                          margin: '0',
+                          letterSpacing: '0.5px'
+                        }}>
+                          Option I
+                        </h3>
+                      </div>
+
+                      {/* Content Area */}
+                      <div style={{ 
+                        flex: 1, 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        gap: '1rem'
+                      }}>
+                        
+                        {/* Soup Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Soup</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Tomato soup</p>
+                        </div>
+
+                        {/* Choice Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ marginBottom: '0.5rem' }}>
+                            <label style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              justifyContent: 'center',
+                              marginBottom: '0.5rem'
+                            }}>
+                              <input
+                                type="checkbox"
+                                checked={lunchChoices.option1?.salad || false}
+                                onChange={() => toggleLunchChoice('option1', 'salad')}
+                                style={{
+                                  width: '16px',
+                                  height: '16px',
+                                  accentColor: '#1A1A1A',
+                                  cursor: 'pointer',
+                                  borderRadius: '50%',
+                                  appearance: 'none',
+                                  border: '2px solid #1A1A1A',
+                                  backgroundColor: lunchChoices.option1?.salad ? '#1A1A1A' : 'transparent'
+                                }}
+                              />
+                              <div style={{ textAlign: 'left' }}>
+                                <h4 style={{ 
+                                  fontFamily: '"Sabon Next LT Pro"',
+                                  fontSize: '14px',
+                                  fontWeight: 'bold',
+                                  color: '#1A1A1A',
+                                  margin: '0 0 0.25rem 0'
+                                }}>Salad</h4>
+                                <p style={{ 
+                                  fontFamily: '"Parisine Pro Gris"',
+                                  fontSize: '12px',
+                                  color: '#666',
+                                  margin: '0',
+                                  lineHeight: '1.4'
+                                }}>Americana salad</p>
+                              </div>
+                            </label>
+                          </div>
+                          
+                          <p style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '12px',
+                            fontStyle: 'italic',
+                            color: '#1A1A1A',
+                            margin: '0.25rem 0',
+                            lineHeight: '1.4'
+                          }}>or</p>
+                          
+                          <div>
+                            <label style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              justifyContent: 'center'
+                            }}>
+                              <input
+                                type="checkbox"
+                                checked={lunchChoices.option1?.sandwiches || false}
+                                onChange={() => toggleLunchChoice('option1', 'sandwiches')}
+                                style={{
+                                  width: '16px',
+                                  height: '16px',
+                                  accentColor: '#1A1A1A',
+                                  cursor: 'pointer',
+                                  borderRadius: '50%',
+                                  appearance: 'none',
+                                  border: '2px solid #1A1A1A',
+                                  backgroundColor: lunchChoices.option1?.sandwiches ? '#1A1A1A' : 'transparent'
+                                }}
+                              />
+                              <div style={{ textAlign: 'left' }}>
+                                <h4 style={{ 
+                                  fontFamily: '"Sabon Next LT Pro"',
+                                  fontSize: '14px',
+                                  fontWeight: 'bold',
+                                  color: '#1A1A1A',
+                                  margin: '0 0 0.25rem 0'
+                                }}>Sandwiches</h4>
+                                <p style={{ 
+                                  fontFamily: '"Parisine Pro Gris"',
+                                  fontSize: '12px',
+                                  color: '#666',
+                                  margin: '0',
+                                  lineHeight: '1.4'
+                                }}>Tartine paulet</p>
+                              </div>
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Soft Drinks Section */}
+                        <div style={{ textAlign: 'center', marginTop: 'auto' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Soft drinks</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>1 glass per person</p>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                          <p style={{
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '14px',
+                            fontStyle: 'italic',
+                            color: '#1A1A1A',
+                            fontWeight: '600',
+                            margin: '0'
+                          }}>Price for 1 person 25₼</p>
+                        </div>
+                        
+                        {/* Quantity Selector */}
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '1rem',
+                          marginBottom: '1rem',
+                          backgroundColor: '#FFFAE6',
+                          border: '1px solid #E5E5E5',
+                          borderRadius: '6px',
+                          padding: '0.5rem 1rem'
+                        }}>
+                          <button
+                            onClick={() => updateLunchQuantity('option1', lunchSelections.option1.quantity - 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            -
+                          </button>
+                          <span style={{ 
+                            fontSize: '14px', 
+                            minWidth: '20px', 
+                            textAlign: 'center',
+                            fontWeight: '600',
+                            color: '#1A1A1A'
+                          }}>
+                            {lunchSelections.option1.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateLunchQuantity('option1', lunchSelections.option1.quantity + 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                        
+                        {/* Add to Cart Button */}
+                        <button
+                          onClick={() => addLunchToCart('option1', 'Option I', 25)}
+                          style={{
+                            backgroundColor: '#1A1A1A',
+                            color: '#FEF4E6',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '0.75rem 1.5rem',
+                            fontSize: '14px',
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            width: '100%',
+                            letterSpacing: '0.5px'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#333';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#1A1A1A';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          Add to cart
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Option II */}
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      backgroundColor: 'transparent',
+                      borderRadius: '12px',
+                      padding: '1.5rem',
+                      boxShadow: 'none',
+                      border: 'none',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      cursor: 'pointer',
+                      height: 'auto',
+                      minHeight: '500px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                    }}>
+                      
+                      {/* Header */}
+                      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        <h3 style={{
+                          fontFamily: '"Sabon Next LT Pro"',
+                          fontSize: '18px',
+                          fontWeight: 'bold',
+                          color: '#1A1A1A',
+                          margin: '0',
+                          letterSpacing: '0.5px'
+                        }}>
+                          Option II
+                        </h3>
+                      </div>
+
+                      {/* Content Area */}
+                      <div style={{ 
+                        flex: 1, 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        gap: '1rem'
+                      }}>
+                        
+                        {/* Soup Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Soup</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Tomato soup</p>
+                        </div>
+
+                        {/* Main Dishes Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Main Dishes</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Chicken creamy mushroom served with mashed potato</p>
+                        </div>
+
+                        {/* Soft Drinks Section */}
+                        <div style={{ textAlign: 'center', marginTop: 'auto' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Soft drinks</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>1 glass per person</p>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                          <p style={{
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '14px',
+                            fontStyle: 'italic',
+                            color: '#1A1A1A',
+                            fontWeight: '600',
+                            margin: '0'
+                          }}>Price for 1 person 30₼</p>
+                        </div>
+                        
+                        {/* Quantity Selector */}
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '1rem',
+                          marginBottom: '1rem',
+                          backgroundColor: '#FFFAE6',
+                          border: '1px solid #E5E5E5',
+                          borderRadius: '6px',
+                          padding: '0.5rem 1rem'
+                        }}>
+                          <button
+                            onClick={() => updateLunchQuantity('option2', lunchSelections.option2.quantity - 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            -
+                          </button>
+                          <span style={{ 
+                            fontSize: '14px', 
+                            minWidth: '20px', 
+                            textAlign: 'center',
+                            fontWeight: '600',
+                            color: '#1A1A1A'
+                          }}>
+                            {lunchSelections.option2.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateLunchQuantity('option2', lunchSelections.option2.quantity + 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                        
+                        {/* Add to Cart Button */}
+                        <button
+                          onClick={() => addLunchToCart('option2', 'Option II', 30)}
+                          style={{
+                            backgroundColor: '#1A1A1A',
+                            color: '#FEF4E6',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '0.75rem 1.5rem',
+                            fontSize: '14px',
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            width: '100%',
+                            letterSpacing: '0.5px'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#333';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#1A1A1A';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          Add to cart
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Option III */}
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      backgroundColor: 'transparent',
+                      borderRadius: '12px',
+                      padding: '1.5rem',
+                      boxShadow: 'none',
+                      border: 'none',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      cursor: 'pointer',
+                      height: 'auto',
+                      minHeight: '500px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                    }}>
+                      
+                      {/* Header */}
+                      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        <h3 style={{
+                          fontFamily: '"Sabon Next LT Pro"',
+                          fontSize: '18px',
+                          fontWeight: 'bold',
+                          color: '#1A1A1A',
+                          margin: '0',
+                          letterSpacing: '0.5px'
+                        }}>
+                          Option III
+                        </h3>
+                      </div>
+
+                      {/* Content Area */}
+                      <div style={{ 
+                        flex: 1, 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        gap: '1rem'
+                      }}>
+                        
+                        {/* Choice Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ marginBottom: '0.5rem' }}>
+                            <label style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              justifyContent: 'center',
+                              marginBottom: '0.5rem'
+                            }}>
+                              <input
+                                type="checkbox"
+                                checked={lunchChoices.option3?.salads || false}
+                                onChange={() => toggleLunchChoiceExclusive('option3', 'salads')}
+                                style={{
+                                  width: '16px',
+                                  height: '16px',
+                                  accentColor: '#1A1A1A',
+                                  cursor: 'pointer',
+                                  borderRadius: '50%',
+                                  appearance: 'none',
+                                  border: '2px solid #1A1A1A',
+                                  backgroundColor: lunchChoices.option3?.salads ? '#1A1A1A' : 'transparent'
+                                }}
+                              />
+                              <div style={{ textAlign: 'left' }}>
+                                <h4 style={{ 
+                                  fontFamily: '"Sabon Next LT Pro"',
+                                  fontSize: '14px',
+                                  fontWeight: 'bold',
+                                  color: '#1A1A1A',
+                                  margin: '0 0 0.25rem 0'
+                                }}>Salads</h4>
+                                <p style={{ 
+                                  fontFamily: '"Parisine Pro Gris"',
+                                  fontSize: '12px',
+                                  color: '#666',
+                                  margin: '0',
+                                  lineHeight: '1.4'
+                                }}>Americana salad</p>
+                              </div>
+                            </label>
+                          </div>
+                          
+                          <p style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '12px',
+                            fontStyle: 'italic',
+                            color: '#1A1A1A',
+                            margin: '0.25rem 0',
+                            lineHeight: '1.4'
+                          }}>or</p>
+                          
+                          <div>
+                            <label style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              cursor: 'pointer',
+                              justifyContent: 'center'
+                            }}>
+                              <input
+                                type="checkbox"
+                                checked={lunchChoices.option3?.mainDishes || false}
+                                onChange={() => toggleLunchChoiceExclusive('option3', 'mainDishes')}
+                                style={{
+                                  width: '16px',
+                                  height: '16px',
+                                  accentColor: '#1A1A1A',
+                                  cursor: 'pointer',
+                                  borderRadius: '50%',
+                                  appearance: 'none',
+                                  border: '2px solid #1A1A1A',
+                                  backgroundColor: lunchChoices.option3?.mainDishes ? '#1A1A1A' : 'transparent'
+                                }}
+                              />
+                              <div style={{ textAlign: 'left' }}>
+                                <h4 style={{ 
+                                  fontFamily: '"Sabon Next LT Pro"',
+                                  fontSize: '14px',
+                                  fontWeight: 'bold',
+                                  color: '#1A1A1A',
+                                  margin: '0 0 0.25rem 0'
+                                }}>Main Dishes</h4>
+                                <p style={{ 
+                                  fontFamily: '"Parisine Pro Gris"',
+                                  fontSize: '12px',
+                                  color: '#666',
+                                  margin: '0',
+                                  lineHeight: '1.4'
+                                }}>Chicken creamy mushroom served with mashed potato</p>
+                              </div>
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Soft Drinks Section */}
+                        <div style={{ textAlign: 'center', marginTop: 'auto' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Soft drinks</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>1 glass per person</p>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                          <p style={{
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '14px',
+                            fontStyle: 'italic',
+                            color: '#1A1A1A',
+                            fontWeight: '600',
+                            margin: '0'
+                          }}>Price for 1 person 28₼</p>
+                        </div>
+                        
+                        {/* Quantity Selector */}
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '1rem',
+                          marginBottom: '1rem',
+                          backgroundColor: '#FFFAE6',
+                          border: '1px solid #E5E5E5',
+                          borderRadius: '6px',
+                          padding: '0.5rem 1rem'
+                        }}>
+                          <button
+                            onClick={() => updateLunchQuantity('option3', lunchSelections.option3.quantity - 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            -
+                          </button>
+                          <span style={{ 
+                            fontSize: '14px', 
+                            minWidth: '20px', 
+                            textAlign: 'center',
+                            fontWeight: '600',
+                            color: '#1A1A1A'
+                          }}>
+                            {lunchSelections.option3.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateLunchQuantity('option3', lunchSelections.option3.quantity + 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                        
+                        {/* Add to Cart Button */}
+                        <button
+                          onClick={() => addLunchToCart('option3', 'Option III', 28)}
+                          style={{
+                            backgroundColor: '#1A1A1A',
+                            color: '#FEF4E6',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '0.75rem 1.5rem',
+                            fontSize: '14px',
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            width: '100%',
+                            letterSpacing: '0.5px'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#333';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#1A1A1A';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          Add to cart
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Option IV */}
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      backgroundColor: 'transparent',
+                      borderRadius: '12px',
+                      padding: '1.5rem',
+                      boxShadow: 'none',
+                      border: 'none',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      cursor: 'pointer',
+                      height: 'auto',
+                      minHeight: '500px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                    }}>
+                      
+                      {/* Header */}
+                      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        <h3 style={{
+                          fontFamily: '"Sabon Next LT Pro"',
+                          fontSize: '18px',
+                          fontWeight: 'bold',
+                          color: '#1A1A1A',
+                          margin: '0',
+                          letterSpacing: '0.5px'
+                        }}>
+                          Option IV
+                        </h3>
+                      </div>
+
+                      {/* Content Area */}
+                      <div style={{ 
+                        flex: 1, 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        gap: '1rem'
+                      }}>
+                        
+                        {/* Soup Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Soup</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Tomato soup</p>
+                        </div>
+
+                        {/* Salads Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Salads</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Americana salad</p>
+                        </div>
+
+                        {/* Main Dishes Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Main Dishes</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Chicken creamy mushroom served with mashed potato</p>
+                        </div>
+
+                        {/* Soft Drinks Section */}
+                        <div style={{ textAlign: 'center', marginTop: 'auto' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Soft drinks</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>1 glass per person</p>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                          <p style={{
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '14px',
+                            fontStyle: 'italic',
+                            color: '#1A1A1A',
+                            fontWeight: '600',
+                            margin: '0'
+                          }}>Price for 1 person 35₼</p>
+                        </div>
+                        
+                        {/* Quantity Selector */}
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '1rem',
+                          marginBottom: '1rem',
+                          backgroundColor: '#FFFAE6',
+                          border: '1px solid #E5E5E5',
+                          borderRadius: '6px',
+                          padding: '0.5rem 1rem'
+                        }}>
+                          <button
+                            onClick={() => updateLunchQuantity('option4', lunchSelections.option4.quantity - 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            -
+                          </button>
+                          <span style={{ 
+                            fontSize: '14px', 
+                            minWidth: '20px', 
+                            textAlign: 'center',
+                            fontWeight: '600',
+                            color: '#1A1A1A'
+                          }}>
+                            {lunchSelections.option4.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateLunchQuantity('option4', lunchSelections.option4.quantity + 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                        
+                        {/* Add to Cart Button */}
+                        <button
+                          onClick={() => {
+                            toggleLunchOption('option4', 'Option IV - Soup, Salads, Main Dishes, Soft drinks');
+                            addLunchToCart('option4', 'Option IV', 35);
+                          }}
+                          style={{
+                            backgroundColor: '#1A1A1A',
+                            color: '#FEF4E6',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '0.75rem 1.5rem',
+                            fontSize: '14px',
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            width: '100%',
+                            letterSpacing: '0.5px'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#333';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#1A1A1A';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          Add to cart
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Option V */}
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      backgroundColor: 'transparent',
+                      borderRadius: '12px',
+                      padding: '1.5rem',
+                      boxShadow: 'none',
+                      border: 'none',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      cursor: 'pointer',
+                      height: 'auto',
+                      minHeight: '500px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                    }}>
+                      
+                      {/* Header */}
+                      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        <h3 style={{
+                          fontFamily: '"Sabon Next LT Pro"',
+                          fontSize: '18px',
+                          fontWeight: 'bold',
+                          color: '#1A1A1A',
+                          margin: '0',
+                          letterSpacing: '0.5px'
+                        }}>
+                          Option V
+                        </h3>
+                      </div>
+
+                      {/* Content Area */}
+                      <div style={{ 
+                        flex: 1, 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        gap: '1rem'
+                      }}>
+                        
+                        {/* Soup Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Soup</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Tomato soup</p>
+                        </div>
+
+                        {/* Salads Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Salads</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Americana salad</p>
+                        </div>
+
+                        {/* Main Dishes Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Main Dishes</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Chicken creamy mushroom served with mashed potato</p>
+                        </div>
+
+                        {/* Sweets Section */}
+                        <div style={{ textAlign: 'center' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Sweets</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>Honey cake</p>
+                        </div>
+
+                        {/* Soft Drinks Section */}
+                        <div style={{ textAlign: 'center', marginTop: 'auto' }}>
+                          <h4 style={{ 
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#1A1A1A',
+                            margin: '0 0 0.5rem 0'
+                          }}>Soft drinks</h4>
+                          <p style={{ 
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '12px',
+                            color: '#666',
+                            margin: '0',
+                            lineHeight: '1.4'
+                          }}>1 glass per person</p>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                          <p style={{
+                            fontFamily: '"Parisine Pro Gris"',
+                            fontSize: '14px',
+                            fontStyle: 'italic',
+                            color: '#1A1A1A',
+                            fontWeight: '600',
+                            margin: '0'
+                          }}>Price for 1 person 40₼</p>
+                        </div>
+                        
+                        {/* Quantity Selector */}
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '1rem',
+                          marginBottom: '1rem',
+                          backgroundColor: '#FFFAE6',
+                          border: '1px solid #E5E5E5',
+                          borderRadius: '6px',
+                          padding: '0.5rem 1rem'
+                        }}>
+                          <button
+                            onClick={() => updateLunchQuantity('option5', lunchSelections.option5.quantity - 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            -
+                          </button>
+                          <span style={{ 
+                            fontSize: '14px', 
+                            minWidth: '20px', 
+                            textAlign: 'center',
+                            fontWeight: '600',
+                            color: '#1A1A1A'
+                          }}>
+                            {lunchSelections.option5.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateLunchQuantity('option5', lunchSelections.option5.quantity + 1)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: '#1A1A1A'
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                        
+                        {/* Add to Cart Button */}
+                        <button
+                          onClick={() => {
+                            toggleLunchOption('option5', 'Option V - Soup, Salads, Main Dishes, Sweets, Soft drinks');
+                            addLunchToCart('option5', 'Option V', 40);
+                          }}
+                          style={{
+                            backgroundColor: '#1A1A1A',
+                            color: '#FEF4E6',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '0.75rem 1.5rem',
+                            fontSize: '14px',
+                            fontFamily: '"Sabon Next LT Pro"',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            width: '100%',
+                            letterSpacing: '0.5px'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#333';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#1A1A1A';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          Add to cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Lunch Description */}
+                  <div style={{
+                    textAlign: 'center',
+                    marginTop: '3rem',
+                    maxWidth: '800px',
+                    margin: '3rem auto 0'
+                  }}>
+                    <h3 style={{
+                      color: '#000',
+                      fontFamily: '"Sabon Next LT Pro"',
+                      fontSize: '20px',
+                      fontWeight: 'bold',
+                      marginBottom: '1rem'
+                    }}>
+                      Lunch Menu from PAUL
+                    </h3>
+                    <p style={{
+                      color: '#000',
+                      fontFamily: '"Sabon Next LT Pro"',
+                      fontSize: '18px',
+                      lineHeight: '1.6',
+                      textAlign: 'center'
+                    }}>
+                      At PAUL, we take pride in offering exceptional catering services that bring the delightful flavors of our restaurant directly to your event. Whether it's a corporate gathering, wedding, or a casual get-together, our team is dedicated to providing a seamless experience tailored to your needs. Our menu features a variety of freshly prepared dishes, showcasing the best of French cuisine. With a focus on quality ingredients and presentation, we ensure that every bite is a memorable one. Let us help you create an unforgettable dining experience for your guests!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
             
             {/* Product Grid */}
             <div style={{
@@ -1287,6 +2675,15 @@ export default function CateringPage() {
             flex-direction: column !important;
             gap: 1rem !important;
           }
+          
+          .category-navigation {
+            flex-wrap: wrap !important;
+          }
+          
+          .category-item {
+            min-width: 120px !important;
+            flex: 0 0 calc(50% - 0.5rem) !important;
+          }
         }
         
         
@@ -1316,6 +2713,16 @@ export default function CateringPage() {
           
           .hero-padding p {
             font-size: 1rem !important; 
+          }
+          
+          .category-navigation {
+            flex-wrap: wrap !important;
+          }
+          
+          .category-item {
+            min-width: 100px !important;
+            flex: 0 0 calc(50% - 0.5rem) !important;
+            padding: 1rem !important;
           }
         }
       `}</style>

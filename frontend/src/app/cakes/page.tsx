@@ -261,14 +261,14 @@ export default function CakesPage() {
   }, [showSortMenu]);
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FFFAE6' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF' }}>
       <Header />
       
       <div className="navbar-spacing">
         {/* Breadcrumbs */}
         <div style={{
           padding: '1rem 0',
-          backgroundColor: '#FFFAE6',
+          backgroundColor: '#FFFFFF',
           borderBottom: '1px solid rgba(0,0,0,0.06)'
         }}>
           <div className="container-paul">

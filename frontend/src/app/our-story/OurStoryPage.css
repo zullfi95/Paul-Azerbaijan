@@ -1,0 +1,721 @@
+/* Main Container */
+.our-story-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #FEF4E6;
+}
+
+.our-story-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 0;
+  text-align: center;
+  position: relative;
+  margin-top: 100px;
+
+  
+}
+
+.main-title {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 56px;
+  font-weight: 400;
+  color: #000000;
+  line-height: normal;
+  margin-bottom: 20px;
+
+}
+
+.hero-divider {
+  width: 100%;
+  max-width: 940px;
+  height: 1px;
+  background-color: #000000;
+  margin: 10px auto 10px;
+}
+
+.hero-divider-secondary {
+  width: 80%;
+  max-width: 540px;
+  height: 1px;
+  background-color: #000000;
+  margin: 0 auto;
+}
+
+.hero-subtitle {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #000000;
+  line-height: 1.4;
+  margin: 0 auto;
+  max-width: 742px;
+  text-align: center;
+  position: relative;
+  padding: 0;
+  
+}
+
+/* Timeline Section */
+.timeline-section {
+  padding: 80px 0 60px;
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.timeline-item {
+  margin-bottom: 80px;
+  position: relative;
+}
+
+.timeline-year {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 108.333px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin-bottom: 24px;
+}
+
+.timeline-year.today {
+  font-size: 80px;
+}
+
+.timeline-divider {
+  width: 206.7px;
+  height: 1px;
+  background-color: #000000;
+  margin-bottom: 40px;
+}
+
+/* Timeline Horizontal Layout (1889, 2007) */
+.timeline-horizontal {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+}
+
+.timeline-horizontal .timeline-left-block {
+  flex-shrink: 0;
+}
+
+.timeline-horizontal .timeline-text {
+  flex: 1;
+  padding-top: 20px;
+}
+
+.timeline-horizontal .timeline-text p {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Timeline Image Left Layout (1908, 1953) */
+.timeline-image-left .timeline-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+}
+
+.timeline-image-left .timeline-image-block {
+  flex-shrink: 0;
+}
+
+.timeline-image-left .timeline-text-block {
+  flex: 1;
+}
+
+.timeline-image-left .timeline-text-block p {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Timeline Image Right Layout (1950s, 1985) */
+.timeline-image-right .timeline-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+}
+
+.timeline-image-right .timeline-text-block {
+  flex: 1;
+}
+
+.timeline-image-right .timeline-image-block {
+  flex-shrink: 0;
+}
+
+.timeline-image-right .timeline-text-block p {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Timeline Center Wide Layout (1972, Today) */
+.timeline-center-wide {
+  text-align: center;
+}
+
+.timeline-center-wide .timeline-year {
+  text-align: center;
+}
+
+.timeline-center-wide .timeline-divider {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.timeline-center-wide .timeline-text {
+  max-width: 662px;
+  margin: 0 auto 40px;
+}
+
+.timeline-center-wide .timeline-text.centered {
+  max-width: 957px;
+}
+
+.timeline-center-wide .timeline-text p {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+.timeline-center-wide .timeline-image-block {
+  display: flex;
+  justify-content: center;
+}
+
+/* Timeline Double Column Layout (1993 & 2000) */
+.timeline-double-column .timeline-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  position: relative;
+}
+
+.timeline-double-column .timeline-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-double-column .vertical-divider {
+  width: 1px;
+  background-color: #000000;
+  align-self: stretch;
+  margin: 150px 0;
+}
+
+.timeline-double-column .timeline-image-block {
+  margin-bottom: 24px;
+}
+
+.timeline-double-column .timeline-text p {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Timeline Images Left Layout (2019) */
+.timeline-images-left .timeline-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+}
+
+.timeline-images-left .timeline-left-block {
+  flex-shrink: 0;
+}
+
+.timeline-images-left .timeline-images-row {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.timeline-images-left .timeline-text-block {
+  flex: 1;
+  padding-top: 180px;
+}
+
+.timeline-images-left .timeline-text-block p {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Image Styles */
+.story-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.story-image.large {
+  max-width: 671px;
+  max-height: 447px;
+}
+
+.story-image.medium {
+  max-width: 606px;
+  max-height: 370px;
+}
+
+.story-image.vertical {
+  max-width: 494px;
+  max-height: 594px;
+}
+
+.story-image.extra-wide {
+  max-width: 1093px;
+  max-height: 370px;
+}
+
+.story-image.square {
+  max-width: 530px;
+  max-height: 530px;
+}
+
+.story-image.small {
+  max-width: 403px;
+  max-height: 369px;
+}
+
+.story-image.small-vertical {
+  max-width: 365px;
+  max-height: 494px;
+}
+
+/* Section Dividers */
+.section-divider {
+  width: 100%;
+  max-width: 1240px;
+  height: 1px;
+  background-color: #000000;
+  margin: 80px auto;
+}
+
+/* CTA Section */
+.cta-section {
+  text-align: center;
+  margin: 80px 0 60px;
+}
+
+.cta-button {
+  background-color: #000000;
+  color: #FEF4E6;
+  border: none;
+  padding: 32px 56px;
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 18px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 0;
+}
+
+.cta-button:hover {
+  background-color: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Values Section */
+.values-section {
+  padding: 60px 20px;
+  background-color: #FEF4E6;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 60px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.value-item {
+  text-align: center;
+}
+
+.value-icon {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 84px;
+}
+
+.value-image {
+  max-width: 180px;
+  max-height: 84px;
+  object-fit: contain;
+}
+
+.value-title {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #000000;
+  margin: 0 0 12px 0;
+}
+
+.value-description {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Responsive Design */
+
+/* Wide Screens (1920px and above) */
+@media (min-width: 1921px) {
+  .our-story-main {
+    max-width: 1600px;
+    padding: 0 40px;
+  }
+
+  .timeline-section {
+    max-width: 1400px;
+  }
+
+  .values-grid {
+    max-width: 1400px;
+  }
+}
+
+/* Large Desktop (1440px - 1920px) - Figma design size */
+@media (min-width: 1441px) and (max-width: 1920px) {
+  .our-story-main {
+    max-width: 1440px;
+    padding: 0 40px;
+  }
+
+  .timeline-section {
+    max-width: 1240px;
+  }
+
+  .values-grid {
+    max-width: 1240px;
+  }
+}
+
+/* Standard Desktop & Laptop (1200px - 1440px) */
+@media (min-width: 1200px) and (max-width: 1440px) {
+  .our-story-main {
+    max-width: 1200px;
+    padding: 0 30px;
+  }
+
+  .timeline-section {
+    max-width: 1100px;
+  }
+
+  .timeline-year {
+    font-size: 96px;
+  }
+
+  .timeline-year.today {
+    font-size: 72px;
+  }
+
+  .story-image.large {
+    max-width: 600px;
+    max-height: 400px;
+  }
+
+  .story-image.extra-wide {
+    max-width: 950px;
+    max-height: 320px;
+  }
+
+  .story-image.vertical {
+    max-width: 450px;
+    max-height: 540px;
+  }
+
+  .story-image.square {
+    max-width: 480px;
+    max-height: 480px;
+  }
+
+  .values-grid {
+    max-width: 1100px;
+    gap: 50px;
+  }
+}
+
+/* Laptop & Small Desktop (1024px - 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .our-story-main {
+    max-width: 1024px;
+    padding: 0 30px;
+  }
+
+  .timeline-section {
+    max-width: 960px;
+  }
+
+  .timeline-year {
+    font-size: 80px;
+  }
+
+  .timeline-year.today {
+    font-size: 60px;
+  }
+
+  .story-image.large {
+    max-width: 520px;
+    max-height: 350px;
+  }
+
+  .story-image.medium {
+    max-width: 480px;
+    max-height: 300px;
+  }
+
+  .story-image.vertical {
+    max-width: 400px;
+    max-height: 480px;
+  }
+
+  .story-image.extra-wide {
+    max-width: 800px;
+    max-height: 270px;
+  }
+
+  .story-image.square {
+    max-width: 420px;
+    max-height: 420px;
+  }
+
+  .story-image.small {
+    max-width: 340px;
+    max-height: 310px;
+  }
+
+  .story-image.small-vertical {
+    max-width: 310px;
+    max-height: 420px;
+  }
+
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  .timeline-horizontal .timeline-text p,
+  .timeline-image-left .timeline-text-block p,
+  .timeline-image-right .timeline-text-block p,
+  .timeline-center-wide .timeline-text p,
+  .timeline-double-column .timeline-text p,
+  .timeline-images-left .timeline-text-block p {
+    font-size: 15px;
+  }
+}
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) {
+  .our-story-main {
+    padding: 0 30px;
+  }
+
+  .timeline-section {
+    padding: 60px 0 40px;
+  }
+
+  .timeline-year {
+    font-size: 72px;
+  }
+
+  .timeline-year.today {
+    font-size: 54px;
+  }
+
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  .story-image.large,
+  .story-image.extra-wide {
+    max-width: 100%;
+  }
+
+  .timeline-horizontal,
+  .timeline-image-left .timeline-content,
+  .timeline-image-right .timeline-content,
+  .timeline-images-left .timeline-content {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .timeline-images-left .timeline-text-block {
+    padding-top: 0;
+  }
+
+  .timeline-double-column .timeline-content {
+    flex-direction: column;
+  }
+
+  .timeline-double-column .vertical-divider {
+    width: 100%;
+    height: 1px;
+    margin: 40px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    margin-top: 60px;
+  }
+
+  .main-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+    padding: 0 20px;
+  }
+
+  .timeline-section {
+    padding: 40px 30px;
+  }
+
+  .timeline-item {
+    margin-bottom: 60px;
+  }
+
+  .timeline-year {
+    font-size: 56px;
+  }
+
+  .timeline-year.today {
+    font-size: 44px;
+  }
+
+  .timeline-divider {
+    margin-bottom: 24px;
+  }
+
+  .timeline-horizontal,
+  .timeline-image-left .timeline-content,
+  .timeline-image-right .timeline-content,
+  .timeline-images-left .timeline-content {
+    gap: 30px;
+  }
+
+  .timeline-center-wide .timeline-text,
+  .timeline-center-wide .timeline-text.centered {
+    max-width: 100%;
+    padding: 0 20px;
+  }
+
+  .timeline-horizontal .timeline-text p,
+  .timeline-image-left .timeline-text-block p,
+  .timeline-image-right .timeline-text-block p,
+  .timeline-center-wide .timeline-text p,
+  .timeline-double-column .timeline-text p,
+  .timeline-images-left .timeline-text-block p {
+    font-size: 14px;
+  }
+
+  .story-image.large,
+  .story-image.medium,
+  .story-image.vertical,
+  .story-image.extra-wide,
+  .story-image.square,
+  .story-image.small,
+  .story-image.small-vertical {
+    max-width: 100%;
+  }
+
+  .timeline-images-left .timeline-images-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .section-divider {
+    margin: 60px auto;
+  }
+
+  .cta-section {
+    margin: 60px 0 40px;
+  }
+
+  .cta-button {
+    padding: 20px 40px;
+    font-size: 16px;
+  }
+
+  .values-section {
+    padding: 40px 20px;
+  }
+
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .value-title {
+    font-size: 18px;
+  }
+
+  .value-description {
+    font-size: 13px;
+  }
+}
+
+/* Animation for smooth loading */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timeline-item {
+  animation: fadeInUp 0.6s ease-out;
+}

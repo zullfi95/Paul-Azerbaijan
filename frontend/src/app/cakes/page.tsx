@@ -367,7 +367,7 @@ export default function CakesPage() {
         <div style={{
           position: 'relative',
           height: '440px',
-          backgroundColor: '#FFFAE6',
+          backgroundColor: '#FFFCF8',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -389,7 +389,7 @@ export default function CakesPage() {
             position: 'relative',
             zIndex: 2,
             textAlign: 'left',
-            color: '#FFFAE6',
+            color: '#FFFCF8',
             paddingLeft: '100px',
             maxWidth: '1140px',
             width: '100%',
@@ -400,7 +400,7 @@ export default function CakesPage() {
               fontFamily: '"Sabon Next LT Pro", serif',
               fontStyle: 'italic',
               fontWeight: 300,
-              color: '#FFFAE6',
+              color: '#FFFCF8',
               margin: 0,
               marginBottom: '20px',
               textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
@@ -413,7 +413,7 @@ export default function CakesPage() {
               fontFamily: '"Sabon Next LT Pro", serif',
               fontStyle: 'italic',
               fontWeight: 300,
-              color: '#FFFAE6',
+              color: '#FFFCF8',
               margin: 0,
               marginBottom: '20px',
               textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
@@ -427,7 +427,7 @@ export default function CakesPage() {
         {/* Introductory Text */}
         <div style={{
           padding: '3rem 0',
-          backgroundColor: '#FFFAE6',
+          backgroundColor: '#FFFCF8',
           textAlign: 'center'
         }}>
           <div className="container-paul">
@@ -467,7 +467,7 @@ export default function CakesPage() {
               <button style={{
                 padding: '12px 24px',
                 backgroundColor: '#000000',
-                color: '#FFFAE6',
+                color: '#FFFCF8',
                 border: 'none',
                 borderRadius: '10px',
                 fontSize: '16px',
@@ -527,7 +527,7 @@ export default function CakesPage() {
                   <div 
                     style={{
                       height: '300px',
-                      backgroundColor: '#FFFAE6',
+                      backgroundColor: '#FFFCF8',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',

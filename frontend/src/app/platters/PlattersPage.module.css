@@ -2,7 +2,7 @@
 
 .plattersPage {
   min-height: 100vh;
-  background: #FFFAE6; /* PAUL Primary 1 */
+  background: #FFFCF8; /* PAUL Primary 1 */
   font-family: 'Sabon Next LT Pro', serif;
 }
 
@@ -10,7 +10,7 @@
 .heroSection {
   position: relative;
   height: 440px;
-  background: #FFFAE6;
+  background: #FFFCF8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +34,7 @@
   position: relative;
   z-index: 2;
   text-align: left;
-  color: #FFFAE6;
+  color: #FFFCF8;
   padding-left: 100px;
   max-width: 1140px;
   width: 100%;
@@ -46,7 +46,7 @@
   font-family: 'Sabon Next LT Pro', serif;
   font-style: italic;
   font-weight: 300;
-  color: #FFFAE6;
+  color: #FFFCF8;
   margin: 0;
   margin-bottom: 20px;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
@@ -79,7 +79,7 @@
 
 .productImage {
   height: 300px;
-  background: #FFFAE6;
+  background: #FFFCF8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -150,7 +150,7 @@
 .filterButton {
   padding: 12px 24px;
   background: #000000;
-  color: #FFFAE6;
+  color: #FFFCF8;
   border: none;
   border-radius: 10px;
   font-size: 16px;

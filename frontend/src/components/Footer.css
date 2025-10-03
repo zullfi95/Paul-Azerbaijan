@@ -46,7 +46,7 @@
 }
 
 .footer-title {
-  color: var(--Ivory-colour-PAUL, #FFFAE6);
+  color: var(--Ivory-colour-PAUL, #FFFCF8);
   text-align: center;
   font-family: "Sabon Next LT";
   font-size: 17.6px;
@@ -71,7 +71,7 @@
 }
 
 .footer-link {
-  color: var(--Ivory-colour-PAUL, #FFFAE6);
+  color: var(--Ivory-colour-PAUL, #FFFCF8);
   font-family: "Parisine Pro Gris";
   font-size: 13px;
   font-style: normal;

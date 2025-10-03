@@ -2,7 +2,7 @@
 
 .hero {
   width: 100%;
-  background: #FFFAE6;
+  background: #FFFCF8;
   padding: 0;
   position: relative;
   overflow: hidden;
@@ -23,7 +23,7 @@
   z-index: 1;
   display: flex;
   justify-content: center;
-  background: #FFFAE6;
+  background: #FFFCF8;
 }
 
 .hero-content {
@@ -37,6 +37,7 @@
   margin: 27px 0;
   max-width: 1140px;
   width: 100%;
+  
 }
 
 /* Left Column - Image */
@@ -69,7 +70,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  background: #FFFAE6;
+  background: #FFFCF8;
   color: #000;
   padding: 9px 17px;
   border-radius: 0 0 3px 0;
@@ -86,7 +87,7 @@
 .hero-overlay-label:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  background: #FFFAE6;
+  background: #FFFCF8;
 }
 
 

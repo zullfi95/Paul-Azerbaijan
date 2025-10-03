@@ -1,7 +1,7 @@
 /* Menu Section Styles */
 .menu-section {
   padding: 43px 0;
-  background: #FFFAE6;
+  background: #FFFCF8;
   position: relative;
   animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
 }
@@ -100,7 +100,7 @@
 }
 
 .menu-card-overlay h3 {
-  color: var(--Ivory-colour-PAUL, #FFFAE6);
+  color: var(--Ivory-colour-PAUL, #FFFCF8);
   leading-trim: both;
   text-edge: cap;
   font-family: "Sabon Next LT Pro";

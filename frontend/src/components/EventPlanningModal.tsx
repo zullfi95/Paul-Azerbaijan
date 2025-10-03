@@ -130,7 +130,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
         <div style={{
           padding: '2rem 2rem 1rem 2rem',
           background: '#000000',
-          color: '#FFFAE6',
+          color: '#FFFCF8',
           position: 'relative'
         }}>
           {/* Кнопка закрытия */}
@@ -143,7 +143,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               width: '40px',
               height: '40px',
               backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              color: '#FFFAE6',
+              color: '#FFFCF8',
               border: '1px solid rgba(255, 255, 255, 0.2)',
               borderRadius: '50%',
               display: 'flex',
@@ -173,7 +173,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
             marginRight: '60px'
           }}>
             <h2 style={{
-              color: '#FFFAE6',
+              color: '#FFFCF8',
               fontWeight: 400,
               fontSize: '16px',
               margin: '0 0 1rem 0',
@@ -363,7 +363,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                   style={{
                     width: '100%',
                     padding: '1rem 2rem',
-                    backgroundColor: isFormValid() ? '#FFFAE6' : 'rgba(255, 255, 255, 0.1)',
+                    backgroundColor: isFormValid() ? '#FFFCF8' : 'rgba(255, 255, 255, 0.1)',
                     color: isFormValid() ? '#000000' : 'rgba(255, 255, 255, 0.5)',
                     border: 'none',
                     borderRadius: '12px',
@@ -384,7 +384,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                   }}
                   onMouseLeave={(e) => {
                     if (isFormValid()) {
-                      e.currentTarget.style.backgroundColor = '#FFFAE6';
+                      e.currentTarget.style.backgroundColor = '#FFFCF8';
                       e.currentTarget.style.transform = 'translateY(0)';
                       e.currentTarget.style.boxShadow = 'none';
                     }
@@ -397,7 +397,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
 
             {/* Примечание о конфиденциальности */}
             <p style={{
-              color: '#FFFAE6',
+              color: '#FFFCF8',
               fontSize: '16px',
               fontStyle: 'normal',
               fontWeight: 400,

@@ -25,7 +25,7 @@ const QuantitySelector = ({ quantity, onUpdate }: { quantity: number; onUpdate: 
       display: 'flex',
       alignItems: 'center',
       gap: '7px',
-      backgroundColor: '#FFFAE6',
+      backgroundColor: '#FFFCF8',
       border: '1px solid #000',
       borderRadius: '3px',
       padding: '3px'

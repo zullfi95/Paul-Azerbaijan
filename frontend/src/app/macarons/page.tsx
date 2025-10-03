@@ -227,14 +227,14 @@ export default function MacaronsPage() {
   }, [showSortMenu]);
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FFFAE6' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFCF8' }}>
       <Header />
       
       <div className="navbar-spacing">
         {/* Breadcrumbs */}
         <div style={{
           padding: '1rem 0',
-          backgroundColor: '#FFFAE6',
+          backgroundColor: '#FFFCF8',
           borderBottom: '1px solid rgba(0,0,0,0.06)'
         }}>
           <div className="container-paul">
@@ -353,7 +353,7 @@ export default function MacaronsPage() {
               <button style={{
                 padding: '12px 24px',
                 backgroundColor: '#000000',
-                color: '#FFFAE6',
+                color: '#FFFCF8',
                 border: 'none',
                 borderRadius: '10px',
                 fontSize: '16px',
@@ -413,7 +413,7 @@ export default function MacaronsPage() {
                   <div 
                     style={{
                       height: '300px',
-                      backgroundColor: '#FFFAE6',
+                      backgroundColor: '#FFFCF8',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',

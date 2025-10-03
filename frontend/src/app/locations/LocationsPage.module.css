@@ -2,7 +2,7 @@
 
 .locationsPage {
   min-height: 100vh;
-  background: #FFFAE6; /* PAUL Primary 1 */
+  background: #FFFCF8; /* PAUL Primary 1 */
   font-family: 'Sabon Next LT Pro', serif;
 }
 
@@ -117,7 +117,7 @@
 
 /* Location Card - относительно хедера */
 .locationCard {
-  background: #FFFAE6; /* PAUL Primary 1 */
+  background: #FFFCF8; /* PAUL Primary 1 */
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);

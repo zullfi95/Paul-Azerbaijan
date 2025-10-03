@@ -415,14 +415,14 @@ export default function CateringPage() {
   }, [showSortMenu]);
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FFFAE6' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFCF8' }}>
       <Header />
       
       <div className="navbar-spacing">
         {/* Breadcrumbs */}
         <div style={{
           padding: '1rem 0',
-          backgroundColor: '#FFFAE6',
+          backgroundColor: '#FFFCF8',
           borderBottom: '1px solid rgba(0,0,0,0.06)'
         }}>
           <div style={{
@@ -455,7 +455,7 @@ export default function CateringPage() {
         {/* Category Navigation */}
         <div style={{
           padding: '1.5rem 0',
-          backgroundColor: '#FFFAE6'
+          backgroundColor: '#FFFCF8'
         }}>
           <div style={{
             maxWidth: '1140px',
@@ -530,7 +530,7 @@ export default function CateringPage() {
         {/* Page Title */}
         <div style={{
           padding: '2rem 0',
-          backgroundColor: '#FFFAE6',
+          backgroundColor: '#FFFCF8',
           textAlign: 'center'
         }}>
           <div style={{
@@ -553,7 +553,7 @@ export default function CateringPage() {
             {/* Brunch Menu Section */}
             {selectedCategory === 'Brunch Menu' && (
               <div style={{
-                backgroundColor: '#FFFAE6',
+                backgroundColor: '#FFFCF8',
                 padding: '1rem 0',
                 marginBottom: '1rem'
               }}>
@@ -1082,7 +1082,7 @@ export default function CateringPage() {
             {/* Lunch Menu Section */}
             {selectedCategory === 'Lunch Menu' && (
               <div style={{
-                backgroundColor: '#FFFAE6',
+                backgroundColor: '#FFFCF8',
                 padding: '2rem 0',
                 marginBottom: '1rem'
               }}>
@@ -1320,7 +1320,7 @@ export default function CateringPage() {
                           justifyContent: 'center',
                           gap: '1rem',
                           marginBottom: '1rem',
-                          backgroundColor: '#FFFAE6',
+                          backgroundColor: '#FFFCF8',
                           border: '1px solid #E5E5E5',
                           borderRadius: '6px',
                           padding: '0.5rem 1rem'
@@ -1515,7 +1515,7 @@ export default function CateringPage() {
                           justifyContent: 'center',
                           gap: '1rem',
                           marginBottom: '1rem',
-                          backgroundColor: '#FFFAE6',
+                          backgroundColor: '#FFFCF8',
                           border: '1px solid #E5E5E5',
                           borderRadius: '6px',
                           padding: '0.5rem 1rem'
@@ -1771,7 +1771,7 @@ export default function CateringPage() {
                           justifyContent: 'center',
                           gap: '1rem',
                           marginBottom: '1rem',
-                          backgroundColor: '#FFFAE6',
+                          backgroundColor: '#FFFCF8',
                           border: '1px solid #E5E5E5',
                           borderRadius: '6px',
                           padding: '0.5rem 1rem'
@@ -1984,7 +1984,7 @@ export default function CateringPage() {
                           justifyContent: 'center',
                           gap: '1rem',
                           marginBottom: '1rem',
-                          backgroundColor: '#FFFAE6',
+                          backgroundColor: '#FFFCF8',
                           border: '1px solid #E5E5E5',
                           borderRadius: '6px',
                           padding: '0.5rem 1rem'
@@ -2218,7 +2218,7 @@ export default function CateringPage() {
                           justifyContent: 'center',
                           gap: '1rem',
                           marginBottom: '1rem',
-                          backgroundColor: '#FFFAE6',
+                          backgroundColor: '#FFFCF8',
                           border: '1px solid #E5E5E5',
                           borderRadius: '6px',
                           padding: '0.5rem 1rem'

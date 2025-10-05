@@ -7,6 +7,7 @@ import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
 import BasketIcon from '../../components/BasketIcon';
 import CartModal from '../../components/CartModal';
+import Breadcrumbs from '../../components/Breadcrumbs';
 import { useCart } from '../../contexts/CartContext';
 import { useCartModal } from '../../contexts/CartModalContext';
 import { useNotification } from '../../contexts/NotificationContext';
@@ -238,24 +239,12 @@ export default function ViennoiseriePage() {
           borderBottom: '1px solid rgba(0,0,0,0.06)'
         }}>
           <div className="container-paul">
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              fontSize: '0.875rem',
-              color: '#6b7280'
-            }}>
-              <span 
-                style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                onClick={() => router.push('/')}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#1A1A1A'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#6b7280'}
-              >
-                Home
-              </span>
-              <span>/</span>
-              <span style={{ color: '#1A1A1A', fontWeight: 500 }}>Viennoiserie</span>
-            </div>
+            <Breadcrumbs 
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'Viennoiserie', isActive: true }
+              ]}
+            />
           </div>
         </div>
 

@@ -6,6 +6,7 @@ import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 import FeaturesSection from '../../../components/FeaturesSection';
 import BasketIcon from '../../../components/BasketIcon';
+import Breadcrumbs from '../../../components/Breadcrumbs';
 import { useCart } from '../../../contexts/CartContext';
 import Link from 'next/link';
 import styles from './ProductPage.module.css';
@@ -207,11 +208,13 @@ export default function ProductPage() {
       {/* Breadcrumbs */}
       <div className={styles.breadcrumbs}>
         <div className={styles.container}>
-          <Link href="/">Home</Link>
-          <span> / </span>
-          <Link href="/catering">Catering Menu</Link>
-          <span> / </span>
-          <span>{product.name}</span>
+          <Breadcrumbs 
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Catering Menu', href: '/catering' },
+              { label: product.name, isActive: true }
+            ]}
+          />
         </div>
       </div>
 

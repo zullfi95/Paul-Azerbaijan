@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
+import Breadcrumbs from '../../components/Breadcrumbs';
 import { useCart } from '../../contexts/CartContext';
 
 interface Product {
@@ -177,24 +178,18 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ backgroundColor: '#FFFCF8' }}>
       <Header />
       
       {/* Breadcrumbs */}
-      <div style={{ paddingTop: '80px', paddingBottom: '20px', backgroundColor: '#f8f9fa' }}>
+      <div style={{ paddingTop: '80px', paddingBottom: '20px', backgroundColor: '#FFFCF8' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#6b7280' }}>
-            <span 
-              onClick={() => router.push('/')}
-              style={{ cursor: 'pointer', textDecoration: 'none' }}
-              onMouseEnter={(e) => e.currentTarget.style.color = '#1A1A1A'}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#6b7280'}
-            >
-              Home
-            </span>
-            <span>›</span>
-            <span style={{ color: '#1A1A1A', fontWeight: '500' }}>Search</span>
-          </div>
+          <Breadcrumbs 
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Search', isActive: true }
+            ]}
+          />
         </div>
       </div>
 
@@ -259,7 +254,7 @@ export default function SearchPage() {
       </div>
 
       {/* Filters and Results */}
-      <div style={{ padding: '40px 0', backgroundColor: '#f8f9fa' }}>
+      <div style={{ padding: '40px 0', backgroundColor: '#FFFCF8' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
           
           {/* Filters */}

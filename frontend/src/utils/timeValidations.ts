@@ -1,11 +1,11 @@
 import { isAfter, isBefore, subHours, addHours, differenceInHours, parseISO } from 'date-fns';
 
 /**
- * Проверяет, можно ли создать заказ (за 48 часов до мероприятия)
+ * Проверяет, можно ли создать заказ (за 72 часов до мероприятия)
  */
 export function canCreateOrder(eventDate: Date): boolean {
   const now = new Date();
-  const minOrderTime = subHours(eventDate, 48);
+  const minOrderTime = subHours(eventDate, 72);
   return isAfter(now, minOrderTime) === false;
 }
 
@@ -23,7 +23,7 @@ export function canModifyOrder(eventDate: Date): boolean {
  */
 export function getHoursUntilOrderDeadline(eventDate: Date): number {
   const now = new Date();
-  const deadline = subHours(eventDate, 48);
+  const deadline = subHours(eventDate, 72);
   return Math.max(0, differenceInHours(deadline, now));
 }
 
@@ -45,10 +45,10 @@ export function isPastDate(date: Date): boolean {
 }
 
 /**
- * Получает минимальную дату для создания заказа (сегодня + 48 часов)
+ * Получает минимальную дату для создания заказа (сегодня + 72 часов)
  */
 export function getMinOrderDate(): string {
-  const minDate = addHours(new Date(), 48);
+  const minDate = addHours(new Date(), 72);
   return minDate.toISOString().split('T')[0];
 }
 
@@ -72,7 +72,7 @@ export function getTimeValidationMessage(eventDate: Date, isModification: boolea
     if (!canCreateOrder(eventDate)) {
       const hours = getHoursUntilOrderDeadline(eventDate);
       if (hours <= 0) {
-        return 'Заказы принимаются не менее чем за 48 часов до мероприятия. Вы можете отправить запрос, но подтверждение не гарантируется.';
+        return 'Заказы принимаются не менее чем за 72 часов до мероприятия. Вы можете отправить запрос, но подтверждение не гарантируется.';
       }
       return `До крайнего срока заказа осталось ${hours} часов`;
     }

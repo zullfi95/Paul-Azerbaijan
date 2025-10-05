@@ -30,10 +30,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
     const currentQuantity = cartItems.find(item => item.id === itemId)?.quantity || 0;
     if (currentQuantity > 1) {
       updateQuantity(itemId, currentQuantity - 1);
-      showNotification('Məhsulun miqdarı azaldıldı');
+      showNotification('Item quantity decreased');
     } else {
       removeItem(itemId);
-      showNotification('Məhsul səbətdən silindi');
+      showNotification('Item removed from cart');
     }
   };
 
@@ -157,7 +157,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                 margin: '0 0 0.5rem 0',
                 fontFamily: '"Sabon Next LT Pro", serif'
               }}>
-                Səbətiniz
+                Your Cart
               </h2>
               <p style={{
                 color: 'rgba(255, 255, 255, 0.8)',
@@ -167,13 +167,13 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                 alignItems: 'center',
                 gap: '0.5rem'
               }}>
-                <span>{getTotalItems()} məhsul</span>
+                <span>{getTotalItems()} {getTotalItems() === 1 ? 'item' : 'items'}</span>
                 <span>•</span>
                 <span style={{
                   fontWeight: 600,
                   color: '#D4AF37'
                 }}>
-                  ₼{getTotalPrice()}
+                  ₼{getTotalPrice().toFixed(2)}
                 </span>
               </p>
             </div>
@@ -212,18 +212,18 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   margin: '1rem 0 0.5rem 0',
                   fontFamily: '"Sabon Next LT Pro", serif'
                 }}>
-                  Səbətiniz boşdur
+                  Your cart is empty
                 </h3>
                 <p style={{
                   fontSize: '0.875rem',
                   color: '#adb5bd',
                   margin: '0 0 1.5rem 0'
                 }}>
-                  Məhsullar əlavə etmək üçün menyuya keçin
+                  Browse our menu to add products
                 </p>
                 <button
                   onClick={() => {
-                    showNotification('Katerinq menyusuna keçin və məhsul seçin');
+                    showNotification('Go to catering menu to select products');
                     onClose();
                   }}
                   style={{
@@ -253,7 +253,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                     e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
-                  Məhsul əlavə et
+                  Add Products
                 </button>
               </div>
             ) : (
@@ -304,13 +304,11 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                       <Image 
                         src={cartItem.image} 
                         alt={cartItem.name}
-                        layout="fill"
-                        objectFit="cover"
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'scale(1)';
+                        fill
+                        sizes="70px"
+                        style={{
+                          objectFit: 'cover',
+                          transition: 'transform 0.3s ease'
                         }}
                       />
                       {/* Индикатор количества на изображении */}
@@ -452,7 +450,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                       <button
                         onClick={() => {
                           addItem(cartItem);
-                          showNotification('Məhsulun miqdarı artırıldı');
+                          showNotification('Item quantity increased');
                         }}
                         style={{
                           width: '36px',
@@ -490,7 +488,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                       <button
                         onClick={() => {
                           removeItem(cartItem.id);
-                          showNotification('Məhsul səbətdən silindi');
+                          showNotification('Item removed from cart');
                         }}
                         style={{
                           width: '36px',
@@ -558,14 +556,14 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   margin: '0 0 0.25rem 0',
                   fontFamily: '"Sabon Next LT Pro", serif'
                 }}>
-                  Ümumi məbləğ
+                  Total Amount
                 </h3>
                 <p style={{
                   fontSize: '0.875rem',
                   color: '#6c757d',
                   margin: 0
                 }}>
-                  {getTotalItems()} məhsul
+                  {getTotalItems()} {getTotalItems() === 1 ? 'item' : 'items'}
                 </p>
               </div>
               <div style={{
@@ -574,7 +572,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                 color: '#D4AF37',
                 fontFamily: '"Sabon Next LT Pro", serif'
               }}>
-                ₼{getTotalPrice()}
+                ₼{getTotalPrice().toFixed(2)}
               </div>
             </div>
             
@@ -618,11 +616,11 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   e.currentTarget.style.borderColor = '#dc3545';
                 }}
               >
-                Təmizlə
+                Clear Cart
               </button>
               <button 
                 onClick={() => {
-                  showNotification('Səbət saxlanıldı, davam edə bilərsiniz');
+                  showNotification('Cart saved, you can continue shopping');
                   onClose();
                 }}
                 style={{
@@ -655,7 +653,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   e.currentTarget.style.transform = 'translateY(0) scale(1)';
                   e.currentTarget.style.boxShadow = '0 4px 20px rgba(26, 26, 26, 0.1)';
                 }}>
-                Davam et
+                Continue Shopping
               </button>
               
               <button 
@@ -690,7 +688,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   e.currentTarget.style.transform = 'translateY(0) scale(1)';
                   e.currentTarget.style.boxShadow = '0 4px 20px rgba(212, 175, 55, 0.2)';
                 }}>
-                Səbətə keç
+                Go to Cart
               </button>
             </div>
           </div>

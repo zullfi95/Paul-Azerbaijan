@@ -1,43 +1,57 @@
 import React from 'react';
 import Link from 'next/link';
+import styles from './Breadcrumbs.module.css';
 
 type Crumb = {
   label: string;
   href?: string;
+  isActive?: boolean;
 };
 
 type Props = {
   items: Crumb[];
   separator?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
 };
 
-export default function Breadcrumbs({ items, separator = '›' }: Props) {
+export default function Breadcrumbs({ items, separator = '/', className = "", style = {} }: Props) {
   if (!items || items.length === 0) return null;
 
   return (
-    <nav aria-label="breadcrumb" style={{ marginBottom: '1rem' }}>
-      <ol style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', listStyle: 'none', padding: 0, margin: 0 }}>
-        {items.map((item, idx) => {
-          const isLast = idx === items.length - 1;
-          return (
-            <li key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              {item.href && !isLast ? (
-                <Link href={item.href} style={{ color: '#6c757d', textDecoration: 'none', fontWeight: 500 }}>
-                  {item.label}
-                </Link>
-              ) : (
-                <span aria-current={isLast ? 'page' : undefined} style={{ color: isLast ? '#1A1A1A' : '#6c757d', fontWeight: isLast ? 700 : 500 }}>
-                  {item.label}
-                </span>
-              )}
-
-              {!isLast && (
-                <span aria-hidden style={{ color: '#adb5bd', marginLeft: '0.25rem', marginRight: '0.25rem' }}>{separator}</span>
-              )}
-            </li>
-          );
-        })}
-      </ol>
+    <nav 
+      aria-label="breadcrumb" 
+      className={`${styles.breadcrumb} ${className}`}
+      style={style}
+    >
+      {items.map((item, idx) => {
+        const isLast = idx === items.length - 1;
+        const isActive = item.isActive || isLast;
+        
+        return (
+          <div key={idx} className={styles.breadcrumbItem}>
+            {idx > 0 && (
+              <span className={styles.separator}>{separator}</span>
+            )}
+            
+            {item.href && !isActive ? (
+              <Link 
+                href={item.href} 
+                className={styles.link}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <span 
+                aria-current={isActive ? 'page' : undefined} 
+                className={isActive ? styles.textActive : styles.text}
+              >
+                {item.label}
+              </span>
+            )}
+          </div>
+        );
+      })}
     </nav>
   );
 }

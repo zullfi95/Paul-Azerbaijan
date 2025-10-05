@@ -20,7 +20,7 @@ export default function AboutPage() {
       </section>
 
       {/* История бренда */}
-      <section className="section-padding bg-white">
+      <section className="section-padding" style={{ backgroundColor: '#FFFCF8' }}>
         <div className="container-paul">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -124,7 +124,7 @@ export default function AboutPage() {
       </section>
 
       {/* Наша команда */}
-      <section className="section-padding bg-white">
+      <section className="section-padding" style={{ backgroundColor: '#FFFCF8' }}>
         <div className="container-paul">
           <div className="text-center mb-16">
             <h2 className="text-h2 font-serif font-bold text-paul-primary mb-4">

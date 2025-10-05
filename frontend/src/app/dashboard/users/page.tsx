@@ -9,7 +9,7 @@ import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/a
 import { useAuthGuard, canManageUsers } from "../../../utils/authConstants";
 
 // PAUL brand palette and typography
-const paul = { black: '#1A1A1A', beige: '#EBDCC8', border: '#EDEAE3', gray: '#4A4A4A', white: '#FFFFFF' };
+const paul = { black: '#1A1A1A', beige: '#EBDCC8', border: '#EDEAE3', gray: '#4A4A4A', white: '#FFFCF8' };
 const serifTitle: React.CSSProperties = { fontFamily: 'Playfair Display, serif' };
 
 interface UserFormData {
@@ -312,6 +312,21 @@ export default function UsersPage() {
           }}>
             <span>Пользователи</span>
           </Link>
+          
+          {user?.user_type === 'staff' && user?.staff_role === 'coordinator' && (
+            <Link href="/dashboard/reset-password" style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              padding: "10px 16px",
+              textDecoration: "none",
+              color: pathname?.startsWith("/dashboard/reset-password") ? paul.black : paul.gray,
+              background: pathname?.startsWith("/dashboard/reset-password") ? paul.beige : "transparent",
+              borderRight: pathname?.startsWith("/dashboard/reset-password") ? `3px solid ${paul.black}` : "3px solid transparent",
+            }}>
+              <span>🔑 Сброс паролей</span>
+            </Link>
+          )}
           
           <Link href="/dashboard/calendar" style={{
             display: "flex",

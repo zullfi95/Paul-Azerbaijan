@@ -7,6 +7,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
 import FeedbackButton from '../../components/FeedbackButton';
+import Breadcrumbs from '../../components/Breadcrumbs';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import { Order, API_CONFIG, getAuthHeaders } from '../../config/api';
@@ -429,16 +430,12 @@ export default function ProfilePage() {
       
       <div className="navbar-spacing">
         {/* Breadcrumbs */}
-        <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
-          <ol className={styles.breadcrumbList}>
-            <li className={styles.breadcrumbItem}>
-              <Link href="/" className={styles.breadcrumbLink}>Home</Link>
-            </li>
-            <li className={styles.breadcrumbItem}>
-              <span>My Account</span>
-            </li>
-          </ol>
-        </nav>
+        <Breadcrumbs 
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'My Account', isActive: true }
+          ]}
+        />
 
 
 

@@ -55,7 +55,7 @@ export default function ContactPage() {
       </section>
 
       {/* Контактная информация */}
-      <section className="section-padding bg-white">
+      <section className="section-padding" style={{ backgroundColor: '#FFFCF8' }}>
         <div className="container-paul">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Контактные данные */}
@@ -300,7 +300,7 @@ export default function ContactPage() {
             </p>
           </div>
           
-          <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <div className="rounded-2xl p-8 shadow-lg" style={{ backgroundColor: '#FFFCF8' }}>
             <div className="w-full h-96 bg-gradient-to-br from-paul-accent-bread/30 to-paul-accent-gold/20 rounded-xl flex items-center justify-center">
               <div className="text-center">
                 <div className="w-20 h-20 bg-paul-accent-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">

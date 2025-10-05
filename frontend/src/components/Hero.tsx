@@ -21,8 +21,8 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    title: "Paul Catering",
-    titleBold: "Paul",
+    title: "PAUL Catering",
+    titleBold: "PAUL",
     titleNormal: "Catering",
     description: "Discover the delightful world of our bakery, where every bite is a taste of happiness!",
     image: "/images/hero-bread.jpg",
@@ -32,8 +32,8 @@ const slides: Slide[] = [
   },
   {
     id: 2,
-    title: "Paul Bakery",
-    titleBold: "Paul",
+    title: "PAUL Bakery",
+    titleBold: "PAUL",
     titleNormal: "Bakery",
     description: "Experience the art of traditional French baking with our premium selection of pastries and breads.",
     image: "/images/cakeHero.jpg",
@@ -43,12 +43,12 @@ const slides: Slide[] = [
   },
   {
     id: 3,
-    title: "Paul Stores",
-    titleBold: "Paul",
+    title: "PAUL Stores",
+    titleBold: "PAUL",
     titleNormal: "Stores",
     description: "Visit our charming locations and immerse yourself in the authentic French bakery experience.",
     image: "/images/cakes.jpg",
-    imageAlt: "Paul bakery store interior",
+    imageAlt: "PAUL bakery store interior",
     buttonText: "Find Store",
     buttonLink: "/stores"
   }

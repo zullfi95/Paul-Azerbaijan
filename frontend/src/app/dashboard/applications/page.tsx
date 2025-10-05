@@ -33,7 +33,7 @@ interface QuickFilter {
 }
 
 // PAUL brand palette and typography
-const paul = { black: '#1A1A1A', beige: '#EBDCC8', border: '#EDEAE3', gray: '#4A4A4A', white: '#FFFFFF' };
+const paul = { black: '#1A1A1A', beige: '#EBDCC8', border: '#EDEAE3', gray: '#4A4A4A', white: '#FFFCF8' };
 const serifTitle: React.CSSProperties = { fontFamily: 'Playfair Display, serif' };
 
 const statusLabels = {

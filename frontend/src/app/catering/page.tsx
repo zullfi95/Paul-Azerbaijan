@@ -7,6 +7,7 @@ import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
 import BasketIcon from '../../components/BasketIcon';
 import CartModal from '../../components/CartModal';
+import Breadcrumbs from '../../components/Breadcrumbs';
 import { useCart } from '../../contexts/CartContext';
 import { useCartModal } from '../../contexts/CartModalContext';
 import { useNotification } from '../../contexts/NotificationContext';
@@ -430,27 +431,14 @@ export default function CateringPage() {
             margin: '0 auto',
             padding: '0 20px'
           }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              fontSize: '14px',
-              color: '#6b7280',
-              fontFamily: '"Sabon Next LT Pro"'
-            }}>
-              <span 
-                style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                onClick={() => router.push('/')}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#1A1A1A'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#6b7280'}
-              >
-                Home
-              </span>
-              <span>/</span>
-              <span style={{ color: '#000', fontWeight: 500, fontFamily: '"Sabon Next LT Pro"' }}>Catering Menu</span>
-            </div>
+            <Breadcrumbs 
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'Catering Menu', isActive: true }
+              ]}
+            />
           </div>
-              </div>
+        </div>
 
         {/* Category Navigation */}
         <div style={{

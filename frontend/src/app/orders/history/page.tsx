@@ -173,7 +173,7 @@ export default function OrderHistoryPage() {
   return (
     <div style={{ 
       padding: '2rem',
-      backgroundColor: 'white',
+      backgroundColor: '#FFFCF8',
       minHeight: '100vh'
     }}>
       <div style={{
@@ -418,7 +418,7 @@ export default function OrderHistoryPage() {
         }}
         onClick={closeOrderModal}>
           <div style={{
-            backgroundColor: 'white',
+            backgroundColor: '#FFFCF8',
             borderRadius: '1.5rem',
             padding: '2.5rem',
             width: '100%',

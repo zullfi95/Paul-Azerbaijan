@@ -6,6 +6,7 @@ import { getApiUrl, getAuthHeaders, User } from '../config/api';
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<{ ok: boolean; user: User | null }>;
+  register: (email: string, password: string, name: string, surname: string, phone: string) => Promise<{ ok: boolean; user: User | null }>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => Promise<boolean>;
   isAuthenticated: boolean;
@@ -295,9 +296,91 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, []);
 
+  const register = useCallback(async (email: string, password: string, name: string, surname: string, phone: string) => {
+    try {
+      const url = getApiUrl('register');
+      console.log('🔐 Register attempt:', { 
+        email, 
+        name,
+        surname,
+        phone,
+        url,
+        baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+      });
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ 
+          email, 
+          password, 
+          name, 
+          surname, 
+          phone 
+        }),
+      });
+
+      console.log('📡 Register response:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
+      if (!response.ok) {
+        const responseText = await response.text();
+        console.error('❌ Register failed - Response text:', responseText);
+
+        try {
+          const errorData = JSON.parse(responseText);
+          console.error('❌ Register failed - Parsed error:', errorData);
+        } catch (parseError) {
+          console.error('❌ Register failed - Could not parse response as JSON:', parseError);
+        }
+        return { ok: false, user: null };
+      }
+
+      const responseText = await response.text();
+      console.log('📄 Register response body:', responseText);
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('❌ Could not parse successful response as JSON:', parseError);
+        return { ok: false, user: null };
+      }
+
+      if (data.success && data.data) {
+        // Сохраняем токен в localStorage
+        const token = data.data.token;
+        console.log('💾 Saving auth token:', !!token);
+        console.log('💾 Register response data:', data.data);
+        console.log('💾 User data:', data.data.user);
+        localStorage.setItem('auth_token', token);
+
+        // Сохраняем пользователя
+        setUser(data.data.user);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        console.log('✅ Register successful, user:', data.data.user.name);
+        console.log('✅ User type:', data.data.user.user_type);
+        return { ok: true, user: data.data.user };
+      } else {
+        console.warn('⚠️ Unexpected register response format:', data);
+        return { ok: false, user: null };
+      }
+    } catch (error) {
+      console.error('🌐 Register network error:', error);
+      return { ok: false, user: null };
+    }
+  }, []);
+
   const value: AuthContextType = {
     user,
     login,
+    register,
     logout,
     updateUser,
     isAuthenticated: !!user,

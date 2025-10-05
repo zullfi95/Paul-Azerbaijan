@@ -1,12 +1,14 @@
 "use client";
 
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
+import Breadcrumbs from '../../components/Breadcrumbs';
 import { useCart } from '../../contexts/CartContext';
+import styles from './CartPage.module.css';
 
 // Компонент QuantitySelector
 const QuantitySelector = ({ quantity, onUpdate }: { quantity: number; onUpdate: (newQuantity: number) => void }) => {
@@ -21,54 +23,21 @@ const QuantitySelector = ({ quantity, onUpdate }: { quantity: number; onUpdate: 
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '7px',
-      backgroundColor: '#FFFCF8',
-      border: '1px solid #000',
-      borderRadius: '3px',
-      padding: '3px'
-    }}>
+    <div className={styles.quantitySelector}>
       <button
         onClick={handleDecrease}
-        style={{
-          width: '24px',
-          height: '24px',
-          backgroundColor: 'transparent',
-          border: 'none',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
+        className={styles.quantityButton}
+        aria-label="Decrease quantity"
       >
-        –
+        −
       </button>
-      <span style={{
-        fontSize: '14px',
-        fontWeight: 'bold',
-        minWidth: '17px',
-        textAlign: 'center'
-      }}>
+      <span className={styles.quantityValue}>
         {quantity}
       </span>
       <button
         onClick={handleIncrease}
-        style={{
-          width: '24px',
-          height: '24px',
-          backgroundColor: 'transparent',
-          border: 'none',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
+        className={styles.quantityButton}
+        aria-label="Increase quantity"
       >
         +
       </button>
@@ -85,620 +54,175 @@ export default function CartPage() {
     getTotalPrice 
   } = useCart();
 
-  // Подсчет общей суммы через reduce
-  const totalAmount = getTotalPrice();
+  // Подсчет общей суммы через useMemo для оптимизации
+  const totalAmount = useMemo(() => getTotalPrice(), [cartData, getTotalPrice]);
 
-  const goToCatering = () => {
+  const goToCatering = useCallback(() => {
     router.push('/catering');
-  };
+  }, [router]);
 
-  const goToCheckout = () => {
+  const goToCheckout = useCallback(() => {
     router.push('/catering/order');
-  };
+  }, [router]);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className={styles.pageContainer}>
       <Header />
       
-      <main style={{ flex: 1, paddingTop: '0' }}>
-        <div className="container-paul" style={{ padding: '2rem 0' }}>
+      <main className={styles.mainContent}>
+        <div className={styles.containerPaul}>
           {/* Breadcrumbs */}
-          <div style={{
-            padding: '1rem 0',
-            backgroundColor: 'white',
-            borderBottom: '1px solid rgba(0,0,0,0.06)'
-          }}>
-          <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                fontSize: '0.875rem',
-              color: '#6b7280'
-            }}>
-              <span 
-                style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                onClick={() => router.push('/')}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#1A1A1A'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#6b7280'}
-              >
-                Home
-              </span>
-              <span>/</span>
-              <span 
-                style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                onClick={() => router.push('/catering')}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#1A1A1A'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#6b7280'}
-              >
-                Catering Menu
-              </span>
-              <span>/</span>
-              <span style={{ color: '#1A1A1A', fontWeight: 500 }}>Shopping Cart</span>
-            </div>
+          <div className={styles.breadcrumbsSection}>
+            <Breadcrumbs 
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'Catering Menu', href: '/catering' },
+                { label: 'Shopping Cart', isActive: true }
+              ]}
+            />
           </div>
 
           {/* Заголовок страницы */}
-          <div style={{
-            textAlign: 'center',
-            marginBottom: '2rem',
-            padding: '2rem 0'
-          }}>
-            <h1 style={{
-              fontSize: '2.5rem',
-              fontWeight: '600',
-              color: '#1A1A1A',
-              marginBottom: '1rem',
-              fontFamily: '"Sabon Next LT Pro", serif'
-            }}>
+          <div className={styles.pageHeader}>
+            <h1 className={styles.pageTitle}>
               Shopping cart
             </h1>
           </div>
 
           {cartData.length === 0 ? (
             /* Пустая корзина */
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '4rem 2rem',
-              textAlign: 'center',
-              backgroundColor: '#f8f9fa',
-              borderRadius: '16px',
-              border: '2px dashed #dee2e6'
-            }}>
-              <h2 style={{
-                fontSize: '1.5rem',
-                fontWeight: 600,
-                color: '#6c757d',
-                margin: '1.5rem 0 0.5rem 0',
-                fontFamily: '"Sabon Next LT Pro", serif'
-              }}>
+            <div className={styles.emptyCart}>
+              <h2 className={styles.emptyCartTitle}>
                 Your cart is empty
               </h2>
-              <p style={{
-                fontSize: '1rem',
-                color: '#adb5bd',
-                margin: '0 0 2rem 0',
-                maxWidth: '400px'
-              }}>
+              <p className={styles.emptyCartText}>
                 Add products to your cart by browsing our catering menu
               </p>
-                <button
-                  onClick={goToCatering}
-                  style={{
-                    padding: '1rem 2rem',
-                    backgroundColor: '#1A1A1A',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                  fontFamily: '"Sabon Next LT Pro", serif'
-                }}
+              <button
+                onClick={goToCatering}
+                className={styles.emptyCartButton}
               >
                 Go to Menu
-                </button>
+              </button>
             </div>
           ) : (
             /* Корзина с товарами */
-            <div style={{
-              maxWidth: '1200px',
-              margin: '0 auto'
-            }}>
-              {/* Desktop Table Header */}
-              <div className="desktop-only" style={{
-              display: 'grid',
-                gridTemplateColumns: '1fr auto auto',
-              gap: '2rem',
-                padding: '1rem 0',
-                borderBottom: '2px solid #1A1A1A',
-                marginBottom: '2rem',
-                alignItems: 'center'
-                      }}>
-                        <span style={{
-                  fontSize: '0.96rem',
-                  fontWeight: '600',
-                          color: '#1A1A1A',
-                          fontFamily: '"Sabon Next LT Pro", serif'
-                        }}>
+            <div className={styles.cartContainer}>
+              {/* Table Header */}
+              <div className={styles.tableHeader}>
+                <span className={styles.tableHeaderLabel}>
                   Product
-                        </span>
-                        <span style={{
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  color: '#1A1A1A',
-                  fontFamily: '"Sabon Next LT Pro", serif',
-                  textAlign: 'center'
-                }}>
-                  Quantity
-                        </span>
-                        <span style={{
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  color: '#1A1A1A',
-                          fontFamily: '"Sabon Next LT Pro", serif',
-                  textAlign: 'right'
-                        }}>
+                </span>
+                <span className={styles.tableHeaderLabel}>
+                  {/* Пустая колонка для количества */}
+                </span>
+                <span className={`${styles.tableHeaderLabel} ${styles.tableHeaderLabelRight}`}>
                   Total price
-                        </span>
-                    </div>
+                </span>
+              </div>
                     
               {/* Cart Items */}
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1.5rem',
-                marginBottom: '3rem'
-              }}>
+              <div className={styles.cartItems}>
                 {cartData.map((item) => (
-                  <div key={item.id} className="cart-item">
-                    {/* Desktop Layout */}
-                    <div className="desktop-layout" style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr auto auto',
-                      gap: '2rem',
-                      padding: '1.5rem 0',
-                      borderBottom: '1px solid rgba(0,0,0,0.1)',
-                      alignItems: 'center'
-                    }}>
-                      {/* Product Info */}
-                     <div style={{
-                       display: 'flex',
-                       alignItems: 'center',
-                       gap: '1rem'
-                     }}>
-                       <button
-                         onClick={() => removeItem(item.id.toString())}
-                         style={{
-                            width: '32px',
-                            height: '32px',
-                            backgroundColor: '#1A1A1A',
-                            color: 'white',
-                            border: 'none',
-                           borderRadius: '50%',
-                           display: 'flex',
-                           alignItems: 'center',
-                           justifyContent: 'center',
-                           cursor: 'pointer',
-                            flexShrink: 0
-                          }}
-                        >
-                          🗑️
-                       </button>
-                        <div style={{
-                          width: '173px',
-                          height: '173px',
-                          overflow: 'hidden',
-                          flexShrink: 0
-                        }}>
-                          <Image 
-                            src={item.image} 
-                            alt={item.name}
-                            width={204}
-                            height={204}
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover'
-                            }}
-                          />
-                        </div>
-                        <div>
-                          <h3 style={{
-                            fontSize: '1.2rem',
-                            fontWeight: 600,
-                            color: '#1A1A1A',
-                            margin: '0 0 0.4rem 0',
-                            fontFamily: '"Sabon Next LT Pro", serif'
-                          }}>
-                            {item.name}
-                          </h3>
-                          <p style={{
-                            fontSize: '0.93rem',
-                            color: '#6b7280',
-                            margin: '0 0 0.4rem 0'
-                          }}>
-                            {item.description}
-                          </p>
-                          <p style={{
-                            fontSize: '0.93rem',
-                            color: '#374151',
-                            margin: '0 0 0.64rem 0',
-                            fontWeight: 500
-                          }}>
-                            {item.price} ₼
-                          </p>
-                          <QuantitySelector 
-                            quantity={item.quantity} 
-                            onUpdate={(newQuantity) => updateQuantity(item.id.toString(), newQuantity)} 
-                          />
-                        </div>
-                      </div>
+                  <div key={item.id} className={styles.cartItem}>
+                    {/* Кнопка удаления */}
+                    <button
+                      onClick={() => removeItem(item.id.toString())}
+                      className={styles.deleteButton}
+                      aria-label="Remove item"
+                    >
+                      <svg className={styles.deleteIcon} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.5 1C5.22386 1 5 1.22386 5 1.5C5 1.77614 5.22386 2 5.5 2H9.5C9.77614 2 10 1.77614 10 1.5C10 1.22386 9.77614 1 9.5 1H5.5ZM3 3.5C3 3.22386 3.22386 3 3.5 3H5H10H11.5C11.7761 3 12 3.22386 12 3.5C12 3.77614 11.7761 4 11.5 4H11V12C11 12.5523 10.5523 13 10 13H5C4.44772 13 4 12.5523 4 12V4H3.5C3.22386 4 3 3.77614 3 3.5ZM5 4V12H10V4H5Z" fill="currentColor"/>
+                      </svg>
+                    </button>
 
-                      {/* Quantity - пустая колонка для desktop */}
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'center'
-                      }}>
-                      </div>
-
-                      {/* Total Price */}
-                      <div style={{
-                        fontSize: '1rem',
-                        fontWeight: 600,
-                        color: '#1A1A1A',
-                        fontFamily: '"Sabon Next LT Pro", serif',
-                        textAlign: 'right'
-                      }}>
-                        {(item.price * item.quantity).toFixed(2)} ₼
-                      </div>
-                      </div>
-                      
-                    {/* Tablet Layout */}
-                    <div className="tablet-layout" style={{
-                      display: 'none',
-                      padding: '1.5rem 0',
-                      borderBottom: '1px solid rgba(0,0,0,0.1)'
-                    }}>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '1rem',
-                        marginBottom: '1rem'
-                      }}>
-                      <button
-                          onClick={() => removeItem(item.id.toString())}
+                    {/* Изображение товара */}
+                    <div className={styles.productImage}>
+                      <Image 
+                        src={item.image} 
+                        alt={item.name}
+                        width={170}
+                        height={165}
                         style={{
-                            width: '32px',
-                            height: '32px',
-                            backgroundColor: '#1A1A1A',
-                          color: 'white',
-                            border: 'none',
-                          borderRadius: '50%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                            flexShrink: 0
-                          }}
-                        >
-                          🗑️
-                      </button>
-                        <div style={{
-                          width: '173px',
-                          height: '173px',
-                          overflow: 'hidden',
-                          flexShrink: 0
-                        }}>
-                          <Image 
-                            src={item.image} 
-                            alt={item.name}
-                            width={204}
-                            height={204}
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover'
-                            }}
-                          />
-                        </div>
-                        <div>
-                          <h3 style={{
-                            fontSize: '1.2rem',
-                            fontWeight: 600,
-                            color: '#1A1A1A',
-                            margin: '0 0 0.4rem 0',
-                            fontFamily: '"Sabon Next LT Pro", serif'
-                          }}>
-                            {item.name}
-                          </h3>
-                          <p style={{
-                            fontSize: '0.93rem',
-                            color: '#6b7280',
-                            margin: '0 0 0.4rem 0'
-                          }}>
-                            {item.description}
-                          </p>
-                          <p style={{
-                            fontSize: '0.93rem',
-                            color: '#374151',
-                            margin: '0 0 0.64rem 0',
-                            fontWeight: 500
-                          }}>
-                            {item.price} ₼
-                          </p>
-                          <QuantitySelector 
-                            quantity={item.quantity} 
-                            onUpdate={(newQuantity) => updateQuantity(item.id.toString(), newQuantity)} 
-                          />
-                        </div>
-                      </div>
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        alignItems: 'center'
-                      }}>
-                        <div style={{
-                          fontSize: '1.25rem',
-                          fontWeight: 600,
-                          color: '#1A1A1A',
-                          fontFamily: '"Sabon Next LT Pro", serif'
-                        }}>
-                          {(item.price * item.quantity).toFixed(2)} ₼
-                        </div>
-                      </div>
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
                     </div>
 
-                    {/* Mobile Layout */}
-                    <div className="mobile-layout" style={{
-                      display: 'none',
-                      padding: '1.5rem 0',
-                      borderBottom: '1px solid rgba(0,0,0,0.1)'
-                    }}>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '1rem',
-                        marginBottom: '1rem'
-                      }}>
-                      <button
-                          onClick={() => removeItem(item.id.toString())}
-                        style={{
-                            width: '32px',
-                            height: '32px',
-                            backgroundColor: '#1A1A1A',
-                            color: 'white',
-                            border: 'none',
-                          borderRadius: '50%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                            flexShrink: 0
-                          }}
-                        >
-                          🗑️
-                      </button>
-                        <div style={{
-                          width: '130px',
-                          height: '130px',
-                          overflow: 'hidden',
-                          flexShrink: 0
-                        }}>
-                          <Image 
-                            src={item.image} 
-                            alt={item.name}
-                            width={153}
-                            height={153}
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover'
-                            }}
-                          />
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          <h3 style={{
-                            fontSize: '1.06rem',
-                            fontWeight: 600,
-                            color: '#1A1A1A',
-                            margin: '0 0 0.21rem 0',
-                            fontFamily: '"Sabon Next LT Pro", serif'
-                          }}>
-                            {item.name}
-                          </h3>
-                          <p style={{
-                            fontSize: '0.8rem',
-                            color: '#6b7280',
-                            margin: '0 0 0.21rem 0'
-                          }}>
-                            {item.description}
-                          </p>
-                          <p style={{
-                            fontSize: '0.8rem',
-                            color: '#374151',
-                            margin: '0 0 0.43rem 0',
-                            fontWeight: 500
-                          }}>
-                            {item.price} ₼
-                          </p>
-                          <QuantitySelector 
-                            quantity={item.quantity} 
-                            onUpdate={(newQuantity) => updateQuantity(item.id.toString(), newQuantity)} 
-                          />
-                        </div>
-                      </div>
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        alignItems: 'center'
-                      }}>
-                        <div style={{
-                          fontSize: '1.25rem',
-                          fontWeight: 600,
-                          color: '#1A1A1A',
-                          fontFamily: '"Sabon Next LT Pro", serif'
-                        }}>
-                          {(item.price * item.quantity).toFixed(2)} ₼
-                        </div>
-                      </div>
+                    {/* Информация о товаре */}
+                    <div className={styles.productInfo}>
+                      <h3 className={styles.productName}>
+                        {item.name}
+                      </h3>
+                      {item.description && (
+                        <p className={styles.productDescription}>
+                          {item.description}
+                        </p>
+                      )}
+                      <p className={styles.productPrice}>
+                        {item.price} ₼
+                      </p>
+                      <QuantitySelector 
+                        quantity={item.quantity} 
+                        onUpdate={(newQuantity) => updateQuantity(item.id.toString(), newQuantity)} 
+                      />
+                    </div>
+
+                    {/* Пустая колонка для выравнивания */}
+                    <div></div>
+
+                    {/* Общая цена товара */}
+                    <div className={styles.itemTotalPrice}>
+                      {(item.price * item.quantity).toFixed(2)} ₼
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Информационные заметки */}
-              <div style={{
-                backgroundColor: 'white',
-                padding: '2rem',
-                marginBottom: '2rem'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '1rem',
-                  marginBottom: '1rem'
-                }}>
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    backgroundColor: '#1A1A1A',
-                    color: 'white',
-                    borderRadius: '50%',
-                    display: 'flex',
-                  alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    flexShrink: 0,
-                    marginTop: '2px'
-                  }}>
+              <div className={styles.infoSection}>
+                <div className={styles.infoBlock}>
+                  <div className={styles.infoIcon}>
                     i
                   </div>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: '#6b7280',
-                    lineHeight: '1.5',
-                    margin: 0
-                  }}>
+                  <p className={styles.infoText}>
                     Products purchased from us are intended for direct consumption without storage, except for products that have a shelf life stated on the packaging or on the receipt.
                   </p>
                 </div>
                 
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '1rem'
-                }}>
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    backgroundColor: '#1A1A1A',
-                    color: 'white',
-                    borderRadius: '50%',
-                    display: 'flex',
-                  alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    flexShrink: 0,
-                    marginTop: '2px'
-                  }}>
+                <div className={styles.infoBlock}>
+                  <div className={styles.infoIcon}>
                     i
                   </div>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: '#6b7280',
-                    lineHeight: '1.5',
-                    margin: 0
-                  }}>
+                  <p className={styles.infoText}>
                     In addition to the allergens listed in the composition, all of our products are processed and shipped from facilities where trace amounts of the following allergens may be present: Gluten (all types), eggs, fish (salmon, tuna, anchovies), soy, milk, nuts (almonds, walnuts, pistachios, cashews), celery, mustard, sesame, sulfur dioxide and sulfites.
                   </p>
                 </div>
               </div>
 
               {/* Итоговая информация */}
-              <div style={{
-                backgroundColor: 'white',
-                padding: '2rem',
-                textAlign: 'center'
-              }}>
-                <div style={{
-                  marginBottom: '2rem'
-                }}>
-                  <h2 style={{
-                    fontSize: '1.25rem',
-                    fontWeight: 600,
-                    color: '#1A1A1A',
-                    margin: '0 0 1rem 0',
-                    fontFamily: '"Sabon Next LT Pro", serif'
-                  }}>
-                    Total to be paid
-                  </h2>
-                  <div style={{
-                    fontSize: '2rem',
-                    fontWeight: 700,
-                    color: '#1A1A1A',
-                    fontFamily: '"Sabon Next LT Pro", serif'
-                  }}>
-                    {totalAmount.toFixed(2)} ₼
-                  </div>
+              <div className={styles.totalSection}>
+                <h2 className={styles.totalLabel}>
+                  Total to be paid
+                </h2>
+                <div className={styles.totalAmount}>
+                  {totalAmount.toFixed(2)} ₼
                 </div>
                 
                 {/* Кнопки действий */}
-                <div style={{
-                  display: 'flex',
-                  gap: '1rem',
-                  justifyContent: 'center',
-                  flexWrap: 'wrap'
-                }}>
+                <div className={styles.actionButtons}>
                   <button
                     onClick={goToCatering}
-                    style={{
-                      border: '1px solid #000',
-                      background: '#fff',
-                      color: '#000',
-                      padding: '12px 24px',
-                      borderRadius: '6px',
-                      fontSize: '1rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      fontFamily: '"Sabon Next LT Pro", serif'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#f5f5f5';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#fff';
-                    }}
+                    className={styles.buttonBack}
                   >
                     Go back to menu
                   </button>
                   
                   <button
                     onClick={goToCheckout}
-                    style={{
-                      background: '#000',
-                      color: '#fff',
-                      padding: '12px 24px',
-                      borderRadius: '6px',
-                      fontSize: '1rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      fontFamily: '"Sabon Next LT Pro", serif',
-                      marginLeft: '15px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#333';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#000';
-                    }}
+                    className={styles.buttonCheckout}
                   >
                     Go to checkout
                   </button>
@@ -711,38 +235,6 @@ export default function CartPage() {
 
       <FeaturesSection />
       <Footer />
-
-      {/* Responsive CSS */}
-      <style jsx>{`
-        @media (min-width: 1024px) {
-          .desktop-only { display: block !important; }
-          .desktop-layout { display: grid !important; }
-          .tablet-layout { display: none !important; }
-          .mobile-layout { display: none !important; }
-        }
-        
-        @media (max-width: 1023px) and (min-width: 768px) {
-          .desktop-only { display: none !important; }
-          .desktop-layout { display: none !important; }
-          .tablet-layout { display: block !important; }
-          .mobile-layout { display: none !important; }
-        }
-        
-        @media (max-width: 767px) {
-          .desktop-only { display: none !important; }
-          .desktop-layout { display: none !important; }
-          .tablet-layout { display: none !important; }
-          .mobile-layout { display: block !important; }
-          
-          .container-paul {
-            padding: 1rem !important;
-          }
-          
-          h1 {
-            font-size: 2rem !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

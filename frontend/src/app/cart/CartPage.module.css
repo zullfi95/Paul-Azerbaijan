@@ -1,0 +1,645 @@
+/* Цветовая палитра PAUL */
+:root {
+  --paul-primary-bg: #FFFCF8;
+  --paul-secondary-bg: #FEF4E6;
+  --paul-ivory: #FFFAE6;
+  --paul-black: #000000;
+  --paul-text-secondary: rgba(0, 0, 0, 0.8);
+  --paul-overlay: rgba(0, 0, 0, 0.2);
+}
+
+/* Основной контейнер страницы */
+.pageContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paul-primary-bg);
+}
+
+.mainContent {
+  flex: 1;
+  padding-top: 0;
+}
+
+.containerPaul {
+  max-width: 1140px; /* Как в Header */
+  margin: 0 auto;
+  padding: 0 20px; /* Как в Header */
+}
+
+/* Breadcrumbs секция */
+.breadcrumbsSection {
+  padding: 1rem 0;
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+/* Заголовок страницы */
+.pageHeader {
+  text-align: center;
+  padding: 1.5rem 0 1rem;
+}
+
+.pageTitle {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 2rem; /* Уменьшил для соответствия Header */
+  font-weight: 600;
+  color: var(--paul-black);
+  margin: 0;
+}
+
+/* Пустая корзина */
+.emptyCart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 16px;
+  border: 2px dashed #dee2e6;
+  margin: 2rem;
+}
+
+.emptyCartTitle {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #6c757d;
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.emptyCartText {
+  font-size: 1rem;
+  color: #adb5bd;
+  margin: 0 0 2rem 0;
+  max-width: 400px;
+}
+
+.emptyCartButton {
+  padding: 1rem 2rem;
+  background-color: var(--paul-black);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Sabon Next LT Pro', serif;
+}
+
+.emptyCartButton:hover {
+  background-color: #333;
+}
+
+/* Контейнер корзины с товарами */
+.cartContainer {
+  margin: 0 auto;
+  background: var(--paul-primary-bg);
+  border-top: 0.3px solid var(--paul-black);
+  border-bottom: 0.3px solid var(--paul-black);
+  padding: 0;
+}
+
+/* Заголовки таблицы */
+.tableHeader {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 2rem;
+  padding: 1rem 1.5rem;
+  background: var(--paul-black);
+  height: 50px; /* Уменьшил с 56px */
+  align-items: center;
+  border-radius: 7px; /* Как в Header */
+}
+
+.tableHeaderLabel {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 17.6px; /* Как nav-link в Header */
+  font-weight: 500;
+  color: var(--paul-secondary-bg);
+}
+
+.tableHeaderLabelRight {
+  text-align: right;
+}
+
+/* Список товаров */
+.cartItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Товар */
+.cartItem {
+  display: grid;
+  grid-template-columns: 50px 170px 1fr auto auto;
+  gap: 1.2rem;
+  padding: 1.5rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  align-items: center;
+}
+
+/* Кнопка удаления */
+.deleteButton {
+  width: 36px;
+  height: 36px;
+  background: var(--paul-black);
+  border: none;
+  border-radius: 7px; /* Как в Header */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Как в Header */
+}
+
+.deleteButton:hover {
+  background-color: #1a1a1a;
+  transform: translateY(-1px); /* Как в Header */
+}
+
+.deleteButton:active {
+  transform: translateY(0);
+}
+
+.deleteIcon {
+  width: 15px;
+  height: 15px;
+  filter: invert(1);
+}
+
+/* Изображение товара */
+.productImage {
+  width: 170px;
+  height: 165px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  border-radius: 7px; /* Как в Header */
+}
+
+.productImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Информация о товаре */
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: center;    
+}
+
+.productName {
+  font-family: 'Sabon Next LT Pro', serif; /* Как в Header */
+  font-size: 22.6px; /* Как nav-link в Header */
+  font-weight: 500;
+  color: var(--paul-black);
+  margin: 0;
+  line-height: normal;
+}
+
+.productDescription {
+  font-family: 'Sabon Next LT', sans-serif; /* Как action-button в Header */
+  font-size: 14px; /* Как action-button в Header */
+  color: var(--paul-text-secondary);
+  margin: 0;
+  line-height: normal;
+}
+
+.productPrice {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 24.6px; /* Как nav-link в Header */
+  font-weight: 600;
+  color: var(--paul-black);
+  margin: 0.3rem 0;
+}
+
+/* Селектор количества */
+.quantitySelector {
+    background: #FFFAE6;
+    border: 1px solid #d1d5db;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 8px;
+    height: auto;
+    width: 160px;
+    padding: 6px 12px;
+    display: flex
+;
+}
+
+.quantityButton {
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 17.6px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paul-black);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Как в Header */
+  border-radius: 7px;
+}
+
+.quantityButton:hover {
+  background-color: rgba(26, 26, 26, 0.05); /* Как в Header */
+  transform: scale(1.1);
+}
+
+.quantityButton:active {
+  transform: scale(0.95);
+}
+
+.quantityValue {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 17.6px;
+  font-weight: 500;
+  color: var(--paul-black);
+  min-width: 25px;
+  text-align: center;
+}
+
+/* Общая цена товара */
+.itemTotalPrice {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 17.6px; /* Как nav-link в Header */
+  font-weight: 600;
+  color: var(--paul-black);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Информационные блоки */
+.infoSection {
+  padding: 1.5rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.infoBlock {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.infoBlock:last-child {
+  margin-bottom: 0;
+}
+
+.infoIcon {
+  width: 18px;
+  height: 18px;
+  background: var(--paul-black);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.infoText {
+  font-family: Parisine;
+  font-size: 15px;
+  color: var(--paul-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Итоговая секция */
+.totalSection {
+  padding: 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+}
+
+.totalLabel {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--paul-black);
+  margin: 0 0 1rem 0;
+}
+
+.totalAmount {
+  font-family: 'Parisine Pro Gris', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--paul-black);
+  margin: 0 0 2rem 0;
+}
+
+/* Кнопки действий */
+.actionButtons {
+  display: flex;
+  gap: 17px; /* Как в Header */
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.buttonBack {
+  padding: 12px 24px;
+  background: white;
+  border: 1px solid #d1d5db; /* Как action-button в Header */
+  border-radius: 14px; /* Как action-button в Header */
+  font-family: 'Sabon Next LT', sans-serif; /* Как action-button в Header */
+  font-size: 15px; /* Немного больше чем action-button */
+  font-weight: 400;
+  color: var(--paul-black);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Как в Header */
+  position: relative;
+  overflow: hidden;
+}
+
+.buttonBack::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.buttonBack:hover {
+  background-color: #1a1a1a; /* Как action-button в Header */
+  border-color: #1a1a1a;
+  color: white;
+  transform: translateY(-2px); /* Как action-button в Header */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.buttonBack:hover::before {
+  left: 100%;
+}
+
+.buttonBack:active {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.buttonCheckout {
+  padding: 12px 24px;
+  background: var(--paul-black); /* Как plan-event в Header */
+  border: 1px solid var(--paul-black);
+  border-radius: 14px; /* Как action-button в Header */
+  font-family: 'Sabon Next LT', sans-serif; /* Как action-button в Header */
+  font-size: 15px; /* Немного больше чем action-button */
+  font-weight: 400;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Как в Header */
+  position: relative;
+  overflow: hidden;
+}
+
+.buttonCheckout::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.buttonCheckout:hover {
+  background-color: #000000; /* Остается черным как plan-event */
+  border-color: #000000;
+  transform: translateY(-2px); /* Как action-button в Header */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.buttonCheckout:hover::before {
+  left: 100%;
+}
+
+.buttonCheckout:active {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Адаптивность для планшетов */
+@media (max-width: 1023px) {
+  .containerPaul {
+    padding: 0 14px; /* Как в Header для мобильных */
+  }
+
+  .tableHeader {
+    display: none;
+  }
+
+  .cartItem {
+    grid-template-columns: 40px 140px 1fr;
+    gap: 0.8rem;
+    padding: 1.2rem 1rem;
+  }
+
+  .itemTotalPrice {
+    grid-column: 2 / -1;
+    text-align: right;
+    margin-top: 1rem;
+  }
+
+  .productImage {
+    width: 140px;
+    height: 135px;
+  }
+
+  .productName {
+    font-size: 15.6px; /* Как nav-link в Header для мобильных */
+  }
+
+  .productDescription {
+    font-size: 12px;
+  }
+
+  .productPrice {
+    font-size: 15.6px;
+  }
+
+  .itemTotalPrice {
+    grid-column: 2 / -1;
+    text-align: right;
+    margin-top: 0.8rem;
+    font-size: 15.6px;
+  }
+
+  .quantitySelector {
+    min-width: 100px;
+  }
+
+  .pageTitle {
+    font-size: 1.75rem;
+  }
+
+  .buttonBack,
+  .buttonCheckout {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 767px) {
+  .containerPaul {
+    padding: 0 14px; /* Как в Header */
+  }
+
+  .breadcrumbsSection {
+    padding: 0.8rem 0;
+  }
+
+  .pageHeader {
+    padding: 1rem 0 0.8rem;
+  }
+
+  .pageTitle {
+    font-size: 1.5rem;
+  }
+
+  .cartContainer {
+    padding: 0;
+  }
+
+  .tableHeader {
+    height: 45px;
+    padding: 0.8rem 1rem;
+  }
+
+  .cartItem {
+    grid-template-columns: 35px 110px 1fr;
+    gap: 0.6rem;
+    padding: 1rem 0.8rem;
+  }
+
+  .itemTotalPrice {
+    font-size: 14px;
+  }
+
+  .deleteButton {
+    width: 32px;
+    height: 32px;
+  }
+
+  .deleteIcon {
+    width: 13px;
+    height: 13px;
+  }
+
+  .productImage {
+    width: 110px;
+    height: 105px;
+  }
+
+  .productName {
+    font-size: 14px;
+  }
+
+  .productDescription {
+    font-size: 11px;
+  }
+
+  .productPrice {
+    font-size: 14px;
+  }
+
+  .quantitySelector {
+    min-width: 90px;
+    padding: 5px 10px;
+  }
+
+  .quantityButton {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+
+  .quantityValue {
+    font-size: 14px;
+    min-width: 20px;
+  }
+
+
+  .infoSection {
+    padding: 1rem 0.8rem;
+    margin: 1rem 0;
+  }
+
+  .infoIcon {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+  }
+
+  .infoText {
+    font-size: 12px; /* Как action-button в Header для мобильных */
+  }
+
+
+  .totalSection {
+    padding: 1.5rem 1rem;
+  }
+
+  .totalLabel {
+    font-size: 22px;
+  }
+
+  .totalAmount {
+    font-size: 22px;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .buttonBack,
+  .buttonCheckout {
+    width: 100%;
+    max-width: 320px;
+    padding: 10px 18px;
+    font-size: 13px; /* Немного больше чем action-button в Header для мобильных */
+  }
+
+  .emptyCart {
+    margin: 1rem 0;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .emptyCartTitle {
+    font-size: 1.2rem;
+  }
+
+  .emptyCartText {
+    font-size: 0.85rem;
+  }
+
+  .emptyCartButton {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}

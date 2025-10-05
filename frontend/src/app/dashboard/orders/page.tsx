@@ -604,7 +604,7 @@ export default function OrdersPage() {
     beige: '#EBDCC8',
     border: '#EDEAE3',
     gray: '#4A4A4A',
-    white: '#FFFFFF'
+    white: '#FFFCF8'
   };
 
   return (
@@ -1386,7 +1386,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
     beige: '#EBDCC8',
     border: '#EDEAE3',
     gray: '#4A4A4A',
-    white: '#FFFFFF'
+    white: '#FFFCF8'
   };
 
   const getStatusColor = (status: string) => {
@@ -1636,7 +1636,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onEdit, onDelete }) => 
     beige: '#EBDCC8',
     border: '#EDEAE3',
     gray: '#4A4A4A',
-    white: '#FFFFFF'
+    white: '#FFFCF8'
   };
 
   return (

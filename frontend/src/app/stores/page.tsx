@@ -71,7 +71,7 @@ export default function StoresPage() {
       </section>
 
       {/* Карта */}
-      <section className="py-16 bg-white">
+      <section className="py-16" style={{ backgroundColor: '#FFFCF8' }}>
         <div className="container-paul">
           <div className="text-center mb-12">
             <h2 className="text-h2 font-serif font-bold text-paul-primary mb-4">
@@ -82,7 +82,7 @@ export default function StoresPage() {
             </p>
           </div>
           
-          <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <div className="rounded-2xl p-8 shadow-lg" style={{ backgroundColor: '#FFFCF8' }}>
             <div className="w-full h-96 bg-gradient-to-br from-paul-accent-bread/30 to-paul-accent-gold/20 rounded-xl flex items-center justify-center">
               <div className="text-center">
                 <div className="w-20 h-20 bg-paul-accent-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -115,7 +115,7 @@ export default function StoresPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
             {stores.map((store) => (
-              <div key={store.id} className="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+              <div key={store.id} className="rounded-2xl shadow-lg overflow-hidden card-hover" style={{ backgroundColor: '#FFFCF8' }}>
                 {/* Заголовок магазина */}
                 <div className="bg-gradient-to-r from-paul-primary to-paul-accent-coffee p-6 text-white">
                   <h3 className="font-serif font-bold text-xl mb-2">{store.name}</h3>

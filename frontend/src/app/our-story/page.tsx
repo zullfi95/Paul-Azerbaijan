@@ -26,7 +26,7 @@ export default function OurStoryPage() {
         {/* Timeline Section */}
         <section className="timeline-section">
           {/* 1889 - Horizontal Layout (Year left, Text right) */}
-          <div className="timeline-item timeline-horizontal">
+          <div className="timeline-item timeline-1889">
             <div className="timeline-left-block">
               <div className="timeline-year">1889</div>
               <div className="timeline-divider"></div>
@@ -40,7 +40,7 @@ export default function OurStoryPage() {
 
 
           {/* 1908 - Big Image Left + Text Right */}
-          <div className="timeline-item timeline-image-left">
+          <div className="timeline-item timeline-1908">
             <div className="timeline-content">
               <div className="timeline-image-block">
                 <Image
@@ -64,7 +64,7 @@ export default function OurStoryPage() {
           <div className="section-divider"></div>
 
           {/* 1950s - Text Left + Image Right */}
-          <div className="timeline-item timeline-image-right">
+          <div className="timeline-item timeline-1950s">
             <div className="timeline-content">
               <div className="timeline-text-block">
                 <div className="timeline-year">1950s</div>
@@ -88,7 +88,7 @@ export default function OurStoryPage() {
           <div className="section-divider"></div>
 
           {/* 1953 - Vertical Image Left + Text Right */}
-          <div className="timeline-item timeline-image-left">
+          <div className="timeline-item timeline-1953">
             <div className="timeline-content">
               <div className="timeline-image-block">
                 <Image
@@ -112,7 +112,7 @@ export default function OurStoryPage() {
           <div className="section-divider"></div>
 
           {/* 1972 - Centered Wide Image */}
-          <div className="timeline-item timeline-center-wide">
+          <div className="timeline-item timeline-1972">
             <div className="timeline-year">1972</div>
             <div className="timeline-divider"></div>
             <div className="timeline-text">
@@ -134,7 +134,7 @@ export default function OurStoryPage() {
           <div className="section-divider"></div>
 
           {/* 1985 - Text Left + Big Image Right */}
-          <div className="timeline-item timeline-image-right">
+          <div className="timeline-item timeline-1985">
             <div className="timeline-content">
               <div className="timeline-text-block">
                 <div className="timeline-year">1985</div>
@@ -158,11 +158,16 @@ export default function OurStoryPage() {
           <div className="section-divider"></div>
 
           {/* 1993 & 2000 - Double Column with Vertical Divider */}
-          <div className="timeline-item timeline-double-column">
+          <div className="timeline-item timeline-1993">
             <div className="timeline-content">
               <div className="timeline-column">
                 <div className="timeline-year">1993</div>
                 <div className="timeline-divider"></div>
+                <div className="timeline-text">
+                  <p>
+                    Francis Holder decided to re-energise PAUL and added two new components to the business; the now famous black shop fronts and the development of a rustic line of specialty breads using sustainably produced winter wheat.
+                  </p>
+                </div>
                 <div className="timeline-image-block">
                   <Image
                     src="/images/1993.png"
@@ -172,18 +177,18 @@ export default function OurStoryPage() {
                     className="story-image square"
                   />
                 </div>
-                <div className="timeline-text">
-                  <p>
-                    Francis Holder decided to re-energise PAUL and added two new components to the business; the now famous black shop fronts and the development of a rustic line of specialty breads using sustainably produced winter wheat.
-                  </p>
-                </div>
               </div>
               
-              <div className="vertical-divider"></div>
+              <div className="timeline-vertical-divider"></div>
               
               <div className="timeline-column">
                 <div className="timeline-year">2000</div>
                 <div className="timeline-divider"></div>
+                <div className="timeline-text">
+                  <p>
+                    PAUL opens its first bakery and restaurant in London, Covent Garden- an instant hit! Encouraged by Londoners' enthusiastic response, PAUL opens further branches in London and beyond, now with 37 UK locations including our PAUL Express branches in St. Pancras and Tottenham Court Road, and two branches of Le Restaurant de PAUL!
+                  </p>
+                </div>
                 <div className="timeline-image-block">
                   <Image
                     src="/images/2000.png"
@@ -193,46 +198,47 @@ export default function OurStoryPage() {
                     className="story-image square"
                   />
                 </div>
-                <div className="timeline-text">
-                  <p>
-                    PAUL opens its first bakery and restaurant in London, Covent Garden- an instant hit! Encouraged by Londoners' enthusiastic response, PAUL opens further branches in London and beyond, now with 37 UK locations including our PAUL Express branches in St. Pancras and Tottenham Court Road, and two branches of Le Restaurant de PAUL!
-                  </p>
-                </div>
               </div>
             </div>
           </div>
 
           <div className="section-divider"></div>
 
-          {/* 2007 - Horizontal Layout (Year left, Text right) */}
-          <div className="timeline-item timeline-horizontal">
-            <div className="timeline-left-block">
+          {/* 2007 & 2019 - Two Column Grid Layout */}
+          <div className="timeline-item timeline-2007-2019">
+            {/* Left Column - 2007 */}
+            <div className="timeline-2007-column">
               <div className="timeline-year">2007</div>
               <div className="timeline-divider"></div>
+              <div className="timeline-text">
+                <p>
+                  Francis Holder passes the torch to his children, naming Maxime as CEO of PAUL International. With the 5th generation of bread enthusiasts driving our vision, we expand globally while remaining dedicated to our social responsibilities.
+                </p>
+              </div>
+              <div className="timeline-image-block">
+                <Image
+                  src="/images/2007.png"
+                  alt="2007 - New generation"
+                  width={365}
+                  height={494}
+                  className="story-image small-vertical"
+                />
+              </div>
             </div>
-            <div className="timeline-text">
-              <p>
-                Francis Holder passes the torch to his children, naming Maxime as CEO of PAUL International. With the 5th generation of bread enthusiasts driving our vision, we expand globally while remaining dedicated to our social responsibilities.
-              </p>
-            </div>
-          </div>
 
-          <div className="section-divider"></div>
+            {/* Right Column - 2019 */}
+            <div className="timeline-2019-column">
+              <div className="timeline-year">2019</div>
+              <div className="timeline-divider"></div>
+              <div className="timeline-text">
+                <p>
+                  PAUL celebrates 130 years of complicity with its customers. Maxime Holder, who for 10 years had devoted himself to international development, takes over as Chairman of Groupe PAUL.
+                </p>
+              </div>
 
-          {/* 2019 - Two Images Left + Text Right */}
-          <div className="timeline-item timeline-images-left">
-            <div className="timeline-content">
-              <div className="timeline-left-block">
-                <div className="timeline-year">2019</div>
-                <div className="timeline-divider"></div>
+              <div className="timeline-image-block">
                 <div className="timeline-images-row">
-                  <Image
-                    src="/images/2007.png"
-                    alt="2019 - New generation"
-                    width={365}
-                    height={494}
-                    className="story-image small-vertical"
-                  />
+
                   <Image
                     src="/images/2019.png"
                     alt="2019 - 130 years celebration"
@@ -242,20 +248,15 @@ export default function OurStoryPage() {
                   />
                 </div>
               </div>
-              <div className="timeline-text-block">
-                <p>
-                  PAUL celebrates 130 years of complicity with its customers. Maxime Holder, who for 10 years had devoted himself to international development, takes over as Chairman of Groupe PAUL.
-                </p>
-              </div>
             </div>
           </div>
 
           <div className="section-divider"></div>
 
           {/* Today - Centered with Wide Image */}
-          <div className="timeline-item timeline-center-wide">
+          <div className="timeline-item timeline-today">
             <div className="timeline-year today">Today</div>
-            <div className="timeline-text centered">
+            <div className="timeline-text">
               <p>
                 Every year, we create around a hundred new products and introduce fresh ideas like PAUL le café and PAUL express. We also improve accessibility with options like click & collect and online shopping. By working closely with farmers and millers, we aim to build a responsible French wheat sector, showing our dedication to nutrition and the environment. As we grow into new areas, our goal stays the same: to bring joy and connection through our tasty, wholesome, and high-quality offerings.
               </p>

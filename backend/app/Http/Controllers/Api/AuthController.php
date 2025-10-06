@@ -280,4 +280,81 @@ class AuthController extends Controller
             'message' => 'Успешный выход'
         ]);
     }
+
+    /**
+     * Сохранение адреса доставки пользователя
+     */
+    public function saveShippingAddress(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'street' => 'required|string|max:255',
+                'city' => 'required|string|max:100',
+                'postal_code' => 'nullable|string|max:20',
+                'country' => 'required|string|max:100',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $user = $request->user();
+            
+            // Сохраняем адрес в JSON поле или отдельной таблице
+            $shippingAddress = [
+                'street' => $request->street,
+                'city' => $request->city,
+                'postal_code' => $request->postal_code,
+                'country' => $request->country,
+                'updated_at' => now()
+            ];
+
+            // Обновляем поле shipping_address в таблице users
+            $user->update([
+                'shipping_address' => json_encode($shippingAddress)
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Delivery address saved successfully',
+                'data' => $shippingAddress
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to save delivery address: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Получение адреса доставки пользователя
+     */
+    public function getShippingAddress(Request $request)
+    {
+        try {
+            $user = $request->user();
+            
+            $shippingAddress = null;
+            if ($user->shipping_address) {
+                $shippingAddress = json_decode($user->shipping_address, true);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $shippingAddress
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get delivery address: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -2428,3 +2428,5 @@ const KanbanOrdersView: React.FC<KanbanOrdersViewProps> = ({
       </div>
   );
 };
+}  
+ 

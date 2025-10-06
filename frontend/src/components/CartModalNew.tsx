@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { X, Plus, Minus } from 'lucide-react';
-import DeleteIcon from './DeleteIcon';
+import { ShoppingBag, X, Plus, Minus, Trash2 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useNotification } from '../contexts/NotificationContext';
 import Image from "next/image";
@@ -88,6 +87,9 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
         <div className={styles.modalContent}>
           {cartItems.length === 0 ? (
             <div className={styles.emptyCart}>
+              <div className={styles.emptyCartIcon}>
+                <ShoppingBag size={32} color="white" />
+              </div>
               <h3 className={styles.emptyCartTitle}>
                 Ваша корзина пуста
               </h3>
@@ -155,7 +157,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                     onClick={() => removeItem(cartItem.id)}
                     className={styles.removeButton}
                   >
-                    <DeleteIcon size={14} className={styles.removeIcon} />
+                    <Trash2 size={14} className={styles.removeIcon} />
                   </button>
                 </div>
               ))}

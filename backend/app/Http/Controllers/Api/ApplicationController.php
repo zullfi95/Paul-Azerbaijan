@@ -35,7 +35,7 @@ class ApplicationController extends Controller
             'cart_items.*.quantity' => 'required_with:cart_items|integer|min:1',
             'cart_items.*.price' => 'required_with:cart_items|numeric|min:0',
             'coordinator_id' => 'nullable|exists:users,id,user_type,staff,staff_role,coordinator',
-            'client_id' => 'nullable|exists:users,id,user_type,client',
+            'client_id' => 'nullable|exists:users,id',
         ]);
 
         if ($validator->fails()) {
@@ -44,6 +44,12 @@ class ApplicationController extends Controller
                 'message' => 'Ошибка валидации',
                 'errors' => $validator->errors()
             ], 422);
+        }
+
+        // Если пользователь авторизован и является клиентом, автоматически устанавливаем client_id
+        $clientId = $request->client_id;
+        if (!$clientId && $request->user() && $request->user()->user_type === 'client') {
+            $clientId = $request->user()->id;
         }
 
         $application = Application::create([
@@ -60,7 +66,7 @@ class ApplicationController extends Controller
             'event_lng' => $request->event_lng,
             'cart_items' => $request->cart_items,
             'status' => 'new',
-            'client_id' => $request->client_id,
+            'client_id' => $clientId,
         ]);
 
         // Отправляем уведомления

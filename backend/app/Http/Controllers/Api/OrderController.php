@@ -160,8 +160,8 @@ class OrderController extends Controller
         Log::info('Order creation - parsed data keys', ['keys' => array_keys($data)]);
 
         $validator = Validator::make($data, [
-            // Клиент
-            'client_id' => 'required|exists:users,id,user_type,client',
+            // Клиент - теперь необязательно, если не указан, используется текущий пользователь
+            'client_id' => 'nullable|exists:users,id',
             
             // Товары
             'menu_items' => 'required|array|min:1',
@@ -209,12 +209,11 @@ class OrderController extends Controller
         
         Log::info('Order creation validation passed');
 
-        // Получаем клиента
-        $client = User::where('id', $data['client_id'])
-                    ->where('user_type', 'client')
-                    ->first();
+        // Получаем клиента - если client_id не указан, используем текущего пользователя
+        $clientId = $data['client_id'] ?? $request->user()->id;
+        $client = User::where('id', $clientId)->first();
         
-        Log::info('Client lookup result', ['client_found' => $client ? $client->toArray() : null]);
+        Log::info('Client lookup result', ['client_found' => $client ? $client->toArray() : null, 'client_id' => $clientId]);
 
         if (!$client) {
             return response()->json([
@@ -249,9 +248,9 @@ class OrderController extends Controller
         ]);
 
         $order = Order::create([
-            'client_id' => $client->id,
+            'client_id' => $clientId,
             'company_name' => $client->company_name ?? $client->name,
-            'client_type' => $client->client_category,
+            'client_type' => $client->client_category ?? 'one_time',
             // store resolved menu items (authoritative prices included)
             'menu_items' => $resolvedItems,
             'comment' => $data['comment'],
@@ -538,9 +537,9 @@ class OrderController extends Controller
         $finalAmount = $itemsTotal + $deliveryCost;
 
         $order = Order::create([
-            'client_id' => $client->id,
+            'client_id' => $clientId,
             'company_name' => $client->company_name ?? $client->name,
-            'client_type' => $client->client_category,
+            'client_type' => $client->client_category ?? 'one_time',
             'menu_items' => $resolvedItems,
             'comment' => $request->comment,
             'status' => 'submitted',
@@ -574,7 +573,7 @@ class OrderController extends Controller
         $application->update([
             'status' => 'approved',
             'coordinator_id' => $request->user()->id,
-            'client_id' => $client->id,
+            'client_id' => $clientId,
             'processed_at' => now(),
         ]);
 

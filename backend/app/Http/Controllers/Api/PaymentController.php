@@ -29,8 +29,20 @@ class PaymentController extends Controller
     public function createPayment(Request $request, Order $order): JsonResponse
     {
         try {
+            Log::info('PaymentController::createPayment called', [
+                'order_id' => $order->id,
+                'user_id' => $request->user()?->id,
+                'user_type' => $request->user()?->user_type,
+                'user_status' => $request->user()?->status,
+            ]);
+
             $user = $request->user();
             if (!$user || !$user->isActive()) {
+                Log::warning('Payment authorization failed', [
+                    'user_exists' => !!$user,
+                    'user_active' => $user ? $user->isActive() : false,
+                    'user_status' => $user ? $user->status : null,
+                ]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Доступ запрещен. Требуется авторизация.'
@@ -39,6 +51,15 @@ class PaymentController extends Controller
 
             // Проверяем права доступа к заказу
             $hasAccess = false;
+            
+            Log::info('Checking payment access rights', [
+                'user_type' => $user->user_type,
+                'user_role' => $user->staff_role,
+                'is_coordinator' => $user->isCoordinator(),
+                'is_client' => $user->isClient(),
+                'order_client_id' => $order->client_id,
+                'user_id' => $user->id,
+            ]);
             
             // Координаторы могут создавать платежи для любых заказов
             if ($user->isCoordinator()) {
@@ -50,6 +71,11 @@ class PaymentController extends Controller
             }
             
             if (!$hasAccess) {
+                Log::warning('Payment access denied', [
+                    'user_type' => $user->user_type,
+                    'order_client_id' => $order->client_id,
+                    'user_id' => $user->id,
+                ]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Доступ запрещен. Нет прав для создания платежа для этого заказа.'
@@ -58,7 +84,19 @@ class PaymentController extends Controller
             // Разрешены оплаты только для одноразовых клиентов (грузим клиента явно)
             $order->loadMissing('client');
             $client = $order->client ?: User::find($order->client_id);
+            
+            Log::info('Checking client category for payment', [
+                'client_exists' => !!$client,
+                'client_category' => $client ? $client->client_category : null,
+                'order_client_id' => $order->client_id,
+            ]);
+            
             if (!$client || $client->client_category !== 'one_time') {
+                Log::warning('Payment denied - client category check failed', [
+                    'client_exists' => !!$client,
+                    'client_category' => $client ? $client->client_category : null,
+                    'required_category' => 'one_time',
+                ]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Оплата доступна только для одноразовых клиентов.'
@@ -66,7 +104,17 @@ class PaymentController extends Controller
             }
 
             // Проверяем, что заказ может быть оплачен
+            Log::info('Checking order payment status', [
+                'order_status' => $order->status,
+                'payment_status' => $order->payment_status,
+                'can_pay' => $order->isPendingPayment(),
+            ]);
+            
             if (!$order->isPendingPayment()) {
+                Log::warning('Payment denied - order status check failed', [
+                    'order_status' => $order->status,
+                    'payment_status' => $order->payment_status,
+                ]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Заказ не может быть оплачен в текущем статусе'
@@ -105,7 +153,18 @@ class PaymentController extends Controller
             ];
 
             // Создаем заказ в Algoritma
+            Log::info('Creating Algoritma order', [
+                'order_data' => $orderData,
+            ]);
+            
             $result = $this->algoritmaService->createOrder($orderData);
+            
+            Log::info('Algoritma order creation result', [
+                'success' => $result['success'] ?? false,
+                'order_id' => $result['order_id'] ?? null,
+                'payment_url' => $result['payment_url'] ?? null,
+                'error' => $result['error'] ?? null,
+            ]);
 
             if ($result['success']) {
                 // Обновляем заказ с информацией о платеже

@@ -141,8 +141,8 @@ export default function CartPage() {
                       <Image 
                         src={item.image} 
                         alt={item.name}
-                        width={170}
-                        height={165}
+                        width={145}
+                        height={140}
                         style={{
                           width: '100%',
                           height: '100%',

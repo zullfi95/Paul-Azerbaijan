@@ -37,7 +37,7 @@ class AlgoritmaService
             'base_url' => $this->baseUrl
         ]);
         
-        if ($this->apiKey === 'your_api_key' || $this->apiSecret === 'your_api_secret') {
+        if ($this->apiKey === 'your_api_key' || $this->apiSecret === 'your_api_secret' || $this->apiKey === 'Zulfi') {
             Log::info('Using mock Algoritma response for testing');
             return [
                 'success' => true,
@@ -125,7 +125,7 @@ class AlgoritmaService
     public function getOrderInfo(string $algoritmaOrderId, array $expand = []): array
     {
         // Временная мок-версия для тестирования
-        if ($this->apiKey === 'your_api_key' || $this->apiSecret === 'your_api_secret') {
+        if ($this->apiKey === 'your_api_key' || $this->apiSecret === 'your_api_secret' || $this->apiKey === 'Zulfi') {
             Log::info('Using mock Algoritma getOrderInfo response for testing', [
                 'algoritma_order_id' => $algoritmaOrderId
             ]);
@@ -287,6 +287,17 @@ class AlgoritmaService
      */
     public function testConnection(): array
     {
+        // Временная мок-версия для тестирования
+        if ($this->apiKey === 'your_api_key' || $this->apiSecret === 'your_api_secret' || $this->apiKey === 'Zulfi') {
+            Log::info('Using mock Algoritma testConnection response for testing');
+            return [
+                'success' => true,
+                'message' => 'PONG! (Mock)',
+                'date' => now()->format('Y-m-d H:i:s'),
+                'response_data' => ['mock' => true]
+            ];
+        }
+
         try {
             Log::info('Algoritma testConnection attempt', [
                 'api_key' => $this->apiKey,

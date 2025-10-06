@@ -51,6 +51,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/user', [AuthController::class, 'updateUser']); // Обновление данных текущего пользователя
     Route::post('/logout', [AuthController::class, 'logout']);
     
+    // Адреса пользователя
+    Route::post('/user/address/shipping', [AuthController::class, 'saveShippingAddress']); // Сохранение адреса доставки
+    Route::get('/user/address/shipping', [AuthController::class, 'getShippingAddress']); // Получение адреса доставки
+    
     // Маршруты для координаторов
     Route::middleware('coordinator')->group(function () {
         // Заявки
@@ -74,7 +78,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/clients/{client}', [ClientController::class, 'destroy']);
         Route::get('/clients/statistics', [ClientController::class, 'statistics']);
         
-        // Заказы
+        // Заказы (только для координаторов)
         Route::get('/orders', [OrderController::class, 'index']); // Список заказов
         Route::get('/orders/{order}', [OrderController::class, 'show']); // Просмотр заказа
         Route::post('/orders', [OrderController::class, 'store']); // Создание заказа

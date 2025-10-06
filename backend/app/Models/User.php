@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'address',
+        'shipping_address',
         'company_name',
         'position',
         'contact_person',
@@ -55,6 +56,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'shipping_address' => 'array',
         ];
     }
 

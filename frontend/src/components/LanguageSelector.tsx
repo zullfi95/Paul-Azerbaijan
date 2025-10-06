@@ -27,6 +27,8 @@ const LanguageSelector: React.FC = () => {
         className="language-button"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Select Language"
+        onTouchStart={() => {}} // iOS Safari touch fix
+        type="button"
       >
         <span className="language-text">{currentLanguage.code.toUpperCase()}</span>
       </button>
@@ -38,6 +40,8 @@ const LanguageSelector: React.FC = () => {
               key={language.code}
               className={`language-option ${selectedLanguage === language.code ? 'selected' : ''}`}
               onClick={() => handleLanguageSelect(language.code)}
+              onTouchStart={() => {}} // iOS Safari touch fix
+              type="button"
             >
               <span className="language-name">{language.name}</span>
             </button>

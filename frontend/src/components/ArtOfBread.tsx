@@ -3,17 +3,19 @@
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useIsMobile } from '../hooks/use-mobile';
 import './ArtOfBread.css';
 
 const ArtOfBread: React.FC = () => {
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const handleShopClick = () => {
     router.push('/shop');
   };
 
   return (
-    <section className="art-of-bread">
+    <section className={`art-of-bread ${isMobile ? 'art-of-bread-mobile' : ''}`}>
       <div className="art-container">
         {/* Верхняя часть - изображение с наложенным текстом */}
         <div className="art-image-section">

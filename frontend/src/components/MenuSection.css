@@ -34,9 +34,13 @@
 .menu-divider {
   width: 100%;
   height: 1px;
-  background: #e0e0e0;
+  background: #e5e5e5;
   margin: 0 auto 30px;
-  max-width: 170px;
+  max-width: 100%;
+}
+
+.menu-divider-bottom {
+  margin: 30px 0 0;
 }
 
 /* Карточки категорий */
@@ -126,62 +130,90 @@
 
 @media (max-width: 768px) {
   .menu-section {
-    padding: 51px 0;
+    padding: 30px 0;
   }
   
   .menu-container {
-    padding: 0 14px;
+    padding: 0 16px;
+  }
+  
+  .menu-description {
+    margin-bottom: 18px;
+    padding: 0 20px;
   }
   
   .menu-description p {
     font-size: 12px;
     font-family: "Parisine Pro Gris";
+    line-height: 1.5;
+    max-width: 100%;
+  }
+  
+  .menu-divider {
+    margin: 0 0 20px;
+    max-width: 100%;
+    background: #e8e8e8;
+  }
+  
+  .menu-divider-bottom {
+    margin: 20px 0 0;
   }
   
   .menu-categories {
-    grid-template-columns: 1fr;
-    gap: 17px;
-    margin-top: 26px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 0;
   }
   
   .menu-card-image {
-    height: 153px;
+    height: 140px;
   }
   
   .menu-card-overlay {
-    width: 80%;
-    padding: 9px 10px;
-  }
-  
-  .menu-card-overlay h3 {
-    font-size: 15px;
-    font-family: "Sabon Next LT Pro";
-    font-weight: 300;
-  }
-}
-
-@media (max-width: 480px) {
-  .menu-section {
-    padding: 34px 0;
-  }
-  
-  .menu-description p {
-    font-size: 11px;
-    font-family: "Parisine Pro Gris";
-  }
-  
-  .menu-card-image {
-    height: 136px;
-  }
-  
-  .menu-card-overlay {
-    width: 85%;
-    padding: 7px 9px;
+    width: 95%;
+    padding: 4px 8px;
   }
   
   .menu-card-overlay h3 {
     font-size: 14px;
     font-family: "Sabon Next LT Pro";
     font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-section {
+    padding: 25px 0;
+  }
+  
+  .menu-description {
+    padding: 0 15px;
+  }
+  
+  .menu-description p {
+    font-size: 11px;
+    font-family: "Parisine Pro Gris";
+    line-height: 1.5;
+  }
+  
+  .menu-categories {
+    gap: 8px;
+  }
+  
+  .menu-card-image {
+    height: 115px;
+  }
+  
+  .menu-card-overlay {
+    width: 95%;
+    padding: 3px 6px;
+  }
+  
+  .menu-card-overlay h3 {
+    font-size: 12px;
+    font-family: "Sabon Next LT Pro";
+    font-weight: 300;
+    letter-spacing: 0.3px;
   }
 }

@@ -3,10 +3,12 @@
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useIsMobile } from '../hooks/use-mobile';
 import './TastesSection.css';
 
 const TastesSection: React.FC = () => {
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const handleExploreClick = () => {
     router.push('/seasonal-tastes');
@@ -14,8 +16,7 @@ const TastesSection: React.FC = () => {
 
   return (
     
-    <section className="tastes-section">
-      <div className="tastes-divider"></div>
+    <section className={`tastes-section ${isMobile ? 'tastes-section-mobile' : ''}`}>
       <div className="tastes-container">
         {/* Первый раздел */}
         <div className="tastes-content">
@@ -34,9 +35,6 @@ const TastesSection: React.FC = () => {
           {/* Правая колонка - контент */}
           <div className="tastes-text-column">
             <div className="tastes-text">
-              {/* Разделитель */}
-              
-              
               {/* Заголовок */}
               <h2 className="tastes-title">Seasonal Tastes</h2>
               
@@ -63,9 +61,6 @@ const TastesSection: React.FC = () => {
           {/* Левая колонка - контент */}
           <div className="tastes-text-column">
             <div className="tastes-text">
-              {/* Разделитель */}
-              <div className="tastes-divider"></div>
-              
               {/* Заголовок */}
               <h2 className="tastes-title">Artisan Collection</h2>
               
@@ -97,6 +92,9 @@ const TastesSection: React.FC = () => {
             </div>
           </div>
         </div>
+        
+        {/* Разделитель после секции */}
+        <div className="tastes-section-divider"></div>
       </div>
     </section>
   );

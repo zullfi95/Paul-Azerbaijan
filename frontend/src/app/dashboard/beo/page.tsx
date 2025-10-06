@@ -55,11 +55,11 @@ export default function BEOPage() {
     try {
       const result = await makeApiRequest<BEO>('/beos', {
         method: 'POST',
-        body: JSON.stringify(beo),
+        body: beo,
       });
 
       if (result.success && result.data) {
-        setBeos(prev => [...prev, result.data!]);
+        setBeos(prev => [...prev, result.data]);
         setSelectedOrder(null);
         setSelectedBEO(result.data);
       } else {

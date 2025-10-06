@@ -2,11 +2,14 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useIsMobile } from '../hooks/use-mobile';
 import './MenuSection.css';
 
 const MenuSection: React.FC = () => {
+  const isMobile = useIsMobile();
+  
   return (
-    <section className="menu-section">
+    <section className={`menu-section ${isMobile ? 'menu-section-mobile' : ''}`}>
       <div className="menu-container">
         {/* Описание */}
         <div className="menu-description">
@@ -64,6 +67,9 @@ const MenuSection: React.FC = () => {
             </div>
           </div>
         </div>
+        
+        {/* Разделитель после карточек */}
+        <div className="menu-divider menu-divider-bottom"></div>
       </div>
     </section>
   );

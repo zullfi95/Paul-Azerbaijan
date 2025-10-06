@@ -2,9 +2,12 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useIsMobile } from '../hooks/use-mobile';
 import './FeaturesSection.css';
 
 const FeaturesSection: React.FC = () => {
+  const isMobile = useIsMobile();
+  
   const features = [
     {
       id: 1,
@@ -33,7 +36,7 @@ const FeaturesSection: React.FC = () => {
   ];
 
   return (
-    <section className="features-section">
+    <section className={`features-section ${isMobile ? 'features-section-mobile' : ''}`}>
       <div className="features-container">
         <div className="features-grid">
           {features.map((feature) => (

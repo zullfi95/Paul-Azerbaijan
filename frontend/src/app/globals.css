@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
 
 /* Переопределение шрифтов Tailwind */
 @layer base {
@@ -47,13 +46,21 @@ html {
   }
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: "Sabon Next LT Pro", sans-serif;
   color: #4A4A4A;
   background-color: #FFFCF8;
   line-height: 1.6;
-  margin: 0;
-  padding: 0;
+}
+
+main {
+  padding-top: 10px; /* No padding - action-buttons-wrapper handles spacing */
 }
 
 h1, h2, h3, h4, h5, h6 {

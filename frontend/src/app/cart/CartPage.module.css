@@ -8,43 +8,6 @@
   --paul-overlay: rgba(0, 0, 0, 0.2);
 }
 
-/* Единая типографическая система - основана на Header */
-:root {
-  /* Основные шрифты из Header */
-  --font-primary: 'Sabon Next LT Pro', serif;
-  --font-secondary: 'Sabon Next LT', sans-serif;
-  --font-accent: 'Parisine', sans-serif;
-
-  /* Размеры шрифтов - основаны на Header */
-  --text-xs: 9px;       /* Логотип caption в Header */
-  --text-sm: 12px;      /* Action buttons в Header */
-  --text-base: 13px;    /* Language selector в Header */
-  --text-lg: 15.6px;    /* Nav links mobile в Header */
-  --text-xl: 17.6px;    /* Nav links desktop в Header */
-  --text-2xl: 20px;     /* Заголовки секций */
-  --text-3xl: 24px;     /* Главные заголовки */
-
-  /* Веса шрифтов из Header */
-  --font-normal: 400;
-  --font-medium: 500;
-  --font-semibold: 600;
-  --font-bold: 700;
-
-  /* Отступы - основаны на Header */
-  --space-xs: 0.25rem;   /* 4px */
-  --space-sm: 0.5rem;    /* 8px */
-  --space-md: 1rem;     /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
-  --space-2xl: 3rem;     /* 48px */
-
-  /* Радиусы из Header */
-  --radius-sm: 5px;      /* Nav link hover в Header */
-  --radius-md: 7px;      /* Nav bar в Header */
-  --radius-lg: 14px;     /* Action buttons в Header */
-  --radius-xl: 20px;     /* Search input в Header */
-}
-
 /* Основной контейнер страницы */
 .pageContainer {
   min-height: 100vh;
@@ -64,29 +27,24 @@
   padding: 0 20px; /* Как в Header */
 }
 
-/* Breadcrumbs секция - выравнивание как в Header */
+/* Breadcrumbs секция */
 .breadcrumbsSection {
   padding: 1rem 0;
   background: transparent;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   margin-bottom: 1.5rem;
-  max-width: 1140px; /* Как в Header */
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 20px; /* Как в Header */
-  padding-right: 20px; /* Как в Header */
 }
 
 /* Заголовок страницы */
 .pageHeader {
   text-align: center;
-  padding: var(--space-lg) 0 var(--space-md);
+  padding: 1.5rem 0 1rem;
 }
 
 .pageTitle {
-  font-family: var(--font-primary);
-  font-size: var(--text-3xl); /* 24px - как nav links в Header */
-  font-weight: var(--font-medium); /* 500 - как nav links в Header */
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 2rem; /* Уменьшил для соответствия Header */
+  font-weight: 600;
   color: var(--paul-black);
   margin: 0;
 }
@@ -100,46 +58,41 @@
   padding: 4rem 2rem;
   text-align: center;
   background: #f8f9fa;
-  border-radius: 0;
+  border-radius: 16px;
   border: 2px dashed #dee2e6;
   margin: 2rem;
 }
 
 .emptyCartTitle {
-  font-family: var(--font-primary);
-  font-size: var(--text-2xl); /* 20px */
-  font-weight: var(--font-medium); /* 500 - как в Header */
-  color: var(--paul-black);
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #6c757d;
   margin: 1.5rem 0 0.5rem 0;
 }
 
 .emptyCartText {
-  font-family: var(--font-secondary);
-  font-size: var(--text-base); /* 13px - как language selector в Header */
-  font-weight: var(--font-normal);
-  color: var(--paul-text-secondary);
+  font-size: 1rem;
+  color: #adb5bd;
   margin: 0 0 2rem 0;
   max-width: 400px;
 }
 
 .emptyCartButton {
-  padding: 16px 24px; /* Увеличено для больших кнопок */
+  padding: 1rem 2rem;
   background-color: var(--paul-black);
   color: white;
-  border: 1px solid var(--paul-black);
-  border-radius: 0;
-  font-family: var(--font-secondary);
-  font-size: var(--text-lg); /* 15.6px - увеличен размер шрифта */
-  font-weight: var(--font-normal);
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
+  font-family: 'Sabon Next LT Pro', serif;
 }
 
 .emptyCartButton:hover {
-  background-color: #1a1a1a; /* Как в Header */
-  border-color: #1a1a1a;
-  transform: translateY(-2px); /* Как в Header */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Как в Header */
+  background-color: #333;
 }
 
 /* Контейнер корзины с товарами */
@@ -155,18 +108,18 @@
 .tableHeader {
   display: grid;
   grid-template-columns: 1fr auto auto;
-  gap: var(--space-xl);
-  padding: var(--space-md) var(--space-lg);
+  gap: 2rem;
+  padding: 1rem 1.5rem;
   background: var(--paul-black);
-  height: 50px;
+  height: 50px; /* Уменьшил с 56px */
   align-items: center;
-  border-radius: 0;
+  border-radius: 7px; /* Как в Header */
 }
 
 .tableHeaderLabel {
-  font-family: var(--font-primary);
-  font-size: var(--text-lg); /* 15.6px - как nav links mobile в Header */
-  font-weight: var(--font-medium); /* 500 - как nav links в Header */
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 17.6px; /* Как nav-link в Header */
+  font-weight: 500;
   color: var(--paul-secondary-bg);
 }
 
@@ -184,9 +137,9 @@
 /* Товар */
 .cartItem {
   display: grid;
-  grid-template-columns: 50px 144.5px 1fr auto auto;
-  gap: var(--space-md);
-  padding: var(--space-lg);
+  grid-template-columns: 50px 170px 1fr auto auto;
+  gap: 1.2rem;
+  padding: 1.5rem 1.5rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   align-items: center;
 }
@@ -197,7 +150,7 @@
   height: 36px;
   background: var(--paul-black);
   border: none;
-  border-radius: 0;
+  border-radius: 7px; /* Как в Header */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -213,8 +166,7 @@
 }
 
 .deleteButton:active {
-  transform: translateY(0); /* Как в Header */
-  background-color: rgba(26, 26, 26, 0.1); /* Как в Header */
+  transform: translateY(0);
 }
 
 .deleteIcon {
@@ -225,12 +177,12 @@
 
 /* Изображение товара */
 .productImage {
-  width: 144.5px;
-  height: 140.25px;
+  width: 170px;
+  height: 165px;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
-  border-radius: 0;
+  border-radius: 7px; /* Как в Header */
 }
 
 .productImage img {
@@ -243,47 +195,47 @@
 .productInfo {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 0.4rem;
   align-items: center;    
 }
 
 .productName {
-  font-family: var(--font-primary);
-  font-size: var(--text-lg); /* 15.6px - как nav links mobile в Header */
-  font-weight: var(--font-medium); /* 500 - как nav links в Header */
+  font-family: 'Sabon Next LT Pro', serif; /* Как в Header */
+  font-size: 22.6px; /* Как nav-link в Header */
+  font-weight: 500;
   color: var(--paul-black);
   margin: 0;
   line-height: normal;
 }
 
 .productDescription {
-  font-family: var(--font-secondary);
-  font-size: var(--text-sm); /* 12px - как action buttons в Header */
+  font-family: 'Sabon Next LT', sans-serif; /* Как action-button в Header */
+  font-size: 14px; /* Как action-button в Header */
   color: var(--paul-text-secondary);
   margin: 0;
   line-height: normal;
 }
 
 .productPrice {
-  font-family: var(--font-primary);
-  font-size: var(--text-xl); /* 17.6px - как nav links desktop в Header */
-  font-weight: var(--font-medium); /* 500 - как nav links в Header */
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 24.6px; /* Как nav-link в Header */
+  font-weight: 600;
   color: var(--paul-black);
-  margin: var(--space-xs) 0;
+  margin: 0.3rem 0;
 }
 
 /* Селектор количества */
 .quantitySelector {
-  background: var(--paul-ivory);
-  border: 1px solid #d1d5db;
-  justify-content: space-evenly;
-  align-items: center;
-  gap: var(--space-sm);
-  height: auto;
-  width: 160px;
-  padding: var(--space-sm) var(--space-md);
-  display: flex;
-  border-radius: 0;
+    background: #FFFAE6;
+    border: 1px solid #d1d5db;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 8px;
+    height: auto;
+    width: 160px;
+    padding: 6px 12px;
+    display: flex
+;
 }
 
 .quantityButton {
@@ -291,32 +243,31 @@
   height: 28px;
   background: transparent;
   border: none;
-  font-family: var(--font-primary);
-  font-size: var(--text-lg); /* 15.6px - как nav links mobile в Header */
-  font-weight: var(--font-medium); /* 500 - как nav links в Header */
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 17.6px;
+  font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--paul-black);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Как в Header */
-  border-radius: 0;
+  border-radius: 7px;
 }
 
 .quantityButton:hover {
   background-color: rgba(26, 26, 26, 0.05); /* Как в Header */
-  transform: translateY(-1px); /* Как в Header */
+  transform: scale(1.1);
 }
 
 .quantityButton:active {
-  transform: translateY(0); /* Как в Header */
-  background-color: rgba(26, 26, 26, 0.1); /* Как в Header */
+  transform: scale(0.95);
 }
 
 .quantityValue {
-  font-family: var(--font-primary);
-  font-size: var(--text-lg);
-  font-weight: var(--font-medium);
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 17.6px;
+  font-weight: 500;
   color: var(--paul-black);
   min-width: 25px;
   text-align: center;
@@ -324,9 +275,9 @@
 
 /* Общая цена товара */
 .itemTotalPrice {
-  font-family: var(--font-primary);
-  font-size: var(--text-lg);
-  font-weight: var(--font-semibold);
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 17.6px; /* Как nav-link в Header */
+  font-weight: 600;
   color: var(--paul-black);
   text-align: right;
   white-space: nowrap;
@@ -334,15 +285,15 @@
 
 /* Информационные блоки */
 .infoSection {
-  padding: var(--space-lg);
-  margin: var(--space-lg) 0;
+  padding: 1.5rem 1.5rem;
+  margin: 1.5rem 0;
 }
 
 .infoBlock {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  gap: 0.8rem;
+  margin-bottom: 1rem;
 }
 
 .infoBlock:last-child {
@@ -354,20 +305,20 @@
   height: 18px;
   background: var(--paul-black);
   color: white;
-  border-radius: 0;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 11px;
+  font-weight: 500;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 .infoText {
-  font-family: var(--font-secondary);
-  font-size: var(--text-base); /* 13px - как language selector в Header */
+  font-family: Parisine;
+  font-size: 15px;
   color: var(--paul-text-secondary);
   line-height: 1.5;
   margin: 0;
@@ -375,47 +326,47 @@
 
 /* Итоговая секция */
 .totalSection {
-  padding: var(--space-xl);
+  padding: 2rem;
   text-align: center;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  margin-top: var(--space-xl);
+  margin-top: 2rem;
 }
 
 .totalLabel {
-  font-family: var(--font-primary);
-  font-size: var(--text-2xl); /* 20px */
-  font-weight: var(--font-medium); /* 500 - как nav links в Header */
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 26px;
+  font-weight: 700;
   color: var(--paul-black);
-  margin: 0 0 var(--space-md) 0;
+  margin: 0 0 1rem 0;
 }
 
 .totalAmount {
-  font-family: var(--font-primary);
-  font-size: var(--text-2xl); /* 20px */
-  font-weight: var(--font-medium); /* 500 - как nav links в Header */
+  font-family: 'Parisine Pro Gris', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
   color: var(--paul-black);
-  margin: 0 0 var(--space-xl) 0;
+  margin: 0 0 2rem 0;
 }
 
 /* Кнопки действий */
 .actionButtons {
   display: flex;
-  gap: var(--space-md);
+  gap: 17px; /* Как в Header */
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .buttonBack {
-  padding: 16px 24px; /* Увеличено для больших кнопок */
+  padding: 12px 24px;
   background: white;
-  border: 1px solid #d1d5db;
-  border-radius: 0;
-  font-family: var(--font-secondary);
-  font-size: var(--text-lg); /* 15.6px - увеличен размер шрифта */
-  font-weight: var(--font-normal);
+  border: 1px solid #d1d5db; /* Как action-button в Header */
+  border-radius: 14px; /* Как action-button в Header */
+  font-family: 'Sabon Next LT', sans-serif; /* Как action-button в Header */
+  font-size: 15px; /* Немного больше чем action-button */
+  font-weight: 400;
   color: var(--paul-black);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Как в Header */
   position: relative;
   overflow: hidden;
 }
@@ -449,16 +400,16 @@
 }
 
 .buttonCheckout {
-  padding: 16px 24px; /* Увеличено для больших кнопок */
-  background: var(--paul-black);
+  padding: 12px 24px;
+  background: var(--paul-black); /* Как plan-event в Header */
   border: 1px solid var(--paul-black);
-  border-radius: 0;
-  font-family: var(--font-secondary);
-  font-size: var(--text-lg); /* 15.6px - увеличен размер шрифта */
-  font-weight: var(--font-normal);
+  border-radius: 14px; /* Как action-button в Header */
+  font-family: 'Sabon Next LT', sans-serif; /* Как action-button в Header */
+  font-size: 15px; /* Немного больше чем action-button */
+  font-weight: 400;
   color: white;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Как в Header */
   position: relative;
   overflow: hidden;
 }
@@ -501,9 +452,9 @@
   }
 
   .cartItem {
-    grid-template-columns: 40px 119px 1fr;
-    gap: var(--space-sm);
-    padding: var(--space-md) var(--space-md);
+    grid-template-columns: 40px 140px 1fr;
+    gap: 0.8rem;
+    padding: 1.2rem 1rem;
   }
 
   .itemTotalPrice {
@@ -513,27 +464,27 @@
   }
 
   .productImage {
-    width: 119px; /* 140 - 15% */
-    height: 114.75px; /* 135 - 15% */
+    width: 140px;
+    height: 135px;
   }
 
   .productName {
-    font-size: var(--text-base);
+    font-size: 15.6px; /* Как nav-link в Header для мобильных */
   }
 
   .productDescription {
-    font-size: var(--text-xs);
+    font-size: 12px;
   }
 
   .productPrice {
-    font-size: var(--text-base);
+    font-size: 15.6px;
   }
 
   .itemTotalPrice {
     grid-column: 2 / -1;
     text-align: right;
-    margin-top: var(--space-sm);
-    font-size: var(--text-base);
+    margin-top: 0.8rem;
+    font-size: 15.6px;
   }
 
   .quantitySelector {
@@ -541,13 +492,13 @@
   }
 
   .pageTitle {
-    font-size: var(--text-2xl);
+    font-size: 1.75rem;
   }
 
   .buttonBack,
   .buttonCheckout {
-    padding: 12px 20px; /* Увеличено для мобильных кнопок */
-    font-size: var(--text-lg);
+    padding: 10px 20px;
+    font-size: 14px;
   }
 }
 
@@ -558,17 +509,15 @@
   }
 
   .breadcrumbsSection {
-    padding: var(--space-sm) 0;
-    padding-left: 14px; /* Как в Header mobile */
-    padding-right: 14px; /* Как в Header mobile */
+    padding: 0.8rem 0;
   }
 
   .pageHeader {
-    padding: var(--space-md) 0 var(--space-sm);
+    padding: 1rem 0 0.8rem;
   }
 
   .pageTitle {
-    font-size: var(--text-xl);
+    font-size: 1.5rem;
   }
 
   .cartContainer {
@@ -581,9 +530,9 @@
   }
 
   .cartItem {
-    grid-template-columns: 35px 93.5px 1fr;
-    gap: var(--space-xs);
-    padding: var(--space-md) var(--space-sm);
+    grid-template-columns: 35px 110px 1fr;
+    gap: 0.6rem;
+    padding: 1rem 0.8rem;
   }
 
   .itemTotalPrice {
@@ -601,95 +550,96 @@
   }
 
   .productImage {
-    width: 93.5px; /* 110 - 15% */
-    height: 89.25px; /* 105 - 15% */
+    width: 110px;
+    height: 105px;
   }
 
   .productName {
-    font-size: var(--text-sm);
+    font-size: 14px;
   }
 
   .productDescription {
-    font-size: var(--text-xs);
+    font-size: 11px;
   }
 
   .productPrice {
-    font-size: var(--text-sm);
+    font-size: 14px;
   }
 
   .quantitySelector {
     min-width: 90px;
-    padding: var(--space-xs) var(--space-sm);
+    padding: 5px 10px;
   }
 
   .quantityButton {
     width: 24px;
     height: 24px;
-    font-size: var(--text-sm);
+    font-size: 14px;
   }
 
   .quantityValue {
-    font-size: var(--text-sm);
+    font-size: 14px;
     min-width: 20px;
   }
 
 
   .infoSection {
-    padding: var(--space-md) var(--space-sm);
-    margin: var(--space-md) 0;
+    padding: 1rem 0.8rem;
+    margin: 1rem 0;
   }
 
   .infoIcon {
     width: 16px;
     height: 16px;
-    font-size: var(--text-xs);
+    font-size: 10px;
   }
 
   .infoText {
-    font-size: var(--text-xs);
+    font-size: 12px; /* Как action-button в Header для мобильных */
   }
 
+
   .totalSection {
-    padding: var(--space-lg) var(--space-md);
+    padding: 1.5rem 1rem;
   }
 
   .totalLabel {
-    font-size: var(--text-lg);
+    font-size: 22px;
   }
 
   .totalAmount {
-    font-size: var(--text-lg);
+    font-size: 22px;
   }
 
   .actionButtons {
     flex-direction: column;
     align-items: center;
-    gap: var(--space-md);
+    gap: 12px;
   }
 
   .buttonBack,
   .buttonCheckout {
     width: 100%;
     max-width: 320px;
-    padding: var(--space-sm) var(--space-md);
-    font-size: var(--text-sm);
+    padding: 10px 18px;
+    font-size: 13px; /* Немного больше чем action-button в Header для мобильных */
   }
 
   .emptyCart {
-    margin: var(--space-md) 0;
-    padding: var(--space-2xl) var(--space-lg);
+    margin: 1rem 0;
+    padding: 2.5rem 1.5rem;
   }
 
   .emptyCartTitle {
-    font-size: var(--text-lg);
+    font-size: 1.2rem;
   }
 
   .emptyCartText {
-    font-size: var(--text-sm);
+    font-size: 0.85rem;
   }
 
   .emptyCartButton {
-    padding: var(--space-sm) var(--space-lg);
-    font-size: var(--text-sm);
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
   }
 }

@@ -19,14 +19,15 @@ class AuthController extends Controller
     {
         $baseRules = [
             'name' => 'required|string|max:255',
+            'surname' => 'nullable|string|max:255',
             'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:6',
+            'phone' => 'nullable|string|max:20',
             'user_group' => 'sometimes|in:client,staff',
             'staff_role' => 'required_if:user_group,staff|in:coordinator,observer',
             'client_category' => 'required_if:user_group,client|in:corporate,one_time',
             'company_name' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'contact_person' => 'nullable|string|max:255',
         ];
@@ -50,6 +51,7 @@ class AuthController extends Controller
         if ($group === 'staff') {
             $user = User::create([
                 'name' => $request->name,
+                'last_name' => $request->surname,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'staff_role' => $request->staff_role ?? 'observer',
@@ -57,11 +59,19 @@ class AuthController extends Controller
                 'user_type' => 'staff',
             ]);
 
+            // Создаем Sanctum токен для автоматического входа
+            $token = $user->createToken('auth-token')->plainTextToken;
+
+            // Добавляем user_type в объект пользователя для фронтенда
+            $userArray = $user->toArray();
+            $userArray['user_type'] = 'staff';
+
             return response()->json([
                 'success' => true,
                 'message' => 'Сотрудник успешно зарегистрирован',
                 'data' => [
-                    'user' => $user,
+                    'user' => $userArray,
+                    'token' => $token,
                 ]
             ], 201);
         }
@@ -69,6 +79,7 @@ class AuthController extends Controller
         // Иначе — это клиент
         $client = User::create([
             'name' => $request->name,
+            'last_name' => $request->surname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
@@ -80,11 +91,19 @@ class AuthController extends Controller
             'status' => 'active',
         ]);
 
+        // Создаем Sanctum токен для автоматического входа
+        $token = $client->createToken('auth-token')->plainTextToken;
+
+        // Добавляем user_type в объект пользователя для фронтенда
+        $userArray = $client->toArray();
+        $userArray['user_type'] = 'client';
+
         return response()->json([
             'success' => true,
             'message' => 'Клиент успешно зарегистрирован',
             'data' => [
-                'user' => $client,
+                'user' => $userArray,
+                'token' => $token,
             ]
         ], 201);
     }

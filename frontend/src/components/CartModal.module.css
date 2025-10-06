@@ -1,0 +1,642 @@
+/* PAUL Brand Modal Styles */
+:root {
+  --paul-primary-bg: #FFFCF8;
+  --paul-secondary-bg: #FEF4E6;
+  --paul-ivory: #FFFAE6;
+  --paul-black: #000000;
+  --paul-text-secondary: rgba(0, 0, 0, 0.7);
+  --paul-overlay: rgba(0, 0, 0, 0.4);
+  --paul-border: rgba(0, 0, 0, 0.08);
+  --paul-gold: #D4AF37;
+  --paul-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--paul-overlay);
+  z-index: 40;
+  animation: fadeIn 0.3s ease;
+  cursor: pointer;
+}
+
+/* Modal Container */
+.modalContainer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 510px; /* Reduced by 15% from 600px */
+  max-height: 68vh; /* Reduced by 15% from 80vh */
+  background: #000000; /* Changed to black */
+  border: 1px solid var(--paul-border);
+  z-index: 50;
+  animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modal Header */
+.modalHeader {
+  padding: 1rem 1.7rem; /* Reduced by 15% from 1.5rem 2rem */
+  background: #000000; /* Changed to black */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  font-family: 'Sabon Next LT Pro', serif; /* Added font-family */
+}
+
+.modalHeader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.modalTitle {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 1.19rem; /* Reduced by 15% from 1.4rem */
+  font-weight: 600;
+  color: var(--paul-secondary-bg);
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.closeButton {
+  width: 30.6px; /* Reduced by 15% from 36px */
+  height: 30.6px; /* Reduced by 15% from 36px */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--paul-secondary-bg);
+  backdrop-filter: blur(10px);
+}
+
+.closeButton:hover {
+  background-color: rgba(220, 53, 69, 0.8);
+  border-color: #dc3545;
+  transform: scale(1.1) rotate(90deg);
+}
+
+.closeButton:active {
+  transform: scale(0.95) rotate(90deg);
+}
+
+/* Modal Content */
+.modalContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  background: #000000; /* Changed to black */
+}
+
+/* Empty Cart */
+.emptyCart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.55rem 1.7rem; /* Reduced by 15% from 3rem 2rem */
+  text-align: center;
+  background: linear-gradient(135deg, var(--paul-ivory) 0%, var(--paul-secondary-bg) 100%);
+  margin: 1.275rem; /* Reduced by 15% from 1.5rem */
+  border: 2px dashed var(--paul-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.emptyCartIcon {
+  width: 61.2px; /* Reduced by 15% from 72px */
+  height: 61.2px; /* Reduced by 15% from 72px */
+  background: linear-gradient(135deg, var(--paul-black) 0%, #2a2a2a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.275rem; /* Reduced by 15% from 1.5rem */
+  position: relative;
+  z-index: 1;
+  color: white; /* Added to make icon white */
+}
+
+.emptyCartTitle {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 1.105rem; /* Reduced by 15% from 1.3rem */
+  font-weight: 600;
+  color: #ffffff; /* Changed to white */
+  margin: 0 0 0.6375rem 0; /* Reduced by 15% from 0.75rem */
+  position: relative;
+  z-index: 1;
+}
+
+.emptyCartText {
+  font-family: 'Parisine', sans-serif;
+  font-size: 0.8075rem; /* Reduced by 15% from 0.95rem */
+  color: rgba(255, 255, 255, 0.8); /* Changed to semi-transparent white */
+  margin: 0 0 1.7rem 0; /* Reduced by 15% from 2rem */
+  max-width: 272px; /* Reduced by 15% from 320px */
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+.emptyCartButton {
+  padding: 0.74375rem 1.7rem; /* Reduced by 15% from 0.875rem 2rem */
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Changed to white gradient */
+  color: #000000; /* Changed to black */
+  border: none;
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 0.8075rem; /* Reduced by 15% from 0.95rem */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.emptyCartButton:hover {
+  background: linear-gradient(135deg, var(--paul-gold) 0%, #f4d03f 100%);
+  color: var(--paul-black);
+  transform: translateY(-2px);
+}
+
+/* Cart Items Container */
+.cartItemsContainer {
+  padding: 1.275rem 1.7rem; /* Reduced by 15% from 1.5rem 2rem */
+  max-height: 340px; /* Reduced by 15% from 400px */
+  overflow-y: auto;
+}
+
+.cartItemsContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cartItemsContainer::-webkit-scrollbar-track {
+  background: var(--paul-ivory);
+  border-radius: 3px;
+}
+
+.cartItemsContainer::-webkit-scrollbar-thumb {
+  background: var(--paul-border);
+  border-radius: 3px;
+}
+
+.cartItemsContainer::-webkit-scrollbar-thumb:hover {
+  background: var(--paul-text-secondary);
+}
+
+.cartItem {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem; /* Reduced by 15% from 1rem */
+  padding: 1.0625rem; /* Reduced by 15% from 1.25rem */
+  margin-bottom: 0.85rem; /* Reduced by 15% from 1rem */
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); /* Changed to dark gray gradient */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Changed to semi-transparent white border */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.cartItem:hover {
+  transform: translateY(-2px);
+  border-color: var(--paul-gold);
+}
+
+.cartItem:last-child {
+  margin-bottom: 0;
+}
+
+/* Product Image */
+.productImage {
+  width: 68px; /* Reduced by 15% from 80px */
+  height: 68px; /* Reduced by 15% from 80px */
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--paul-ivory);
+  position: relative;
+}
+
+.productImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cartItem:hover .productImage img {
+  transform: scale(1.05);
+}
+
+/* Product Info */
+.productInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* Reduced by 15% from 0.4rem */
+}
+
+.productName {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 0.85rem; /* Reduced by 15% from 1rem */
+  font-weight: 500;
+  color: #ffffff; /* Changed to white */
+  margin: 0;
+  line-height: 1.3;
+}
+
+.productDescription {
+  font-family: 'Parisine', sans-serif;
+  font-size: 0.68rem; /* Reduced by 15% from 0.8rem */
+  color: rgba(255, 255, 255, 0.7); /* Changed to semi-transparent white */
+  margin: 0;
+  line-height: 1.4;
+}
+
+.productPrice {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 0.85rem; /* Reduced by 15% from 1rem */
+  font-weight: 600;
+  color: var(--paul-gold); /* Changed to gold */
+  margin: 0.2125rem 0 0 0; /* Reduced by 15% from 0.25rem */
+}
+
+/* Quantity Controls */
+.quantityControls {
+  display: flex;
+  align-items: center;
+  gap: 0.425rem; /* Reduced by 15% from 0.5rem */
+  background: linear-gradient(135deg, #333333 0%, #444444 100%); /* Changed to dark gray gradient */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Changed to semi-transparent white border */
+  padding: 0.425rem; /* Reduced by 15% from 0.5rem */
+}
+
+.quantityButton {
+  width: 27.2px; /* Reduced by 15% from 32px */
+  height: 27.2px; /* Reduced by 15% from 32px */
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Changed to white gradient */
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #000000; /* Changed to black */
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 0.765rem; /* Reduced by 15% from 0.9rem */
+  font-weight: 600;
+}
+
+.quantityButton:hover {
+  background: linear-gradient(135deg, var(--paul-gold) 0%, #f4d03f 100%);
+  color: var(--paul-black);
+  transform: scale(1.1);
+}
+
+.quantityButton:active {
+  transform: scale(0.95);
+}
+
+.quantityValue {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 0.85rem; /* Reduced by 15% from 1rem */
+  font-weight: 600;
+  color: #ffffff; /* Changed to white */
+  min-width: 20.4px; /* Reduced by 15% from 24px */
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1); /* Changed to semi-transparent white */
+  padding: 0.2125rem 0.425rem; /* Reduced by 15% from 0.25rem 0.5rem */
+}
+
+/* Remove Button */
+.removeButton {
+  width: 30.6px; /* Reduced by 15% from 36px */
+  height: 30.6px; /* Reduced by 15% from 36px */
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.removeButton:hover {
+  background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.removeButton:active {
+  transform: translateY(0) scale(0.95);
+}
+
+.removeIcon {
+  width: 13.6px; /* Reduced by 15% from 16px */
+  height: 13.6px; /* Reduced by 15% from 16px */
+  filter: invert(1);
+  transition: transform 0.3s ease;
+}
+
+.removeButton:hover .removeIcon {
+  transform: rotate(90deg);
+}
+
+/* Modal Footer */
+.modalFooter {
+  padding: 1.7rem; /* Reduced by 15% from 2rem */
+  background: #000000; /* Changed to black */
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Changed to semi-transparent white border */
+  display: flex;
+  flex-direction: column;
+  gap: 1.275rem; /* Reduced by 15% from 1.5rem */
+  position: relative;
+}
+
+.modalFooter::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+}
+
+.totalSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem; /* User's change from 1.275rem */
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); /* Changed to dark gray gradient */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Changed to semi-transparent white border */
+  position: relative;
+  overflow: hidden;
+}
+
+.totalLabel {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 1.02rem; /* Reduced by 15% from 1.2rem */
+  font-weight: 600;
+  color: #ffffff; /* Changed to white */
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.totalAmount {
+  font-family: 'Parisine Pro Gris', sans-serif;
+  font-size: 1.275rem; /* Reduced by 15% from 1.5rem */
+  font-weight: 700;
+  color: var(--paul-gold);
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.85rem; /* Reduced by 15% from 1rem */
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.buttonSecondary {
+  padding: 0.85rem 1.7rem; /* Reduced by 15% from 1rem 2rem */
+  background: linear-gradient(135deg, #333333 0%, #444444 100%); /* Changed to dark gray gradient */
+  border: 2px solid rgba(255, 255, 255, 0.2); /* Changed to semi-transparent white border */
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 0.8075rem; /* Reduced by 15% from 0.95rem */
+  font-weight: 600;
+  color: #ffffff; /* Changed to white */
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.buttonSecondary:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Changed to white gradient */
+  border-color: #ffffff; /* Changed to white */
+  color: #000000; /* Changed to black */
+  transform: translateY(-2px);
+}
+
+.buttonPrimary {
+  padding: 0.85rem 1.7rem; /* Reduced by 15% from 1rem 2rem */
+  background: linear-gradient(135deg, var(--paul-gold) 0%, #f4d03f 100%);
+  border: 2px solid var(--paul-gold);
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 0.8075rem; /* Reduced by 15% from 0.95rem */
+  font-weight: 600;
+  color: var(--paul-black);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.buttonPrimary:hover {
+  background: linear-gradient(135deg, #f4d03f 0%, var(--paul-gold) 100%);
+  border-color: #f4d03f;
+  transform: translateY(-2px);
+}
+
+.buttonPrimary:active,
+.buttonSecondary:active {
+  transform: translateY(0);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modalContainer {
+    width: 98%;
+    max-width: none;
+    max-height: 90vh;
+  }
+
+  .modalHeader {
+    padding: 1rem 1.2rem;
+  }
+
+  .modalTitle {
+    font-size: 1.1rem;
+  }
+
+  .closeButton {
+    width: 28px;
+    height: 28px;
+  }
+
+  .emptyCart {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .emptyCartIcon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+  }
+
+  .emptyCartTitle {
+    font-size: 1rem;
+  }
+
+  .emptyCartText {
+    font-size: 0.75rem;
+    max-width: 250px;
+    margin-bottom: 1.5rem;
+  }
+
+  .emptyCartButton {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.75rem;
+  }
+
+  .cartItemsContainer {
+    padding: 1rem 1.2rem;
+    max-height: 300px;
+  }
+
+  .cartItem {
+    gap: 0.6rem;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .productImage {
+    width: 60px;
+    height: 60px;
+  }
+
+  .productName {
+    font-size: 0.75rem;
+  }
+
+  .productDescription {
+    font-size: 0.6rem;
+  }
+
+  .productPrice {
+    font-size: 0.75rem;
+  }
+
+  .quantityControls {
+    gap: 0.3rem;
+    padding: 0.3rem;
+  }
+
+  .quantityButton {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+
+  .quantityValue {
+    font-size: 0.75rem;
+    min-width: 18px;
+    padding: 0.15rem 0.3rem;
+  }
+
+  .removeButton {
+    width: 28px;
+    height: 28px;
+  }
+
+  .removeIcon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .modalFooter {
+    padding: 1.2rem;
+    gap: 1rem;
+  }
+
+  .totalSection {
+    padding: 1rem;
+  }
+
+  .totalLabel {
+    font-size: 0.9rem;
+  }
+
+  .totalAmount {
+    font-size: 1.1rem;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .buttonSecondary,
+  .buttonPrimary {
+    width: 100%;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.75rem;
+  }
+}

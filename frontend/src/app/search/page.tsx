@@ -9,6 +9,7 @@ import FeaturesSection from '../../components/FeaturesSection';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import { useCart } from '../../contexts/CartContext';
 
+
 interface Product {
   id: string;
   name: string;

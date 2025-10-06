@@ -1,0 +1,283 @@
+"use client";
+
+import React, { useState } from 'react';
+import Image from 'next/image';
+import { Mail, ChevronDown } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+} from '@/components/ui/accordion';
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import './Footer.css';
+
+// Кастомный триггер аккордеона для футера
+const FooterAccordionTrigger = React.forwardRef<
+  React.ElementRef<typeof AccordionPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+  <AccordionPrimitive.Header className="flex">
+    <AccordionPrimitive.Trigger
+      ref={ref}
+      className="footer-accordion-trigger"
+      {...props}
+    >
+      {children}
+      <div className="footer-accordion-icon">
+        <ChevronDown className="footer-accordion-chevron" size={14} />
+      </div>
+    </AccordionPrimitive.Trigger>
+  </AccordionPrimitive.Header>
+));
+FooterAccordionTrigger.displayName = "FooterAccordionTrigger";
+
+const Footer: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const isMobile = useIsMobile();
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      console.log('Subscribed with email:', email);
+      setEmail('');
+    }
+  };
+
+  const footerSections = [
+    {
+      title: 'Explore PAUL',
+      links: [
+        { label: 'In-Store Menu', href: '#' },
+        { label: 'Find a PAUL', href: '#' },
+        { label: 'Allergens', href: '#' },
+      ],
+    },
+    {
+      title: 'Cakes',
+      links: [
+        { label: 'Birthday', href: '#' },
+        { label: 'Personalised', href: '#' },
+        { label: 'Celebration', href: '#' },
+        { label: 'Traditional', href: '#' },
+        { label: 'French', href: '#' },
+      ],
+    },
+    {
+      title: 'Company',
+      links: [
+        { label: 'Our Story', href: '/our-story' },
+        { label: 'Sustainability', href: '#' },
+        { label: 'Franchise', href: '#' },
+      ],
+    },
+    {
+      title: 'Customer',
+      links: [
+        { label: 'Contact Information', href: '#' },
+        { label: 'Delivery Information', href: '#' },
+        { label: 'My Account', href: '#' },
+        { label: 'FAQ', href: '#' },
+        { label: 'Terms & Conditions', href: '#' },
+        { label: 'Privacy Policy', href: '#' },
+        { label: 'Cookie Policy', href: '#' },
+      ],
+    },
+  ];
+
+  return (
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-content">
+          {isMobile ? (
+            // Мобильная версия
+            <div className="footer-mobile">
+              {/* Аккордеоны */}
+              <Accordion type="multiple" className="footer-accordion">
+                {footerSections.map((section, index) => (
+                  <AccordionItem key={index} value={`item-${index}`} className="footer-accordion-item">
+                    <FooterAccordionTrigger>
+                      {section.title}
+                    </FooterAccordionTrigger>
+                    <AccordionContent className="footer-accordion-content">
+                      <ul className="footer-links">
+                        {section.links.map((link, linkIndex) => (
+                          <li key={linkIndex}>
+                            <a href={link.href} className="footer-link">
+                              {link.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+
+              {/* Newsletter */}
+              <div className="newsletter-section">
+                <div className="newsletter-header">
+                  <h3 className="newsletter-title">Join our Newsletter</h3>
+                </div>
+                <p className="newsletter-description">Be the first to know our latest news</p>
+                
+                <form className="newsletter-form" onSubmit={handleSubscribe}>
+                  <input
+                    type="email"
+                    placeholder="Enter your email here"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="newsletter-input"
+                    required
+                  />
+                  <button type="submit" className="newsletter-button">
+                    Subscribe
+                  </button>
+                </form>
+              </div>
+
+              {/* Горизонтальная линия */}
+              <div className="footer-divider"></div>
+
+              {/* Social Media */}
+              <div className="social-media">
+                <a href="#" className="social-link" aria-label="Instagram">
+                  <Image
+                    src="/images/3463469_instagram_social media_social_network_icon 1.svg"
+                    alt="Instagram"
+                    width={23}
+                    height={23}
+                  />
+                </a>
+                <a href="#" className="social-link" aria-label="YouTube">
+                  <Image
+                    src="/images/3463481_media_network_social_youtube_icon 1.svg"
+                    alt="YouTube"
+                    width={23}
+                    height={23}
+                  />
+                </a>
+                <a href="#" className="social-link" aria-label="Facebook">
+                  <Image
+                    src="/images/3463465_facebook_media_network_social_icon 1.svg"
+                    alt="Facebook"
+                    width={23}
+                    height={23}
+                  />
+                </a>
+              </div>
+
+              {/* Платежные методы */}
+              <div className="footer-payment">
+                <div className="payment-logos">
+                  <Image
+                    src="/images/visamaster.png"
+                    alt="Visa and Mastercard"
+                    width={120}
+                    height={40}
+                    style={{
+                      objectFit: 'contain'
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          ) : (
+            // Десктопная версия
+            <>
+              <div className="footer-left">
+                <div className="footer-columns">
+                  {footerSections.map((section, index) => (
+                    <div key={index} className="footer-column">
+                      <h3 className="footer-title">{section.title}</h3>
+                      <ul className="footer-links">
+                        {section.links.map((link, linkIndex) => (
+                          <li key={linkIndex}>
+                            <a href={link.href} className="footer-link">
+                              {link.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Платежные методы */}
+                <div className="footer-payment">
+                  <div className="payment-logos">
+                    <Image
+                      src="/images/visamaster.png"
+                      alt="Visa and Mastercard"
+                      width={120}
+                      height={40}
+                      style={{
+                        objectFit: 'contain'
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Правая секция - Newsletter и Social Media */}
+              <div className="footer-right">
+                {/* Newsletter */}
+                <div className="newsletter-section">
+                  <div className="newsletter-header">
+                    <h3 className="newsletter-title">Join our Newsletter</h3>
+                    <Mail className="newsletter-icon" size={18} />
+                  </div>
+                  <p className="newsletter-description">Be the first to know our latest news</p>
+                  
+                  <form className="newsletter-form" onSubmit={handleSubscribe}>
+                    <input
+                      type="email"
+                      placeholder="Enter your email here"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="newsletter-input"
+                      required
+                    />
+                    <button type="submit" className="newsletter-button">
+                      Subscribe
+                    </button>
+                  </form>
+                </div>
+
+                {/* Social Media */}
+                <div className="social-media">
+                  <a href="#" className="social-link" aria-label="Instagram">
+                    <Image
+                      src="/images/3463469_instagram_social media_social_network_icon 1.svg"
+                      alt="Instagram"
+                      width={23}
+                      height={23}
+                    />
+                  </a>
+                  <a href="#" className="social-link" aria-label="YouTube">
+                    <Image
+                      src="/images/3463481_media_network_social_youtube_icon 1.svg"
+                      alt="YouTube"
+                      width={23}
+                      height={23}
+                    />
+                  </a>
+                  <a href="#" className="social-link" aria-label="Facebook">
+                    <Image
+                      src="/images/3463465_facebook_media_network_social_icon 1.svg"
+                      alt="Facebook"
+                      width={23}
+                      height={23}
+                    />
+                  </a>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

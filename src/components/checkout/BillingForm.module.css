@@ -1,0 +1,129 @@
+/* BillingForm Component Styles */
+
+.billingForm {
+  margin-bottom: 3rem;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sectionHeader {
+  background-color: #000000;
+  color: #FFFAE6;
+  padding: 0.8rem 1.5rem;
+  font-family: "Sabon Next LT Pro", 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 0 auto 2.5rem auto;
+}
+
+.loginPrompt {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+}
+
+.loginPrompt p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.loginPrompt a {
+  text-decoration: underline;
+  color: #000;
+}
+
+.autoFillIndicator {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #000000;
+  border: 1px solid #000000;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.autoFillIndicator p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #FFFAE6;
+  font-family: 'Parisine', sans-serif;
+}
+
+.requiredText {
+  color: rgba(0,0,0,0.6);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  font-family: 'Parisine', sans-serif;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.requiredText span {
+  color: rgba(246,0,0,0.6);
+}
+
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputField {
+  width: 100%;
+  padding: 0.75rem;
+  border: 0.5px solid rgba(0,0,0,0.5);
+  border-radius: 4px;
+  background-color: rgba(254,244,230,0.5);
+  font-size: 0.9rem;
+  font-family: "Sabon Next LT Pro", serif;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
+
+.errorMessage {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.fullWidthField {
+  margin-bottom: 1rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .fieldsGrid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .sectionHeader {
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+  }
+  
+  .inputField {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+}

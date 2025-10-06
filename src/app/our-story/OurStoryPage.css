@@ -1,0 +1,971 @@
+/* Main Container */
+.our-story-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFCF8;
+}
+
+.our-story-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 0;
+  text-align: center;
+  position: relative;
+  margin-top: 30px;
+
+  
+}
+
+.main-title {
+  color: #000;
+  font-family: "Sabon Next LT Pro";
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+
+}
+
+.hero-divider {
+  width: 50%;
+  max-width: 1140px;
+  height: 1px;
+  background-color: #000000;
+  margin: 10px auto 10px;
+}
+
+.hero-divider-secondary {
+  width: 100%;
+  max-width: 1140px;
+  height: 1px;
+  background-color: #000000;
+  margin: 0 auto;
+}
+
+.hero-subtitle {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  text-align: center;
+  
+  
+}
+
+/* Timeline Section */
+.timeline-section {
+  padding: 40px 0 60px;
+  position: relative;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.timeline-item {
+  position: relative;
+}
+
+.timeline-year {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 95.333px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+.timeline-year.today {
+  font-size: 80px;
+}
+
+.timeline-divider {
+  width: 206.7px;
+  height: 1px;
+  background-color: #000000;
+  margin-bottom: 15px;
+}
+
+/* 1889 - Horizontal Layout (Year left, Text right) */
+.timeline-1889 {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  margin-left: 10%;
+}
+
+.timeline-1889 .timeline-left-block {
+  flex-shrink: 0;
+}
+
+.timeline-1889 .timeline-text {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.timeline-1889 .timeline-text p {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  max-width: 680px;
+}
+
+/* 1908 - Big Image Left + Text Right */
+.timeline-1908 .timeline-content {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.timeline-1908 .timeline-image-block {
+  flex-shrink: 0;
+  width: 50%;
+}
+
+.timeline-1908 .timeline-text-block {
+  flex: 1;
+}
+
+.timeline-1908 .timeline-text-block p {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  max-width: 680px;
+}
+
+/* 1950s - Text Left + Image Right */
+.timeline-1950s .timeline-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  margin-left: 5%;
+}
+
+.timeline-1950s .timeline-year {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 100.333px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  
+}
+
+.timeline-1950s .timeline-text-block {
+  flex: 1;
+}
+
+.timeline-1950s .timeline-image-block {
+  flex-shrink: 0;
+  width: 50%;
+}
+
+.timeline-1950s .timeline-text-block p {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  max-width: 500px;
+}
+
+/* 1953 - Vertical Image Left + Text Right */
+.timeline-1953 .timeline-content {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  
+}
+
+.timeline-1953 .timeline-image-block {
+  flex-shrink: 0;
+  width: 50%;
+
+}
+
+.timeline-1953 .timeline-text-block {
+  flex: 1;
+}
+
+.timeline-1953 .timeline-text-block p {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  max-width: 480px;
+  margin-bottom: 180px;
+}
+
+/* 1972 - Centered Wide Image */
+.timeline-1972 {
+  text-align: center;
+}
+
+.timeline-1972 .timeline-year {
+  text-align: center;
+}
+
+.timeline-1972 .timeline-divider {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.timeline-1972 .timeline-text {
+  max-width: 1140px;
+  margin: 0 auto 40px;
+}
+
+.timeline-1972 .timeline-text p {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin: 0;
+  text-align: center;
+  max-width: 1140px;
+}
+
+.timeline-1972 .timeline-image-block {
+  display: flex;
+  justify-content: center;
+}
+
+/* 1985 - Text Left + Big Image Right */
+.timeline-1985 .timeline-content {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  margin-left: 5%;
+  max-width: 1140px;
+}
+
+.timeline-1985 .timeline-text-block {
+  flex: 1;
+}
+
+.timeline-1985 .timeline-image-block {
+  flex-shrink: 0;
+  width: 680px;
+}
+
+.timeline-1985 .timeline-text-block p {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  max-width: 500px;
+}
+
+/* 1993 - Left Column in Double Layout */
+.timeline-1993 .timeline-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  position: relative;
+}
+
+.timeline-1993 .timeline-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-1993 .timeline-image-block {
+  margin-bottom: 24px;
+}
+
+.timeline-1993 .timeline-text p {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin: 10px;
+}
+
+/* 2000 - Right Column in Double Layout */
+.timeline-2000 .timeline-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  position: relative;
+}
+
+.timeline-2000 .timeline-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-2000 .timeline-image-block {
+  margin-bottom: 24px;
+}
+
+.timeline-2000 .timeline-text p {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin: 0;
+}
+
+/* 2007 & 2019 - Two Column Grid Layout */
+.timeline-2007-2019 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-top: -40px; /* 2007 чуть выше */
+}
+
+.timeline-2007-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-2019-column {
+  display: flex;
+  flex-direction: column;
+  margin-top: 130px; /* 2019 чуть ниже */
+}
+
+.timeline-2007-column .timeline-year,
+.timeline-2019-column .timeline-year {
+  color: #000;
+
+  font-family: "Sabon Next LT Pro";
+  font-size: 100.333px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin-top: 10px;
+}
+
+.timeline-2007-column .timeline-image-block,
+.timeline-2019-column .timeline-image-block {
+  margin-bottom: 1rem;
+}
+
+.timeline-2007-column .timeline-text,
+.timeline-2019-column .timeline-text {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 1.4;
+  margin: 0;
+  max-width: 430px;
+}
+
+.timeline-2019-column .timeline-images-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 1rem;
+}
+
+/* Today - Centered with Wide Image */
+.timeline-today {
+  text-align: center;
+  width: 1140PX;
+}
+
+.timeline-today .timeline-year {
+  text-align: center;
+}
+
+.timeline-today .timeline-divider {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.timeline-today .timeline-text {
+  margin: 0 auto 40px;
+}
+
+.timeline-today .timeline-text p {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin: 0;
+  text-align: center;
+  
+}
+
+.timeline-today .timeline-image-block {
+  display: flex;
+  justify-content: center;
+}
+
+/* Vertical Divider for Double Column Layout */
+.timeline-vertical-divider {
+  width: 1px;
+  background-color: #000000;
+  align-self: stretch;
+  margin: 150px 0;
+}
+
+/* Image Styles */
+.story-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.story-image.large {
+  max-width: 671px;
+  max-height: 447px;
+}
+
+.story-image.medium {
+  max-width: 606px;
+  max-height: 370px;
+}
+
+.story-image.vertical {
+  max-width: 494px;
+  max-height: 594px;
+}
+
+.story-image.extra-wide {
+  max-width: 1093px;
+  max-height: 370px;
+}
+
+.story-image.square {
+  max-width: 530px;
+  max-height: 530px;
+}
+
+.story-image.small {
+  max-width: 403px;
+  max-height: 369px;
+}
+
+.story-image.small-vertical {
+  max-width: 365px;
+  max-height: 494px;
+}
+
+/* Section Dividers */
+.section-divider {
+  width: 100%;
+  max-width: 1140px;
+  height: 1px;
+  background-color: #000000;
+  margin: 30px auto;
+}
+
+/* CTA Section */
+.cta-section {
+  text-align: center;
+  margin: 80px 0 60px;
+}
+
+.cta-button {
+  background-color: #000000;
+  color: #FEF4E6;
+  border: none;
+  padding: 32px 56px;
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 0;
+}
+
+.cta-button:hover {
+  background-color: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Values Section */
+.values-section {
+  padding: 60px 20px;
+  background-color: #FFFCF8;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 60px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.value-item {
+  text-align: center;
+}
+
+.value-icon {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 84px;
+}
+
+.value-image {
+  max-width: 180px;
+  max-height: 84px;
+  object-fit: contain;
+}
+
+.value-title {
+  font-family: 'Sabon Next LT Pro Display', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #000000;
+  margin: 0 0 12px 0;
+}
+
+.value-description {
+  color: #000;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin: 0;
+}
+
+/* Responsive Design */
+
+/* Wide Screens (1920px and above) */
+@media (min-width: 1921px) {
+  .our-story-main {
+    max-width: 1440px;
+    padding: 0 40px;
+  }
+
+  .timeline-section {
+    max-width: 1140px;
+  }
+
+  .values-grid {
+    max-width: 1140px;
+  }
+
+  .section-divider {
+    max-width: 1140px;
+  }
+
+  .hero-divider {
+    max-width: 1140px;
+  }
+}
+
+/* Large Desktop (1440px - 1920px) */
+@media (min-width: 1441px) and (max-width: 1920px) {
+  .our-story-main {
+    max-width: 1440px;
+    padding: 0 40px;
+  }
+
+  .timeline-section {
+    max-width: 1140px;
+  }
+
+  .values-grid {
+    max-width: 1140px;
+  }
+
+  .section-divider {
+    max-width: 1140px;
+  }
+
+  .hero-divider {
+    max-width: 1140px;
+  }
+}
+
+/* Standard Desktop & Laptop (1200px - 1440px) */
+@media (min-width: 1200px) and (max-width: 1440px) {
+  .our-story-main {
+    max-width: 1200px;
+    padding: 0 30px;
+  }
+
+  .timeline-section {
+    max-width: 1140px;
+  }
+
+  .timeline-year {
+    font-size: 96px;
+  }
+
+  .timeline-year.today {
+    font-size: 72px;
+  }
+
+  .story-image.large {
+    max-width: 600px;
+    max-height: 400px;
+  }
+
+  .story-image.extra-wide {
+    max-width: 950px;
+    max-height: 320px;
+  }
+
+  .story-image.vertical {
+    max-width: 450px;
+    max-height: 540px;
+  }
+
+  .story-image.square {
+    max-width: 480px;
+    max-height: 480px;
+  }
+
+  .values-grid {
+    max-width: 1140px;
+    gap: 50px;
+  }
+
+  .section-divider {
+    max-width: 1140px;
+  }
+
+  .hero-divider {
+    max-width: 1140px;
+  }
+}
+
+/* Laptop & Small Desktop (1024px - 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .our-story-main {
+    max-width: 1024px;
+    padding: 0 30px;
+  }
+
+  .timeline-section {
+    max-width: 960px;
+  }
+
+  .timeline-year {
+    font-size: 80px;
+  }
+
+  .timeline-year.today {
+    font-size: 60px;
+  }
+
+  .story-image.large {
+    max-width: 520px;
+    max-height: 350px;
+  }
+
+  .story-image.medium {
+    max-width: 480px;
+    max-height: 300px;
+  }
+
+  .story-image.vertical {
+    max-width: 400px;
+    max-height: 480px;
+  }
+
+  .story-image.extra-wide {
+    max-width: 800px;
+    max-height: 270px;
+  }
+
+  .story-image.square {
+    max-width: 420px;
+    max-height: 420px;
+  }
+
+  .story-image.small {
+    max-width: 340px;
+    max-height: 310px;
+  }
+
+  .story-image.small-vertical {
+    max-width: 310px;
+    max-height: 420px;
+  }
+
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  .timeline-1889 .timeline-text p,
+  .timeline-1908 .timeline-text-block p,
+  .timeline-1950s .timeline-text-block p,
+  .timeline-1953 .timeline-text-block p,
+  .timeline-1972 .timeline-text p,
+  .timeline-1985 .timeline-text-block p,
+  .timeline-1993 .timeline-text p,
+  .timeline-2007-column .timeline-text p,
+  .timeline-2019-column .timeline-text p,
+  .timeline-today .timeline-text p {
+    font-size: 16px;
+  }
+
+  .value-description {
+    font-size: 16px;
+  }
+}
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) {
+  .our-story-main {
+    padding: 0 30px;
+  }
+
+  .timeline-section {
+    padding: 60px 0 40px;
+  }
+
+  .timeline-year {
+    font-size: 72px;
+  }
+
+  .timeline-year.today {
+    font-size: 54px;
+  }
+
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  .story-image.large,
+  .story-image.extra-wide {
+    max-width: 100%;
+  }
+
+  .timeline-1889,
+  .timeline-1908 .timeline-content,
+  .timeline-1950s .timeline-content,
+  .timeline-1953 .timeline-content,
+  .timeline-1985 .timeline-content {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .timeline-2007-2019 {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-top: 0;
+  }
+
+  .timeline-2019-column {
+    margin-top: 0;
+  }
+
+  .timeline-1993 .timeline-content {
+    flex-direction: column;
+  }
+
+  .timeline-vertical-divider {
+    width: 100%;
+    height: 1px;
+    margin: 40px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    margin-top: 60px;
+  }
+
+  .main-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+    padding: 0 20px;
+  }
+
+  .timeline-section {
+    padding: 40px 30px;
+  }
+
+  .timeline-item {
+    margin-bottom: 60px;
+  }
+
+  .timeline-year {
+    font-size: 56px;
+  }
+
+  .timeline-year.today {
+    font-size: 44px;
+  }
+
+  .timeline-divider {
+    margin-bottom: 24px;
+  }
+
+  .timeline-1889,
+  .timeline-1908 .timeline-content,
+  .timeline-1950s .timeline-content,
+  .timeline-1953 .timeline-content,
+  .timeline-1985 .timeline-content {
+    gap: 30px;
+  }
+
+  .timeline-2007-2019 {
+    gap: 30px;
+  }
+
+  .timeline-1972 .timeline-text,
+  .timeline-today .timeline-text {
+    max-width: 100%;
+    padding: 0 20px;
+  }
+
+  .timeline-1889 .timeline-text p,
+  .timeline-1908 .timeline-text-block p,
+  .timeline-1950s .timeline-text-block p,
+  .timeline-1953 .timeline-text-block p,
+  .timeline-1972 .timeline-text p,
+  .timeline-1985 .timeline-text-block p,
+  .timeline-1993 .timeline-text p,
+  .timeline-2007-column .timeline-text p,
+  .timeline-2019-column .timeline-text p,
+  .timeline-today .timeline-text p {
+    font-size: 15px;
+  }
+
+  .value-description {
+    font-size: 15px;
+  }
+
+  .story-image.large,
+  .story-image.medium,
+  .story-image.vertical,
+  .story-image.extra-wide,
+  .story-image.square,
+  .story-image.small,
+  .story-image.small-vertical {
+    max-width: 100%;
+  }
+
+  .timeline-2019-column .timeline-images-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .section-divider {
+    margin: 60px auto;
+  }
+
+  .cta-section {
+    margin: 60px 0 40px;
+  }
+
+  .cta-button {
+    padding: 20px 40px;
+    font-size: 16px;
+  }
+
+  .values-section {
+    padding: 40px 20px;
+  }
+
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .value-title {
+    font-size: 16px;
+  }
+
+  .value-description {
+    font-size: 14px;
+  }
+
+  .timeline-1889 .timeline-text p,
+  .timeline-1908 .timeline-text-block p,
+  .timeline-1950s .timeline-text-block p,
+  .timeline-1953 .timeline-text-block p,
+  .timeline-1972 .timeline-text p,
+  .timeline-1985 .timeline-text-block p,
+  .timeline-1993 .timeline-text p,
+  .timeline-2007-column .timeline-text p,
+  .timeline-2019-column .timeline-text p,
+  .timeline-today .timeline-text p {
+    font-size: 14px;
+  }
+}
+
+/* Animation for smooth loading */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timeline-item {
+  animation: fadeInUp 0.6s ease-out;
+}

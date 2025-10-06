@@ -1,0 +1,357 @@
+/* DeliveryOptions Component Styles */
+
+.deliveryOptions {
+  margin-bottom: 3rem;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sectionHeader {
+  background-color: #000000;
+  color: #FFFAE6;
+  padding: 0.8rem 1.5rem;
+  font-family: "Sabon Next LT Pro", 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 0 auto 2.5rem auto;
+}
+
+.subtitle {
+  font-family: "Sabon Next LT Pro";
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.deliveryButtons {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.deliveryOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.deliveryDescription {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+  margin: 0;
+  line-height: 1.3;
+  max-width: 200px;
+}
+
+.deliveryButton {
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #000000;
+    border: 1px solid #000000;
+    padding: .75rem 1.25rem;
+    font-family: "Sabon Next LT Pro", "Playfair Display", serif;
+    font-size: 1.9rem;
+    font-weight: 500;
+    transition: all .2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 4rem 4rem 0.5rem 4rem;
+}
+
+.buttonIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+}
+
+.deliveryButton:hover {
+  background-color: #333333;
+  border-color: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.deliveryButton.active {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+.deliveryButton.active:hover {
+  background-color: #1a1a1a;
+  transform: scale(1.1) translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.deliveryButton:not(.active) {
+  transform: scale(0.95);
+  opacity: 0.7;
+}
+
+.deliveryButton:not(.active):hover {
+  transform: scale(0.95) translateY(-2px);
+  opacity: 0.8;
+}
+
+
+.timeSelection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputField {
+  width: 100%;
+  padding: 1rem;
+  border: 0.5px solid rgba(0,0,0,0.5);
+  border-radius: 4px;
+  background-color: rgba(254,244,230,0.5);
+  font-size: 1rem;
+  font-family: "Sabon Next LT Pro", serif;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
+
+/* Стили для календаря */
+.inputField[type="date"] {
+  position: relative;
+}
+
+.inputField[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  color: transparent;
+  background: transparent;
+  cursor: pointer;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit-text {
+  padding: 0;
+  margin: 0;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit-month-field,
+.inputField[type="date"]::-webkit-datetime-edit-day-field,
+.inputField[type="date"]::-webkit-datetime-edit-year-field {
+  padding: 0;
+  margin: 0;
+}
+
+/* Заголовки полей */
+.fieldTitle {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin: 0 0 0.5rem 0;
+}
+
+/* Кастомный календарь */
+.datePickerContainer {
+  position: relative;
+}
+
+
+.calendar {
+  position: relative;
+  background: #FEF2CD;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin-top: 8px;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendarNavButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  font-family: "Sabon Next LT Pro", serif;
+}
+
+.calendarNavButton:hover {
+  background-color: #f0f0f0;
+}
+
+.calendarTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  font-family: "Sabon Next LT Pro", serif;
+}
+
+.calendarDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dayName {
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+  color: #666;
+  font-family: "Sabon Next LT Pro", serif;
+}
+
+.calendarDay {
+  background: none;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 0.9rem;
+}
+
+.calendarDay:hover:not(.disabledDay) {
+  background-color: #f0f0f0;
+}
+
+.calendarDay.selectedDay {
+  background-color: #000;
+  color: white;
+}
+
+.calendarDay.disabledDay {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.calendarDay.disabledDay:hover {
+  background: none;
+}
+
+/* Кастомный селектор времени */
+.timePickerContainer {
+  position: relative;
+}
+
+.timeSlots {
+  position: relative;
+  background: #FEF2CD;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  margin-top: 8px;
+}
+
+.timeSlot {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 0.9rem;
+  text-align: center;
+  position: relative;
+}
+
+.timeSlot:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background-color: #d0d0d0;
+}
+
+.timeSlot:last-child {
+  border-bottom: none;
+}
+
+.timeSlot:hover {
+  background-color: #f0f0f0;
+}
+
+.timeSlot.selectedTimeSlot {
+  background-color: #000;
+  color: white;
+}
+
+.timeSlot.selectedTimeSlot:hover {
+  background-color: #333;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .deliveryButtons {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .deliveryButton {
+    padding: 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .timeSelection {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .sectionHeader {
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+}

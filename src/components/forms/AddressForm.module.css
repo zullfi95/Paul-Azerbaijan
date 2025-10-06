@@ -1,0 +1,98 @@
+/* Address Form Component Styles */
+
+.addressFormContainer {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+}
+
+.formTitle {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 20px 0;
+}
+
+.addressForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.halfWidth {
+  width: 100%;
+}
+
+.submitButton {
+  background: #1f2937;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+  align-self: flex-start;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #374151;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submitButton:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Responsive layout for form fields */
+@media (min-width: 768px) {
+  .addressForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 16px;
+  }
+  
+  .fullWidth {
+    grid-column: 1 / -1;
+  }
+  
+  .halfWidth {
+    grid-column: span 1;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+  .addressFormContainer {
+    padding: 16px;
+  }
+  
+  .formTitle {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  
+  .submitButton {
+    width: 100%;
+    margin-top: 16px;
+  }
+}
+
+
+

@@ -1,0 +1,517 @@
+/* Footer Styles */
+.footer {
+  background: #1a1a1a;
+  color: #F5E9D6;
+  padding: 41px 0 27px 0;
+  position: relative;
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1s both;
+}
+
+.footer-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 41px;
+  position: relative;
+}
+
+.footer-content::before {
+  display: none;
+}
+
+/* Левая секция */
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 27px;
+  margin-bottom: 27px;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-title {
+  color: var(--Ivory-colour-PAUL, #FFFCF8);
+  text-align: center;
+  font-family: "Sabon Next LT";
+  font-size: 17.6px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0 0 14px 0;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-links li {
+  margin-bottom: 9px;
+  text-align: center;
+}
+
+.footer-link {
+  color: var(--Ivory-colour-PAUL, #FFFCF8);
+  font-family: "Parisine Pro Gris";
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+
+.footer-link:hover {
+  opacity: 1;
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+/* Платежные методы */
+.footer-payment {
+  margin-top: auto;
+}
+
+.payment-logos {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.payment-text {
+  color: #F5E9D6;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 15.6px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.mastercard-logo {
+  width: 31px;
+  height: 20px;
+  background: linear-gradient(45deg, #eb001b, #f79e1b);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: "Sabon Next LT Pro", serif;
+}
+
+/* Правая секция */
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  gap: 27px;
+}
+
+/* Newsletter */
+.newsletter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.newsletter-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.newsletter-title {
+  color: #F5E9D6;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.newsletter-icon {
+  color: #F5E9D6;
+  opacity: 0.8;
+}
+
+.newsletter-description {
+  color: #F5E9D6;
+  font-family: "Parisine Pro Clair", sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.8;
+  margin: 0;
+}
+
+.newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-width: 170px;
+  margin: 0 auto;
+}
+
+.newsletter-input {
+  background: #F5E9D6;
+  border: 1px solid #F5E9D6;
+  color: #1a1a1a;
+  padding: 10px 13px;
+  border-radius: 3px;
+  font-family: "Parisine Pro Clair", sans-serif;
+  font-size: 11px;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.newsletter-input::placeholder {
+  color: #666;
+}
+
+.newsletter-input:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.newsletter-button {
+  background: #F5E9D6;
+  color: #1a1a1a;
+  border: 1px solid #F5E9D6;
+  padding: 10px 19px;
+  border-radius: 3px;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 1px;
+}
+
+.newsletter-button:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Social Media */
+.social-media {
+  display: flex;
+  gap: 14px;
+}
+
+.social-link {
+  color: #F5E9D6;
+  opacity: 0.8;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 233, 214, 0.3);
+}
+
+.social-link:hover {
+  opacity: 1;
+  color: #ffffff;
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Аккордеон для мобильной версии */
+.footer-mobile {
+  width: 100%;
+}
+
+.footer-accordion {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.footer-accordion-item {
+  border-bottom: none;
+}
+
+.footer-accordion-item:last-child {
+  border-bottom: none;
+}
+
+.footer-accordion-item .flex {
+  width: 100%;
+}
+
+.footer-accordion-item [data-slot="accordion-trigger"] {
+  width: 100%;
+}
+
+.footer-accordion-trigger {
+  color: var(--Ivory-colour-PAUL, #FFFCF8);
+  font-family: "Sabon Next LT";
+  font-size: 16px;
+  font-weight: 400;
+  width: 100%;
+  padding: 20px 0;
+  text-align: left;
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.footer-accordion-trigger:hover {
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.footer-accordion-trigger svg {
+  color: #F5E9D6;
+  width: 14px;
+  height: 14px;
+}
+
+.footer-accordion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #F5E9D6;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.footer-accordion-icon svg {
+  color: #1a1a1a;
+  width: 12px;
+  height: 12px;
+}
+
+.footer-accordion-trigger[data-state="open"] .footer-accordion-icon {
+  transform: rotate(180deg);
+}
+
+.footer-accordion-chevron {
+  transition: transform 0.3s ease;
+}
+
+.footer-accordion-content {
+  padding-bottom: 16px;
+  padding-top: 4px;
+}
+
+.footer-accordion-content .footer-links {
+  align-items: flex-start;
+  padding-left: 0;
+}
+
+.footer-accordion-content .footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer-accordion-content .footer-link {
+  text-align: left;
+  font-size: 13px;
+}
+
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(245, 233, 214, 0.3);
+  margin: 30px 0;
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .footer {
+    padding: 34px 0 20px 0;
+  }
+  
+  .footer-content {
+    gap: 0;
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-mobile {
+    width: 100%;
+  }
+  
+  .footer-mobile .newsletter-section {
+    margin-top: 20px;
+    margin-bottom: 0;
+    padding: 0;
+    align-items: flex-start;
+    text-align: left;
+  }
+  
+  .footer-mobile .newsletter-header {
+    justify-content: flex-start;
+  }
+  
+  .footer-mobile .newsletter-title {
+    font-size: 17px;
+    text-align: left;
+  }
+  
+  .footer-mobile .newsletter-description {
+    font-size: 12px;
+    text-align: left;
+  }
+  
+  .footer-mobile .newsletter-form {
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  .footer-mobile .newsletter-input,
+  .footer-mobile .newsletter-button {
+    width: 135%;
+    font-size: 13px;
+    padding: 13px 16px;
+  }
+  
+  .footer-mobile .social-media {
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .footer-mobile .footer-payment {
+    text-align: center;
+    margin-top: 25px;
+  }
+  
+  .footer-mobile .payment-logos {
+    justify-content: center;
+  }
+  
+  .footer-columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .footer-content::before {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 27px 0 14px 0;
+  }
+  
+  .footer-container {
+    padding: 0 20px;
+  }
+  
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .footer-accordion-trigger {
+    padding: 18px 0;
+    font-size: 15px;
+  }
+  
+  .footer-columns {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  
+  .footer-title {
+    font-size: 15.6px;
+    font-family: "Sabon Next LT";
+    font-weight: 400;
+    margin-bottom: 13px;
+  }
+  
+  .footer-link {
+    font-size: 12px;
+    font-family: "Parisine Pro Gris";
+    font-weight: 400;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 20px 0 10px 0;
+  }
+  
+  .footer-columns {
+    gap: 11px;
+  }
+  
+  .footer-title {
+    font-size: 14px;
+    font-family: "Sabon Next LT";
+    font-weight: 400;
+    margin-bottom: 10px;
+  }
+  
+  .footer-link {
+    font-size: 11px;
+    font-family: "Parisine Pro Gris";
+    font-weight: 400;
+    margin-bottom: 5px;
+  }
+  
+  .newsletter-title {
+    font-size: 12px;
+  }
+  
+  .newsletter-description {
+    font-size: 11px;
+  }
+  
+  .newsletter-form {
+    max-width: 119px;
+  }
+  
+  .newsletter-input,
+  .newsletter-button {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+  
+  .social-link {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .payment-text {
+    font-size: 11px;
+  }
+  
+  .mastercard-logo {
+    width: 22px;
+    height: 14px;
+    font-size: 7px;
+  }
+}

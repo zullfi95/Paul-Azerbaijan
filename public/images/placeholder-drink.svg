@@ -1,0 +1,23 @@
+<svg width="300" height="200" viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="300" height="200" fill="#F8F9FA"/>
+  
+  <!-- Glass -->
+  <rect x="120" y="60" width="60" height="80" rx="8" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="2"/>
+  <rect x="125" y="65" width="50" height="70" rx="6" fill="#F3F4F6"/>
+  
+  <!-- Liquid -->
+  <rect x="125" y="100" width="50" height="35" rx="6" fill="#3B82F6"/>
+  <rect x="125" y="110" width="50" height="25" rx="6" fill="#60A5FA"/>
+  
+  <!-- Ice cubes -->
+  <rect x="130" y="105" width="8" height="8" rx="1" fill="#DBEAFE"/>
+  <rect x="145" y="108" width="8" height="8" rx="1" fill="#DBEAFE"/>
+  <rect x="160" y="105" width="8" height="8" rx="1" fill="#DBEAFE"/>
+  
+  <!-- Straw -->
+  <line x1="140" y1="50" x2="140" y2="120" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Text -->
+  <text x="150" y="170" text-anchor="middle" fill="#6B7280" font-family="Arial, sans-serif" font-size="12" font-weight="500">PAUL Drink</text>
+</svg>

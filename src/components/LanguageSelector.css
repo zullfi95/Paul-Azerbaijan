@@ -1,0 +1,223 @@
+/* Language Selector Styles */
+
+.language-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.language-button {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  font-size: 11px;
+  font-weight: 400;
+  color: #6b7280;
+  min-width: 25px;
+  justify-content: center;
+}
+
+.language-button:hover {
+  opacity: 0.7;
+}
+
+/* removed globe icon */
+
+.language-text {
+  font-family: "Sabon Next LT", sans-serif;
+  font-weight: 400;
+}
+
+/* removed dropdown arrow */
+
+/* Dropdown Menu */
+.language-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  z-index: 9999;
+  margin-top: 2px;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 6px 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  font-size: 11px;
+  color: #374151;
+  text-align: left;
+  position: relative;
+}
+
+.language-option:hover {
+  background-color: #f9fafb;
+}
+
+.language-option.selected {
+  background-color: #f3f4f6;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+/* removed flags */
+
+.language-name {
+  flex: 1;
+  font-family: "Sabon Next LT", sans-serif;
+  font-weight: 400;
+}
+
+.check-icon {
+  color: #6b7280;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.language-option.selected .check-icon {
+  opacity: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+  .language-button {
+    padding: 3px 4px;
+    font-size: 10px;
+    min-width: 20px;
+  }
+  
+  .language-option {
+    padding: 4px 6px;
+    font-size: 10px;
+  }
+  
+  .language-flag {
+    font-size: 10px;
+  }
+}
+
+/* Mobile Menu Language Selector Styles */
+.mobile-menu-header-actions .language-selector {
+  position: relative;
+  z-index: 10;
+}
+
+.mobile-menu-header-actions .language-button {
+  padding: 6px 10px;
+  font-size: 12px;
+  min-width: 44px; /* iOS minimum touch target */
+  min-height: 44px;
+  border-radius: 6px;
+  color: #000;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* iOS Safari fixes */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.mobile-menu-header-actions .language-button:hover {
+  background: rgba(26, 26, 26, 0.05);
+  opacity: 1;
+}
+
+.mobile-menu-header-actions .language-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+}
+
+.mobile-menu-header-actions .language-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: auto;
+  min-width: 80px;
+  margin-top: 8px;
+  background: #FFFCF8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.mobile-menu-header-actions .language-option {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #000;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-header-actions .language-option:hover {
+  background-color: rgba(26, 26, 26, 0.05);
+}
+
+.mobile-menu-header-actions .language-option.selected {
+  background-color: rgba(26, 26, 26, 0.1);
+  font-weight: 600;
+}
+
+/* Focus states for accessibility */
+.language-button:focus {
+  outline: 1px solid #6b7280;
+  outline-offset: 1px;
+}
+
+.language-option:focus {
+  outline: 1px solid #6b7280;
+  outline-offset: -1px;
+}
+
+/* iOS Safari specific fixes for mobile menu language selector */
+@supports (-webkit-touch-callout: none) {
+  .mobile-menu-header-actions .language-button,
+  .mobile-menu-header-actions .language-option {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  .mobile-menu-header-actions .language-button:active {
+    background-color: rgba(26, 26, 26, 0.15) !important;
+  }
+  
+  .mobile-menu-header-actions .language-option:active {
+    background-color: rgba(26, 26, 26, 0.2) !important;
+  }
+}

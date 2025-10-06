@@ -1,0 +1,251 @@
+/* Cakes Page Styles - PAUL Design */
+
+.cakesPage {
+  min-height: 100vh;
+  background: #FFFCF8; /* PAUL Primary 1 */
+  font-family: 'Sabon Next LT Pro', serif;
+}
+
+/* Hero Section */
+.heroSection {
+  position: relative;
+  height: 440px;
+  background: #FFFCF8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1140px;
+  height: 100%;
+  background-image: url('/images/cakeHero.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.9;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: left;
+  color: #FFFCF8;
+  padding-left: 100px;
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: 56px;
+  font-family: 'Sabon Next LT Pro', serif;
+  font-style: italic;
+  font-weight: 300;
+  color: #FFFCF8;
+  margin: 0;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  line-height: normal;
+}
+
+/* Product Grid */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.productCard {
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  border: none;
+}
+
+.productCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.productImage {
+  height: 300px;
+  background: #FFFCF8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.addToCartBtn {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  background: white;
+  color: #000000;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.addToCartBtn:hover {
+  background: #F9FAFB;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.productInfo {
+  padding: 15px;
+}
+
+.productName {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(0,0,0,0.8);
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+  font-family: 'Parisine Pro Gris', serif;
+}
+
+.productPrice {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.priceValue {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000000;
+  font-family: 'Parisine Pro Gris', serif;
+}
+
+.priceCurrency {
+  font-size: 16px;
+  color: #000000;
+  margin-left: 8px;
+}
+
+/* Filter Button */
+.filterButton {
+  padding: 12px 24px;
+  background: #000000;
+  color: #FFFCF8;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Sabon Next LT Pro', serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterButton:hover {
+  background: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .productGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .heroContent {
+    padding-left: 50px;
+  }
+  
+  .heroTitle {
+    font-size: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .productGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .heroSection {
+    height: 300px;
+  }
+  
+  .heroContent {
+    padding-left: 20px;
+    text-align: center;
+  }
+  
+  .heroTitle {
+    font-size: 36px;
+  }
+  
+  .productImage {
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSection {
+    height: 250px;
+  }
+  
+  .heroContent {
+    padding-left: 15px;
+  }
+  
+  .heroTitle {
+    font-size: 28px;
+  }
+  
+  .productImage {
+    height: 200px;
+  }
+  
+  .productInfo {
+    padding: 12px;
+  }
+  
+  .productName {
+    font-size: 11px;
+  }
+  
+  .priceValue {
+    font-size: 18px;
+  }
+  
+  .priceCurrency {
+    font-size: 14px;
+  }
+}

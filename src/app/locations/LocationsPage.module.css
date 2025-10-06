@@ -1,0 +1,358 @@
+/* Locations Page Styles - PAUL Design */
+
+.locationsPage {
+  min-height: 100vh;
+  background: #FFFCF8; /* PAUL Primary 1 */
+  font-family: 'Sabon Next LT Pro', serif;
+}
+
+/* Main Content */
+.mainContent {
+  padding: 20px 0 40px 0;
+}
+
+.container {
+  max-width: 1140px; /* Same as header */
+  margin: 0 auto;
+  padding: 0 20px; /* Same as header */
+}
+
+.contentWrapper {
+  text-align: center;
+}
+
+/* Main Title - относительно хедера (17.6px) */
+.mainTitle {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-weight: bold;
+  font-size: 44px; /* 17.6px * 2.5 */
+  color: #000000; /* PAUL Black */
+  margin: 0 0 16px 0; /* 17.6px * 0.9 */
+  line-height: 1.2;
+}
+
+/* Subtitle - относительно хедера */
+.subtitle {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 18px; /* 17.6px * 1.02 */
+  color: #000000; /* PAUL Black */
+  margin: 0 auto 32px auto; /* 17.6px * 1.8 */
+  max-width: 600px;
+  line-height: 1.4;
+}
+
+/* Map Container - относительно хедера */
+.mapContainer {
+  margin: 0 auto 48px auto; /* 17.6px * 2.7 */
+  max-width: 1140px; /* Same as header */
+}
+
+.mapImage {
+  position: relative;
+  width: 100%;
+  height: 400px; /* 17.6px * 22.7 */
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.mapImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Map Placeholder */
+.mapPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #6c757d;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.mapIcon {
+  margin-bottom: 20px;
+  color: #D4AF37;
+}
+
+.mapTitle {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 12px 0;
+}
+
+.mapDescription {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 16px;
+  color: #6c757d;
+  margin: 0 0 8px 0;
+  line-height: 1.5;
+}
+
+.mapNote {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 14px;
+  color: #adb5bd;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Locations Grid - относительно хедера */
+.locationsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px; /* 17.6px * 1.36 */
+  max-width: 1140px; /* Увеличено для 3 колонок */
+  margin: 0 auto 48px auto; /* 17.6px * 2.7 */
+}
+
+/* Location Card - относительно хедера */
+.locationCard {
+  background: #FFFCF8; /* PAUL Primary 1 */
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.locationCard:hover {
+  transform: translateY(-4px);
+}
+
+/* Location Image - относительно хедера */
+.locationImage {
+  position: relative;
+  width: 100%;
+  height: 250px; /* 17.6px * 14.2 */
+  overflow: hidden;
+}
+
+.locationImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Location Info - относительно хедера */
+.locationInfo {
+  padding: 24px; /* 17.6px * 1.36 */
+}
+
+.locationName {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 22px; /* 17.6px * 1.25 */
+  font-weight: 600;
+  color: #000000; /* PAUL Black */
+  margin: 0 0 12px 0; /* 17.6px * 0.68 */
+  line-height: 1.3;
+}
+
+.locationAddress {
+  font-family: 'Parisine Pro Gris', serif;
+  font-size: 16px; /* 17.6px * 0.91 */
+  color: #000000; /* PAUL Black */
+  margin: 0 0 12px 0; /* 17.6px * 0.68 */
+  line-height: 1.5;
+}
+
+.locationPhone {
+  font-family: 'Parisine Pro Gris', serif;
+  font-size: 16px; /* 17.6px * 0.91 */
+  font-weight: 500;
+  color: #000000; /* PAUL Black */
+  margin: 0 0 8px 0; /* 17.6px * 0.45 */
+  line-height: 1.4;
+}
+
+.locationHours {
+  font-family: 'Parisine Pro Gris', serif;
+  font-size: 16px; /* 17.6px * 0.91 */
+  color: #000000; /* PAUL Black */
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Description Section - относительно хедера */
+.descriptionSection {
+  max-width: 1140px; /* Same as header */
+  margin: 0 auto;
+  text-align: left;
+}
+
+.descriptionTitle {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-weight: 600;
+  font-size: 24px; /* 17.6px * 1.36 */
+  color: #000000; /* PAUL Black */
+  margin: 0 0 16px 0; /* 17.6px * 0.9 */
+  line-height: 1.3;
+}
+
+.descriptionText {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 18px; /* 17.6px * 1.02 */
+  color: #000000; /* PAUL Black */
+  margin: 0;
+  line-height: 1.6;
+  max-width: 886px;
+}
+
+/* Responsive Design - относительно хедера */
+@media (max-width: 1024px) {
+  .locationsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainTitle {
+    font-size: 35px; /* 17.6px * 2 */
+  }
+  
+  .subtitle {
+    font-size: 16px; /* 17.6px * 0.91 */
+    margin: 0 auto 24px auto; /* 17.6px * 1.36 */
+    padding: 0 20px;
+  }
+  
+  .mapImage {
+    height: 300px; /* 17.6px * 17 */
+    margin: 0 auto 32px auto; /* 17.6px * 1.8 */
+  }
+  
+  .mapPlaceholder {
+    padding: 30px 15px;
+  }
+  
+  .mapTitle {
+    font-size: 20px;
+  }
+  
+  .mapDescription {
+    font-size: 14px;
+  }
+  
+  .mapNote {
+    font-size: 12px;
+  }
+  
+  .locationsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px; /* 17.6px * 1.14 */
+    margin: 0 auto 32px auto; /* 17.6px * 1.8 */
+    max-width: 700px; /* Уменьшено для мобильных устройств */
+  }
+  
+  .locationImage {
+    height: 200px; /* 17.6px * 11.4 */
+  }
+  
+  .locationInfo {
+    padding: 20px; /* 17.6px * 1.14 */
+  }
+  
+  .locationName {
+    font-size: 20px; /* 17.6px * 1.14 */
+  }
+  
+  .locationAddress,
+  .locationPhone,
+  .locationHours {
+    font-size: 15px; /* 17.6px * 0.85 */
+  }
+  
+  .descriptionSection {
+    margin: 0 auto 32px auto; /* 17.6px * 1.8 */
+    padding: 0 20px;
+  }
+  
+  .descriptionTitle {
+    font-size: 20px; /* 17.6px * 1.14 */
+  }
+  
+  .descriptionText {
+    font-size: 16px; /* 17.6px * 0.91 */
+  }
+}
+
+@media (max-width: 480px) {
+  .mainTitle {
+    font-size: 28px; /* 17.6px * 1.6 */
+    margin: 0 0 12px 0; /* 17.6px * 0.68 */
+  }
+  
+  .subtitle {
+    font-size: 14px; /* 17.6px * 0.8 */
+    margin: 0 auto 20px auto; /* 17.6px * 1.14 */
+    padding: 0 15px;
+  }
+  
+  .mapImage {
+    height: 200px; /* 17.6px * 11.4 */
+    margin: 0 auto 24px auto; /* 17.6px * 1.36 */
+  }
+  
+  .mapPlaceholder {
+    padding: 20px 10px;
+  }
+  
+  .mapTitle {
+    font-size: 18px;
+  }
+  
+  .mapDescription {
+    font-size: 13px;
+  }
+  
+  .mapNote {
+    font-size: 11px;
+  }
+  
+  .locationsGrid {
+    gap: 16px; /* 17.6px * 0.91 */
+    margin: 0 auto 24px auto; /* 17.6px * 1.36 */
+    max-width: 500px; /* Уменьшено для маленьких экранов */
+  }
+  
+  .locationImage {
+    height: 180px; /* 17.6px * 10.2 */
+  }
+  
+  .locationInfo {
+    padding: 16px; /* 17.6px * 0.91 */
+  }
+  
+  .locationName {
+    font-size: 18px; /* 17.6px * 1.02 */
+  }
+  
+  .locationAddress,
+  .locationPhone,
+  .locationHours {
+    font-size: 14px; /* 17.6px * 0.8 */
+  }
+  
+  .descriptionSection {
+    margin: 0 auto 24px auto; /* 17.6px * 1.36 */
+    padding: 0 15px;
+  }
+  
+  .descriptionTitle {
+    font-size: 18px; /* 17.6px * 1.02 */
+  }
+  
+  .descriptionText {
+    font-size: 14px; /* 17.6px * 0.8 */
+  }
+}

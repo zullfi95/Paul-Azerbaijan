@@ -1,0 +1,613 @@
+/* Hero Section Styles */
+
+.hero {
+  width: 100%;
+  background: #FFFCF8;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  min-height: 68vh;
+  display: flex;
+  align-items: center;
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  
+}
+
+.hero::before {
+  display: none;
+}
+
+.hero-container {
+  width: 100%;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  background: #FFFCF8;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 0;
+  align-items: stretch;
+  min-height: 54vh;
+  position: relative;
+  overflow: hidden;
+  margin: 27px 0;
+  max-width: 1140px;
+  width: 100%;
+  
+}
+
+/* Left Column - Image */
+.hero-image-column {
+  position: relative;
+  height: 54vh;
+  background: linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+.hero-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hero-img {
+  object-fit: cover;
+  object-position: center;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(0.9) contrast(1.1);
+}
+
+.hero-img:hover {
+  transform: scale(1.08);
+  filter: brightness(1) contrast(1.2);
+}
+
+.hero-overlay-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #fef9e5;
+  color: #000;
+  padding: 9px 17px;
+  border-radius: 0;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: "Sabon Next LT Pro";
+  z-index: 2;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-overlay-label:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  background: #fef9e5;
+}
+
+
+
+/* Right Column - Text */
+.hero-text-column {
+  display: flex;
+  align-items: center;
+  padding: 54px 41px;
+  background: linear-gradient(135deg, #ffffff 0%, #FFFAE6 50%, #fdfaf6 100%);
+  position: relative;
+}
+
+.hero-text-column::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23d1d5db" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="%23d1d5db" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 357px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  color: #000;
+  font-family: "Sabon Next LT Pro";
+  font-size: 45px;
+  font-style: normal;
+  line-height: 1.1;
+  margin: 0;
+  position: relative;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-title-bold {
+  font-weight: 700;
+}
+
+.hero-title-normal {
+  font-weight: 300;
+}
+
+.hero-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 68px;
+  height: 3px;
+  background: linear-gradient(90deg, #d4af37, #f4d03f, #d4af37);
+  border-radius: 3px;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Complex Transition Animations */
+.hero.transitioning {
+  pointer-events: none;
+}
+
+.hero-img.fade-out {
+  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-img.fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-title.slide-out-left {
+  animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-title.slide-in-right {
+  animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-description.fade-out {
+  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-description.fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-btn.scale-out {
+  animation: scaleOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-btn.scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero-subtitle {
+  display: block;
+  color: #000;
+  font-family: "Sabon Next LT Pro";
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 1.1;
+  margin-top: 7px;
+}
+
+.hero-description {
+  font-family: "Parisine Pro Gris";
+  font-size: 0.81rem;
+  line-height: 1.5;
+  color: #4b5563;
+  margin: 0;
+  max-width: 357px;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.hero-btn {
+  font-size: 1.02rem;
+  font-weight: 600;
+  padding: 17px 34px;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 3px 13px rgba(0, 0, 0, 0.1);
+}
+
+.hero-btn.primary {
+  background: #1a1a1a;
+  color: #F5E9D6;
+  box-shadow: 0 5px 17px rgba(26, 26, 26, 0.3);
+}
+
+
+.hero-btn.primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.hero-btn.primary:hover::before {
+  left: 100%;
+}
+
+.hero-btn.primary:hover {
+  background: #2d2d2d;
+  color: #F5E9D6;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(26, 26, 26, 0.4);
+}
+
+.hero-btn.secondary {
+  background: transparent;
+  color: #1a1a1a;
+  border: none;
+}
+
+.hero-btn.secondary:hover {
+  background: #1a1a1a;
+  color: white;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(26, 26, 26, 0.3);
+}
+
+/* Navigation Arrows */
+.hero-navigation {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  z-index: 3;
+}
+
+.hero-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: none;
+  color: white;
+}
+
+.hero-nav-btn:hover {
+  background: #2d2d2d;
+  color: white;
+  transform: scale(1.15) translateY(-2px);
+  box-shadow: none;
+  border-color: #2d2d2d;
+}
+
+.hero-nav-btn:active {
+  transform: scale(0.95);
+}
+
+
+/* Disabled state for navigation buttons */
+.hero-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+  pointer-events: none;
+}
+
+.hero-nav-btn:disabled:hover {
+  background: #1a1a1a;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Decorative elements */
+.hero::after {
+  display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .hero-content {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 34px;
+  }
+  
+  .hero-title {
+    font-size: 36px;
+  }
+  
+  .hero-subtitle {
+    font-size: 36px;
+  }
+  
+  .hero-description {
+    font-size: 0.77rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 0;
+    min-height: auto;
+  }
+  
+  .hero-container {
+    padding: 0 16px;
+  }
+  
+  .hero-content {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    margin: 0;
+  }
+  
+  .hero-image-column {
+    height: 350px;
+    order: 1;
+  }
+  
+  .hero-text-column {
+    padding: 20px 20px 20px;
+    text-align: center;
+    order: 2;
+    background: #FFFCF8;
+  }
+  
+  .hero-text {
+    max-width: 100%;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+  }
+  
+  .hero-title {
+    font-size: 26px;
+    text-align: center;
+    line-height: 1.1;
+    width: 100%;
+    margin-bottom: 6px;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hero-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 45px;
+    height: 2px;
+    bottom: -4px;
+  }
+  
+  .hero-subtitle {
+    font-size: 26px;
+  }
+  
+  .hero-description {
+    text-align: center;
+    width: 230px;
+    max-width: 230px;
+    font-size: 12px;
+    line-height: 1.4;
+    margin: 0 auto;
+    min-height: 51px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 6px;
+    width: 100%;
+  }
+  
+  .hero-btn {
+    padding: 12px 45px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    width: 230px;
+  }
+  
+  .hero-mobile .hero-navigation {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: auto !important;
+    width: 100%;
+    padding: 0 15px;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0;
+    z-index: 10;
+  }
+  
+  .hero-mobile .hero-nav-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .hero-mobile .hero-nav-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .hero-overlay-label {
+    top: 0;
+    left: 0;
+    font-size: 10px;
+    padding: 10px 18px;
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 0;
+  }
+  
+  .hero-image-column {
+    height: 320px;
+  }
+  
+  .hero-text-column {
+    padding: 18px 16px;
+  }
+  
+  .hero-title {
+    font-size: 24px;
+    min-height: 54px;
+  }
+  
+  .hero-subtitle {
+    font-size: 24px;
+  }
+  
+  .hero-text {
+    gap: 6px;
+  }
+  
+  .hero-description {
+    font-size: 11px;
+    width: 210px;
+    max-width: 210px;
+    min-height: 48px;
+  }
+  
+  .hero-btn {
+    padding: 11px 40px;
+    font-size: 11px;
+    width: 210px;
+  }
+  
+  .hero-buttons {
+    margin-top: 5px;
+  }
+  
+  .hero-overlay-label {
+    top: 0;
+    left: 0;
+    padding: 8px 14px;
+    font-size: 9px;
+    border-radius: 0;
+  }
+}

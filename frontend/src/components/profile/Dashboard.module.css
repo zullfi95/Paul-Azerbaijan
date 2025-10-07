@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 24px;
+  /* Padding will be handled by the parent container */
 }
 
 /* Welcome Section */
@@ -86,10 +86,12 @@
 
 .sectionTitle {
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: 20px;
+  font-size: 22px; /* Matched from ProfilePage.module.css .sectionTitle */
   font-weight: 600;
-  color: #1f2937;
+  color: #000000;
   margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .actionsGrid {
@@ -138,11 +140,17 @@
 }
 
 /* Recent Orders */
-.recentOrders {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+.recentOrders, .accountSummary {
+  background: #FFFCF8; /* Use brand ivory */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle black border */
+  border-radius: 7px; /* Match header */
   padding: 24px;
+  transition: all 0.2s ease;
+}
+
+.recentOrders:hover, .accountSummary:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .ordersList {
@@ -157,15 +165,15 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 5px;
   transition: all 0.2s ease;
 }
 
 .orderCard:hover {
-  background: #f1f5f9;
-  border-color: #3b82f6;
+  background: #FEF4E6; /* Use secondary brand color on hover */
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .orderInfo {
@@ -176,14 +184,14 @@
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: #000000;
   margin: 0 0 4px 0;
 }
 
 .orderDate {
   font-family: 'Parisine Pro Gris', sans-serif;
   font-size: 14px;
-  color: #6b7280;
+  color: rgba(0, 0, 0, 0.7);
   margin: 0;
 }
 
@@ -200,42 +208,37 @@
   font-weight: 500;
   color: white;
   text-transform: capitalize;
+  border: 1px solid transparent;
 }
 
 .orderTotal {
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: #000000;
 }
 
 .viewAllButton {
-  background: #3b82f6;
-  color: white;
-  border: none;
+  background: #000000;
+  color: #FFFCF8;
+  border: 1px solid #000000;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 7px;
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
+  text-align: center;
 }
 
 .viewAllButton:hover {
-  background: #2563eb;
+  background: rgba(0, 0, 0, 0.85);
   transform: translateY(-1px);
 }
 
 /* Account Summary */
-.accountSummary {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 24px;
-}
-
 .summaryGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -244,15 +247,15 @@
 
 .summaryItem {
   padding: 16px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 5px;
 }
 
 .summaryLabel {
   font-family: 'Parisine Pro Gris', sans-serif;
   font-size: 14px;
-  color: #6b7280;
+  color: rgba(0, 0, 0, 0.7);
   margin: 0 0 8px 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -262,14 +265,14 @@
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: #000000;
   margin: 0;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .dashboard {
-    padding: 16px;
+    padding: 0; /* No padding on mobile, parent handles it */
     gap: 24px;
   }
   

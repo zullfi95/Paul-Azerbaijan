@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useLanguage } from '../contexts/LanguageContext';
 import './LanguageSelector.css';
 
@@ -30,7 +31,13 @@ const LanguageSelector: React.FC = () => {
         onTouchStart={() => {}} // iOS Safari touch fix
         type="button"
       >
-        <span className="language-text">{currentLanguage.code.toUpperCase()}</span>
+        <Image
+          src="/images/langHeder.svg"
+          alt="Language"
+          width={23}
+          height={23}
+          className="language-icon"
+        />
       </button>
 
       {isOpen && (

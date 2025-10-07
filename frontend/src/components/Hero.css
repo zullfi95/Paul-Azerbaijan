@@ -58,14 +58,9 @@
 .hero-img {
   object-fit: cover;
   object-position: center;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   filter: brightness(0.9) contrast(1.1);
 }
 
-.hero-img:hover {
-  transform: scale(1.08);
-  filter: brightness(1) contrast(1.2);
-}
 
 .hero-overlay-label {
   position: absolute;
@@ -81,25 +76,20 @@
   letter-spacing: 1px;
   font-family: "Sabon Next LT Pro";
   z-index: 2;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.hero-overlay-label:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  background: #fef9e5;
-}
 
 
 
 /* Right Column - Text */
 .hero-text-column {
-  display: flex;
-  align-items: center;
   padding: 54px 41px;
-  background: linear-gradient(135deg, #ffffff 0%, #FFFAE6 50%, #fdfaf6 100%);
+  display: flex;
   position: relative;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 .hero-text-column::before {
@@ -115,24 +105,22 @@
 }
 
 .hero-text {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 357px;
-  position: relative;
-  z-index: 1;
+  color: #000;
+  font-family: Parisine;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
 
 .hero-title {
   color: #000;
-  font-family: "Sabon Next LT Pro";
+  font-family: "Sabon Next LT Pro Regular", "Sabon Next LT Pro", 'Playfair Display', serif;
   font-size: 45px;
   font-style: normal;
   line-height: 1.1;
   margin: 0;
   position: relative;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-title-bold {
@@ -141,141 +129,6 @@
 
 .hero-title-normal {
   font-weight: 300;
-}
-
-.hero-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 68px;
-  height: 3px;
-  background: linear-gradient(90deg, #d4af37, #f4d03f, #d4af37);
-  border-radius: 3px;
-  animation: shimmer 2s ease-in-out infinite;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes shimmer {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-/* Complex Transition Animations */
-.hero.transitioning {
-  pointer-events: none;
-}
-
-.hero-img.fade-out {
-  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.hero-img.fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.hero-title.slide-out-left {
-  animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.hero-title.slide-in-right {
-  animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.hero-description.fade-out {
-  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.hero-description.fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.hero-btn.scale-out {
-  animation: scaleOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.hero-btn.scale-in {
-  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(1.05);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideOutRight {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scaleOut {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(1.2);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .hero-subtitle {
@@ -301,27 +154,25 @@
 .hero-buttons {
   display: flex;
   justify-content: center;
-  margin-top: 8px;
+  margin-top: 15px;
 }
 
 .hero-btn {
-  font-size: 1.02rem;
-  font-weight: 600;
-  padding: 17px 34px;
-  border-radius: 0;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  border: none;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 3px 13px rgba(0, 0, 0, 0.1);
+  color: #FEF4E6;
+  font-family: "Sabon Next LT Pro";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  width: 224px;
+  height: 66.887px;
+  border-radius: 14px;
+
 }
 
 .hero-btn.primary {
   background: #1a1a1a;
   color: #F5E9D6;
-  box-shadow: 0 5px 17px rgba(26, 26, 26, 0.3);
 }
 
 
@@ -332,20 +183,8 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s;
 }
 
-.hero-btn.primary:hover::before {
-  left: 100%;
-}
-
-.hero-btn.primary:hover {
-  background: #2d2d2d;
-  color: #F5E9D6;
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 30px rgba(26, 26, 26, 0.4);
-}
 
 .hero-btn.secondary {
   background: transparent;
@@ -353,12 +192,6 @@
   border: none;
 }
 
-.hero-btn.secondary:hover {
-  background: #1a1a1a;
-  color: white;
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 30px rgba(26, 26, 26, 0.3);
-}
 
 /* Navigation Arrows */
 .hero-navigation {
@@ -381,37 +214,19 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: none;
   color: white;
 }
 
-.hero-nav-btn:hover {
-  background: #2d2d2d;
-  color: white;
-  transform: scale(1.15) translateY(-2px);
-  box-shadow: none;
-  border-color: #2d2d2d;
-}
 
-.hero-nav-btn:active {
-  transform: scale(0.95);
-}
 
 
 /* Disabled state for navigation buttons */
 .hero-nav-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
-  transform: none;
   pointer-events: none;
 }
 
-.hero-nav-btn:disabled:hover {
-  background: #1a1a1a;
-  transform: none;
-  box-shadow: none;
-}
 
 /* Decorative elements */
 .hero::after {
@@ -485,13 +300,6 @@
     justify-content: center;
   }
   
-  .hero-title::after {
-    left: 50%;
-    transform: translateX(-50%);
-    width: 45px;
-    height: 2px;
-    bottom: -4px;
-  }
   
   .hero-subtitle {
     font-size: 26px;
@@ -513,17 +321,16 @@
   .hero-buttons {
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 6px;
     width: 100%;
   }
   
   .hero-btn {
-    padding: 12px 45px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    width: 230px;
+    color: #FEF4E6;
+    font-family: "Sabon Next LT Pro";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
   }
   
   .hero-mobile .hero-navigation {
@@ -587,10 +394,12 @@
   }
   
   .hero-description {
-    font-size: 11px;
-    width: 210px;
-    max-width: 210px;
-    min-height: 48px;
+    color: #000;
+    font-family: Parisine;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
   }
   
   .hero-btn {

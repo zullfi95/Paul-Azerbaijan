@@ -199,6 +199,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = useCallback(async (email: string, password: string) => {
     try {
       const url = getApiUrl('login');
+      console.log('!!! CRITICAL DEBUG: Attempting to fetch login URL:', url);
       console.log('🔐 Login attempt:', { 
         email, 
         url,

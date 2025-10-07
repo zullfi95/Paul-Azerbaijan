@@ -4,86 +4,54 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 24px;
-}
-
-/* Header */
-.header {
-  text-align: center;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.title {
-  font-family: 'Sabon Next LT Pro', serif;
-  font-size: 28px;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0 0 8px 0;
-}
-
-.subtitle {
-  font-family: 'Parisine Pro Gris', sans-serif;
-  font-size: 16px;
-  color: #6b7280;
-  margin: 0;
+  /* Padding is handled by parent container */
 }
 
 /* Tabs */
 .tabs {
   display: flex;
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 4px;
-  border: 1px solid #e2e8f0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
 }
 
 .tab {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 16px;
+  padding: 14px 16px;
   background: transparent;
   border: none;
-  border-radius: 8px;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-family: 'Parisine Pro Gris', sans-serif;
-  font-size: 14px;
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 16px;
   font-weight: 500;
-  color: #6b7280;
+  color: rgba(0, 0, 0, 0.6);
+  text-align: center;
 }
 
 .tab:hover {
-  background: #f1f5f9;
-  color: #374151;
+  background: rgba(0, 0, 0, 0.03);
+  color: #000000;
 }
 
 .activeTab {
-  background: white;
-  color: #1f2937;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.tabLabel {
+  color: #000000;
+  border-bottom-color: #000000;
   font-weight: 600;
 }
 
 /* Tab Content */
 .tabContent {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 32px;
+  background: transparent; /* No background needed */
+  padding: 16px 0; /* Vertical padding only */
   min-height: 400px;
 }
 
 .tabTitle {
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
-  color: #1f2937;
+  color: #000000;
   margin: 0 0 24px 0;
 }
 
@@ -92,21 +60,24 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  max-width: 600px; /* Consistent form width */
 }
 
 .formActions {
   display: flex;
   gap: 16px;
   margin-top: 32px;
-  justify-content: flex-end;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  justify-content: flex-start;
 }
 
 .cancelButton {
   background: transparent;
-  color: #6b7280;
-  border: 1px solid #d1d5db;
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 7px;
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 16px;
   font-weight: 500;
@@ -115,8 +86,8 @@
 }
 
 .cancelButton:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: #9ca3af;
+  background: rgba(0, 0, 0, 0.05);
+  border-color: #000000;
 }
 
 .cancelButton:disabled {
@@ -125,11 +96,11 @@
 }
 
 .submitButton {
-  background: #1f2937;
-  color: white;
+  background: #000000;
+  color: #FFFCF8;
   border: none;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 7px;
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 16px;
   font-weight: 500;
@@ -138,19 +109,19 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #374151;
+  background: rgba(0, 0, 0, 0.85);
   transform: translateY(-1px);
 }
 
 .submitButton:disabled {
-  background: #9ca3af;
+  background: rgba(0, 0, 0, 0.3);
   cursor: not-allowed;
   transform: none;
 }
 
 .cancelButton:focus,
 .submitButton:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #000000;
   outline-offset: 2px;
 }
 
@@ -163,15 +134,15 @@
 
 .newsletterItem {
   padding: 20px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  background: #FFFCF8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
   transition: all 0.2s ease;
 }
 
 .newsletterItem:hover {
-  background: #f1f5f9;
-  border-color: #3b82f6;
+  background: #FEF4E6;
+  border-color: rgba(0, 0, 0, 0.2);
 }
 
 .newsletterLabel {
@@ -187,7 +158,7 @@
   height: 20px;
   margin-top: 2px;
   cursor: pointer;
-  accent-color: #3b82f6;
+  accent-color: #000000;
 }
 
 .newsletterText {
@@ -201,47 +172,48 @@
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: #000000;
 }
 
 .newsletterDescription {
   font-family: 'Parisine Pro Gris', sans-serif;
   font-size: 14px;
-  color: #6b7280;
+  color: rgba(0, 0, 0, 0.7);
   line-height: 1.5;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .accountSettings {
-    padding: 16px;
+    padding: 0;
     gap: 20px;
-  }
-  
-  .title {
-    font-size: 24px;
-  }
-  
-  .subtitle {
-    font-size: 14px;
   }
   
   .tabs {
     flex-direction: column;
-    gap: 4px;
+    gap: 0;
+    border-bottom: none;
   }
   
   .tab {
     justify-content: flex-start;
     padding: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    text-align: left;
+  }
+
+  .activeTab {
+    background: #FEF4E6;
+    border-bottom-color: rgba(0, 0, 0, 0.1);
   }
   
   .tabContent {
-    padding: 24px;
+    padding: 24px 0;
   }
   
   .tabTitle {
-    font-size: 18px;
+    font-size: 20px;
     margin-bottom: 20px;
   }
   
@@ -254,6 +226,7 @@
   .cancelButton,
   .submitButton {
     width: 100%;
+    text-align: center;
   }
   
   .newsletterItem {
@@ -262,15 +235,7 @@
 }
 
 @media (max-width: 480px) {
-  .accountSettings {
-    padding: 12px;
-  }
-  
   .tabContent {
-    padding: 20px;
-  }
-  
-  .title {
-    font-size: 20px;
+    padding: 20px 0;
   }
 }

@@ -4,49 +4,28 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 24px;
-}
-
-/* Header */
-.header {
-  text-align: center;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.title {
-  font-family: 'Sabon Next LT Pro', serif;
-  font-size: 28px;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0 0 8px 0;
-}
-
-.subtitle {
-  font-family: 'Parisine Pro Gris', sans-serif;
-  font-size: 16px;
-  color: #6b7280;
-  margin: 0;
+  /* Padding is handled by parent container */
 }
 
 /* Addresses Grid */
 .addressesGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  gap: 24px;
 }
 
 .addressCard {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background: #FFFCF8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
   padding: 24px;
   transition: all 0.2s ease;
 }
 
 .addressCard:hover {
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
 }
 
 /* Address Header */
@@ -55,7 +34,7 @@
   align-items: center;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .addressInfo {
@@ -66,31 +45,32 @@
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 20px;
   font-weight: 600;
-  color: #1f2937;
+  color: #000000;
   margin: 0 0 4px 0;
 }
 
 .addressDescription {
   font-family: 'Parisine Pro Gris', sans-serif;
   font-size: 14px;
-  color: #6b7280;
+  color: rgba(0, 0, 0, 0.7);
   margin: 0;
   line-height: 1.5;
 }
 
 /* Tips Section */
 .tips {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  background: #FEF4E6; /* Use secondary brand color */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
   padding: 24px;
+  margin-top: 16px;
 }
 
 .tipsTitle {
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 18px;
   font-weight: 600;
-  color: #1f2937;
+  color: #000000;
   margin: 0 0 16px 0;
 }
 
@@ -106,7 +86,7 @@
 .tipsList li {
   font-family: 'Parisine Pro Gris', sans-serif;
   font-size: 14px;
-  color: #6b7280;
+  color: rgba(0, 0, 0, 0.8);
   line-height: 1.6;
   padding-left: 20px;
   position: relative;
@@ -114,7 +94,7 @@
 
 .tipsList li::before {
   content: '•';
-  color: #3b82f6;
+  color: #000000;
   font-weight: bold;
   position: absolute;
   left: 0;
@@ -125,15 +105,15 @@
   display: flex;
   justify-content: flex-start;
   padding-top: 24px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .backButton {
   background: transparent;
-  color: #6b7280;
-  border: 1px solid #d1d5db;
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 7px;
   font-family: 'Parisine Pro Gris', sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -145,13 +125,13 @@
 }
 
 .backButton:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
-  color: #374151;
+  background: rgba(0, 0, 0, 0.05);
+  border-color: #000000;
+  color: #000000;
 }
 
 .backButton:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #000000;
   outline-offset: 2px;
 }
 
@@ -168,16 +148,8 @@
 
 @media (max-width: 768px) {
   .addresses {
-    padding: 16px;
+    padding: 0;
     gap: 24px;
-  }
-  
-  .title {
-    font-size: 24px;
-  }
-  
-  .subtitle {
-    font-size: 14px;
   }
   
   .addressesGrid {
@@ -217,19 +189,6 @@
 }
 
 @media (max-width: 480px) {
-  .addresses {
-    padding: 12px;
-    gap: 20px;
-  }
-  
-  .title {
-    font-size: 20px;
-  }
-  
-  .addressCard {
-    padding: 12px;
-  }
-  
   .addressHeader {
     flex-direction: column;
     align-items: flex-start;

@@ -3,8 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Search, User, MapPin, ShoppingBag, FileText, Menu, X } from 'lucide-react';
-import BasketIcon from './BasketIcon';
+import { Search, MapPin, ShoppingBag, FileText, Menu, X } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import CartModal from './CartModal';
 import EventPlanningModal from './EventPlanningModal';
@@ -86,9 +85,12 @@ const Header: React.FC = React.memo(function Header() {
 
   const handleSearchBlur = useCallback(() => {
     if (!searchQuery.trim()) {
-      setIsSearchExpanded(false);
+      // For mobile, we still want to collapse it
+      if (isMobile) {
+        setIsSearchExpanded(false);
+      }
     }
-  }, [searchQuery]);
+  }, [searchQuery, isMobile]);
 
   const handleSearchClose = useCallback(() => {
     setIsSearchExpanded(false);
@@ -169,16 +171,14 @@ const Header: React.FC = React.memo(function Header() {
 
             {/* Search - Desktop */}
             {!isMobile && (
-              <div className={`search-container ${isSearchExpanded ? 'expanded' : ''}`}>
+              <div className="search-container">
                 <form onSubmit={handleSearch} suppressHydrationWarning>
                   <input
                     type="text"
-                    placeholder={isSearchExpanded ? t('search.placeholder') : ''}
+                    placeholder={t('search.placeholder')}
                     className="search-input"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    onClick={handleSearchClick}
-                    onBlur={handleSearchBlur}
                     suppressHydrationWarning
                   />
                   <Search className="search-icon" size={18} />
@@ -196,7 +196,13 @@ const Header: React.FC = React.memo(function Header() {
                 aria-label={isAuthenticated ? t('aria.profile') : t('aria.login')}
                 onClick={handleLogin}
               >
-                <User className="icon" size={23} />
+                <Image
+                  src="/images/userHeder.svg"
+                  alt="User"
+                  width={23}
+                  height={23}
+                  className="icon"
+                />
               </button>
             )}
 
@@ -206,7 +212,13 @@ const Header: React.FC = React.memo(function Header() {
               aria-label={t('aria.cart')}
               onClick={handleCartClick}
             >
-              <BasketIcon className="icon" size={23} />
+              <Image
+                src="/images/basketHeder.svg"
+                alt="Cart"
+                width={23}
+                height={23}
+                className="icon"
+              />
               {getTotalItems() > 0 && (
                 <span className="cart-badge">{getTotalItems()}</span>
               )}
@@ -318,7 +330,13 @@ const Header: React.FC = React.memo(function Header() {
                     onTouchStart={() => {}} // iOS Safari touch fix
                     type="button"
                   >
-                    <BasketIcon className="icon" size={23} />
+                    <Image
+                      src="/images/basketHeder.svg"
+                      alt="Cart"
+                      width={23}
+                      height={23}
+                      className="icon"
+                    />
                     {getTotalItems() > 0 && (
                       <span className="cart-badge">{getTotalItems()}</span>
                     )}

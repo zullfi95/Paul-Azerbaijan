@@ -105,7 +105,7 @@
   transform: translateY(calc(var(--paul-base-font) * -0.057)); /* -1px - matching header */
 }
 
-.sidebarButton:focus {
+.sidebarButton:focus-visible {
   outline: 2px solid var(--paul-ivory);
   outline-offset: 2px;
 }
@@ -131,6 +131,7 @@
 /* Content area */
 .content {
   flex: 1;
+  padding-left: 24px;
 }
 
 /* Section styling */
@@ -260,6 +261,11 @@
   color: var(--paul-ivory);
 }
 
+.emptyStateButton:focus-visible {
+  outline: 2px solid var(--paul-black);
+  outline-offset: 2px;
+}
+
 /* Breadcrumbs */
 .breadcrumbs {
   padding: calc(var(--paul-base-font) * 0.91) 0; /* 16px 0 */
@@ -373,7 +379,7 @@
   background: none;
   border: none;
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: calc(var(--paul-base-font) * 1.14); /* 20px */
+  font-size: calc(var(--paul-base-font) * 1.02); /* 18px */
   color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
   padding: calc(var(--paul-base-font) * 0.45) 0; /* 8px 0 */
@@ -395,31 +401,32 @@
 .ordersList {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--paul-base-font) * 1.14); /* 20px */
+  gap: calc(var(--paul-base-font) * 0.91); /* 16px */
 }
 
 .orderCard {
-  background: rgba(254, 244, 230, 0.4);
-  border: 0.5px solid var(--paul-black);
-  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
-  padding: calc(var(--paul-base-font) * 0.80); /* 14px */
+  background: var(--paul-primary-1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  padding: calc(var(--paul-base-font) * 0.91); /* 16px */
   display: grid;
-  grid-template-columns: calc(var(--paul-base-font) * 7.5) 1fr auto auto; /* 132px */
-  gap: calc(var(--paul-base-font) * 0.80); /* 14px */
-  align-items: start;
+  grid-template-columns: calc(var(--paul-base-font) * 5.68) 1fr auto auto; /* 100px */
+  gap: calc(var(--paul-base-font) * 0.91); /* 16px */
+  align-items: center;
   transition: all 0.2s ease;
 }
 
 .orderCard:hover {
-  background: rgba(254, 244, 230, 0.6);
+  background: var(--paul-primary-2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .orderImage {
-  width: calc(var(--paul-base-font) * 7.5); /* 132px */
-  height: calc(var(--paul-base-font) * 7.5); /* 132px */
-  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
+  width: calc(var(--paul-base-font) * 5.68); /* 100px */
+  height: calc(var(--paul-base-font) * 5.68); /* 100px */
+  border-radius: 5px;
   overflow: hidden;
 }
 
@@ -432,7 +439,7 @@
 .orderDetails {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--paul-base-font) * 0.68); /* 12px */
+  gap: calc(var(--paul-base-font) * 0.23); /* 4px */
 }
 
 .orderProductName {
@@ -446,26 +453,27 @@
 .orderInfo {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--paul-base-font) * 0.45); /* 8px */
+  gap: calc(var(--paul-base-font) * 0.23); /* 4px */
 }
 
 .orderInfoItem {
-  font-family: 'Parisine', sans-serif;
-  font-size: calc(var(--paul-base-font) * 1.14); /* 20px */
-  color: var(--paul-black);
+  font-family: 'Parisine Pro Gris', sans-serif;
+  font-size: calc(var(--paul-base-font) * 0.85); /* 15px */
+  color: rgba(0, 0, 0, 0.8);
   margin: 0;
   line-height: 1.4;
 }
 
 .orderInfoLabel {
-  font-family: 'Parisine Pro', sans-serif;
-  font-weight: bold;
+  font-family: 'Parisine Pro Gris', sans-serif;
+  font-weight: 600;
+  margin-right: 8px;
 }
 
 .orderTime {
-  font-family: 'Parisine', sans-serif;
-  font-size: calc(var(--paul-base-font) * 1.14); /* 20px */
-  color: var(--paul-black);
+  font-family: 'Parisine Pro Gris', sans-serif;
+  font-size: calc(var(--paul-base-font) * 0.8); /* 14px */
+  color: rgba(0, 0, 0, 0.6);
   margin-top: auto;
 }
 
@@ -473,13 +481,13 @@
   display: flex;
   align-items: baseline;
   gap: calc(var(--paul-base-font) * 0.23); /* 4px */
-  margin-top: calc(var(--paul-base-font) * 1.14); /* 20px */
+  text-align: right;
 }
 
 .priceAmount {
-  font-family: 'Parisine Pro Gris', sans-serif;
-  font-size: calc(var(--paul-base-font) * 1.25); /* 22px */
-  font-weight: bold;
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: calc(var(--paul-base-font) * 1.14); /* 20px */
+  font-weight: 600;
   color: var(--paul-black);
 }
 
@@ -494,37 +502,39 @@
   flex-direction: column;
   align-items: flex-end;
   gap: calc(var(--paul-base-font) * 0.68); /* 12px */
-  margin-top: calc(var(--paul-base-font) * 1.14); /* 20px */
+  min-width: 150px;
 }
 
 .statusBadge {
-  border-radius: calc(var(--paul-base-font) * 1.14); /* 20px */
-  padding: calc(var(--paul-base-font) * 0.23) calc(var(--paul-base-font) * 0.68); /* 4px 12px */
+  border-radius: 20px;
+  padding: 6px 14px;
   display: flex;
   align-items: center;
   gap: calc(var(--paul-base-font) * 0.45); /* 8px */
-  font-family: 'Parisine', sans-serif;
-  font-size: calc(var(--paul-base-font) * 0.91); /* 16px */
+  font-family: 'Parisine Pro Gris', sans-serif;
+  font-size: calc(var(--paul-base-font) * 0.8); /* 14px */
+  font-weight: 500;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .statusBadge.delivered {
-  background: var(--paul-black);
-  color: var(--paul-primary-2);
+  background: #000000;
+  color: #FFFCF8;
 }
 
 .statusBadge.pending {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   color: var(--paul-black);
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .statusText {
-  font-weight: normal;
+  font-weight: 500;
 }
 
 .statusBadge.delivered .statusText {
-  color: var(--paul-primary-2);
+  color: #FFFCF8;
 }
 
 .statusBadge.pending .statusText {
@@ -532,34 +542,29 @@
 }
 
 .statusIcon {
-  width: calc(var(--paul-base-font) * 0.51); /* 9px */
-  height: calc(var(--paul-base-font) * 0.51); /* 9px */
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(var(--paul-base-font) * 0.34); /* 6px */
-  font-weight: bold;
+  font-size: 1.2em; /* Use em for sizing relative to font-size */
+  line-height: 1;
 }
 
 .statusBadge.delivered .statusIcon {
-  background: var(--paul-primary-2);
-  color: var(--paul-black);
+  background: #FFFCF8;
+  color: #000000;
 }
 
 .statusBadge.pending .statusIcon {
-  background: var(--paul-black);
-  color: var(--paul-primary-2);
+  background: #000000;
+  color: #FFFCF8;
 }
 
 .completePaymentButton {
   background: var(--paul-black);
-  color: var(--paul-primary-2);
+  color: var(--paul-ivory);
   border: none;
-  padding: calc(var(--paul-base-font) * 0.45) calc(var(--paul-base-font) * 0.91); /* 8px 16px */
-  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
+  padding: calc(var(--paul-base-font) * 0.57) calc(var(--paul-base-font) * 1.14); /* 10px 20px */
+  border-radius: 7px;
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: calc(var(--paul-base-font) * 0.80); /* 14px */
+  font-size: calc(var(--paul-base-font) * 0.8); /* 14px */
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
@@ -570,10 +575,9 @@
 .completePaymentButton:hover {
   background: rgba(0, 0, 0, 0.8);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.completePaymentButton:focus {
+.completePaymentButton:focus-visible {
   outline: 2px solid var(--paul-black);
   outline-offset: 2px;
 }
@@ -615,19 +619,21 @@
 @media (max-width: 768px) {
   .orderFilters {
     flex-direction: column;
+    align-items: flex-start;
     gap: calc(var(--paul-base-font) * 0.68); /* 12px */
   }
   
   .orderCard {
     grid-template-columns: 1fr;
-    gap: calc(var(--paul-base-font) * 0.68); /* 12px */
-    text-align: center;
+    gap: calc(var(--paul-base-font) * 0.91); /* 16px */
+    text-align: left;
   }
   
   .orderImage {
     width: 100%;
-    height: calc(var(--paul-base-font) * 9.09); /* 160px */
-    margin: 0 auto;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    margin: 0;
   }
   
   .orderDetails {
@@ -636,17 +642,20 @@
   
   .orderPrice {
     order: 3;
-    justify-content: center;
+    justify-content: flex-start;
+    text-align: left;
   }
   
   .orderStatus {
     order: 4;
-    align-items: center;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
   
   .completePaymentButton {
-    font-size: calc(var(--paul-base-font) * 0.68); /* 12px */
-    padding: calc(var(--paul-base-font) * 0.34) calc(var(--paul-base-font) * 0.68); /* 6px 12px */
+    font-size: calc(var(--paul-base-font) * 0.8); /* 14px */
+    padding: calc(var(--paul-base-font) * 0.45) calc(var(--paul-base-font) * 0.91); /* 8px 16px */
   }
 }
 
@@ -666,6 +675,10 @@
     padding-right: 16px;
   }
   
+  .content {
+    padding-left: 16px;
+  }
+  
   .bannerStripeInner {
     width: 100%;
     max-width: var(--paul-banner-width);
@@ -683,9 +696,10 @@
     position: static;
     order: 2;
   }
-  
+
   .content {
     order: 1;
+    padding-left: 0;
   }
   
   .sidebarNav {
@@ -753,6 +767,10 @@
     padding-left: calc(var(--paul-base-font) * 0.68); /* 12px */
     padding-right: calc(var(--paul-base-font) * 0.68); /* 12px */
   }
+
+  .content {
+    padding-left: 0;
+  }
   
   .sidebar {
     padding: calc(var(--paul-base-font) * 0.91); /* 16px */
@@ -784,7 +802,8 @@
 /* Focus management */
 .sidebarButton:focus-visible,
 .actionButton:focus-visible,
-.emptyStateButton:focus-visible {
+.emptyStateButton:focus-visible,
+.completePaymentButton:focus-visible {
   outline: 2px solid var(--paul-black);
   outline-offset: 2px;
 }

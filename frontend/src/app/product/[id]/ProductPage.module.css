@@ -85,7 +85,6 @@
   background: #FFFCF8;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
 }
 
 .productImage {
@@ -337,7 +336,6 @@
 
 .relatedCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
 .relatedImageWrapper {
@@ -420,7 +418,6 @@
   color: white;
   padding: 16px 24px;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   font-family: "Sabon Next LT Pro", serif;
   font-weight: 600;
   font-size: 0.9rem;

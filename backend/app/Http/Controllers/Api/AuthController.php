@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -17,6 +18,18 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        Log::info('Register attempt received.', ['content' => $request->getContent()]);
+
+        $data = $request->all();
+        $content = $request->getContent();
+
+        if (!empty($content) && is_string($content)) {
+            $decodedData = json_decode($content, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $data = array_merge($data, $decodedData);
+            }
+        }
+
         $baseRules = [
             'name' => 'required|string|max:255',
             'surname' => 'nullable|string|max:255',
@@ -32,12 +45,12 @@ class AuthController extends Controller
             'contact_person' => 'nullable|string|max:255',
         ];
 
-        $group = $request->user_group ?? 'client';
+        $group = $data['user_group'] ?? 'client';
 
         // All users are now in the same table
         $baseRules['email'] .= '|unique:users,email';
 
-        $validator = Validator::make($request->all(), $baseRules);
+        $validator = Validator::make($data, $baseRules);
 
         if ($validator->fails()) {
             return response()->json([
@@ -50,11 +63,11 @@ class AuthController extends Controller
         // Если регистрируется персонал, создаем пользователя; если клиент — создаем клиента
         if ($group === 'staff') {
             $user = User::create([
-                'name' => $request->name,
-                'last_name' => $request->surname,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'staff_role' => $request->staff_role ?? 'observer',
+                'name' => $data['name'],
+                'last_name' => $data['surname'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'staff_role' => $data['staff_role'] ?? 'observer',
                 'status' => 'active',
                 'user_type' => 'staff',
             ]);
@@ -78,16 +91,16 @@ class AuthController extends Controller
 
         // Иначе — это клиент
         $client = User::create([
-            'name' => $request->name,
-            'last_name' => $request->surname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone' => $request->phone,
-            'company_name' => $request->company_name ?? null,
-            'position' => $request->position ?? null,
-            'contact_person' => $request->contact_person ?? null,
+            'name' => $data['name'],
+            'last_name' => $data['surname'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'phone' => $data['phone'],
+            'company_name' => $data['company_name'] ?? null,
+            'position' => $data['position'] ?? null,
+            'contact_person' => $data['contact_person'] ?? null,
             'user_type' => 'client',
-            'client_category' => $request->client_category ?? 'one_time',
+            'client_category' => $data['client_category'] ?? 'one_time',
             'status' => 'active',
         ]);
 

@@ -38,7 +38,6 @@
 .notesTextarea:focus {
   outline: none;
   border-color: #000000;
-  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
 }
 
 .checkboxSection {

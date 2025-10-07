@@ -2582,7 +2582,6 @@ export default function CateringPage() {
         
         .card-hover:hover {
           transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         
         .btn-hover {
@@ -2591,7 +2590,6 @@ export default function CateringPage() {
         
         .btn-hover:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         
         .filter-active {

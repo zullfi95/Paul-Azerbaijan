@@ -12,7 +12,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`bg-white p-6 rounded-lg shadow-sm border border-gray-200 ${className}`}>
+    <div className={`bg-white p-6 rounded-lg border border-gray-200 ${className}`}>
       <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
       {children}
     </div>

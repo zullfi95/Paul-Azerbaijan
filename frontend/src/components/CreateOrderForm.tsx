@@ -58,7 +58,7 @@ export default function CreateOrderForm() {
     if (authLoading || !hasAccess) {
         return (
             <div className="flex justify-center items-center h-screen bg-gray-50">
-                <div className="text-center p-10 bg-white rounded-lg shadow-md">
+                <div className="text-center p-10 bg-white rounded-lg">
                     <div className="text-lg text-gray-600">Loading Access...</div>
                 </div>
             </div>
@@ -453,7 +453,7 @@ export default function CreateOrderForm() {
             {/* Модальное окно предварительного просмотра */}
             {showPreview && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="p-6 border-b border-gray-200">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-lg font-medium text-gray-900">Предварительный просмотр</h2>
@@ -549,7 +549,7 @@ export default function CreateOrderForm() {
                     <div className="overflow-y-auto max-h-96">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {filteredMenuItems.map((item) => (
-                                <div key={item.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <div key={item.id} className="border rounded-lg p-4 transition-shadow">
                                     <div className="flex justify-between items-start mb-2">
                                         <h3 className="font-medium text-gray-900">{item.name}</h3>
                                         <span className="text-lg font-semibold text-blue-600">{item.price} ₼</span>
@@ -603,7 +603,7 @@ export default function CreateOrderForm() {
 
             <div className="min-h-screen bg-gray-50">
                 {/* Header */}
-                <div className="bg-white shadow-sm border-b">
+                <div className="bg-white border-b">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between h-16">
                             <div className="flex items-center">
@@ -938,7 +938,7 @@ export default function CreateOrderForm() {
                                                 id="frequency"
                                                 value={formData.recurring_schedule.frequency}
                                                 onChange={(e) => handleRecurringChange('frequency', e.target.value as 'weekly' | 'monthly')}
-                                                className="w-full mt-1 block py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+                                                className="w-full mt-1 block py-2 px-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                                             >
                                                 <option value="weekly">Еженедельно</option>
                                                 <option value="monthly">Ежемесячно</option>
@@ -952,7 +952,7 @@ export default function CreateOrderForm() {
                                                 type="time"
                                                 value={formData.recurring_schedule.delivery_time}
                                                 onChange={(e) => handleRecurringChange('delivery_time', e.target.value)}
-                                                className="w-full mt-1 block py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+                                                className="w-full mt-1 block py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                                             />
                                         </div>
                                     </div>
@@ -994,7 +994,7 @@ export default function CreateOrderForm() {
                                             id="recurring_notes"
                                             value={formData.recurring_schedule.notes}
                                             onChange={(e) => handleRecurringChange('notes', e.target.value)}
-                                            className="w-full mt-1 block py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+                                            className="w-full mt-1 block py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                                             placeholder="Заметки для регулярных заказов"
                                             rows={2}
                                         />

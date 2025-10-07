@@ -44,7 +44,7 @@
 /* Left Column - Image */
 .hero-image-column {
   position: relative;
-  height: 54vh;
+  height: 65vh;
   background: linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%);
 }
 

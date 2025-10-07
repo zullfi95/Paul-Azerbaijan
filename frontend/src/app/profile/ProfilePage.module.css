@@ -71,7 +71,6 @@
   position: sticky;
   top: calc(var(--paul-base-font) * 4.55); /* 80px - matching header height */
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sidebarNav {
@@ -419,7 +418,6 @@
 .orderCard:hover {
   background: var(--paul-primary-2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border-color: rgba(0, 0, 0, 0.15);
 }
 
@@ -863,12 +861,10 @@
 .formInput:focus {
   outline: none;
   border-color: var(--paul-black);
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .formInput.inputError {
   border-color: #DC2626;
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
 }
 
 .fieldError {
@@ -1038,7 +1034,6 @@
   background: rgba(254, 244, 230, 0.8);
   border-color: var(--paul-black);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .addressCard p {

@@ -2,8 +2,67 @@
 
 .patisseriePage {
   min-height: 100vh;
-  background: #FFFCF8; /* PAUL Primary 1 */
+  background: #FFFFFF;
   font-family: 'Sabon Next LT Pro', serif;
+}
+
+/* Breadcrumbs */
+.breadcrumbsSection {
+  padding: 1rem 0;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Category Navigation */
+.categorySection {
+  padding: 1.5rem 0;
+  background-color: #FFFCF8;
+}
+
+.categoryNavigation {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.categoryItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background-color: transparent;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+  flex: 1;
+}
+
+.categoryItem:hover {
+  transform: translateY(-2px);
+}
+
+.categoryIcon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.categoryImage {
+  object-fit: contain;
+}
+
+.categoryName {
+  font-size: 0.875rem;
+  text-align: center;
+  line-height: 1.2;
+  color: #4A4A4A;
+  font-weight: 500;
 }
 
 /* Hero Section */
@@ -24,7 +83,7 @@
   transform: translateX(-50%);
   width: 1140px;
   height: 100%;
-  background-image: url('/images/cakeHero.jpg');
+  background-image: url('/images/patisserieHero.jpg');
   background-size: cover;
   background-position: center;
   opacity: 0.9;
@@ -49,8 +108,53 @@
   color: #FFFCF8;
   margin: 0;
   margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   line-height: normal;
+}
+
+.heroDivider {
+  width: 80%;
+  height: 2px;
+  margin: 0 auto;
+  background-color: rgba(0,0,0,0.2);
+}
+
+/* Introductory Text */
+.introSection {
+  padding: 3rem 0;
+  background-color: #FFFCF8;
+  text-align: center;
+  margin: 0 auto;
+  width: 859px;
+}
+
+.introText {
+  color: #000;
+  text-align: center;
+  font-family: "Sabon Next LT Pro";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+/* Page Title and Sort Button */
+.pageHeader {
+  padding: 2rem 0;
+  background-color: #FFFCF8;
+}
+
+.pageHeaderContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-family: 'Sabon Next LT Pro', 'Playfair Display', serif;
+  color: #1A1A1A;
+  margin: 0;
 }
 
 /* Product Grid */
@@ -64,21 +168,20 @@
 
 .productCard {
   background: white;
-  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
   position: relative;
   border: none;
+  box-shadow: none;
 }
 
 .productCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 .productImage {
-  height: 300px;
+  height: 250px;
+  width: 100%;
   background: #FFFCF8;
   display: flex;
   align-items: center;
@@ -88,12 +191,18 @@
   cursor: pointer;
 }
 
+.productImage img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
 .addToCartBtn {
   position: absolute;
-  bottom: 15px;
-  right: 15px;
-  width: 40px;
-  height: 40px;
+  bottom: 10px;
+  right: 10px;
+  width: 35px;
+  height: 35px;
   background: white;
   color: #000000;
   border: none;
@@ -102,35 +211,46 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 1.25rem;
+  font-size: 1rem;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 10;
 }
 
 .addToCartBtn:hover {
   background: #F9FAFB;
+  border-color: #D1D5DB;
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .productInfo {
-  padding: 15px;
+  padding: 10px 15px 15px 15px;
 }
 
 .productName {
   font-size: 12px;
   font-weight: 400;
   color: rgba(0,0,0,0.8);
-  margin: 0 0 12px 0;
   line-height: 1.3;
   font-family: 'Parisine Pro Gris', serif;
+  margin: 0 0 8px 0;
 }
 
 .productPrice {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-top: 20px;
+  width: 100%;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(0,0,0,0.25);
+  color: rgba(0, 0, 0, 0.80);
+  font-family: "Parisine Pro Gris";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }
 
 .priceValue {
@@ -163,23 +283,128 @@
   gap: 8px;
 }
 
+.filterButtonIcon {
+  font-size: 12px;
+}
+
 .filterButton:hover {
   background: #333333;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Feedback Button */
+.feedbackButton {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  padding: 1rem 0.5rem;
+  background-color: #1A1A1A;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.feedbackButton:hover {
+  background-color: #D4AF37;
+  color: #1A1A1A;
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* Feedback Modal */
+.feedbackModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.feedbackModalContent {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.feedbackModalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.feedbackModalTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+.feedbackModalClose {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.feedbackTextarea {
+  width: 100%;
+  height: 120px;
+  padding: 1rem;
+  border: 2px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: vertical;
+  margin-bottom: 1rem;
+  font-family: inherit;
+}
+
+.feedbackSubmit {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #1A1A1A;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.feedbackSubmit:hover {
+  background-color: #D4AF37;
+  color: #1A1A1A;
 }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
   .productGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
 }
 
 @media (max-width: 1024px) {
   .productGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
   
@@ -190,11 +415,20 @@
   .heroTitle {
     font-size: 48px;
   }
+  
+  .categoryNavigation {
+    flex-wrap: wrap;
+  }
+  
+  .categoryItem {
+    min-width: 120px;
+    flex: 0 0 calc(50% - 0.5rem);
+  }
 }
 
 @media (max-width: 768px) {
   .productGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
   
@@ -214,9 +448,23 @@
   .productImage {
     height: 250px;
   }
+  
+  .categoryNavigation {
+    flex-wrap: wrap;
+  }
+  
+  .categoryItem {
+    min-width: 120px;
+    flex: 0 0 calc(50% - 0.5rem);
+  }
 }
 
 @media (max-width: 480px) {
+  .productGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
   .heroSection {
     height: 250px;
   }
@@ -247,5 +495,15 @@
   
   .priceCurrency {
     font-size: 14px;
+  }
+  
+  .categoryNavigation {
+    flex-wrap: wrap;
+  }
+  
+  .categoryItem {
+    min-width: 100px;
+    flex: 0 0 calc(50% - 0.5rem);
+    padding: 1rem;
   }
 }

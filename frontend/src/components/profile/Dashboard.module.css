@@ -54,7 +54,6 @@
 
 .statCard:hover {
   border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
 }
 
 .statContent {
@@ -117,7 +116,6 @@
   background: #f1f5f9;
   border-color: #3b82f6;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
 }
 
 .actionContent {
@@ -150,7 +148,6 @@
 
 .recentOrders:hover, .accountSummary:hover {
   border-color: rgba(0, 0, 0, 0.2);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .ordersList {

@@ -62,12 +62,14 @@ const TastesSection: React.FC = () => {
           <div className="tastes-text-column">
             <div className="tastes-text">
               {/* Заголовок */}
-              <h2 className="tastes-title">Artisan Collection</h2>
+              <h2 className="tastes-title">Personalise your cake</h2>
               
               {/* Описание */}
               <p className="tastes-description">
-                Experience our carefully crafted artisan collection, featuring unique flavors and traditional techniques. 
-                Each creation tells a story of passion, quality, and the finest ingredients sourced from local producers.
+              Discover the delightful world of our bakery, where 
+              every bite is a taste of happiness! From freshly baked bread 
+              to scrumptious pastries, we have something for everyone. Come visit us 
+              today and treat yourself to a sweet experience!
               </p>
               
               {/* Кнопка */}

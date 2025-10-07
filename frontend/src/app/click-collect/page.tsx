@@ -590,16 +590,13 @@ export default function ClickCollectPage() {
                                 borderRadius: '12px',
                                 overflow: 'hidden',
                                 backgroundColor: 'white',
-                                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+                                transition: 'transform 0.3s ease'
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.transform = 'translateY(-4px)';
-                                e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
                               }}
                               onMouseLeave={(e) => {
                                 e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
                               }}
                             >
                               <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>

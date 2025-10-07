@@ -300,7 +300,7 @@ export default function ContactPage() {
             </p>
           </div>
           
-          <div className="rounded-2xl p-8 shadow-lg" style={{ backgroundColor: '#FFFCF8' }}>
+          <div className="rounded-2xl p-8" style={{ backgroundColor: '#FFFCF8' }}>
             <div className="w-full h-96 bg-gradient-to-br from-paul-accent-bread/30 to-paul-accent-gold/20 rounded-xl flex items-center justify-center">
               <div className="text-center">
                 <div className="w-20 h-20 bg-paul-accent-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">

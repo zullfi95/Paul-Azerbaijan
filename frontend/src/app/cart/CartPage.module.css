@@ -386,7 +386,6 @@
   border-color: #1a1a1a;
   color: white;
   transform: translateY(-2px); /* Как action-button в Header */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .buttonBack:hover::before {
@@ -395,7 +394,6 @@
 
 .buttonBack:active {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .buttonCheckout {
@@ -428,7 +426,6 @@
   background-color: #000000; /* Остается черным как plan-event */
   border-color: #000000;
   transform: translateY(-2px); /* Как action-button в Header */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .buttonCheckout:hover::before {
@@ -437,7 +434,6 @@
 
 .buttonCheckout:active {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Адаптивность для планшетов */

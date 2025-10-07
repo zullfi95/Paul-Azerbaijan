@@ -67,8 +67,6 @@ const Footer: React.FC = () => {
       title: 'Company',
       links: [
         { label: 'Our Story', href: '/our-story' },
-        { label: 'Sustainability', href: '#' },
-        { label: 'Franchise', href: '#' },
       ],
     },
     {
@@ -218,6 +216,9 @@ const Footer: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Разделительная линия между навигацией и Newsletter */}
+              <div className="footer-divider"></div>
 
               {/* Правая секция - Newsletter и Social Media */}
               <div className="footer-right">

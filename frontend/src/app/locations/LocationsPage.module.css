@@ -53,7 +53,6 @@
   height: 400px; /* 17.6px * 22.7 */
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .mapImg {
@@ -120,7 +119,6 @@
   background: #FFFCF8; /* PAUL Primary 1 */
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
 

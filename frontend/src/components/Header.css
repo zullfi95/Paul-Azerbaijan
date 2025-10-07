@@ -35,7 +35,6 @@ body.menu-open {
   background-color: #FFFCF8;
   border-radius: 7px;
   margin: 0 0 7px 0;
-  box-shadow: none;
 }
 
 /* Logo */
@@ -152,7 +151,6 @@ body.menu-open {
 }
 
 .search-input:focus {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .search-icon {
@@ -342,7 +340,6 @@ body.menu-open {
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for mobile browsers */
   background: #fef9e5;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
   animation: slideInFromLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   display: flex;
   flex-direction: column;
@@ -685,7 +682,6 @@ body.menu-open {
 
 .mobile-search-input:focus {
   border-color: #1a1a1a;
-  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
 }
 
 .mobile-search-button {
@@ -798,7 +794,6 @@ body.menu-open {
   background-color: #1a1a1a;
   border-color: #1a1a1a;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   color: white;
 }
 
@@ -816,7 +811,6 @@ body.menu-open {
   border-color: #000000;
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Small exclamation badge on Plan Event */
@@ -845,7 +839,6 @@ body.menu-open {
 
 .action-button:active {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .action-button-icon {

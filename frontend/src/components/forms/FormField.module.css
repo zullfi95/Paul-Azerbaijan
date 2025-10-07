@@ -31,7 +31,6 @@
 .formInput:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .formInput::placeholder {
@@ -40,7 +39,6 @@
 
 .inputError {
   border-color: #ef4444 !important;
-  box-shadow: 0 0 0 1px #ef4444 !important;
 }
 
 .fieldError {

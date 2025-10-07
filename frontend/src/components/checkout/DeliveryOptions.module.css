@@ -79,21 +79,18 @@
   background-color: #333333;
   border-color: #333333;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .deliveryButton.active {
   background-color: #000000;
   color: #ffffff;
   border-color: #000000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   transform: scale(1.1);
 }
 
 .deliveryButton.active:hover {
   background-color: #1a1a1a;
   transform: scale(1.1) translateY(-1px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 .deliveryButton:not(.active) {
@@ -131,7 +128,6 @@
 .inputField:focus {
   outline: none;
   border-color: #000000;
-  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
 }
 
 /* Стили для календаря */

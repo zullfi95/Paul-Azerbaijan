@@ -1169,7 +1169,7 @@ export default function ApplicationsPage() {
               borderRadius: 16,
               margin: 20
             }}>
-              <div className="shadow-lg" style={{
+              <div style={{
                 width: 60,
                 height: 60,
                 border: '4px solid #f1f5f9',
@@ -1639,31 +1639,11 @@ export default function ApplicationsPage() {
         
         @keyframes glow {
           0%, 100% {
-            box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
           }
           50% {
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
           }
         }
         
-        /* Система теней */
-        .shadow-none { box-shadow: none; }
-        .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-        .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
-        .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-        .shadow-inner { box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); }
-        
-        /* Интерактивные тени */
-        .shadow-hover-sm { transition: box-shadow 0.3s ease; }
-        .shadow-hover-sm:hover { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-        
-        .shadow-hover-md { transition: box-shadow 0.3s ease; }
-        .shadow-hover-md:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        
-        .shadow-hover-lg { transition: box-shadow 0.3s ease; }
-        .shadow-hover-lg:hover { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
         
         /* Анимации элементов */
         .animate-slideInUp { animation: slideInUp 0.3s ease-out; }
@@ -1677,14 +1657,14 @@ export default function ApplicationsPage() {
         
         /* Hover анимации */
         .hover-scale { 
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          transition: transform 0.2s ease;
         }
         .hover-scale:hover { 
           transform: scale(1.02);
         }
         
         .hover-lift { 
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          transition: transform 0.2s ease;
         }
         .hover-lift:hover { 
           transform: translateY(-2px);
@@ -1702,7 +1682,6 @@ export default function ApplicationsPage() {
         .transition-colors { transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease; }
         .transition-transform { transition: transform 0.2s ease; }
         .transition-opacity { transition: opacity 0.2s ease; }
-        .transition-shadow { transition: box-shadow 0.2s ease; }
         
         /* Специальные эффекты */
         .glassmorphism {
@@ -1712,12 +1691,10 @@ export default function ApplicationsPage() {
         }
         
         .card-elevated {
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .card-elevated:hover {
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
           transform: translateY(-4px);
         }
         
@@ -1744,12 +1721,10 @@ export default function ApplicationsPage() {
         
         .button-interactive:hover {
           transform: translateY(-1px);
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
         
         .button-interactive:active {
           transform: translateY(0);
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         /* Мобильная адаптивность */

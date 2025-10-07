@@ -50,7 +50,7 @@ export default function ClickCollectPage() {
   const [searchQuery, setSearchQuery] = useState('');
   
   const { addItem } = useCart();
-  const { isOpen: isCartModalOpen, openModal, closeModal } = useCartModal();
+  const { isOpen: isCartModalOpen, closeModal } = useCartModal();
   const { showNotification } = useNotification();
 
   // ID организации Paul Port Baku из iiko
@@ -75,14 +75,19 @@ export default function ClickCollectPage() {
       const data = await response.json();
       
       if (data.success && Array.isArray(data.data)) {
-        const processedMenu = data.data.map((category: any) => ({
+        const processedMenu = data.data.map((category: Record<string, unknown>) => ({
           ...category,
-          activeMenuItems: (category.active_menu_items || category.activeMenuItems || []).map((item: any) => ({
-            ...item,
-            price: parseFloat(item.price) || 0,
-            images: Array.isArray(item.images) ? item.images : [],
-            allergens: Array.isArray(item.allergens) ? item.allergens : (item.allergens ? [item.allergens] : [])
-          }))
+          activeMenuItems: Array.isArray(category.active_menu_items || category.activeMenuItems) 
+            ? ((category.active_menu_items || category.activeMenuItems) as unknown[]).map((item: unknown) => {
+                const itemRecord = item as Record<string, unknown>;
+                return {
+                  ...itemRecord,
+                  price: parseFloat(itemRecord.price as string) || 0,
+                  images: Array.isArray(itemRecord.images) ? itemRecord.images : [],
+                  allergens: Array.isArray(itemRecord.allergens) ? itemRecord.allergens : (itemRecord.allergens ? [itemRecord.allergens] : [])
+                };
+              })
+            : []
         }));
         
         setMenu(processedMenu);
@@ -97,9 +102,9 @@ export default function ClickCollectPage() {
     }
   };
 
-  const goToCatering = () => {
-    router.push('/catering');
-  };
+  // const goToCatering = () => {
+  //   router.push('/catering');
+  // };
 
   const goToLocations = () => {
     router.push('/locations');

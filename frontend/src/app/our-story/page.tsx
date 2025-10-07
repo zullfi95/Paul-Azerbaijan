@@ -33,7 +33,7 @@ export default function OurStoryPage() {
             </div>
             <div className="timeline-text">
               <p>
-                It all starts in 1889 when Charlemagne Mayot takes over a small bakery in Croix, near Lille in the North of France. His son Edmond Mayot takes over the family business in 1908. Suzanne Mayot, Edmond's daughter, marries Julien Holder. They move into a bakery on Rue des Sarrazins in Lille.
+                It all starts in 1889 when Charlemagne Mayot takes over a small bakery in Croix, near Lille in the North of France. His son Edmond Mayot takes over the family business in 1908. Suzanne Mayot, Edmond&apos;s daughter, marries Julien Holder. They move into a bakery on Rue des Sarrazins in Lille.
               </p>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default function OurStoryPage() {
                 <div className="timeline-year">1950s</div>
                 <div className="timeline-divider"></div>
                 <p>
-                  We launch our first cake range in the early 1950s using our own family recipes. More than 60 years later we're still making wonderful French cakes that taste every bit as good as they look and are hand crafted using only the finest ingredients….
+                  We launch our first cake range in the early 1950s using our own family recipes. More than 60 years later we&apos;re still making wonderful French cakes that taste every bit as good as they look and are hand crafted using only the finest ingredients….
                 </p>
               </div>
               <div className="timeline-image-block">
@@ -140,7 +140,7 @@ export default function OurStoryPage() {
                 <div className="timeline-year">1985</div>
                 <div className="timeline-divider"></div>
                 <p>
-                  PAUL opens its first bakery outside France in Barcelona, heralding the start of the company's international expansion. Two years later, some PAUL bakeries start to incorporate a café or restaurant area.
+                  PAUL opens its first bakery outside France in Barcelona, heralding the start of the company&apos;s international expansion. Two years later, some PAUL bakeries start to incorporate a café or restaurant area.
                 </p>
               </div>
               <div className="timeline-image-block">
@@ -186,7 +186,7 @@ export default function OurStoryPage() {
                 <div className="timeline-divider"></div>
                 <div className="timeline-text">
                   <p>
-                    PAUL opens its first bakery and restaurant in London, Covent Garden- an instant hit! Encouraged by Londoners' enthusiastic response, PAUL opens further branches in London and beyond, now with 37 UK locations including our PAUL Express branches in St. Pancras and Tottenham Court Road, and two branches of Le Restaurant de PAUL!
+                    PAUL opens its first bakery and restaurant in London, Covent Garden- an instant hit! Encouraged by Londoners&apos; enthusiastic response, PAUL opens further branches in London and beyond, now with 37 UK locations including our PAUL Express branches in St. Pancras and Tottenham Court Road, and two branches of Le Restaurant de PAUL!
                   </p>
                 </div>
                 <div className="timeline-image-block">

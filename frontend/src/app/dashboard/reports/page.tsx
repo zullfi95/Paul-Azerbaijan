@@ -4,10 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../contexts/AuthContext";
 import { Order, Application } from "../../../config/api";
-import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/apiHelpers";
+import { makeApiRequest, extractApiData } from "../../../utils/apiHelpers";
 import { useAuthGuard, canViewCalendar } from "../../../utils/authConstants";
 import { generateOrdersReport } from "../../../utils/beoGenerator";
-import { calculateTotalAmountSum, formatTotalAmount } from "../../../utils/numberUtils";
+import { formatTotalAmount } from "../../../utils/numberUtils";
 
 interface ReportFilters {
   startDate: string;
@@ -78,7 +78,7 @@ export default function ReportsPage() {
       return orderDate >= startDate && orderDate <= endDate;
     });
 
-    let filteredApplications = applications.filter(app => {
+    const filteredApplications = applications.filter(app => {
       const appDate = new Date(app.created_at);
       return appDate >= startDate && appDate <= endDate;
     });

@@ -12,14 +12,14 @@ import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [next, setNext] = useState<string>('/');
+  // const [next] = useState<string>('/'); // Не используется
   useEffect(() => {
     try {
-      const params = new URLSearchParams(window.location.search);
-      const n = params.get('next') || '/';
-      setNext(n);
-    } catch (_err) {
-      setNext('/');
+      // const params = new URLSearchParams(window.location.search); // Не используется
+      // const n = params.get('next') || '/'; // Не используется
+      // setNext(n); // Не используется в компоненте
+    } catch {
+      // setNext('/'); // Не используется в компоненте
     }
   }, []);
   const { login } = useAuth();
@@ -72,7 +72,7 @@ export default function LoginPage() {
         <h1 className={styles.formTitle}>Log in</h1>
         
         <div className={styles.createAccountSection}>
-          <span className={styles.createAccountText}>Don't have an account? </span>
+          <span className={styles.createAccountText}>Don&apos;t have an account? </span>
           <Link href="/auth/register" className={styles.createAccountLink}>
             Create account
           </Link>

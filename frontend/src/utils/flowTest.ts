@@ -33,9 +33,21 @@ export const mockOrderData = {
   delivery_cost: 0
 };
 
+// Интерфейсы для типизации
+interface CartItem {
+  id: string;
+  quantity: number;
+  [key: string]: unknown;
+}
+
+interface TestItem {
+  id: string;
+  [key: string]: unknown;
+}
+
 // Функции для тестирования
 export const testCartOperations = {
-  addItem: (cart: any[], item: any) => {
+  addItem: (cart: CartItem[], item: TestItem) => {
     const existingItem = cart.find(cartItem => cartItem.id === item.id);
     if (existingItem) {
       existingItem.quantity += 1;
@@ -45,21 +57,21 @@ export const testCartOperations = {
     return cart;
   },
 
-  removeItem: (cart: any[], itemId: string) => {
+  removeItem: (cart: CartItem[], itemId: string) => {
     return cart.filter(item => item.id !== itemId);
   },
 
-  updateQuantity: (cart: any[], itemId: string, quantity: number) => {
+  updateQuantity: (cart: CartItem[], itemId: string, quantity: number) => {
     return cart.map(item => 
       item.id === itemId ? { ...item, quantity } : item
     ).filter(item => item.quantity > 0);
   },
 
-  getTotalPrice: (cart: any[]) => {
+  getTotalPrice: (cart: CartItem[]) => {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   },
 
-  getTotalItems: (cart: any[]) => {
+  getTotalItems: (cart: CartItem[]) => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   }
 };
@@ -71,8 +83,8 @@ export const testNavigation = {
 };
 
 export const testFormValidation = {
-  validateOrderForm: (formData: any) => {
-    const errors: any = {};
+  validateOrderForm: (formData: Record<string, unknown>) => {
+    const errors: Record<string, string> = {};
     
     if (!formData.firstName) errors.firstName = 'Имя обязательно';
     if (!formData.lastName) errors.lastName = 'Фамилия обязательна';
@@ -90,7 +102,7 @@ export const testFormValidation = {
 };
 
 export const testApiCalls = {
-  createOrder: async (orderData: any) => {
+  createOrder: async (orderData: Record<string, unknown>) => {
     // Симуляция API вызова
     const mockResponse = {
       ok: true,
@@ -115,7 +127,7 @@ export const testCompleteFlow = () => {
   
   // 1. Тест корзины
   console.log('1️⃣ Тестируем операции с корзиной...');
-  let cart: any[] = [];
+  let cart: CartItem[] = [];
   
   // Добавляем товар
   cart = testCartOperations.addItem(cart, mockCartItem);
@@ -172,5 +184,5 @@ export const testCompleteFlow = () => {
 
 // Экспортируем функцию для использования в консоли браузера
 if (typeof window !== 'undefined') {
-  (window as any).testCateringFlow = testCompleteFlow;
+  (window as Record<string, unknown>).testCateringFlow = testCompleteFlow;
 }

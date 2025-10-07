@@ -46,6 +46,18 @@ export const getAuthHeaders = (token?: string): Record<string, string> => {
 
 // ===== TYPES =====
 
+// Address Types
+export interface Address {
+  id: number;
+  street: string;
+  city: string;
+  postal_code: string;
+  country?: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // User Types - единая модель для всех пользователей
 export interface User {
   id: number;
@@ -65,8 +77,6 @@ export interface User {
   created_at: string;
   updated_at: string;
 }
-
-// Client Types - теперь это User с user_type: 'client'
 
 // Application Types
 export interface Application {
@@ -113,7 +123,14 @@ export interface CartItem extends MenuItem {
 
 // Product Item Types - для отображения продуктов в каталоге
 export interface ProductItem extends CartItem {
-  // Дополнительные поля для продуктов, если нужны
+  tags?: string[];
+  allergens?: string[];
+  nutrition_info?: {
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
+  };
 }
 
 // Order Types
@@ -121,8 +138,8 @@ export interface Order {
   id: number;
   company_name: string;
   client_type?: 'corporate' | 'one_time';
-  customer?: any;
-  employees?: any;
+  customer?: Record<string, unknown>;
+  employees?: Record<string, unknown>;
   menu_items: MenuItem[];
   comment?: string;
   status: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled';
@@ -152,7 +169,7 @@ export interface Order {
   special_instructions?: string;
   beo_file_path?: string;
   beo_generated_at?: string;
-  preparation_timeline?: any;
+  preparation_timeline?: Record<string, unknown>;
   is_urgent?: boolean;
   order_deadline?: string;
   modification_deadline?: string;
@@ -164,7 +181,7 @@ export interface Order {
   payment_attempts?: number;
   payment_created_at?: string;
   payment_completed_at?: string;
-  payment_details?: any;
+  payment_details?: Record<string, unknown>;
   // Связи
   coordinator?: User;
   client?: User;

@@ -38,7 +38,7 @@ export default function ResetPasswordForm({ onSuccess, onCancel }: ResetPassword
       } else {
         setError(result.message || 'Ошибка при сбросе пароля');
       }
-    } catch (error) {
+    } catch {
       setError('Произошла ошибка при сбросе пароля');
     } finally {
       setIsSubmitting(false);

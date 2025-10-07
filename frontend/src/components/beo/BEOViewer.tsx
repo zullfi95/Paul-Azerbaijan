@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Card, CardHeader, CardTitle, CardContent } from '../ui';
-import { generateBEOFile } from '../../utils/beoGenerator';
+// import { generateBEOFile } from '../../utils/beoGenerator'; // Не используется
 import { BEO } from '../../types/enhanced';
 
 interface BEOViewerProps {
@@ -8,6 +8,7 @@ interface BEOViewerProps {
   onClose: () => void;
   onEdit?: (beo: BEO) => void;
   onDelete?: (beoId: string) => void;
+  onPrint?: (beo: BEO) => void;
   isLoading?: boolean;
 }
 
@@ -16,33 +17,9 @@ const BEOViewer: React.FC<BEOViewerProps> = ({
   onClose,
   onEdit,
   onDelete,
+  onPrint,
   isLoading = false
 }) => {
-  const handlePrint = () => {
-    // Создаем объект заказа для печати
-    const orderForPrint = {
-      id: parseInt(beo.order_id),
-      order_number: beo.order_id,
-      company_name: beo.event_name,
-      delivery_date: beo.event_date,
-      delivery_time: beo.event_time,
-      delivery_address: beo.venue,
-      guest_count: beo.guest_count,
-      contact_person: beo.contact_person,
-      contact_phone: beo.contact_phone,
-      contact_email: beo.contact_email,
-      special_instructions: beo.special_instructions,
-      setup_requirements: beo.setup_requirements,
-      dietary_restrictions: beo.dietary_restrictions,
-      menu_items: [],
-      total_amount: 0,
-      status: 'completed' as const,
-      created_at: beo.created_at,
-      updated_at: beo.updated_at
-    };
-    
-    generateBEOFile(orderForPrint);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -58,7 +35,7 @@ const BEOViewer: React.FC<BEOViewerProps> = ({
                 <Button
                   variant="secondary"
                   size="sm"
-                  onClick={handlePrint}
+                  onClick={() => onPrint?.(beo)}
                   disabled={isLoading}
                 >
                   Печать

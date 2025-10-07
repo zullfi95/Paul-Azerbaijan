@@ -4,7 +4,7 @@ import { Button, Card, CardHeader, CardTitle, CardContent } from '../ui';
 
 interface BEOGeneratorProps {
   order: Order;
-  onSave: (beo: any) => void;
+  onSave: (beo: Record<string, unknown>) => void | Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
 }
@@ -20,13 +20,13 @@ const BEOGenerator: React.FC<BEOGeneratorProps> = ({
     event_date: order.delivery_date || '',
     event_time: order.delivery_time || '',
     venue: order.delivery_address || '',
-    guest_count: order.guest_count || 0,
-    contact_person: order.contact_person || '',
-    contact_phone: order.contact_phone || '',
-    contact_email: order.contact_email || '',
-    special_instructions: order.special_instructions || '',
-    setup_requirements: order.setup_requirements || '',
-    dietary_restrictions: order.dietary_restrictions || ''
+    guest_count: (order as Order & { guest_count?: number }).guest_count || 0,
+    contact_person: (order as Order & { contact_person?: string }).contact_person || '',
+    contact_phone: (order as Order & { contact_phone?: string }).contact_phone || '',
+    contact_email: (order as Order & { contact_email?: string }).contact_email || '',
+    special_instructions: (order as Order & { special_instructions?: string }).special_instructions || '',
+    setup_requirements: (order as Order & { setup_requirements?: string }).setup_requirements || '',
+    dietary_restrictions: (order as Order & { dietary_restrictions?: string }).dietary_restrictions || ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {

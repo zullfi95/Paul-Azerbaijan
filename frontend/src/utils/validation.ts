@@ -17,7 +17,7 @@ export interface ValidationRule {
   max?: number;
   email?: boolean;
   phone?: boolean;
-  custom?: (value: any) => string | null;
+  custom?: (value: unknown) => string | null;
 }
 
 // Валидация email
@@ -59,7 +59,7 @@ export const validatePassword = (password: string): ValidationResult => {
 };
 
 // Универсальная валидация поля
-export const validateField = (value: any, rules: ValidationRule): string | null => {
+export const validateField = (value: unknown, rules: ValidationRule): string | null => {
   // Проверка обязательности
   if (rules.required && (!value || value.toString().trim() === '')) {
     return 'Поле обязательно для заполнения';
@@ -121,7 +121,7 @@ export const validateField = (value: any, rules: ValidationRule): string | null 
 };
 
 // Валидация формы
-export const validateForm = (data: Record<string, any>, rules: Record<string, ValidationRule>): ValidationResult => {
+export const validateForm = (data: Record<string, unknown>, rules: Record<string, ValidationRule>): ValidationResult => {
   const errors: string[] = [];
   
   for (const [field, fieldRules] of Object.entries(rules)) {
@@ -183,7 +183,7 @@ export const validateTime = (time: string): boolean => {
 };
 
 // Валидация заказа
-export const validateOrder = (order: any): ValidationResult => {
+export const validateOrder = (order: Record<string, unknown>): ValidationResult => {
   const rules: Record<string, ValidationRule> = {
     company_name: { required: true, minLength: 2, maxLength: 100 },
     contact_person: { required: true, minLength: 2, maxLength: 50 },
@@ -199,7 +199,7 @@ export const validateOrder = (order: any): ValidationResult => {
 };
 
 // Валидация пользователя
-export const validateUser = (user: any): ValidationResult => {
+export const validateUser = (user: Record<string, unknown>): ValidationResult => {
   const rules: Record<string, ValidationRule> = {
     name: { required: true, minLength: 2, maxLength: 50 },
     email: { required: true, email: true },
@@ -212,7 +212,7 @@ export const validateUser = (user: any): ValidationResult => {
 };
 
 // Валидация заявки (соответствует backend валидации)
-export const validateApplication = (application: any): ValidationResult => {
+export const validateApplication = (application: Record<string, unknown>): ValidationResult => {
   const rules: Record<string, ValidationRule> = {
     first_name: { required: true, minLength: 2, maxLength: 255 },
     last_name: { required: false, maxLength: 255 },

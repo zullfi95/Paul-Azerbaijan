@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 
 interface MenuCategory {
@@ -42,11 +42,7 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    fetchMenu();
-  }, [organizationId]);
-
-  const fetchMenu = async () => {
+  const fetchMenu = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -78,19 +74,24 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
       
       if (data.success && Array.isArray(data.data)) {
         // Убеждаемся, что у каждой категории есть activeMenuItems
-        const processedMenu = data.data.map(category => ({
+        const processedMenu = data.data.map((category: Record<string, unknown>) => ({
           ...category,
-          activeMenuItems: (category.active_menu_items || category.activeMenuItems || []).map(item => ({
-            ...item,
-            price: parseFloat(item.price) || 0,
-            images: Array.isArray(item.images) ? item.images : [],
-            allergens: Array.isArray(item.allergens) ? item.allergens : (item.allergens ? [item.allergens] : [])
-          }))
+          activeMenuItems: Array.isArray(category.active_menu_items || category.activeMenuItems) 
+            ? ((category.active_menu_items || category.activeMenuItems) as unknown[]).map((item: unknown) => {
+                const itemRecord = item as Record<string, unknown>;
+                return {
+                  ...itemRecord,
+                  price: parseFloat(itemRecord.price as string) || 0,
+                  images: Array.isArray(itemRecord.images) ? itemRecord.images : [],
+                  allergens: Array.isArray(itemRecord.allergens) ? itemRecord.allergens : (itemRecord.allergens ? [itemRecord.allergens] : [])
+                };
+              })
+            : []
         }));
         
         // Отладочная информация
-        const categoriesWithItems = processedMenu.filter(cat => cat.activeMenuItems && cat.activeMenuItems.length > 0);
-        const totalItems = processedMenu.reduce((sum, cat) => sum + (cat.activeMenuItems?.length || 0), 0);
+        const categoriesWithItems = processedMenu.filter((cat: Record<string, unknown>) => (cat.activeMenuItems as unknown[])?.length > 0);
+        const totalItems = processedMenu.reduce((sum: number, cat: Record<string, unknown>) => sum + ((cat.activeMenuItems as unknown[])?.length || 0), 0);
         console.log(`Menu loaded: ${categoriesWithItems.length} categories with ${totalItems} total items`);
         
         setMenu(processedMenu);
@@ -103,7 +104,11 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [organizationId]);
+
+  useEffect(() => {
+    fetchMenu();
+  }, [organizationId, fetchMenu]);
 
   const filteredMenu = menu.filter(category => {
     if (selectedCategory && category.name !== selectedCategory) {

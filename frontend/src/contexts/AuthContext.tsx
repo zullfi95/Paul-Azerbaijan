@@ -1,7 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { getApiUrl, getAuthHeaders, User } from '../config/api';
+import { getApiUrl, getAuthHeaders, User, API_CONFIG } from '../config/api';
+import { getToken, setToken, removeToken } from '../utils/tokenManager';
 
 interface AuthContextType {
   user: User | null;
@@ -19,13 +20,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   // Token-based auth: Sanctum tokens stored in localStorage
   const [isLoading, setIsLoading] = useState(true);
-  const [verificationAttempts, setVerificationAttempts] = useState(0);
 
   const fetchUser = useCallback(async () => {
     console.log('🔍 Fetching current user via token...');
 
-    // Проверяем наличие токена
-    const token = localStorage.getItem('auth_token');
+    const token = getToken();
     const userData = localStorage.getItem('user');
 
     console.log('🔑 Auth token present:', !!token);
@@ -61,36 +60,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.log('📡 Response status:', response.status, response.statusText);
 
       if (!response.ok) {
-        if (response.status === 401) {
-          // Токен недействителен - только тогда logout
-          console.log('❌ Token invalid, logging out');
+        // При любой ошибке аутентификации - logout
+        if (response.status === 401 || response.status === 403) {
+          console.log('❌ Authentication failed, logging out');
           setUser(null);
           localStorage.removeItem('user');
-          localStorage.removeItem('auth_token');
-          setVerificationAttempts(0); // Сбрасываем счетчик
-        } else if (response.status === 403) {
-          // Доступ запрещен - возможно пользователь заблокирован
-          console.warn('🚫 Access forbidden, user might be blocked');
-          setUser(null);
-          localStorage.removeItem('user');
-          localStorage.removeItem('auth_token');
-          setVerificationAttempts(0); // Сбрасываем счетчик
+          removeToken();
         } else {
-          // Другие ошибки (500, 404) - не logout, возможно временные проблемы
+          // При других ошибках - просто логируем, не logout
           console.warn('⚠️ Token verification failed with status:', response.status);
-          // При ошибках сервера оставляем пользователя в системе
-          // Увеличиваем счетчик неудачных попыток
-          const newAttempts = verificationAttempts + 1;
-          setVerificationAttempts(newAttempts);
-
-          // Logout только после 3 неудачных попыток (защита от временных проблем)
-          if (newAttempts >= 3) {
-            console.warn('🔄 Too many verification failures, logging out');
-            setUser(null);
-            localStorage.removeItem('user');
-            localStorage.removeItem('auth_token');
-            setVerificationAttempts(0);
-          }
         }
       } else {
                 // Токен валиден, обновляем данные пользователя
@@ -109,20 +87,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.log('✅ Setting user data:', userData.data.user);
             setUser(userData.data.user);
             localStorage.setItem('user', JSON.stringify(userData.data.user));
-            setVerificationAttempts(0);
           } else {
             console.warn('⚠️ Unexpected user data format:', userData);
             // Если неожиданный формат, очищаем состояние
             setUser(null);
             localStorage.removeItem('user');
-            localStorage.removeItem('auth_token');
+            removeToken();
           }
         } catch (parseError) {
           console.warn('❌ Failed to parse user data:', parseError);
           // При ошибке парсинга очищаем состояние
           setUser(null);
           localStorage.removeItem('user');
-          localStorage.removeItem('auth_token');
+          removeToken();
         }
       }
     } catch (error) {
@@ -130,14 +107,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.warn('🌐 Token verification network error:', error);
       setUser(null);
       localStorage.removeItem('user');
-      localStorage.removeItem('auth_token');
-      setVerificationAttempts(0);
+      removeToken();
     }
-  }, [verificationAttempts]);
+  }, []);
 
   const logout = useCallback(async () => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = getToken();
       if (token) {
         await fetch(getApiUrl('logout'), {
           method: 'POST',
@@ -154,12 +130,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Очищаем локальное состояние
     setUser(null);
     localStorage.removeItem('user');
-    localStorage.removeItem('auth_token');
+    removeToken();
   }, []);
 
   const updateUser = useCallback(async (userData: Partial<User>) => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = getToken();
       if (!token) {
         console.error('No auth token found');
         return false;
@@ -226,11 +202,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.log('🔐 Login attempt:', { 
         email, 
         url,
-        baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+        baseUrl: API_CONFIG.BASE_URL
       });
       
       // CSRF отключен для API, но оставляем cookie для совместимости
-      // const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      // const baseUrl = API_CONFIG.BASE_URL;
 
       const response = await fetch(url, {
         method: 'POST',
@@ -277,7 +253,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         console.log('💾 Saving auth token:', !!token);
         console.log('💾 Login response data:', data.data);
         console.log('💾 User data:', data.data.user);
-        localStorage.setItem('auth_token', token);
+        setToken(token);
 
         // Сохраняем пользователя
         setUser(data.data.user);
@@ -305,7 +281,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         surname,
         phone,
         url,
-        baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+        baseUrl: API_CONFIG.BASE_URL
       });
       
       const response = await fetch(url, {
@@ -359,7 +335,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         console.log('💾 Saving auth token:', !!token);
         console.log('💾 Register response data:', data.data);
         console.log('💾 User data:', data.data.user);
-        localStorage.setItem('auth_token', token);
+        setToken(token);
 
         // Сохраняем пользователя
         setUser(data.data.user);

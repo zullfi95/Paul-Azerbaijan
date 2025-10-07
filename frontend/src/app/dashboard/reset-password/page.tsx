@@ -1,16 +1,18 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useAuthGuard, isCoordinator } from '../../../utils/authConstants';
 import ResetPasswordForm from '../../../components/ResetPasswordForm';
 
 export default function ResetPasswordPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
   const [showForm, setShowForm] = useState(false);
 
   // Проверяем, что пользователь является координатором
-  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, isCoordinator);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, isCoordinator, router);
 
   if (!hasAccess) {
     return (

@@ -114,7 +114,7 @@ describe('Catering Flow Tests', () => {
       };
       
       const validateForm = (data: typeof formData) => {
-        const errors: any = {};
+        const errors: Record<string, string> = {};
         
         if (!data.firstName) errors.firstName = 'Имя обязательно';
         if (!data.lastName) errors.lastName = 'Фамилия обязательна';
@@ -142,7 +142,7 @@ describe('Catering Flow Tests', () => {
       };
       
       const validateForm = (data: typeof formData) => {
-        const errors: any = {};
+        const errors: Record<string, string> = {};
         
         if (!data.firstName) errors.firstName = 'Имя обязательно';
         if (!data.lastName) errors.lastName = 'Фамилия обязательна';

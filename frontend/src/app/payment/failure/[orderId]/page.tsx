@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Header from '../../../../components/Header';
 import Footer from '../../../../components/Footer';
@@ -14,21 +14,10 @@ export default function PaymentFailurePage() {
   const orderId = params.orderId as string;
   
   const [loading, setLoading] = useState(true);
-  const [paymentInfo, setPaymentInfo] = useState<any>(null);
+  const [paymentInfo, setPaymentInfo] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/auth/login');
-      return;
-    }
-
-    if (orderId && isAuthenticated) {
-      handlePaymentFailure();
-    }
-  }, [orderId, isAuthenticated, isLoading, router]);
-
-  const handlePaymentFailure = async () => {
+  const handlePaymentFailure = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -55,7 +44,18 @@ export default function PaymentFailurePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [orderId]);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push('/auth/login');
+      return;
+    }
+
+    if (orderId && isAuthenticated) {
+      handlePaymentFailure();
+    }
+  }, [orderId, isAuthenticated, isLoading, router, handlePaymentFailure]);
 
   const handleRetryPayment = async () => {
     try {
@@ -126,11 +126,11 @@ export default function PaymentFailurePage() {
               <div style={{ display: 'grid', gap: '8px', fontSize: '14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#6B7280' }}>Sifariş №:</span>
-                  <span style={{ fontWeight: 'bold' }}>{paymentInfo.order_id}</span>
+                  <span style={{ fontWeight: 'bold' }}>{paymentInfo.order_id as string}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#6B7280' }}>Cəhd sayı:</span>
-                  <span style={{ fontWeight: 'bold' }}>{paymentInfo.attempts}/3</span>
+                  <span style={{ fontWeight: 'bold' }}>{paymentInfo.attempts as number}/3</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#6B7280' }}>Status:</span>
@@ -153,7 +153,7 @@ export default function PaymentFailurePage() {
           )}
           
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            {paymentInfo?.can_retry && (
+            {(paymentInfo?.can_retry as boolean) && (
               <button
                 onClick={handleRetryPayment}
                 disabled={loading}
@@ -190,7 +190,7 @@ export default function PaymentFailurePage() {
             </button>
           </div>
 
-          {paymentInfo && !paymentInfo.can_retry && (
+          {paymentInfo && !(paymentInfo.can_retry as boolean) && (
             <div style={{ 
               background: '#FEF3C7', 
               padding: '16px', 

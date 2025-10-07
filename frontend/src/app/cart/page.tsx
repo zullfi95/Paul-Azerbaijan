@@ -55,7 +55,7 @@ export default function CartPage() {
   } = useCart();
 
   // Подсчет общей суммы через useMemo для оптимизации
-  const totalAmount = useMemo(() => getTotalPrice(), [cartData, getTotalPrice]);
+  const totalAmount = useMemo(() => getTotalPrice(), [getTotalPrice]);
 
   const goToCatering = useCallback(() => {
     router.push('/catering');

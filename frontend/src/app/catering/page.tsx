@@ -176,7 +176,7 @@ interface LunchSelection {
 export default function CateringPage() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('Brunch Menu');
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy] = useState('name');
   const [isMobile, setIsMobile] = useState(false);
   
   // Состояние для выбранных позиций Brunch Menu
@@ -222,7 +222,7 @@ export default function CateringPage() {
 
   const addBrunchToCart = () => {
     const selectedItems: {
-      id: string; name: any; description: string; price: number; // Цена фиксированная за весь brunch
+      id: string; name: string; description: string; price: number; // Цена фиксированная за весь brunch
       quantity: number; image: string; category: string; available: boolean; isSet: boolean;
     }[] = [];
     
@@ -323,8 +323,8 @@ export default function CateringPage() {
       let description = optionName;
       if (choices) {
         const selectedChoices = Object.entries(choices)
-          .filter(([_, selected]) => selected)
-          .map(([key, _]) => key);
+          .filter(([, selected]) => selected)
+          .map(([key]) => key);
         if (selectedChoices.length > 0) {
           description += ` (${selectedChoices.join(', ')})`;
         }
@@ -2308,7 +2308,7 @@ export default function CateringPage() {
                       lineHeight: '1.6',
                       textAlign: 'center'
                     }}>
-                      At PAUL, we take pride in offering exceptional catering services that bring the delightful flavors of our restaurant directly to your event. Whether it's a corporate gathering, wedding, or a casual get-together, our team is dedicated to providing a seamless experience tailored to your needs. Our menu features a variety of freshly prepared dishes, showcasing the best of French cuisine. With a focus on quality ingredients and presentation, we ensure that every bite is a memorable one. Let us help you create an unforgettable dining experience for your guests!
+                      At PAUL, we take pride in offering exceptional catering services that bring the delightful flavors of our restaurant directly to your event. Whether it&apos;s a corporate gathering, wedding, or a casual get-together, our team is dedicated to providing a seamless experience tailored to your needs. Our menu features a variety of freshly prepared dishes, showcasing the best of French cuisine. With a focus on quality ingredients and presentation, we ensure that every bite is a memorable one. Let us help you create an unforgettable dining experience for your guests!
                     </p>
                   </div>
                 </div>

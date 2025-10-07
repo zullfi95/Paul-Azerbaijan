@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { getMinOrderDate } from '../../utils/timeValidations';
 import styles from './DeliveryOptions.module.css';
 
@@ -18,7 +19,7 @@ interface DeliveryOptionsProps {
 }
 
 export default function DeliveryOptions({ formData, errors, onInputChange }: DeliveryOptionsProps) {
-  const [showCalendar, setShowCalendar] = useState(true);
+  // const [showCalendar] = useState(true); // Не используется
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(
     formData.deliveryDate ? new Date(formData.deliveryDate) : null
@@ -107,7 +108,7 @@ export default function DeliveryOptions({ formData, errors, onInputChange }: Del
             onClick={() => onInputChange('deliveryType', 'pickup')}
             className={`${styles.deliveryButton} ${formData.deliveryType === 'pickup' ? styles.active : ''}`}
           >
-            <img src="/images/clickandcollecticon.svg" alt="Click & Collect" className={styles.buttonIcon} />
+            <Image src="/images/clickandcollecticon.svg" alt="Click & Collect" width={24} height={24} className={styles.buttonIcon} />
             <span>Click & Collect</span>
           </button>
           <p className={styles.deliveryDescription}>
@@ -121,7 +122,7 @@ export default function DeliveryOptions({ formData, errors, onInputChange }: Del
             onClick={() => onInputChange('deliveryType', 'delivery')}
             className={`${styles.deliveryButton} ${formData.deliveryType === 'delivery' ? styles.active : ''}`}
           >
-            <img src="/images/deliveryicon.svg" alt="Delivery" className={styles.buttonIcon} />
+            <Image src="/images/deliveryicon.svg" alt="Delivery" width={24} height={24} className={styles.buttonIcon} />
             <span>Delivery by Courier</span>
           </button>
           <p className={styles.deliveryDescription}>

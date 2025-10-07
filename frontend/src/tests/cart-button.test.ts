@@ -21,7 +21,7 @@ describe('Cart Button Tests', () => {
     });
 
     it('не должна отображаться когда корзина пустая', () => {
-      const cartItems: any[] = [];
+      const cartItems: unknown[] = [];
       
       const shouldShowButton = cartItems.length > 0;
       
@@ -49,7 +49,7 @@ describe('Cart Button Tests', () => {
         stopPropagation: vi.fn()
       };
       
-      const handleClick = (e: any) => {
+      const handleClick = (e: { preventDefault: () => void; stopPropagation: () => void }) => {
         e.preventDefault();
         e.stopPropagation();
         // Симуляция перехода к корзине

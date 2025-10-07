@@ -31,7 +31,7 @@ export const formatTimeForBackend = (timeString: string): string => {
     if (!isNaN(date.getTime())) {
       return date.toTimeString().substring(0, 5);
     }
-  } catch (e) {
+  } catch {
     // Игнорируем ошибки парсинга
   }
   

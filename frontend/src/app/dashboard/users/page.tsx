@@ -215,7 +215,7 @@ export default function UsersPage() {
       name: u.name,
       email: u.email,
       password: '',
-      user_group: u.user_group || 'client',
+      user_group: ((u as User & { user_group?: string }).user_group as 'client' | 'staff') || 'client',
       staff_role: u.staff_role || 'observer',
       client_category: u.client_category || 'corporate',
       company_name: u.company_name || '',
@@ -354,7 +354,7 @@ export default function UsersPage() {
               alignItems: "center",
               justifyContent: "center",
               fontWeight: 700,
-            }}>{user?.name?.charAt(0)?.toUpperCase() || "U"}</div>
+            }}>{user?.name?.charAt(0)?.toUpperCase() || 'U'}</div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#111827" }}>{user?.name}</div>
               <div style={{ fontSize: 12, color: "#6b7280" }}>{user?.staff_role}</div>
@@ -426,16 +426,16 @@ export default function UsersPage() {
             <div style={{ ...serifTitle, fontSize: 32, fontWeight: 800, color: paul.black }}>{users.length}</div>
           </div>
           <div style={{ background: paul.white, border: `1px solid ${paul.border}`, borderRadius: 12, padding: 20 }}>
-            <div style={{ color: paul.gray, fontSize: 12, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.6 }}>Персонал</div>
-            <div style={{ ...serifTitle, fontSize: 32, fontWeight: 800, color: "#8B5CF6" }}>{users.filter(u => u.user_group === "staff").length}</div>
+            <div style={{ color: paul.gray, fontSize: 12, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.6 }}>Персонал</div>
+            <div style={{ ...serifTitle, fontSize: 32, fontWeight: 800, color: '#8B5CF6' }}>{users.filter(u => (u as User & { user_group?: string }).user_group === 'staff').length}</div>
           </div>
           <div style={{ background: paul.white, border: `1px solid ${paul.border}`, borderRadius: 12, padding: 20 }}>
-            <div style={{ color: paul.gray, fontSize: 12, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.6 }}>Клиенты</div>
-            <div style={{ ...serifTitle, fontSize: 32, fontWeight: 800, color: "#10B981" }}>{users.filter(u => u.user_group === "client").length}</div>
+            <div style={{ color: paul.gray, fontSize: 12, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.6 }}>Клиенты</div>
+            <div style={{ ...serifTitle, fontSize: 32, fontWeight: 800, color: '#10B981' }}>{users.filter(u => (u as User & { user_group?: string }).user_group === 'client').length}</div>
           </div>
           <div style={{ background: paul.white, border: `1px solid ${paul.border}`, borderRadius: 12, padding: 20 }}>
-            <div style={{ color: paul.gray, fontSize: 12, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.6 }}>Активные</div>
-            <div style={{ ...serifTitle, fontSize: 32, fontWeight: 800, color: statusColors.active }}>{users.filter(u => u.status === "active").length}</div>
+            <div style={{ color: paul.gray, fontSize: 12, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.6 }}>Активные</div>
+            <div style={{ ...serifTitle, fontSize: 32, fontWeight: 800, color: statusColors.active }}>{users.filter(u => u.status === 'active').length}</div>
           </div>
         </section>
 
@@ -621,7 +621,7 @@ export default function UsersPage() {
                                 width: 40,
                                 height: 40,
                                 borderRadius: 9999,
-                                background: u.user_group === 'staff' ? "#8B5CF6" : "#10B981",
+                                background: (u as User & { user_group?: string }).user_group === 'staff' ? "#8B5CF6" : "#10B981",
                                 color: "#fff",
                                 display: "flex",
                                 alignItems: "center",
@@ -641,10 +641,10 @@ export default function UsersPage() {
                               borderRadius: 20,
                               fontSize: 12,
                               fontWeight: 600,
-                              background: u.user_group === 'staff' ? '#8B5CF620' : '#10B98120',
-                              color: u.user_group === 'staff' ? '#8B5CF6' : '#10B981',
+                              background: (u as User & { user_group?: string }).user_group === 'staff' ? '#8B5CF620' : '#10B98120',
+                              color: (u as User & { user_group?: string }).user_group === 'staff' ? '#8B5CF6' : '#10B981',
                             }}>
-                              {userGroupLabels[u.user_group || 'client']}
+                              {userGroupLabels[((u as User & { user_group?: string }).user_group || 'client') as keyof typeof userGroupLabels]}
                             </span>
                           </td>
                           <td style={tableCellStyle}>
@@ -653,14 +653,14 @@ export default function UsersPage() {
                               borderRadius: 20,
                               fontSize: 12,
                               fontWeight: 600,
-                              background: u.user_group === 'staff' 
+                              background: (u as User & { user_group?: string }).user_group === 'staff' 
                                 ? (u.staff_role === 'coordinator' ? '#F59E0B20' : '#3B82F620')
                                 : (u.client_category === 'corporate' ? '#10B98120' : '#F59E0B20'),
-                              color: u.user_group === 'staff' 
+                              color: (u as User & { user_group?: string }).user_group === 'staff' 
                                 ? (u.staff_role === 'coordinator' ? '#F59E0B' : '#3B82F6')
                                 : (u.client_category === 'corporate' ? '#10B981' : '#F59E0B'),
                             }}>
-                              {u.user_group === 'staff' 
+                              {(u as User & { user_group?: string }).user_group === 'staff' 
                                 ? staffRoleLabels[u.staff_role!]
                                 : clientCategoryLabels[u.client_category!]
                               }
@@ -780,7 +780,7 @@ export default function UsersPage() {
                           width: 50,
                           height: 50,
                           borderRadius: 9999,
-                          background: u.user_group === 'staff' ? "#8B5CF6" : "#10B981",
+                          background: (u as User & { user_group?: string }).user_group === 'staff' ? "#8B5CF6" : "#10B981",
                           color: "#fff",
                           display: "flex",
                           alignItems: "center",
@@ -810,24 +810,24 @@ export default function UsersPage() {
                           borderRadius: 12,
                           fontSize: 11,
                           fontWeight: 600,
-                          background: u.user_group === 'staff' ? '#8B5CF620' : '#10B98120',
-                          color: u.user_group === 'staff' ? '#8B5CF6' : '#10B981',
+                          background: (u as User & { user_group?: string }).user_group === 'staff' ? '#8B5CF620' : '#10B98120',
+                          color: (u as User & { user_group?: string }).user_group === 'staff' ? '#8B5CF6' : '#10B981',
                         }}>
-                          {userGroupLabels[u.user_group || 'client']}
+                          {userGroupLabels[((u as User & { user_group?: string }).user_group || 'client') as keyof typeof userGroupLabels]}
                         </span>
                         <span style={{
                           padding: "4px 8px",
                           borderRadius: 12,
                           fontSize: 11,
                           fontWeight: 600,
-                          background: u.user_group === 'staff' 
+                          background: (u as User & { user_group?: string }).user_group === 'staff' 
                             ? (u.staff_role === 'coordinator' ? '#F59E0B20' : '#3B82F620')
                             : (u.client_category === 'corporate' ? '#10B98120' : '#F59E0B20'),
-                          color: u.user_group === 'staff' 
+                          color: (u as User & { user_group?: string }).user_group === 'staff' 
                             ? (u.staff_role === 'coordinator' ? '#F59E0B' : '#3B82F6')
                             : (u.client_category === 'corporate' ? '#10B981' : '#F59E0B'),
                         }}>
-                          {u.user_group === 'staff' 
+                          {(u as User & { user_group?: string }).user_group === 'staff' 
                             ? staffRoleLabels[u.staff_role!]
                             : clientCategoryLabels[u.client_category!]
                           }
@@ -1021,7 +1021,7 @@ function UserModal({
               width: 80,
               height: 80,
               borderRadius: 9999,
-              background: user.user_group === 'staff' ? "#8B5CF6" : "#10B981",
+              background: (user as User & { user_group?: string }).user_group === 'staff' ? "#8B5CF6" : "#10B981",
               color: "#fff",
               display: "flex",
               alignItems: "center",
@@ -1040,10 +1040,10 @@ function UserModal({
                   borderRadius: 12,
                   fontSize: 12,
                   fontWeight: 600,
-                  background: user.user_group === 'staff' ? '#8B5CF620' : '#10B98120',
-                  color: user.user_group === 'staff' ? '#8B5CF6' : '#10B981',
+                  background: (user as User & { user_group?: string }).user_group === 'staff' ? '#8B5CF620' : '#10B98120',
+                  color: (user as User & { user_group?: string }).user_group === 'staff' ? '#8B5CF6' : '#10B981',
                 }}>
-                  {userGroupLabels[user.user_group || 'client']}
+                  {userGroupLabels[((user as User & { user_group?: string }).user_group || 'client') as keyof typeof userGroupLabels]}
                 </span>
                 <span style={{
                   padding: "4px 12px",
@@ -1062,7 +1062,7 @@ function UserModal({
           {/* Детальная информация */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 24 }}>
             <InfoField label="Роль/Категория" value={
-              user.user_group === 'staff' 
+              (user as User & { user_group?: string }).user_group === 'staff' 
                 ? staffRoleLabels[user.staff_role!]
                 : clientCategoryLabels[user.client_category!]
             } />

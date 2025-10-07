@@ -1,4 +1,4 @@
-import { Order, Application, User, MenuItem, CartItem } from '../config/api';
+import { Order, Application, User, CartItem } from '../config/api';
 
 // Response types for paginated data
 export interface OrdersResponse {

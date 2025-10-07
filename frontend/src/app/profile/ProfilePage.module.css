@@ -17,6 +17,7 @@
   min-height: 100vh;
   background-color: var(--paul-primary-1);
   font-family: 'Parisine Pro Gris', sans-serif;
+  padding-top: 0; /* Remove top padding to align with header */
 }
 
 /* Banner stripe */
@@ -57,6 +58,7 @@
   margin: 0 auto;
   padding-left: calc(var(--paul-base-font) * 1.14); /* 20px */
   padding-right: calc(var(--paul-base-font) * 1.14); /* 20px */
+  margin-top: calc(var(--paul-base-font) * 4.55); /* 80px - space for fixed header */
 }
 
 /* Sidebar */
@@ -64,11 +66,12 @@
   width: var(--paul-sidebar-width);
   background: var(--paul-black);
   color: var(--paul-ivory);
-  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
+  border-radius: calc(var(--paul-base-font) * 0.40); /* 7px - matching header */
   padding: calc(var(--paul-base-font) * 1.36); /* 24px */
   position: sticky;
-  top: calc(var(--paul-base-font) * 5.68); /* 100px */
+  top: calc(var(--paul-base-font) * 4.55); /* 80px - matching header height */
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sidebarNav {
@@ -86,14 +89,20 @@
   font-family: 'Sabon Next LT Pro', serif;
   font-size: var(--paul-base-font);
   padding: calc(var(--paul-base-font) * 0.68) calc(var(--paul-base-font) * 0.91); /* 12px 16px */
-  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
-  transition: all 0.2s ease;
+  border-radius: calc(var(--paul-base-font) * 0.40); /* 7px - matching header */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  /* iOS Safari fixes */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 .sidebarButton:hover {
   background: rgba(255, 250, 230, 0.1);
-  transform: translateX(calc(var(--paul-base-font) * 0.23)); /* 4px */
+  transform: translateY(calc(var(--paul-base-font) * -0.057)); /* -1px - matching header */
 }
 
 .sidebarButton:focus {
@@ -824,12 +833,12 @@
   width: 100%;
   padding: calc(var(--paul-base-font) * 0.68) calc(var(--paul-base-font) * 0.91); /* 12px 16px */
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
+  border-radius: calc(var(--paul-base-font) * 0.40); /* 7px - matching header */
   font-family: 'Parisine Pro Gris', sans-serif;
   font-size: calc(var(--paul-base-font) * 0.91); /* 16px */
   color: var(--paul-black);
   background: var(--paul-primary-1);
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .formInput:focus {
@@ -875,14 +884,20 @@
   color: var(--paul-ivory);
   border: none;
   padding: calc(var(--paul-base-font) * 0.68) calc(var(--paul-base-font) * 1.36); /* 12px 24px */
-  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
+  border-radius: calc(var(--paul-base-font) * 0.40); /* 7px - matching header */
   font-family: 'Sabon Next LT Pro', serif;
   font-size: var(--paul-base-font);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   display: inline-block;
   min-width: 120px;
+  /* iOS Safari fixes */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 .submitButton:hover:not(:disabled) {
@@ -901,14 +916,20 @@
   color: var(--paul-black);
   border: 1px solid rgba(0, 0, 0, 0.2);
   padding: calc(var(--paul-base-font) * 0.68) calc(var(--paul-base-font) * 1.36); /* 12px 24px */
-  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
+  border-radius: calc(var(--paul-base-font) * 0.40); /* 7px - matching header */
   font-family: 'Sabon Next LT Pro', serif;
   font-size: var(--paul-base-font);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   display: inline-block;
   min-width: 120px;
+  /* iOS Safari fixes */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 .cancelButton:hover {
@@ -974,6 +995,99 @@
   line-height: 1.4;
 }
 
+/* Address List Styles */
+.addressList {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--paul-base-font) * 0.91); /* 16px */
+  margin-bottom: calc(var(--paul-base-font) * 1.36); /* 24px */
+}
+
+.addressCard {
+  background: var(--paul-primary-2);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
+  padding: calc(var(--paul-base-font) * 0.91); /* 16px */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--paul-base-font) * 0.91); /* 16px */
+  transition: all 0.2s ease;
+}
+
+.addressCard:hover {
+  background: rgba(254, 244, 230, 0.8);
+  border-color: var(--paul-black);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.addressCard p {
+  font-family: 'Parisine Pro Gris', sans-serif;
+  font-size: calc(var(--paul-base-font) * 0.91); /* 16px */
+  color: var(--paul-black);
+  margin: 0;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.defaultBadge {
+  background: var(--paul-black);
+  color: var(--paul-ivory);
+  padding: calc(var(--paul-base-font) * 0.23) calc(var(--paul-base-font) * 0.68); /* 4px 12px */
+  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: calc(var(--paul-base-font) * 0.80); /* 14px */
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.deleteButton {
+  background: #DC2626 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.deleteButton:hover {
+  background: #B91C1C !important;
+  transform: translateY(-1px);
+}
+
+/* Map Container */
+.mapContainer {
+  margin-top: calc(var(--paul-base-font) * 1.36); /* 24px */
+  padding: calc(var(--paul-base-font) * 0.91); /* 16px */
+  background: var(--paul-primary-2);
+  border-radius: calc(var(--paul-base-font) * 0.23); /* 4px */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mapContainer h3 {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: var(--paul-base-font);
+  color: var(--paul-black);
+  margin: 0 0 calc(var(--paul-base-font) * 0.91) 0; /* 0 0 16px 0 */
+  font-weight: 600;
+}
+
+/* Responsive adjustments for address list */
+@media (max-width: 768px) {
+  .addressCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(var(--paul-base-font) * 0.68); /* 12px */
+  }
+  
+  .addressCard p {
+    margin-bottom: calc(var(--paul-base-font) * 0.45); /* 8px */
+  }
+  
+  .mapContainer {
+    margin-top: calc(var(--paul-base-font) * 0.91); /* 16px */
+    padding: calc(var(--paul-base-font) * 0.68); /* 12px */
+  }
+}
+
 /* Print styles */
 @media print {
   .sidebar {
@@ -985,6 +1099,10 @@
   }
   
   .bannerStripe {
+    display: none;
+  }
+  
+  .mapContainer {
     display: none;
   }
 }

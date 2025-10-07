@@ -42,7 +42,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const parsedCart = JSON.parse(savedCart);
         if (Array.isArray(parsedCart)) {
           // Валидация данных корзины
-          const validatedCart = parsedCart.filter((item: any) => {
+          const validatedCart = parsedCart.filter((item: Record<string, unknown>) => {
             return item.id && item.name && typeof item.price === 'number' && item.price >= 0;
           });
           setItems(validatedCart);
@@ -156,7 +156,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 quantity: Number(it.quantity || 0)
               }));
               // save merged under user key
-              try { localStorage.removeItem('cart_guest'); } catch (_e) {}
+              try { localStorage.removeItem('cart_guest'); } catch {}
               return normalized;
             });
           }
@@ -220,7 +220,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (data && data.type === 'cart:update' && Array.isArray(data.items)) {
           setItems(data.items);
         }
-      } catch (_err: unknown) {
+      } catch {
         console.error('Error processing BroadcastChannel message');
       }
     };
@@ -238,7 +238,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Type the window as having addEventListener for storage events
         (window as unknown as { addEventListener: (type: 'storage', listener: (e: StorageEvent) => void) => void }).addEventListener('storage', storageHandler);
       }
-    } catch (_err: unknown) {
+    } catch {
       console.error('Error setting up cart synchronization:');
     }
 
@@ -247,12 +247,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (broadcastChannelRef.current) {
           broadcastChannelRef.current.removeEventListener('message', onMessage);
         }
-      } catch (_err) {}
+      } catch {}
       try {
         if (storageHandler) {
           (window as unknown as { removeEventListener: (type: 'storage', listener: (e: StorageEvent) => void) => void }).removeEventListener('storage', storageHandler);
         }
-      } catch (_err) {}
+      } catch {}
     };
   }, [loadCart]);
 

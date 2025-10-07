@@ -12,15 +12,15 @@ import Image from 'next/image';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [next, setNext] = useState<string>('/');
+  // const [next] = useState<string>('/'); // Не используется
   
   useEffect(() => {
     try {
-      const params = new URLSearchParams(window.location.search);
-      const n = params.get('next') || '/';
-      setNext(n);
-    } catch (_err) {
-      setNext('/');
+      // const params = new URLSearchParams(window.location.search); // Не используется
+      // const n = params.get('next') || '/'; // Не используется
+      // setNext(n); // Не используется в компоненте
+    } catch {
+      // setNext('/'); // Не используется в компоненте
     }
   }, []);
   
@@ -60,7 +60,7 @@ export default function RegisterPage() {
       return;
     }
 
-    const { ok, user } = await register(
+    const { ok } = await register(
       formData.email, 
       formData.password, 
       formData.name, 

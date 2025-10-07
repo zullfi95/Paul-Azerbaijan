@@ -1,7 +1,8 @@
 // Account Settings component with tabs
 
 import React, { useState } from 'react';
-import { User, PasswordForm, EditForm, PasswordErrors, EditErrors } from '../../types/profile';
+import { PasswordForm, EditForm, PasswordErrors, EditErrors } from '../../types/profile';
+import { User } from '../../config/api';
 import { PasswordFormComponent } from '../forms/PasswordForm';
 import { FormField } from '../forms/FormField';
 import { useFormSubmission } from '../../hooks/useFormSubmission';

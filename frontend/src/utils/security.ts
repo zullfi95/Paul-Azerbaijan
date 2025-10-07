@@ -65,7 +65,7 @@ export const validateFileType = (file: File): boolean => {
 };
 
 // Валидация размера запроса
-export const validateRequestSize = (data: any): boolean => {
+export const validateRequestSize = (data: unknown): boolean => {
   const jsonString = JSON.stringify(data);
   return new Blob([jsonString]).size <= securityConfig.maxRequestSize;
 };
@@ -105,7 +105,7 @@ export const validateJWTStructure = (token: string): boolean => {
 };
 
 // Очистка чувствительных данных из объекта
-export const sanitizeSensitiveData = (obj: any): any => {
+export const sanitizeSensitiveData = (obj: unknown): unknown => {
   const sensitiveFields = ['password', 'token', 'secret', 'key', 'auth'];
   
   if (typeof obj !== 'object' || obj === null) {
@@ -116,7 +116,7 @@ export const sanitizeSensitiveData = (obj: any): any => {
     return obj.map(item => sanitizeSensitiveData(item));
   }
   
-  const sanitized: any = {};
+  const sanitized: Record<string, unknown> = {};
   
   for (const [key, value] of Object.entries(obj)) {
     if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
@@ -199,7 +199,7 @@ export const validateFileSecurity = (file: File): { isValid: boolean; error?: st
 };
 
 // Логирование безопасности
-export const logSecurityEvent = (event: string, details: any): void => {
+export const logSecurityEvent = (event: string, details: unknown): void => {
   const timestamp = new Date().toISOString();
   const sanitizedDetails = sanitizeSensitiveData(details);
   
@@ -213,7 +213,7 @@ export const logSecurityEvent = (event: string, details: any): void => {
 };
 
 // Проверка безопасности запроса
-export const validateRequestSecurity = (data: any, identifier: string): { isValid: boolean; error?: string } => {
+export const validateRequestSecurity = (data: unknown, identifier: string): { isValid: boolean; error?: string } => {
   // Проверка rate limiting
   if (!checkRateLimit(identifier)) {
     logSecurityEvent('Rate limit exceeded', { identifier });

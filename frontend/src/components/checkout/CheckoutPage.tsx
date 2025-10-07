@@ -40,7 +40,7 @@ type OtherInfoFormData = Pick<OrderFormData, 'notes' | 'additionalItems'>;
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items: cart, getTotalPrice, clearCart } = useCart();
+  const { items: cart, clearCart } = useCart();
   const { user, isAuthenticated, isLoading } = useAuth();
   
   // Проверка авторизации - обязательна для оформления заказа
@@ -168,23 +168,20 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      const orderData = {
-        client_type: 'one_time',
-        company_name: formData.companyName || `${formData.firstName} ${formData.lastName}`,
-        customer: {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone
-        },
-        menu_items: cart,
-        comment: formData.notes,
-        delivery_date: formData.deliveryDate,
-        delivery_time: formData.deliveryTime,
-        delivery_type: formData.deliveryType,
-        delivery_address: formData.streetAddress,
-        additional_items: formData.additionalItems,
-        ...(isAuthenticated && user && user.user_type === 'client' && { client_id: user.id })
+      // Создаем заявку, а не заказ
+      const applicationData = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        company_name: formData.companyName, // Это поле может быть полезно, даже если его нет в валидаторе
+        message: formData.notes,
+        event_address: formData.streetAddress,
+        event_date: formData.deliveryDate,
+        event_time: formData.deliveryTime,
+        cart_items: cart,
+        client_id: (isAuthenticated && user?.user_type === 'client') ? user.id : undefined,
+        // additional_items пока не отправляем, т.к. бэкенд их не ожидает для заявок
       };
 
       const headers: Record<string, string> = {
@@ -199,10 +196,11 @@ export default function CheckoutPage() {
         }
       }
 
-      const response = await fetch(buildApiUrl(API_CONFIG.ENDPOINTS.ORDERS), {
+      // Используем эндпоинт для заявок
+      const response = await fetch(buildApiUrl(API_CONFIG.ENDPOINTS.APPLICATIONS), {
         method: 'POST',
         headers,
-        body: JSON.stringify(orderData)
+        body: JSON.stringify(applicationData)
       });
 
       if (response.ok) {
@@ -301,7 +299,7 @@ export default function CheckoutPage() {
               { label: 'Home', href: '/' },
               { label: 'Catering Menu', href: '/catering' },
               { label: 'Shopping Cart', href: '/cart' },
-              { label: 'Order', isActive: true }
+              { label: 'Checkout', isActive: true }
             ]}
           />
         </div>
@@ -309,7 +307,7 @@ export default function CheckoutPage() {
         {/* Main Title */}
         <div className={styles.titleContainer}>
           <h1 className={`paul-title ${styles.title}`}>
-            Order
+            Checkout
           </h1>
         </div>
 
@@ -361,22 +359,40 @@ export default function CheckoutPage() {
 
       {/* Success Popup */}
       {showSuccessPopup && (
-        <div className={styles.successPopupOverlay}>
-          <div className={styles.successPopupContent}>
-            <div className={styles.successIcon}>
-              <span className={styles.successIconSymbol}>✓</span>
-            </div>
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+        }}>
+          <div style={{
+            backgroundColor: 'black',
+            color: 'white',
+            padding: '40px',
+            borderRadius: '10px',
+            textAlign: 'center',
+            maxWidth: '400px',
+            width: '90%',
+          }}>
+            <img src="/images/logo.png" alt="Paul Logo" style={{ width: '100px', margin: '0 auto 20px' }} />
             
-            <h2 className={`paul-success-title ${styles.successTitle}`}>
+            <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '15px' }}>
               Thank you!
             </h2>
             
-                    <p className={`paul-success-text ${styles.successText}`}>
-                      Your application has been successfully submitted. Our team will contact you soon.
-                    </p>
+            <p style={{ fontSize: '16px', marginBottom: '30px' }}>
+              Your application has been successfully submitted. Our team will contact you soon.
+            </p>
             
             <button
               onClick={() => {
+                setShowSuccessPopup(false); // Сначала скрыть окно
                 if (isAuthenticated && user) {
                   if (user.user_type === 'staff' || user.staff_role) {
                     router.push('/dashboard');
@@ -387,7 +403,17 @@ export default function CheckoutPage() {
                   router.push('/');
                 }
               }}
-              className={styles.successButton}
+              style={{
+                backgroundColor: 'white',
+                color: 'black',
+                border: '1px solid white',
+                padding: '10px 20px',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                transition: 'background-color 0.3s, color 0.3s',
+              }}
             >
               {isAuthenticated && user ? 'Go to Dashboard' : 'Return to Home'}
             </button>

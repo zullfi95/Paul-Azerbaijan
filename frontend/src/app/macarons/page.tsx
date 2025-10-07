@@ -171,7 +171,7 @@ const categories = [
 export default function MacaronsPage() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const { addItem } = useCart();

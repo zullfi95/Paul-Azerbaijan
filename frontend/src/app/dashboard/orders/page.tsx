@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "../../../contexts/AuthContext";
-import { Order as ApiOrder } from "../../../config/api";
+import { Order as ApiOrder, MenuItem, CartItem } from "../../../config/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { formatTotalAmount } from "../../../utils/numberUtils";
@@ -67,7 +67,7 @@ type Order = ApiOrder;
 
 type OrderFormData = OrderCreateRequest;
 
-export default function OrdersPage() {
+function OrdersPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -230,16 +230,16 @@ export default function OrdersPage() {
     setFormData({
       company_name: order.company_name,
       client_type: order.client_type || 'corporate',
-      menu_items: order.menu_items.map((item: any) => ({
+      menu_items: order.menu_items.map((item: MenuItem) => ({
         id: item.id,
         name: item.name,
         quantity: item.quantity ?? 1,
         price: item.price ?? 0,
-        description: item.description ?? '',
-        image: item.image ?? '',
-        category: item.category ?? '',
-        available: item.available ?? true,
-        isSet: item.isSet ?? false,
+        description: (item as CartItem).description ?? '',
+        image: (item as CartItem).image ?? '',
+        category: (item as CartItem).category ?? '',
+        available: (item as CartItem).available ?? true,
+        isSet: (item as CartItem).isSet ?? false,
       })),
       comment: order.comment || '',
       delivery_date: order.delivery_date ? order.delivery_date.split(' ')[0] : '',
@@ -266,6 +266,7 @@ export default function OrdersPage() {
         }
       ]
     });
+  };
 
   const removeMenuItem = (index: number) => {
     setFormData({
@@ -2425,6 +2426,8 @@ const KanbanOrdersView: React.FC<KanbanOrdersViewProps> = ({
           </div>
         </Card>
       ))}
-      </div>
+    </div>
   );
 };
+
+export default OrdersPage;

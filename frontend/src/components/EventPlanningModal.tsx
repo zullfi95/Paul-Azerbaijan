@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
 import { useNotification } from '../contexts/NotificationContext';
 
 interface EventPlanningModalProps {
@@ -21,7 +20,7 @@ interface EventFormData {
 }
 
 const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose }) => {
-  const { t } = useLanguage();
+  // const { t } = useLanguage(); // Не используется
   const { showNotification } = useNotification();
   
   const [formData, setFormData] = useState<EventFormData>({
@@ -66,7 +65,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
         email: '',
         phone: ''
       });
-    } catch (error) {
+    } catch {
       showNotification('Error sending request. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -181,7 +180,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               lineHeight: 'normal',
               textAlign: 'center'
             }}>
-              Share the details of your event with us, and we'll do our best to assist you!
+              Share the details of your event with us, and we&apos;ll do our best to assist you!
             </h2>
           </div>
         </div>

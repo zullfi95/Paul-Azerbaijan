@@ -1,7 +1,8 @@
 "use client";
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation'; // Не используется
+import Image from 'next/image';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeedbackButton from '../../components/FeedbackButton';
@@ -9,7 +10,7 @@ import FeaturesSection from '../../components/FeaturesSection';
 import styles from './LocationsPage.module.css';
 
 export default function LocationsPage() {
-  const router = useRouter();
+  // const router = useRouter(); // Не используется
 
   return (
     <div className={styles.locationsPage}>
@@ -53,9 +54,11 @@ export default function LocationsPage() {
               {/* PAUL Port Baku */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole.png"
                     alt="PAUL Port Baku"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>
@@ -79,9 +82,11 @@ export default function LocationsPage() {
               {/* PAUL Cinema Plus */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole2.png"
                     alt="PAUL Cinema Plus"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>
@@ -104,9 +109,11 @@ export default function LocationsPage() {
               {/* PAUL Caspian Plaza */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole3.png"
                     alt="PAUL Caspian Plaza"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>
@@ -129,9 +136,11 @@ export default function LocationsPage() {
               {/* PAUL Demirchi Tower */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole4.png"
                     alt="PAUL Demirchi Tower"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>
@@ -154,9 +163,11 @@ export default function LocationsPage() {
               {/* PAUL Chinar Plaza */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole.png"
                     alt="PAUL Chinar Plaza"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>
@@ -179,9 +190,11 @@ export default function LocationsPage() {
               {/* PAUL 28 Mall */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole2.png"
                     alt="PAUL 28 Mall"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>
@@ -204,9 +217,11 @@ export default function LocationsPage() {
               {/* PAUL BEGOC */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole3.png"
                     alt="PAUL BEGOC"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>
@@ -229,9 +244,11 @@ export default function LocationsPage() {
               {/* PAUL Ministry of Economy */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole4.png"
                     alt="PAUL Ministry of Economy"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>
@@ -254,9 +271,11 @@ export default function LocationsPage() {
               {/* PAUL Crescent Mall */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole.png"
                     alt="PAUL Crescent Mall"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>
@@ -279,9 +298,11 @@ export default function LocationsPage() {
               {/* PAUL ADA */}
               <div className={styles.locationCard}>
                 <div className={styles.locationImage}>
-                  <img
+                  <Image
                     src="/images/findpole2.png"
                     alt="PAUL ADA"
+                    width={300}
+                    height={200}
                     className={styles.locationImg}
                   />
                 </div>

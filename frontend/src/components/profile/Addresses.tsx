@@ -34,7 +34,7 @@ export const Addresses: React.FC<AddressesProps> = ({ onNavigate }) => {
       try {
         const response = await fetch('/api/user', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
             'Accept': 'application/json',
           },
         });
@@ -71,7 +71,7 @@ export const Addresses: React.FC<AddressesProps> = ({ onNavigate }) => {
     };
 
     loadUserAddresses();
-  }, []);
+  }, [billingForm, shippingForm]);
 
   // Address submission handlers
   const handleAddressSubmit = async (type: 'billing' | 'shipping') => {

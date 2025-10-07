@@ -1,295 +1,60 @@
 "use client";
 
 import { useAuth } from "../contexts/AuthContext";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { Application, CartItem, User } from "../config/api";
-import { makeApiRequest } from "../utils/apiHelpers";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useMemo } from "react";
+import { CartItem } from "../config/api";
 import { useAuthGuard, canCreateOrders } from "../utils/authConstants";
-import { ChevronDown, Calendar, Clock, Info, AlertTriangle, Plus, Search, X, ShoppingCart } from 'lucide-react';
+import { Plus, Search, X, ShoppingCart } from 'lucide-react';
+import { useOrderForm } from "../hooks/useOrderForm";
 
-interface OrderFormData {
-  selected_client_id: number | null;
-  menu_items: CartItem[];
-  comment: string;
-  delivery_date: string;
-  delivery_time: string;
-  delivery_type: 'delivery' | 'pickup' | 'buffet';
-  delivery_address: string;
-  delivery_cost: number;
-  discount_fixed: number;
-  discount_percent: number;
-  client_type: 'corporate' | 'one_time';
-  company_name?: string;
-  recurring_schedule: {
-    enabled: boolean;
-    frequency: 'weekly' | 'monthly';
-    days: string[];
-    delivery_time: string;
-    notes: string;
-  };
-  // Новые поля
-  equipment_required: number;
-  staff_assigned: number;
-  special_instructions: string;
-  application_id: number | null;
-}
 
 export default function CreateOrderForm() {
-    const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+    const { isAuthenticated, isLoading: authLoading, user } = useAuth();
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const fromApplicationId = searchParams.get('fromApplication');
-
-    const [loading, setLoading] = useState(false);
-    const [clients, setClients] = useState<User[]>([]);
-    const [application, setApplication] = useState<Application | null>(null);
-    const [currentStep, setCurrentStep] = useState(1);
+    const {
+        loading,
+        clients,
+        application,
+        formData,
+        menuItems,
+        fromApplicationId,
+        setFormData,
+        addMenuItem,
+        updateMenuItemQuantity,
+        removeMenuItem,
+        handleInputChange,
+        handleRecurringChange,
+        handleSubmit,
+    } = useOrderForm();
     const [showPreview, setShowPreview] = useState(false);
-    
-    // Состояния для меню
-    const [menuItems, setMenuItems] = useState<CartItem[]>([]);
     const [menuSearch, setMenuSearch] = useState('');
     const [showMenuModal, setShowMenuModal] = useState(false);
-    const [formData, setFormData] = useState<OrderFormData>({
-        selected_client_id: null,
-        menu_items: [],
-        comment: '',
-        delivery_date: '',
-        delivery_time: '',
-        delivery_type: 'delivery',
-        delivery_address: '',
-        delivery_cost: 0,
-        discount_fixed: 0,
-        discount_percent: 0,
-        client_type: 'one_time',
-        company_name: '',
-        recurring_schedule: {
-            enabled: false,
-            frequency: 'weekly',
-            days: [],
-            delivery_time: '',
-            notes: ''
-        },
-        // Новые поля
-        equipment_required: 0,
-        staff_assigned: 0,
-        special_instructions: '',
-        application_id: null,
-    });
 
     const hasAccess = useAuthGuard(isAuthenticated, authLoading, user || { user_type: '', staff_role: '' }, canCreateOrders, router);
 
-    const loadClients = useCallback(async () => {
-        try {
-            const result = await makeApiRequest<{data: User[]}>('clients');
-            if (result.success && result.data?.data) {
-                setClients(result.data.data);
-            }
-        } catch (error) {
-            console.error('Ошибка загрузки клиентов:', error);
-        }
-    }, []);
-
-    const loadMenuItems = useCallback(async () => {
-        try {
-            // organization_id is not on User, so fallback to default or remove if not needed
-            // If you have organization_id elsewhere, use it; otherwise, just remove it from the query
-            const organizationId = (user && 'organization_id' in user) ? (user as any).organization_id : 'default';
-            const result = await makeApiRequest<{data: CartItem[]}>(`menu/items?organization_id=${organizationId}`);
-            if (result.success && result.data?.data) {
-                setMenuItems(result.data.data);
-            }
-        } catch (error) {
-            console.error('Ошибка загрузки меню:', error);
-        }
-    }, [user]);
-
-    // Функции для работы с меню
-    const addMenuItem = useCallback((item: CartItem) => {
-        setFormData(prev => {
-            const existingItem = prev.menu_items.find(menuItem => menuItem.id === item.id);
-            if (existingItem) {
-                return {
-                    ...prev,
-                    menu_items: prev.menu_items.map(menuItem =>
-                        menuItem.id === item.id
-                            ? { ...menuItem, quantity: menuItem.quantity + 1 }
-                            : menuItem
-                    )
-                };
-            } else {
-                return {
-                    ...prev,
-                    menu_items: [...prev.menu_items, { ...item, quantity: 1 }]
-                };
-            }
-        });
-    }, []);
-
-    const updateMenuItemQuantity = useCallback((itemId: string, quantity: number) => {
-        if (quantity <= 0) {
-            setFormData(prev => ({
-                ...prev,
-                menu_items: prev.menu_items.filter(item => item.id !== itemId)
-            }));
-        } else {
-            setFormData(prev => ({
-                ...prev,
-                menu_items: prev.menu_items.map(item =>
-                    item.id === itemId ? { ...item, quantity } : item
-                )
-            }));
-        }
-    }, []);
-
-    const removeMenuItem = useCallback((itemId: string) => {
-        setFormData(prev => ({
-            ...prev,
-            menu_items: prev.menu_items.filter(item => item.id !== itemId)
-        }));
-    }, []);
-
-    // Фильтрация меню по поиску
     const filteredMenuItems = useMemo(() => {
         if (!menuSearch) return menuItems;
         return menuItems.filter(item =>
             item.name.toLowerCase().includes(menuSearch.toLowerCase()) ||
-            item.description.toLowerCase().includes(menuSearch.toLowerCase()) ||
-            item.category.toLowerCase().includes(menuSearch.toLowerCase())
+            (item.description && item.description.toLowerCase().includes(menuSearch.toLowerCase())) ||
+            (item.category && item.category.toLowerCase().includes(menuSearch.toLowerCase()))
         );
     }, [menuItems, menuSearch]);
 
-    const loadApplication = useCallback(async (clientId: string) => {
-        setLoading(true);
-        try {
-            const result = await makeApiRequest<Application>(`applications/${clientId}`);
-            if (result.success && result.data) {
-                const app = result.data;
-                setApplication(app);
-                setFormData(prev => ({
-                    ...prev,
-                    selected_client_id: app.client_id || null,
-                    comment: app.message || '',
-                    delivery_date: app.event_date ? new Date(app.event_date).toISOString().split('T')[0] : '',
-                    delivery_time: app.event_time ? new Date(app.event_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
-                    delivery_address: app.event_address || '',
-                    menu_items: app.cart_items || [],
-                    application_id: app.id || null,
-                }));
-
-                // Автоматически устанавливаем тип клиента
-                if (app.client_id) {
-                    const selectedClient = clients.find(c => c.id === app.client_id);
-                    if (selectedClient) {
-                        const clientType = selectedClient.client_category || 'one_time';
-                        setFormData(prev => ({
-                            ...prev,
-                            client_type: clientType,
-                        }));
-                    }
-                }
-                
-                // Ищем клиента по email, если client_id не указан
-                if (!app.client_id && app.email) {
-                    const foundClient = clients.find(c => c.email === app.email);
-                    if (foundClient) {
-                        const clientType = foundClient.client_category || 'one_time';
-                        setFormData(prev => ({ 
-                            ...prev, 
-                            selected_client_id: foundClient.id,
-                            client_type: clientType,
-                        }));
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Ошибка загрузки заявки:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, [clients]);
-    
     useEffect(() => {
         if (hasAccess) {
-            loadClients();
-            loadMenuItems();
+            // loadClients(); // Removed as per new_code
+            // loadMenuItems(); // Removed as per new_code
         }
-    }, [hasAccess, loadClients, loadMenuItems]);
+    }, [hasAccess]); // Removed loadClients, loadMenuItems as they are now in useOrderForm
 
     useEffect(() => {
         if (fromApplicationId && hasAccess && clients.length > 0) {
-            loadApplication(fromApplicationId);
+            // loadApplication(fromApplicationId); // Removed as per new_code
         }
-    }, [fromApplicationId, hasAccess, loadApplication, clients]);
+    }, [fromApplicationId, hasAccess, clients.length]); // Removed loadApplication as it's now in useOrderForm
 
-    const handleInputChange = (field: keyof OrderFormData, value: any) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
-
-    const handleRecurringChange = (field: keyof OrderFormData['recurring_schedule'], value: any) => {
-        setFormData(prev => ({
-            ...prev,
-            recurring_schedule: {
-                ...prev.recurring_schedule,
-                [field]: value
-            }
-        }));
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-
-        const selectedClient = clients.find(c => c.id === formData.selected_client_id);
-        const payload = {
-            ...formData,
-            client_id: formData.selected_client_id,
-            client_type: selectedClient?.client_category || 'one_time', // Автоматически определяем тип клиента
-        };
-        // @ts-ignore
-        delete payload.selected_client_id;
-
-        try {
-            console.log('Отправляем данные заказа:', payload);
-            console.log('Токен авторизации:', localStorage.getItem('auth_token'));
-            
-            // Проверяем подключение к API
-            const testResponse = await fetch('http://localhost:8000/api/clients', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-                }
-            });
-            console.log('Тест подключения к API:', testResponse.status, testResponse.statusText);
-            
-            const result = await makeApiRequest('orders', {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
-            
-            console.log('Ответ сервера:', result);
-            
-            if (result.success) {
-                router.push('/dashboard/orders');
-            } else {
-                console.error('Ошибка создания заказа:', result);
-                // Показываем пользователю ошибку
-                const errorMessage = result.message || result.errors || 'Проверьте данные и попробуйте снова';
-                alert('Ошибка создания заказа: ' + errorMessage);
-            }
-        } catch (error) {
-            console.error('Ошибка создания заказа:', error);
-            alert('Ошибка создания заказа: ' + (error instanceof Error ? error.message : 'Неизвестная ошибка'));
-        } finally {
-            setLoading(false);
-        }
-    };
-    
     if (authLoading || !hasAccess) {
         return (
             <div className="flex justify-center items-center h-screen bg-gray-50">
@@ -374,7 +139,7 @@ export default function CreateOrderForm() {
                                 <div className="pt-2 border-t border-blue-200">
                                     <span className="text-blue-700 font-medium">Запрошенные позиции ({application.cart_items.length}):</span>
                                     <div className="mt-2 space-y-1">
-                                        {application.cart_items.map((item: any, index: number) => (
+                                        {application.cart_items.map((item: CartItem, index: number) => (
                                             <div key={index} className="flex justify-between text-xs">
                                                 <span className="text-blue-900">{item.name} × {item.quantity}</span>
                                                 <span className="text-blue-900 font-medium">{(item.quantity * item.price).toFixed(2)} ₼</span>
@@ -406,7 +171,7 @@ export default function CreateOrderForm() {
                                     }
                                 }
                                 
-                                        setCurrentStep(1);
+                                        // setCurrentStep(1); // Removed as per new_code
                                     }}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                                     required
@@ -464,7 +229,7 @@ export default function CreateOrderForm() {
                                             name="delivery_type"
                                         value={type.value}
                                         checked={formData.delivery_type === type.value}
-                                            onChange={(e) => handleInputChange('delivery_type', e.target.value as any)}
+                                            onChange={(e) => handleInputChange('delivery_type', e.target.value as 'delivery' | 'pickup' | 'buffet')}
                                         className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                                         />
                                     <span className="ml-2 text-sm text-gray-700">{type.label}</span>
@@ -870,7 +635,7 @@ export default function CreateOrderForm() {
                                     {application?.event_date && <p><strong>Дата:</strong> {new Date(application?.event_date || '').toLocaleDateString()}</p>}
                                     {application?.event_time && <p><strong>Время:</strong> {new Date(application?.event_time || '').toLocaleTimeString()}</p>}
                                     {application?.message && <p><strong>Сообщение:</strong> {application?.message}</p>}
-                                    {application?.cart_items && application?.cart_items?.length && application?.cart_items?.length! > 0 && (
+                                    {application?.cart_items && application?.cart_items?.length && (application?.cart_items?.length ?? 0) > 0 && (
                                     <div>
                                             <p><strong>Запрошенные товары:</strong></p>
                                             <ul className="list-disc list-inside ml-4">
@@ -938,7 +703,7 @@ export default function CreateOrderForm() {
                                             name="delivery_type"
                                             value={type.value}
                                             checked={formData.delivery_type === type.value}
-                                            onChange={(e) => handleInputChange('delivery_type', e.target.value as any)}
+                                            onChange={(e) => handleInputChange('delivery_type', e.target.value as 'delivery' | 'pickup' | 'buffet')}
                                             className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                                         />
                                         <span className="ml-2 text-sm text-gray-700">{type.label}</span>
@@ -1110,7 +875,7 @@ export default function CreateOrderForm() {
                                     <div className="text-center py-8 text-gray-500">
                                         <ShoppingCart className="w-12 h-12 mx-auto mb-2 text-gray-300" />
                                         <p>Нет товаров в заказе</p>
-                                        <p className="text-sm">Нажмите "Добавить из меню" для выбора товаров</p>
+                                        <p className="text-sm">Нажмите &quot;Добавить из меню&quot; для выбора товаров</p>
                                     </div>
                                 )}
                             </div>
@@ -1172,7 +937,7 @@ export default function CreateOrderForm() {
                                             <select
                                                 id="frequency"
                                                 value={formData.recurring_schedule.frequency}
-                                                onChange={(e) => handleRecurringChange('frequency', e.target.value as any)}
+                                                onChange={(e) => handleRecurringChange('frequency', e.target.value as 'weekly' | 'monthly')}
                                                 className="w-full mt-1 block py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                                             >
                                                 <option value="weekly">Еженедельно</option>

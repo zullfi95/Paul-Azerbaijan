@@ -44,8 +44,8 @@ export const AddressForm: React.FC<AddressFormProps> = ({
               onChange={(value) => onFieldChange(field.key, value)}
               error={errors[field.key]}
               required={field.required}
-              placeholder={field.placeholder}
-              options={field.options}
+              placeholder={(field as { placeholder?: string }).placeholder || ''}
+              options={(field as { options?: string[] }).options}
             />
           </div>
         ))}

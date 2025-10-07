@@ -255,8 +255,8 @@ export interface ApplicationFormData {
   special_requirements?: string;
 }
 
-// ApiResponse импортируется из config/api.ts
-import { ApiResponse } from '../config/api';
+// ApiResponse импортируется из config/api.ts (не используется в этом файле)
+// import { ApiResponse } from '../config/api';
 
 export interface PaginatedResponse<T> {
   data: T[];

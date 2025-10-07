@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Search, User, MapPin, ShoppingBag, FileText, Menu, X, Calendar } from 'lucide-react';
+import { Search, User, MapPin, ShoppingBag, FileText, Menu, X } from 'lucide-react';
 import BasketIcon from './BasketIcon';
 import LanguageSelector from './LanguageSelector';
 import CartModal from './CartModal';

@@ -43,7 +43,7 @@ export default function OtherInformation({ formData, onInputChange, onAdditional
             <input
               type="checkbox"
               checked={checked}
-              onChange={() => onAdditionalItemChange(item)}
+              onChange={() => onAdditionalItemChange(item as keyof OtherInformationProps['formData']['additionalItems'])}
               className={styles.checkboxInput}
             />
             <span className={styles.checkboxLabel}>

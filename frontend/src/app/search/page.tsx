@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Header from '../../components/Header';
@@ -20,7 +22,7 @@ interface Product {
   available: boolean;
 }
 
-export default function SearchPage() {
+function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { addItem } = useCart();
@@ -30,7 +32,7 @@ export default function SearchPage() {
   const [sortBy, setSortBy] = useState('name');
 
   // Sample products data
-  const products: Product[] = [
+  const products: Product[] = useMemo(() => [
     {
       id: '1',
       name: 'Croissant',
@@ -121,7 +123,7 @@ export default function SearchPage() {
       category: 'Desserts',
       available: true
     }
-  ];
+  ], []);
 
   const categories = ['all', 'Pastries', 'Bread', 'Lunch', 'Beverages', 'Desserts'];
 
@@ -157,7 +159,7 @@ export default function SearchPage() {
     });
 
     setFilteredProducts(filtered);
-  }, [searchQuery, selectedCategory, sortBy]);
+  }, [searchQuery, selectedCategory, sortBy, products]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -478,5 +480,13 @@ export default function SearchPage() {
       <FeaturesSection />
       <Footer />
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchPageContent />
+    </Suspense>
   );
 }

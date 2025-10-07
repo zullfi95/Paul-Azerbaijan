@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Header from '../../../../components/Header';
 import Footer from '../../../../components/Footer';
@@ -14,21 +14,10 @@ export default function PaymentSuccessPage() {
   const orderId = params.orderId as string;
   
   const [loading, setLoading] = useState(true);
-  const [paymentInfo, setPaymentInfo] = useState<any>(null);
+  const [paymentInfo, setPaymentInfo] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/auth/login');
-      return;
-    }
-
-    if (orderId && isAuthenticated) {
-      handlePaymentSuccess();
-    }
-  }, [orderId, isAuthenticated, isLoading, router]);
-
-  const handlePaymentSuccess = async () => {
+  const handlePaymentSuccess = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -61,7 +50,18 @@ export default function PaymentSuccessPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [orderId, router]);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push('/auth/login');
+      return;
+    }
+
+    if (orderId && isAuthenticated) {
+      handlePaymentSuccess();
+    }
+  }, [orderId, isAuthenticated, isLoading, router, handlePaymentSuccess]);
 
   if (isLoading || loading) {
     return (
@@ -132,11 +132,11 @@ export default function PaymentSuccessPage() {
               <div style={{ display: 'grid', gap: '8px', fontSize: '14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#6B7280' }}>Sifariş №:</span>
-                  <span style={{ fontWeight: 'bold' }}>{paymentInfo.order_id}</span>
+                  <span style={{ fontWeight: 'bold' }}>{paymentInfo.order_id as string}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#6B7280' }}>Məbləğ:</span>
-                  <span style={{ fontWeight: 'bold' }}>${paymentInfo.amount_charged}</span>
+                  <span style={{ fontWeight: 'bold' }}>${paymentInfo.amount_charged as number}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#6B7280' }}>Status:</span>

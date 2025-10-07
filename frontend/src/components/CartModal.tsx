@@ -18,10 +18,8 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
   const {
     items: cartItems,
-    addItem,
     removeItem,
     updateQuantity,
-    clearCart,
     getTotalPrice,
     getTotalItems
   } = useCart();
@@ -103,7 +101,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
             </div>
           ) : (
             <div className={styles.cartItemsContainer}>
-              {cartItems.map((cartItem, index) => (
+              {cartItems.map((cartItem) => (
                 <div key={cartItem.id} className={styles.cartItem}>
                   {/* Изображение товара */}
                   <div className={styles.productImage}>

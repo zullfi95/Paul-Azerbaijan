@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
-import { BEO, Order } from '../../../types/enhanced';
+import { BEO } from '../../../types/enhanced';
+import { Order } from '../../../config/api';
 import BEOGenerator from '../../../components/beo/BEOGenerator';
 import BEOViewer from '../../../components/beo/BEOViewer';
 import { Button } from '../../../components/ui/Button';
@@ -51,17 +52,19 @@ export default function BEOPage() {
   };
 
   // Создание нового BEO
-  const handleCreateBEO = async (beo: BEO) => {
+  const handleCreateBEO = async (beoData: Record<string, unknown>) => {
+    const beo = beoData as unknown as BEO; // Приведение типа
     try {
       const result = await makeApiRequest<BEO>('/beos', {
         method: 'POST',
-        body: beo,
+        body: JSON.stringify(beo),
       });
 
       if (result.success && result.data) {
-        setBeos(prev => [...prev, result.data]);
+        const newBeo = result.data;
+        setBeos(prev => [...prev, newBeo]);
         setSelectedOrder(null);
-        setSelectedBEO(result.data);
+        setSelectedBEO(newBeo);
       } else {
         setError(result.message || 'Ошибка создания BEO');
       }
@@ -71,25 +74,6 @@ export default function BEOPage() {
     }
   };
 
-  // Обновление BEO
-  const handleUpdateBEO = async (beo: BEO) => {
-    try {
-      const result = await makeApiRequest<BEO>(`/beos/${beo.id}`, {
-        method: 'PUT',
-        body: beo,
-      });
-
-      if (result.success && result.data) {
-        setBeos(prev => prev.map(b => b.id === beo.id ? result.data : b));
-        setSelectedBEO(result.data);
-      } else {
-        setError(result.message || 'Ошибка обновления BEO');
-      }
-    } catch (err) {
-      setError('Ошибка обновления BEO');
-      console.error('Error updating BEO:', err);
-    }
-  };
 
   // Печать BEO
   const handlePrintBEO = (beo: BEO) => {
@@ -161,7 +145,7 @@ export default function BEOPage() {
 
   // Фильтрация заказов без BEO
   const ordersWithoutBEO = orders.filter(order => 
-    !beos.some(beo => beo.order_id === order.id)
+    !beos.some(beo => parseInt(beo.order_id, 10) === order.id)
   );
 
   if (!user || user.user_type !== 'staff') {
@@ -263,10 +247,10 @@ export default function BEOPage() {
                     <div>
                       <h3 className="font-medium text-gray-900">Заказ #{order.id}</h3>
                       <p className="text-sm text-gray-600">
-                        {new Date(order.event_date).toLocaleDateString('ru-RU')} в {order.event_time}
+                        {order.delivery_date ? new Date(order.delivery_date).toLocaleDateString('ru-RU') : 'Дата не указана'} в {order.delivery_time || 'время не указано'}
                       </p>
                       <p className="text-sm text-gray-600">
-                        {order.guest_count} гостей • ₼{order.total_amount}
+                        ₼{order.total_amount}
                       </p>
                     </div>
                     <Button

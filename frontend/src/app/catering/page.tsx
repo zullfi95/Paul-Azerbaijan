@@ -387,7 +387,7 @@ export default function CateringPage() {
       name: item.name,
       description: item.description,
       price: item.price,
-      image: item.image,
+      images: item.image ? [item.image] : [],
       category: item.category,
       available: item.available,
       isSet: item.isSet,

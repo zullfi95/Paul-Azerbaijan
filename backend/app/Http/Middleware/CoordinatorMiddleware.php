@@ -17,16 +17,20 @@ class CoordinatorMiddleware
     {
         $user = $request->user();
         
-        \Log::info('CoordinatorMiddleware::handle', [
-            'user_id' => $user?->id,
-            'staff_role' => $user?->staff_role,
-            'status' => $user?->status,
-            'route' => $request->route()?->getName(),
-            'url' => $request->url(),
-        ]);
+        if (config('app.debug')) {
+            \Log::info('CoordinatorMiddleware::handle', [
+                'user_id' => $user?->id,
+                'staff_role' => $user?->staff_role,
+                'status' => $user?->status,
+                'route' => $request->route()?->getName(),
+                'url' => $request->url(),
+            ]);
+        }
         
         if (!$user) {
-            \Log::warning('CoordinatorMiddleware: No user found');
+            if (config('app.debug')) {
+                \Log::warning('CoordinatorMiddleware: No user found');
+            }
             return response()->json([
                 'success' => false,
                 'message' => 'Требуется аутентификация.'
@@ -34,9 +38,11 @@ class CoordinatorMiddleware
         }
         
         if ($user->staff_role !== 'coordinator') {
-            \Log::warning('CoordinatorMiddleware: User is not coordinator', [
-                'staff_role' => $user->staff_role,
-            ]);
+            if (config('app.debug')) {
+                \Log::warning('CoordinatorMiddleware: User is not coordinator', [
+                    'staff_role' => $user->staff_role,
+                ]);
+            }
             return response()->json([
                 'success' => false,
                 'message' => 'Доступ запрещен. Требуются права координатора.'
@@ -44,16 +50,20 @@ class CoordinatorMiddleware
         }
         
         if ($user->status !== 'active') {
-            \Log::warning('CoordinatorMiddleware: User account is not active', [
-                'status' => $user->status,
-            ]);
+            if (config('app.debug')) {
+                \Log::warning('CoordinatorMiddleware: User account is not active', [
+                    'status' => $user->status,
+                ]);
+            }
             return response()->json([
                 'success' => false,
                 'message' => 'Доступ запрещен. Аккаунт неактивен.'
             ], 403);
         }
 
-        \Log::info('CoordinatorMiddleware: Access granted');
+        if (config('app.debug')) {
+            \Log::info('CoordinatorMiddleware: Access granted');
+        }
         return $next($request);
     }
 }

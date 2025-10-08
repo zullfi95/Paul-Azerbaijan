@@ -171,7 +171,7 @@ export default function ProductPage() {
         name: product.name,
         description: product.description,
         price: product.price,
-        image: product.image,
+        images: product.image ? [product.image] : [],
         category: product.category,
         available: product.available,
         isSet: false
@@ -353,7 +353,7 @@ export default function ProductPage() {
                         name: item.name,
                         description: item.description,
                         price: item.price,
-                        image: item.image,
+                        images: item.image ? [item.image] : [],
                         category: item.category,
                         available: item.available,
                         isSet: false

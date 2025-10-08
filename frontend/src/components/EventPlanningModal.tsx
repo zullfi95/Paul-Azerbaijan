@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { useNotification } from '../contexts/NotificationContext';
+import styles from './EventPlanningModal.module.css';
 
 interface EventPlanningModalProps {
   isOpen: boolean;
@@ -89,120 +90,36 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
       {/* Полупрозрачный фон */}
       <div 
         onClick={onClose}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          zIndex: 40,
-          animation: 'fadeIn 0.3s ease',
-          cursor: 'pointer'
-        }} 
+        className={styles.overlay}
       />
       
       {/* Модальное окно */}
       <div 
         onClick={(e) => e.stopPropagation()}
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '514px',
-          height: '735px',
-          flexShrink: 0,
-          background: '#000000',
-          border: 'none',
-          borderRadius: '24px',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1)',
-          zIndex: 50,
-          animation: 'fadeInScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          backdropFilter: 'blur(20px)',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
+        className={styles.modal}
       >
         {/* Заголовок */}
-        <div style={{
-          padding: '2rem 2rem 1rem 2rem',
-          background: '#000000',
-          color: '#FFFCF8',
-          position: 'relative'
-        }}>
+        <div className={styles.header}>
           {/* Кнопка закрытия */}
-          <button
+          {/* <button
             onClick={onClose}
-            style={{
-              position: 'absolute',
-              top: '1rem',
-              right: '1rem',
-              width: '40px',
-              height: '40px',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              color: '#FFFCF8',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              fontSize: '20px',
-              fontWeight: 'bold',
-              transition: 'all 0.3s ease',
-              backdropFilter: 'blur(10px)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(220, 53, 69, 0.9)';
-              e.currentTarget.style.transform = 'scale(1.1) rotate(90deg)';
-              e.currentTarget.style.borderColor = '#dc3545';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-              e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-            }}
+            className={styles.closeButton}
           >
             <X size={20} />
-          </button>
+          </button> */}
           
-          <div style={{
-            marginRight: '60px'
-          }}>
-            <h2 style={{
-              color: '#FFFCF8',
-              fontWeight: 400,
-              fontSize: '16px',
-              margin: '0 0 1rem 0',
-              fontFamily: '"Parisine Pro Gris", sans-serif',
-              lineHeight: 'normal',
-              textAlign: 'center'
-            }}>
+          <div className={styles.headerContent}>
+            <h2 className={styles.title}>
               Share the details of your event with us, and we&apos;ll do our best to assist you!
             </h2>
           </div>
         </div>
 
         {/* Форма */}
-        <div style={{
-          flex: 1,
-          overflow: 'auto',
-          padding: '2rem',
-          background: '#000000'
-        }}>
-          <form onSubmit={handleSubmit} style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.5rem'
-          }}>
+        <div className={styles.formContainer}>
+          <form onSubmit={handleSubmit} className={styles.form}>
             {/* Первая строка - Дата и Место (2 поля рядом) */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '0.5rem'
-            }}>
+            <div className={styles.gridRow}>
               {/* Дата мероприятия */}
               <input
                 type="date"
@@ -211,16 +128,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 onChange={handleInputChange}
                 placeholder="Date of the event*"
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  backgroundColor: '#ffffff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  color: '#000000',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.3s ease'
-                }}
+                className={styles.input}
               />
 
               {/* Место проведения */}
@@ -231,16 +139,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 onChange={handleInputChange}
                 placeholder="Location of the event*"
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  backgroundColor: '#ffffff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  color: '#000000',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.3s ease'
-                }}
+                className={styles.input}
               />
             </div>
 
@@ -254,16 +153,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               required
               min="0"
               step="0.01"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                backgroundColor: '#ffffff',
-                border: 'none',
-                borderRadius: '8px',
-                color: '#000000',
-                fontSize: '0.875rem',
-                transition: 'all 0.3s ease'
-              }}
+              className={styles.inputLarge}
             />
 
             {/* Третья строка - Количество гостей (1 поле на всю ширину) */}
@@ -275,16 +165,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               placeholder="Number of guests* (approximate)"
               required
               min="1"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                backgroundColor: '#ffffff',
-                border: 'none',
-                borderRadius: '8px',
-                color: '#000000',
-                fontSize: '0.875rem',
-                transition: 'all 0.3s ease'
-              }}
+              className={styles.inputLarge}
             />
 
             {/* Четвертая строка - Детали запроса (1 поле на всю ширину) */}
@@ -294,27 +175,12 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               onChange={handleInputChange}
               placeholder="Details of request*"
               required
-              rows={4}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                backgroundColor: '#ffffff',
-                border: 'none',
-                borderRadius: '8px',
-                color: '#000000',
-                fontSize: '0.875rem',
-                transition: 'all 0.3s ease',
-                resize: 'vertical',
-                minHeight: '100px'
-              }}
+              rows={3}
+              className={styles.textarea}
             />
 
             {/* Пятая строка - Email и Телефон (2 поля рядом) */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '0.5rem'
-            }}>
+            <div className={styles.gridRow}>
               {/* Email */}
               <input
                 type="email"
@@ -323,20 +189,11 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 onChange={handleInputChange}
                 placeholder="Email*"
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  backgroundColor: '#ffffff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  color: '#000000',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.3s ease'
-                }}
+                className={styles.input}
               />
 
               {/* Телефон + кнопка отправки */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div className={styles.phoneButtonColumn}>
                 <input
                   type="tel"
                   name="phone"
@@ -344,50 +201,13 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                   onChange={handleInputChange}
                   placeholder="Phone number*"
                   required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    backgroundColor: '#ffffff',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#000000',
-                    fontSize: '0.875rem',
-                    transition: 'all 0.3s ease'
-                  }}
+                  className={styles.inputLargePhone}
                 />
 
                 <button
                   type="submit"
                   disabled={!isFormValid() || isSubmitting}
-                  style={{
-                    width: '100%',
-                    padding: '1rem 2rem',
-                    backgroundColor: isFormValid() ? '#FFFCF8' : 'rgba(255, 255, 255, 0.1)',
-                    color: isFormValid() ? '#000000' : 'rgba(255, 255, 255, 0.5)',
-                    border: 'none',
-                    borderRadius: '12px',
-                    fontSize: '1rem',
-                    fontWeight: 700,
-                    cursor: isFormValid() ? 'pointer' : 'not-allowed',
-                    transition: 'all 0.3s ease',
-                    fontFamily: '"Parisine Pro Gris", sans-serif',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (isFormValid()) {
-                      e.currentTarget.style.backgroundColor = '#f5f5dc';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(255, 250, 230, 0.4)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (isFormValid()) {
-                      e.currentTarget.style.backgroundColor = '#FFFCF8';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }
-                  }}
+                  className={styles.submitButton}
                 >
                   {isSubmitting ? 'Sending...' : 'Send a request'}
                 </button>
@@ -395,44 +215,13 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
             </div>
 
             {/* Примечание о конфиденциальности */}
-            <p style={{
-              color: '#FFFCF8',
-              fontSize: '16px',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              lineHeight: 'normal',
-              textAlign: 'center',
-              margin: '1rem 0 0 0',
-              fontFamily: '"Parisine Pro Gris", sans-serif'
-            }}>
+            <p className={styles.privacyNotice}>
               PAUL respects your privacy and is committed to protecting your personal data in line with applicable data protection laws.
             </p>
           </form>
         </div>
       </div>
 
-      {/* Стили для анимаций */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
-        @keyframes fadeInScale {
-          from {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.8);
-          }
-          to {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-          }
-        }
-      `}</style>
     </>
   );
 };

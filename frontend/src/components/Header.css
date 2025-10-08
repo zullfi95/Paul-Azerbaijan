@@ -82,6 +82,7 @@ body.menu-open {
   position: relative;
   padding: 5px 9px;
   border-radius: 5px;
+  white-space: pre;
 }
 
 .nav-link:hover {
@@ -110,7 +111,7 @@ body.menu-open {
 .right-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   position: relative;
   z-index: 50;
   /* Ensure proper touch targets on iOS */
@@ -225,6 +226,9 @@ body.menu-open {
   width: 20px;
   height: 20px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon-button:hover .icon {
@@ -335,8 +339,8 @@ body.menu-open {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  max-width: 100%;
+  width: 320px;
+  max-width: 85vw;
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for mobile browsers */
   background: #fef9e5;
@@ -345,6 +349,7 @@ body.menu-open {
   flex-direction: column;
   overflow: hidden;
   z-index: 201;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .mobile-menu-content.closing {
@@ -428,6 +433,7 @@ body.menu-open {
   padding: 8px 0 8px 20px;
   transition: all 0.3s ease;
   position: relative;
+  white-space: pre;
 }
 
 .mobile-nav-link::before {

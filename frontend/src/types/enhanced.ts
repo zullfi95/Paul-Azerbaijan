@@ -9,6 +9,15 @@ import {
   UserStatus 
 } from '../utils/statusTranslations';
 
+import {
+  User as BaseUser,
+  Order as BaseOrder,
+  Application as BaseApplication,
+  Notification as BaseNotification,
+  MenuItem as BaseMenuItem,
+  PaginatedResponse as BasePaginatedResponse,
+} from './common';
+
 // Типы ролей пользователей (соответствуют Backend)
 export type UserRole = 'staff' | 'client';
 export type StaffRole = 'coordinator' | 'observer';
@@ -48,37 +57,8 @@ export interface BEOSection {
 }
 
 // Расширенный интерфейс заказа
-export interface Order {
-  id: number;
-  company_name: string;
-  contact_person: string;
-  contact_phone: string;
-  contact_email: string;
-  delivery_date: string;
-  delivery_time: string;
-  delivery_address: string;
-  guest_count: number;
-  special_instructions?: string;
-  setup_requirements?: string;
-  dietary_restrictions?: string;
+export interface Order extends BaseOrder {
   status: OrderStatus;
-  total_amount: number;
-  menu_items: MenuItem[];
-  created_at: string;
-  updated_at: string;
-  user_id?: number;
-}
-
-// Интерфейс для элементов меню
-export interface MenuItem {
-  id: number;
-  name: string;
-  description?: string;
-  price: number;
-  quantity: number;
-  category_id?: number;
-  created_at: string;
-  updated_at: string;
 }
 
 // Интерфейс для категорий меню
@@ -92,36 +72,15 @@ export interface MenuCategory {
 }
 
 // Расширенный интерфейс пользователя
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string;
+export interface User extends BaseUser {
   user_group: UserGroup;
   user_role?: UserRole;
-  staff_role?: StaffRole;
-  client_category?: ClientCategory;
   status: UserStatus;
-  created_at: string;
-  updated_at: string;
 }
 
 // Интерфейс для заявок
-export interface Application {
-  id: number;
-  company_name: string;
-  contact_person: string;
-  contact_phone: string;
-  contact_email: string;
-  event_date: string;
-  event_time: string;
-  venue: string;
-  guest_count: number;
-  special_requirements?: string;
+export interface Application extends BaseApplication {
   status: ApplicationStatus;
-  created_at: string;
-  updated_at: string;
-  user_id?: number;
 }
 
 // Интерфейс для уведомлений
@@ -258,13 +217,7 @@ export interface ApplicationFormData {
 // ApiResponse импортируется из config/api.ts (не используется в этом файле)
 // import { ApiResponse } from '../config/api';
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  current_page: number;
-  last_page: number;
-  per_page: number;
-  total: number;
-}
+export interface PaginatedResponse<T> extends BasePaginatedResponse<T> {}
 
 // Типы для модальных окон
 export interface ModalProps {

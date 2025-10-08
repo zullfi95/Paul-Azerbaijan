@@ -28,6 +28,16 @@ const nextConfig: NextConfig = {
         hostname: 'paul.az',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.paul.az',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '46.62.208.132',
+        pathname: '/**',
+      },
     ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
@@ -35,14 +45,17 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   async rewrites() {
+    // Use environment variable for API URL, fallback to localhost for development
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8000/api/:path*',
+        destination: `${apiBaseUrl}/api/:path*`,
       },
       {
         source: '/sanctum/:path*',
-        destination: 'http://localhost:8000/sanctum/:path*',
+        destination: `${apiBaseUrl}/sanctum/:path*`,
       },
     ];
   },

@@ -1,7 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '../utils/queryKeys';
 import { makeApiRequest } from '../utils/apiHelpers';
-import { User, Order, Application, CartItem } from '../config/api';
+import {
+  User,
+  Order,
+  Application,
+  CartItem,
+  Address,
+} from '../types/common';
+import { API_CONFIG, getAuthHeaders } from '../config/api';
 
 // Хуки для пользователей
 export const useUsers = (filters?: Record<string, string | number | boolean>) => {

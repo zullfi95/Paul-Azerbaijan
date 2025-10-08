@@ -38,7 +38,7 @@ npm run build
 
 echo "🔄 Restarting services..."
 # Restart PHP-FPM
-systemctl restart php8.2-fpm
+systemctl restart php8.3-fpm
 
 # Restart Nginx
 systemctl restart nginx
@@ -52,4 +52,4 @@ echo "🌐 Application should be available at: http://46.62.208.132"
 # Show status
 echo "📊 Service Status:"
 systemctl status nginx --no-pager -l
-systemctl status php8.2-fpm --no-pager -l
+systemctl status php8.3-fpm --no-pager -l

@@ -1,8 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { getApiUrl, getAuthHeaders, User, API_CONFIG } from '../config/api';
-import { getToken, setToken, removeToken } from '../utils/tokenManager';
+import { getApiUrl, getAuthHeaders, API_CONFIG } from '@/config/api';
+import { makeApiRequest } from '@/utils/apiHelpers';
+import { User, Order, Application, CartItem, Address } from '@/types/unified';
+import { getToken, setToken, removeToken } from '@/utils/tokenManager';
 
 interface AuthContextType {
   user: User | null;
@@ -115,12 +117,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const token = getToken();
       if (token) {
-        await fetch(getApiUrl('logout'), {
+        await makeApiRequest('/logout', {
           method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
         });
       }
     } catch (error) {
@@ -143,45 +141,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       console.log('🔄 Updating user data:', userData);
 
-      const response = await fetch(getApiUrl('user'), {
+      const response = await makeApiRequest('/user', {
         method: 'PUT',
-        headers: getAuthHeaders(token),
         body: JSON.stringify(userData),
       });
 
       console.log('📡 Update user response:', {
-        status: response.status,
-        statusText: response.statusText,
+        success: response.success,
+        message: response.message,
       });
 
-      if (!response.ok) {
-        const responseText = await response.text();
-        console.error('❌ Update user failed - Response text:', responseText);
+      if (!response.success) {
+        console.error('❌ Update user failed - Response message:', response.message);
         return false;
       }
 
-      const responseText = await response.text();
-      console.log('📄 Update user response body:', responseText);
-
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error('❌ Could not parse update response as JSON:', parseError);
-        return false;
-      }
-
-      if (data.success && data.data) {
-        // Обновляем данные пользователя
-        const updatedUser = { ...user, ...data.data.user };
-        setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        console.log('✅ User updated successfully:', updatedUser);
-        return true;
-      } else {
-        console.warn('⚠️ Unexpected update response format:', data);
-        return false;
-      }
+        if (response.success && response.data && user) {
+          // Обновляем данные пользователя
+          const updatedUser = { ...user, ...response.data } as User;
+          setUser(updatedUser);
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          return true;
+        } else {
+          return false;
+        }
     } catch (error) {
       console.error('🌐 Update user network error:', error);
       return false;

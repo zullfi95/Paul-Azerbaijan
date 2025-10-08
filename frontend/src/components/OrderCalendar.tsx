@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { Calendar, dateFnsLocalizer, Views, type View } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import type { Order } from '../config/api';
+import type { Order } from '../types/common';
 import { formatTotalAmount } from '../utils/numberUtils';
 import { generateBEOFile } from '../utils/beoGenerator';
 import { STATUS_LABELS, STATUS_COLORS } from '../utils/statusTranslations';

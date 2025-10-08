@@ -100,12 +100,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {user?.created_at ? formatDate(user.created_at) : 'Unknown'}
             </div>
           </div>
-          <div className={styles.summaryItem}>
-            <div className={styles.summaryLabel}>Account Type</div>
-            <div className={styles.summaryValue}>
-              {user?.user_type === 'client' ? 'Client' : 'Other'}
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -24,8 +24,8 @@ use App\Http\Controllers\Api\PaymentController;
 */
 
 // Открытые маршруты (не требуют аутентификации)
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']); // Убираем web middleware для избежания CSRF конфликта
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1'); // Rate limiting
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1'); // Rate limiting
 
 // Публичный endpoint для получения координаторов (для создания заявок)
 Route::get('/coordinators', [UserController::class, 'getCoordinators']);
@@ -45,15 +45,15 @@ Route::prefix('menu')->group(function () {
 // Защищенные маршруты (требуют аутентификации)
 Route::middleware(['auth:sanctum'])->group(function () {
     // Создание заявки теперь требует аутентификации
-    Route::post('/applications', [ApplicationController::class, 'store']); // Создание заявки с сайта (только для залогиненных)
+    Route::post('/applications', [ApplicationController::class, 'store'])->middleware('throttle:10,1'); // Rate limiting
 
     Route::get('/user', [AuthController::class, 'user']);
-    Route::put('/user', [AuthController::class, 'updateUser']); // Обновление данных текущего пользователя
+    Route::put('/user', [AuthController::class, 'updateUser'])->middleware('throttle:5,1'); // Rate limiting
     Route::post('/logout', [AuthController::class, 'logout']);
     
     // Адреса пользователя
-    Route::post('/user/address/shipping', [AuthController::class, 'saveShippingAddress']); // Сохранение адреса доставки
-    Route::get('/user/address/shipping', [AuthController::class, 'getShippingAddress']); // Получение адреса доставки
+    Route::post('/user/address/shipping', [AuthController::class, 'saveShippingAddress'])->middleware('throttle:5,1'); // Rate limiting
+    Route::get('/user/address/shipping', [AuthController::class, 'getShippingAddress']);
     
     // Маршруты для координаторов
     Route::middleware('coordinator')->group(function () {
@@ -65,9 +65,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Пользователи (сотрудники)
         Route::get('/users', [UserController::class, 'index']); // Список пользователей
         Route::get('/users/{user}', [UserController::class, 'show']); // Просмотр пользователя
-        Route::post('/users', [UserController::class, 'store']); // Создание пользователя
-        Route::put('/users/{user}', [UserController::class, 'update']); // Обновление пользователя
-        Route::delete('/users/{user}', [UserController::class, 'destroy']); // Удаление пользователя
+        Route::post('/users', [UserController::class, 'store'])->middleware('throttle:5,1'); // Rate limiting
+        Route::put('/users/{user}', [UserController::class, 'update'])->middleware('throttle:5,1'); // Rate limiting
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('throttle:3,1'); // Rate limiting
         Route::get('/users/statistics', [UserController::class, 'statistics']); // Статистика пользователей
 
         // Клиенты
@@ -81,10 +81,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Заказы (только для координаторов)
         Route::get('/orders', [OrderController::class, 'index']); // Список заказов
         Route::get('/orders/{order}', [OrderController::class, 'show']); // Просмотр заказа
-        Route::post('/orders', [OrderController::class, 'store']); // Создание заказа
-        Route::put('/orders/{order}', [OrderController::class, 'update']); // Обновление заказа
-        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus']); // Обновление статуса заказа
-        Route::delete('/orders/{order}', [OrderController::class, 'destroy']); // Удаление заказа
+        Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:10,1'); // Rate limiting
+        Route::put('/orders/{order}', [OrderController::class, 'update'])->middleware('throttle:10,1'); // Rate limiting
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->middleware('throttle:10,1'); // Rate limiting
+        Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->middleware('throttle:3,1'); // Rate limiting
         Route::post('/applications/{application}/create-order', [OrderController::class, 'createFromApplication']); // Создание заказа из заявки
         Route::get('/orders/statistics', [OrderController::class, 'statistics']); // Статистика заказов
 
@@ -119,9 +119,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('payment')->group(function () {
         Route::get('/test-connection', [PaymentController::class, 'testConnection']);
         Route::get('/test-cards', [PaymentController::class, 'getTestCards']);
-        Route::post('/orders/{order}/create', [PaymentController::class, 'createPayment']);
+        Route::post('/orders/{order}/create', [PaymentController::class, 'createPayment'])->middleware('throttle:5,1'); // Rate limiting
         Route::get('/orders/{order}/info', [PaymentController::class, 'getPaymentInfo']);
-        Route::post('/orders/{order}/success', [PaymentController::class, 'handleSuccess']);
-        Route::post('/orders/{order}/failure', [PaymentController::class, 'handleFailure']);
+        Route::post('/orders/{order}/success', [PaymentController::class, 'handleSuccess'])->middleware('throttle:10,1'); // Rate limiting
+        Route::post('/orders/{order}/failure', [PaymentController::class, 'handleFailure'])->middleware('throttle:10,1'); // Rate limiting
     });
 });

@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Header from '../Header';
-import Footer from '../Footer';
-import { buildApiUrl, API_CONFIG } from '../../config/api';
-import { useCart } from '../../contexts/CartContext';
-import { useAuth } from '../../contexts/AuthContext';
-import Breadcrumbs from '../Breadcrumbs';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { getApiUrl, API_CONFIG } from '@/config/api';
+import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import BillingForm from './BillingForm';
 import DeliveryOptions from './DeliveryOptions';
 import OtherInformation from './OtherInformation';
@@ -197,7 +197,7 @@ export default function CheckoutPage() {
       }
 
       // Используем эндпоинт для заявок
-      const response = await fetch(buildApiUrl(API_CONFIG.ENDPOINTS.APPLICATIONS), {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.APPLICATIONS), {
         method: 'POST',
         headers,
         body: JSON.stringify(applicationData)

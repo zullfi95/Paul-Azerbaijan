@@ -77,14 +77,14 @@ export default function ProfilePage() {
     <div className={styles.profilePage}>
       <Header />
       
-      <div className="navbar-spacing">
-        <Breadcrumbs 
-          items={[
-            { label: 'Home', href: '/' },
-            { label: 'My Account', isActive: true }
-          ]}
-        />
+      <Breadcrumbs 
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'My Account', isActive: true }
+        ]}
+      />
 
+      <div className="navbar-spacing">
         <div className={styles.mainContent}>
           <aside className={styles.sidebar} role="navigation" aria-label="Account navigation">
             <nav className={styles.sidebarNav}>

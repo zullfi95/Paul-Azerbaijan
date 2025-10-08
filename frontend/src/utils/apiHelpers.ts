@@ -1,7 +1,26 @@
-import { getApiUrl } from '../config/api';
+import {
+  User,
+  Order,
+  Application,
+  CartItem,
+  Address,
+  LoginRequest,
+  RegisterRequest,
+  ApplicationRequest,
+  ApiResponse,
+} from '../types/common';
+import { API_CONFIG } from '../config/api';
 
 // Стандартизированные типы для API ответов
 export interface StandardApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  errors?: Record<string, string[]>;
+}
+
+// Для случаев когда data может отсутствовать
+export interface StandardApiResponseOptional<T> {
   success: boolean;
   data?: T;
   message?: string;
@@ -23,7 +42,7 @@ export interface PaginatedData<T> {
 // }
 
 // Утилита для безопасного извлечения данных из API ответов
-export function extractApiData<T>(response: { data?: T[]; [key: string]: unknown } | T[]): T[] {
+export function extractApiData<T>(response: { data?: T[]; [key: string]: any } | T[]): T[] {
   // Обрабатываем различные структуры ответов
   if (Array.isArray(response)) {
     return response;
@@ -45,7 +64,7 @@ export function extractApiData<T>(response: { data?: T[]; [key: string]: unknown
 }
 
 // Утилита для безопасного извлечения одного элемента
-export function extractApiItem<T>(response: { data?: T; [key: string]: unknown } | T): T | null {
+export function extractApiItem<T>(response: { data?: T; [key: string]: any } | T): T | null {
   if (typeof response === 'object' && response !== null && 'data' in response) {
     return (response as { data?: T }).data || null;
   }
@@ -60,7 +79,7 @@ export async function makeApiRequest<T>(
     body?: string | FormData;
     token?: string;
   } = {}
-): Promise<StandardApiResponse<T>> {
+): Promise<StandardApiResponseOptional<T>> {
   const { method = 'GET', body, token } = options;
 
   try {
@@ -68,13 +87,13 @@ export async function makeApiRequest<T>(
     const authToken = token || (typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null);
 
     console.log('🔍 API Request:', {
-      url: getApiUrl(endpoint),
+      url: API_CONFIG.BASE_URL + endpoint,
       method,
       hasToken: !!authToken,
       endpoint
     });
 
-    const response = await fetch(getApiUrl(endpoint), {
+    const response = await fetch(API_CONFIG.BASE_URL + endpoint, {
       method,
       headers: {
         'Accept': 'application/json',

@@ -1,7 +1,7 @@
 /* Profile Page CSS Module - PAUL Design System */
 
 /* Base variables */
-:root {
+.root {
   --paul-black: #000000;
   --paul-ivory: #FFFCF8;
   --paul-primary-1: #FFFCF8;
@@ -58,7 +58,7 @@
   margin: 0 auto;
   padding-left: calc(var(--paul-base-font) * 1.14); /* 20px */
   padding-right: calc(var(--paul-base-font) * 1.14); /* 20px */
-  margin-top: calc(var(--paul-base-font) * 4.55); /* 80px - space for fixed header */
+  margin-top: 0; /* No top margin needed */
 }
 
 /* Sidebar */
@@ -272,6 +272,7 @@
   margin: 0 auto;
   padding-left: calc(var(--paul-base-font) * 1.14); /* 20px */
   padding-right: calc(var(--paul-base-font) * 1.14); /* 20px */
+  margin-top: calc(var(--paul-base-font) * 4.55); /* 80px - space for fixed header */
 }
 
 .breadcrumbList {
@@ -833,8 +834,8 @@
 
 .formRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--paul-base-font) * 0.91); /* 16px */
+  grid-template-columns: 2fr 1fr;
+  gap: calc(var(--paul-base-font) * 1.14); /* 20px - увеличиваем gap */
 }
 
 .formLabel {
@@ -856,6 +857,12 @@
   color: var(--paul-black);
   background: var(--paul-primary-1);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Postal code field - smaller width */
+.formInput[placeholder*="postal code"],
+.formInput[placeholder*="Postal code"] {
+  max-width: 120px;
 }
 
 .formInput:focus {

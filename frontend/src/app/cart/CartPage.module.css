@@ -1,5 +1,5 @@
 /* Цветовая палитра PAUL */
-:root {
+.root {
   --paul-primary-bg: #FFFCF8;
   --paul-secondary-bg: #FEF4E6;
   --paul-ivory: #FFFAE6;

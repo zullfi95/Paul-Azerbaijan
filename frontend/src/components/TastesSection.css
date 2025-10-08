@@ -94,8 +94,7 @@
 
 /* Заголовок */
 .tastes-title {
-  leading-trim: both;
-  text-edge: cap;
+
   font-family: "Sabon Next LT Pro";
   font-size: 38px;
   font-style: italic;
@@ -122,10 +121,10 @@
   background: #000;
   color: #F5E9D6;
   border: none;
-  padding: 10px 20px;
-  font-size: 0.77rem;
-  font-weight: 600;
-  border-radius: 0;
+  padding: 20px 50px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 40px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;

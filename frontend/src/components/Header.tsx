@@ -3,20 +3,18 @@
 import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Search, MapPin, ShoppingBag, FileText, Menu, X } from 'lucide-react';
-import LanguageSelector from './LanguageSelector';
+import Link from 'next/link';
+import { Search, MapPin, ShoppingBag, FileText, Menu, X, Globe } from 'lucide-react';
 import CartModal from './CartModal';
 import EventPlanningModal from './EventPlanningModal';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useCart } from '../contexts/CartContext';
-import { useCartModal } from '../contexts/CartModalContext';
-import { useAuth } from '../contexts/AuthContext';
-import { useIsMobile } from '../hooks/use-mobile';
+import { useCart } from '@/contexts/CartContext';
+import { useCartModal } from '@/contexts/CartModalContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useIsMobile } from '@/hooks/use-mobile';
 import './Header.css';
 
 const Header: React.FC = React.memo(function Header() {
   const router = useRouter();
-  const { t } = useLanguage();
   const { getTotalItems } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { isAuthenticated } = useAuth();
@@ -27,6 +25,7 @@ const Header: React.FC = React.memo(function Header() {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMenuClosing, setIsMenuClosing] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('en');
 
   const closeMobileMenu = useCallback(() => {
     setIsMenuClosing(true);
@@ -60,6 +59,9 @@ const Header: React.FC = React.memo(function Header() {
   const handleSubscribe = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
+      // TODO: Implement newsletter subscription endpoint
+      // Temporary notification
+      alert('Newsletter subscription is coming soon! Thank you for your interest.');
       console.log('Subscribed with email:', email);
       setEmail('');
       closeMobileMenu();
@@ -116,6 +118,10 @@ const Header: React.FC = React.memo(function Header() {
     }
   }, [router]);
 
+  const handleLanguageToggle = useCallback(() => {
+    setCurrentLanguage(prev => prev === 'en' ? 'az' : 'en');
+  }, []);
+
   // Add/remove menu-open class to body when mobile menu is opened
   React.useEffect(() => {
     if (isMobile && isMobileMenuOpen) {
@@ -148,12 +154,12 @@ const Header: React.FC = React.memo(function Header() {
 
           {/* Main Navigation */}
           <nav className="main-nav">
-            <a href="/cakes" className="nav-link">{t('nav.cakes_pies')}</a>
-            <a href="/viennoiserie" className="nav-link">{t('nav.viennoiserie')}</a>
-            <a href="/patisserie" className="nav-link">{t('nav.patisserie')}</a>
-            <a href="/platters" className="nav-link">{t('nav.platters')}</a>
-            <a href="/bread" className="nav-link">{t('nav.bread')}</a>
-            <a href="/macarons" className="nav-link">{t('nav.macarons')}</a>
+            <Link href="/cakes" className="nav-link">Cakes & Pies</Link>
+            <Link href="/viennoiserie" className="nav-link">Viennoiserie</Link>
+            <Link href="/patisserie" className="nav-link">Patisserie</Link>
+            <Link href="/platters" className="nav-link">Platters</Link>
+            <Link href="/bread" className="nav-link">Bread</Link>
+            <Link href="/macarons" className="nav-link">Macarons</Link>
           </nav>
 
           {/* Right Side Actions */}
@@ -175,7 +181,7 @@ const Header: React.FC = React.memo(function Header() {
                 <form onSubmit={handleSearch} suppressHydrationWarning>
                   <input
                     type="text"
-                    placeholder={t('search.placeholder')}
+                    placeholder="search for product"
                     className="search-input"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -186,18 +192,16 @@ const Header: React.FC = React.memo(function Header() {
               </div>
             )}
 
-            {/* Language Selector - Desktop only */}
-            {!isMobile && <LanguageSelector />}
 
             {/* Profile Icon - Desktop only */}
             {!isMobile && (
               <button 
                 className="icon-button" 
-                aria-label={isAuthenticated ? t('aria.profile') : t('aria.login')}
+                aria-label={isAuthenticated ? 'Profile' : 'Login'}
                 onClick={handleLogin}
               >
                 <Image
-                  src="/images/userHeder.svg"
+                  src="/images/userHeader.svg"
                   alt="User"
                   width={23}
                   height={23}
@@ -209,11 +213,11 @@ const Header: React.FC = React.memo(function Header() {
             {/* Cart Icon */}
             <button 
               className="icon-button cart-button" 
-              aria-label={t('aria.cart')}
+              aria-label="Shopping Cart"
               onClick={handleCartClick}
             >
               <Image
-                src="/images/basketHeder.svg"
+                src="/images/basketHeader.svg"
                 alt="Cart"
                 width={23}
                 height={23}
@@ -224,22 +228,36 @@ const Header: React.FC = React.memo(function Header() {
               )}
             </button>
 
-            {/* Mobile Menu Button */}
-            {isMobile && (
-              <button 
-                className="mobile-menu-button" 
-                aria-label={t('aria.menu')}
-                onClick={toggleMobileMenu}
-                onTouchStart={() => {}} // iOS Safari touch fix
-                type="button"
+            {/* Language Toggle - Desktop only */}
+            {!isMobile && (
+              <button
+                className="icon-button"
+                aria-label={`Switch to ${currentLanguage === 'en' ? 'Azerbaijani' : 'English'}`}
+                onClick={handleLanguageToggle}
+                title={`Current: ${currentLanguage === 'en' ? 'English' : 'Azərbaycan'}`}
               >
-                {isMobileMenuOpen ? (
-                  <X className="icon" size={24} />
-                ) : (
-                  <Menu className="icon" size={24} />
-                )}
+                <Globe className="icon" size={20} />
               </button>
             )}
+
+              {/* Mobile Menu Button */}
+              {isMobile && (
+                <button
+                  className="mobile-menu-button"
+                  aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+                  aria-expanded={isMobileMenuOpen}
+                  aria-controls="mobile-menu"
+                  onClick={toggleMobileMenu}
+                  onTouchStart={() => {}}
+                  type="button"
+                >
+                  {isMobileMenuOpen ? (
+                    <X className="icon" size={24} />
+                  ) : (
+                    <Menu className="icon" size={24} />
+                  )}
+                </button>
+              )}
           </div>
         </div>
       </div>
@@ -254,7 +272,7 @@ const Header: React.FC = React.memo(function Header() {
             onClick={() => handleActionClick('Find a PAUL')}
           >
             <MapPin className="action-button-icon" size={12} />
-            <span>{t('action.find_paul')}</span>
+            <span>Find a PAUL</span>
           </button>
 
           {/* Click & Collect */}
@@ -263,7 +281,7 @@ const Header: React.FC = React.memo(function Header() {
             onClick={() => handleActionClick('Click & Collect')}
           >
             <ShoppingBag className="action-button-icon" size={12} />
-            <span>{t('action.click_collect')}</span>
+            <span>Click & Collect</span>
           </button>
 
           {/* Catering Menu */}
@@ -272,7 +290,7 @@ const Header: React.FC = React.memo(function Header() {
             onClick={() => handleActionClick('Catering Menu')}
           >
             <FileText className="action-button-icon" size={12} />
-            <span>{t('action.catering_menu')}</span>
+            <span>Catering Menu</span>
           </button>
 
           {/* Plan an Event */}
@@ -280,8 +298,8 @@ const Header: React.FC = React.memo(function Header() {
             className="action-button plan-event" 
             onClick={() => handleActionClick('Plan an Event')}
           >
-            <span>{t('action.plan_event')}</span>
-            <span className="plan-event-badge">!</span>
+            <span>Plan an Event</span>
+            <span className="plan-event-badge">i</span>
           </button>
       </div>
     </div>
@@ -317,12 +335,10 @@ const Header: React.FC = React.memo(function Header() {
                     <Search className="icon" size={20} />
                   </button>
                   
-                  {/* Language Selector - Mobile only */}
-                  <LanguageSelector />
                   
                   <button 
                     className="icon-button cart-button" 
-                    aria-label={t('aria.cart')}
+                    aria-label="Shopping Cart"
                     onClick={() => {
                       closeMobileMenu();
                       handleCartClick();
@@ -331,7 +347,7 @@ const Header: React.FC = React.memo(function Header() {
                     type="button"
                   >
                     <Image
-                      src="/images/basketHeder.svg"
+                      src="/images/basketHeader.svg"
                       alt="Cart"
                       width={23}
                       height={23}
@@ -358,24 +374,24 @@ const Header: React.FC = React.memo(function Header() {
                 <div>
                   {/* Navigation Links */}
                   <nav className="mobile-nav">
-                <a href="/cakes" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  {t('nav.cakes_pies')}
-                </a>
-                <a href="/viennoiserie" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  {t('nav.viennoiserie')}
-                </a>
-                <a href="/patisserie" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  {t('nav.patisserie')}
-                </a>
-                <a href="/platters" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  {t('nav.platters')}
-                </a>
-                <a href="/bread" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  {t('nav.bread')}
-                </a>
-                <a href="/macarons" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  {t('nav.macarons')}
-                </a>
+                <Link href="/cakes" className="mobile-nav-link" onClick={closeMobileMenu}>
+                  Cakes & Pies
+                </Link>
+                <Link href="/viennoiserie" className="mobile-nav-link" onClick={closeMobileMenu}>
+                  Viennoiserie
+                </Link>
+                <Link href="/patisserie" className="mobile-nav-link" onClick={closeMobileMenu}>
+                  Patisserie
+                </Link>
+                <Link href="/platters" className="mobile-nav-link" onClick={closeMobileMenu}>
+                  Platters
+                </Link>
+                <Link href="/bread" className="mobile-nav-link" onClick={closeMobileMenu}>
+                  Bread
+                </Link>
+                <Link href="/macarons" className="mobile-nav-link" onClick={closeMobileMenu}>
+                  Macarons
+                </Link>
               </nav>
 
               {/* Divider */}
@@ -388,7 +404,7 @@ const Header: React.FC = React.memo(function Header() {
                   if (isAuthenticated) {
                     router.push('/profile');
                   } else {
-                    router.push('/profile');
+                    router.push('/auth/login');
                   }
                   closeMobileMenu();
                 }}
@@ -418,7 +434,7 @@ const Header: React.FC = React.memo(function Header() {
                 onTouchStart={() => {}} // iOS Safari touch fix
                 type="button"
               >
-                {isAuthenticated ? t('aria.profile') : t('aria.login')}
+                {isAuthenticated ? 'Profile' : 'Login'}
               </button>
               </div>
 
@@ -500,7 +516,7 @@ const Header: React.FC = React.memo(function Header() {
               <form onSubmit={handleSearch} className="mobile-search-form">
                 <input
                   type="text"
-                  placeholder={t('search.placeholder')}
+                  placeholder="search for product"
                   className="mobile-search-input"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}

@@ -12,9 +12,9 @@ import { useCart } from '../../contexts/CartContext';
 import { useCartModal } from '../../contexts/CartModalContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import Image from "next/image";
-import styles from './MacaronsPage.module.css';
+import styles from './SavouryPage.module.css';
 
-interface Macaron {
+interface Savoury {
   id: string;
   name: string;
   description: string;
@@ -27,163 +27,153 @@ interface Macaron {
   rating?: number;
 }
 
-const macarons: Macaron[] = [
+const savoury: Savoury[] = [
   {
-    id: 'm1',
-    name: 'Vanilla Macaron',
-    description: 'Classic vanilla with buttercream',
-    price: 2.50,
-    image: '/images/Macarons1.png',
-    category: 'Macarons',
+    id: 's1',
+    name: 'Quiche Lorraine',
+    description: 'Classic French quiche with bacon and cheese',
+    price: 8.50,
+    image: '/images/Savoury3.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 5
   },
   {
-    id: 'm2',
-    name: 'Chocolate Macaron',
-    description: 'Rich chocolate ganache filling',
-    price: 2.50,
-    image: '/images/Macarons2.png',
-    category: 'Macarons',
+    id: 's2',
+    name: 'Spinach & Feta Quiche',
+    description: 'Fresh spinach with creamy feta cheese',
+    price: 8.50,
+    image: '/images/Savoury2.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 5
   },
   {
-    id: 'm3',
-    name: 'Raspberry Macaron',
-    description: 'Fresh raspberry with cream',
-    price: 2.75,
-    image: '/images/Macarons3.png',
-    category: 'Macarons',
+    id: 's3',
+    name: 'Mushroom & Gruyère Quiche',
+    description: 'Sautéed mushrooms with aged Gruyère',
+    price: 9.00,
+    image: '/images/Savoury2.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 5
   },
   {
-    id: 'm4',
-    name: 'Lemon Macaron',
-    description: 'Zesty lemon curd filling',
-    price: 2.75,
-    image: '/images/Macarons4.png',
-    category: 'Macarons',
+    id: 's4',
+    name: 'Tomato & Basil Quiche',
+    description: 'Sun-dried tomatoes with fresh basil',
+    price: 8.75,
+    image: '/images/Savoury2.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 4
   },
   {
-    id: 'm5',
-    name: 'Pistachio Macaron',
-    description: 'Premium pistachio cream',
-    price: 3.00,
-    image: '/images/Macarons1.png',
-    category: 'Macarons',
+    id: 's5',
+    name: 'Ham & Cheese Croissant',
+    description: 'Buttery croissant with premium ham and Swiss',
+    price: 6.50,
+    image: '/images/Savoury2.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 5
   },
   {
-    id: 'm6',
-    name: 'Rose Macaron',
-    description: 'Delicate rose petal cream',
-    price: 3.00,
-    image: '/images/Macarons2.png',
-    category: 'Macarons',
+    id: 's6',
+    name: 'Chicken & Pesto Sandwich',
+    description: 'Grilled chicken with homemade pesto',
+    price: 7.50,
+    image: '/images/Savoury.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 5
   },
   {
-    id: 'm7',
-    name: 'Salted Caramel Macaron',
-    description: 'Sweet and salty perfection',
-    price: 2.75,
-    image: '/images/Macarons3.png',
-    category: 'Macarons',
+    id: 's7',
+    name: 'Smoked Salmon Bagel',
+    description: 'Cream cheese with smoked salmon and capers',
+    price: 9.50,
+    image: '/images/Savoury2.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 5
   },
   {
-    id: 'm8',
-    name: 'Lavender Macaron',
-    description: 'Aromatic lavender cream',
-    price: 3.00,
-    image: '/images/Macarons4.png',
-    category: 'Macarons',
+    id: 's8',
+    name: 'Vegetarian Wrap',
+    description: 'Fresh vegetables with hummus and tahini',
+    price: 7.00,
+    image: '/images/Savoury2.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 4
   },
   {
-    id: 'm9',
-    name: 'Strawberry Macaron',
-    description: 'Fresh strawberry cream',
-    price: 2.75,
-    image: '/images/Macarons1.png',
-    category: 'Macarons',
+    id: 's9',
+    name: 'Turkey & Avocado Panini',
+    description: 'Sliced turkey with avocado and arugula',
+    price: 8.25,
+    image: '/images/Savoury2.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 5
   },
   {
-    id: 'm10',
-    name: 'Coffee Macaron',
-    description: 'Rich coffee buttercream',
-    price: 2.50,
-    image: '/images/Macarons2.png',
-    category: 'Macarons',
+    id: 's10',
+    name: 'Caprese Salad',
+    description: 'Fresh mozzarella with tomatoes and basil',
+    price: 6.50,
+    image: '/images/Savoury.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 4
   },
   {
-    id: 'm11',
-    name: 'Matcha Macaron',
-    description: 'Japanese green tea cream',
-    price: 3.00,
-    image: '/images/Macarons3.png',
-    category: 'Macarons',
+    id: 's11',
+    name: 'Greek Salad Bowl',
+    description: 'Mixed greens with feta, olives, and olive oil',
+    price: 7.50,
+    image: '/images/Savoury2.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 5
   },
   {
-    id: 'm12',
-    name: 'Passion Fruit Macaron',
-    description: 'Tropical passion fruit cream',
-    price: 2.75,
-    image: '/images/Macarons4.png',
-    category: 'Macarons',
+    id: 's12',
+    name: 'Mediterranean Wrap',
+    description: 'Grilled vegetables with tzatziki sauce',
+    price: 7.75,
+    image: '/images/Savoury2.jpg',
+    category: 'Savoury',
     available: true,
     isSet: false,
     rating: 5
   }
 ];
 
-const categories = [
-  { name: 'Savoury', icon: '🥐', image: '/images/category4.png' },
-  { name: 'Sweet French pastries', icon: '🥖', image: '/images/category3.png' },
-  { name: 'Pies and cakes', icon: '🍞', image: '/images/category5.png' },
-  { name: 'Macarons', icon: '🧁', image: '/images/category2.png' }
-];
 
-export default function MacaronsPage() {
+export default function SavouryPage() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { showNotification } = useNotification();
 
-  const filteredMacarons = selectedCategory === 'All' 
-    ? macarons 
-    : macarons.filter(item => item.category === selectedCategory);
-
-  const sortedMacarons = [...filteredMacarons].sort((a, b) => {
+  const sortedSavoury = [...savoury].sort((a, b) => {
     switch (sortBy) {
       case 'name':
         return a.name.localeCompare(b.name);
@@ -196,13 +186,20 @@ export default function MacaronsPage() {
     }
   });
 
-  const addToCart = (item: Macaron) => {
+  const displayedSavoury = sortedSavoury.slice(0, visibleItems);
+  const hasMoreItems = visibleItems < sortedSavoury.length;
+
+  const loadMoreItems = () => {
+    setVisibleItems(prev => Math.min(prev + 8, sortedSavoury.length));
+  };
+
+  const addToCart = (item: Savoury) => {
     addItem({
       id: item.id,
       name: item.name,
       description: item.description,
       price: item.price,
-      image: item.image,
+      images: item.image ? [item.image] : [],
       category: item.category,
       available: item.available,
       isSet: item.isSet,
@@ -239,40 +236,12 @@ export default function MacaronsPage() {
             <Breadcrumbs 
               items={[
                 { label: 'Home', href: '/' },
-                { label: 'Macarons', isActive: true }
+                { label: 'Savoury', isActive: true }
               ]}
             />
           </div>
         </div>
 
-        {/* Category Navigation */}
-        <div className={styles.categorySection}>
-          <div className="container-paul">
-            <div className={styles.categoryNavigation}>
-              {categories.map((category) => (
-                <div
-                  key={category.name}
-                  className={styles.categoryItem}
-                  onClick={() => setSelectedCategory(category.name)}
-
-                >
-                  <div className={styles.categoryIcon}>
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      width={60}
-                      height={60}
-                      className={styles.categoryImage}
-                    />
-                  </div>
-                  <span className={styles.categoryName}>
-                    {category.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
 
         {/* Page Title and Sort Button */}
@@ -280,7 +249,7 @@ export default function MacaronsPage() {
           <div className="container-paul">
             <div className={styles.pageHeaderContent}>
               <h1 className={styles.pageTitle}>
-                 Macarons
+                 Savoury
               </h1>
               <button className={styles.filterButton}
 >
@@ -291,7 +260,7 @@ export default function MacaronsPage() {
 
             {/* Product Grid */}
             <div className={styles.productGrid}>
-              {sortedMacarons.map((item) => (
+              {displayedSavoury.map((item) => (
                 <div
                   key={item.id}
                   className={styles.productCard}
@@ -338,6 +307,18 @@ export default function MacaronsPage() {
               ))}
             </div>
 
+            {/* View More Button */}
+            {hasMoreItems && (
+              <div className={styles.viewMoreContainer}>
+                <button 
+                  className={styles.viewMoreButton}
+                  onClick={loadMoreItems}
+                >
+                  View More
+                </button>
+              </div>
+            )}
+
           </div>
         </div>
 
@@ -379,7 +360,7 @@ export default function MacaronsPage() {
               </button>
             </div>
             <textarea
-              placeholder="Tell us about your experience with our macarons..."
+              placeholder="Tell us about your experience with our savoury items..."
               className={styles.feedbackTextarea}
             />
             <button className={styles.feedbackSubmit}>

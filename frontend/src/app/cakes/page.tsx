@@ -195,29 +195,18 @@ const cakes: Cake[] = [
   }
 ];
 
-const categories = [
-  { name: 'Savory filled pastries and quiche', icon: '🥐', image: '/images/category4.png' },
-  { name: 'SavBread and savoury pastries', icon: '🍞', image: '/images/category5.png' },
-  { name: 'Sweet French pastries', icon: '🥖', image: '/images/category3.png' },
-  { name: 'Pies and cakes', icon: '🍰', image: '/images/category2.png' },
-  { name: 'Macaroons', icon: '🍪', image: '/images/category1.png' }
-];
 
 export default function CakesPage() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { showNotification } = useNotification();
 
-  const filteredCakes = selectedCategory === 'All' 
-    ? cakes 
-    : cakes.filter(cake => cake.category === selectedCategory);
-
-  const sortedCakes = [...filteredCakes].sort((a, b) => {
+  const sortedCakes = [...cakes].sort((a, b) => {
     switch (sortBy) {
       case 'name':
         return a.name.localeCompare(b.name);
@@ -230,13 +219,20 @@ export default function CakesPage() {
     }
   });
 
+  const displayedCakes = sortedCakes.slice(0, visibleItems);
+  const hasMoreItems = visibleItems < sortedCakes.length;
+
+  const loadMoreItems = () => {
+    setVisibleItems(prev => Math.min(prev + 8, sortedCakes.length));
+  };
+
   const addToCart = (cake: Cake) => {
     addItem({
-      id: cake.id,
+      id: Number(cake.id),
       name: cake.name,
       description: cake.description,
       price: cake.price,
-      image: cake.image,
+      images: cake.image ? [cake.image] : [],
       category: cake.category,
       available: cake.available,
       isSet: cake.isSet,
@@ -279,58 +275,7 @@ export default function CakesPage() {
           </div>
         </div>
 
-        {/* Category Navigation */}
-        <div className={styles.categorySection}>
-          <div className="container-paul">
-            <div className={styles.categoryNavigation}>
-              {categories.map((category) => (
-                <div
-                  key={category.name}
-                  className={styles.categoryItem}
-                  onClick={() => setSelectedCategory(category.name)}
-                >
-                  <div className={styles.categoryIcon}>
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      width={60}
-                      height={60}
-                      className={styles.categoryImage}
-                    />
-                  </div>
-                  <span className={styles.categoryName}>
-                    {category.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
-        {/* Hero Section */}
-        <div className={styles.heroSection}>
-          <div className={styles.heroBackground} />
-          <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>
-              Cakes
-            </h1>
-            <h2 className={styles.heroTitle}>
-              & Pies
-            </h2>
-          </div>
-        </div>
-
-        {/* Hero Divider */}
-
-        {/* Introductory Text */}
-        <div className={styles.introSection}>
-          <div className="container-paul">
-            <p className={styles.introText}>
-              PAUL offers an extensive and diverse selection of cakes for all your special occasions, using only the freshest, high-quality ingredients to ensure that your day is truly memorable. We care deeply about making each cake a reflection of your unique celebration, adding a personal touch that makes every bite special.
-            </p>
-          </div>
-        </div>
-        <div className={styles.heroDivider} />
 
 
         {/* Page Title and Sort Button */}
@@ -346,7 +291,7 @@ export default function CakesPage() {
 
             {/* Product Grid */}
             <div className={styles.productGrid}>
-              {sortedCakes.map((cake) => (
+              {displayedCakes.map((cake) => (
                 <div
                   key={cake.id}
                   className={styles.productCard}
@@ -391,6 +336,18 @@ export default function CakesPage() {
                 </div>
               ))}
             </div>
+
+            {/* View More Button */}
+            {hasMoreItems && (
+              <div className={styles.viewMoreContainer}>
+                <button 
+                  className={styles.viewMoreButton}
+                  onClick={loadMoreItems}
+                >
+                  View More
+                </button>
+              </div>
+            )}
 
           </div>
         </div>

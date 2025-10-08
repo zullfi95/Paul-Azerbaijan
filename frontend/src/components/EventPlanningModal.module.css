@@ -1,0 +1,217 @@
+/* EventPlanningModal.module.css */
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 40;
+  animation: fadeIn 0.3s ease;
+  cursor: pointer;
+}
+
+/* Modal Container */
+.modal {
+  position: fixed;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+  height: 550px;
+  flex-shrink: 0;
+  background: #000000;
+  border: none;
+  z-index: 50;
+  animation: fadeInScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+/* Header */
+.header {
+  padding: 1rem 1rem 0.1rem 1rem;
+  background: #000000;
+  color: #FFFCF8;
+  position: relative;
+
+}
+
+/* .closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFCF8;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+} */
+
+/* .closeButton:hover {
+  background-color: rgba(220, 53, 69, 0.9);
+  transform: scale(1.1) rotate(90deg);
+  border-color: #dc3545;
+} */
+
+.headerContent {
+  margin-right: 60px;
+  
+}
+
+.title {
+  color: #FFFAE6;
+  font-weight: 300;
+  font-size: 15px;
+  margin: 0 0 0.75rem 0;
+  font-family: "Sabon Next LT Pro"; 
+  line-height: normal;
+  /* text-align: center; */
+}
+
+/* Form Container */
+.formContainer {
+  flex: 1;
+  overflow: auto;
+  padding: 1rem;
+  background: #000000;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Grid Layouts */
+.gridRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+
+
+/* Input Fields */
+.input {
+  width: 80%;
+  height: 10px;
+  padding: 1rem;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  color: #000000;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.inputLarge {
+  width: 90%;
+  padding: 1rem;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  color: #000000;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.textarea {
+  width: 90%;
+  padding: 1rem;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  color: #000000;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+  resize: vertical;
+  min-height: 70px;
+}
+.inputLargePhone {
+  width: 80%;
+  padding: 1rem;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 6px;
+}
+
+/* Submit Button */
+.submitButton {
+  width: 95%;
+  padding: 0.6rem 1.2rem;
+  background-color: #FFFAE6;
+  color: black;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Parisine Pro Gris", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.submitButton:hover {
+  background-color: #f5f5dc;
+  transform: translateY(-2px);
+}
+
+.submitButton:disabled {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+.submitButton:disabled:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Privacy Notice */
+.privacyNotice {
+  color: #FFFAE6;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  margin: 0.75rem 0 0 0;
+  font-family: "Parisine Pro Gris";
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

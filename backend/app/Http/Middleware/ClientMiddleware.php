@@ -17,17 +17,21 @@ class ClientMiddleware
     {
         $user = $request->user();
         
-        // Логирование для отладки
-        \Log::info('ClientMiddleware check', [
-            'user_id' => $user ? $user->id : null,
-            'user_class' => $user ? get_class($user) : null,
-            'email' => $user ? $user->email : null,
-            'route' => $request->route()->getName(),
-            'url' => $request->url()
-        ]);
+        // Логирование только в development режиме
+        if (config('app.debug')) {
+            \Log::info('ClientMiddleware check', [
+                'user_id' => $user ? $user->id : null,
+                'user_class' => $user ? get_class($user) : null,
+                'email' => $user ? $user->email : null,
+                'route' => $request->route()->getName(),
+                'url' => $request->url()
+            ]);
+        }
         
         if (!$user) {
-            \Log::warning('ClientMiddleware: User not authenticated');
+            if (config('app.debug')) {
+                \Log::warning('ClientMiddleware: User not authenticated');
+            }
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthenticated'
@@ -36,18 +40,22 @@ class ClientMiddleware
 
         // Проверяем, что пользователь является клиентом
         if (!$user->isClient()) {
-            \Log::warning('ClientMiddleware: User is not a client', [
-                'user_id' => $user->id,
-                'user_type' => $user->user_type ?? 'not_set',
-                'staff_role' => $user->staff_role ?? 'not_set'
-            ]);
+            if (config('app.debug')) {
+                \Log::warning('ClientMiddleware: User is not a client', [
+                    'user_id' => $user->id,
+                    'user_type' => $user->user_type ?? 'not_set',
+                    'staff_role' => $user->staff_role ?? 'not_set'
+                ]);
+            }
             return response()->json([
                 'success' => false,
                 'message' => 'Access denied. Client access required.'
             ], 403);
         }
 
-        \Log::info('ClientMiddleware: Access granted', ['user_id' => $user->id]);
+        if (config('app.debug')) {
+            \Log::info('ClientMiddleware: Access granted', ['user_id' => $user->id]);
+        }
         return $next($request);
     }
 }

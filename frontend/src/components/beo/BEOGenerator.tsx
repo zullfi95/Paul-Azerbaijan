@@ -4,7 +4,7 @@ import { Button, Card, CardHeader, CardTitle, CardContent } from '../ui';
 
 interface BEOGeneratorProps {
   order: Order;
-  onSave: (beo: Record<string, unknown>) => void | Promise<void>;
+  onSave: (beo: Record<string, string | number | boolean | object>) => void | Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
 }

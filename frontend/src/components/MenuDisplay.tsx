@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
+import { getApiUrl } from '@/config/api';
+import styles from './MenuDisplay.module.css';
 
 interface MenuCategory {
   id: number;
@@ -46,55 +48,19 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
     try {
       setLoading(true);
       
-      // Пробуем разные URL для API
-      const apiUrls = [
-        `http://localhost:8000/api/menu/full?organization_id=${organizationId}`,
-        `http://127.0.0.1:8000/api/menu/full?organization_id=${organizationId}`,
-        `/api/menu/full?organization_id=${organizationId}`
-      ];
+      // Используем централизованную конфигурацию API
+      const url = getApiUrl(`menu/full?organization_id=${organizationId}`);
       
-      let response = null;
-      let lastError = null;
+      const response = await fetch(url);
       
-      for (const url of apiUrls) {
-        try {
-          response = await fetch(url);
-          if (response.ok) break;
-        } catch (err) {
-          lastError = err;
-          continue;
-        }
-      }
-      
-      if (!response || !response.ok) {
-        throw lastError || new Error('No API endpoint available');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch menu: ${response.status} ${response.statusText}`);
       }
       
       const data = await response.json();
       
-      if (data.success && Array.isArray(data.data)) {
-        // Убеждаемся, что у каждой категории есть activeMenuItems
-        const processedMenu = data.data.map((category: Record<string, unknown>) => ({
-          ...category,
-          activeMenuItems: Array.isArray(category.active_menu_items || category.activeMenuItems) 
-            ? ((category.active_menu_items || category.activeMenuItems) as unknown[]).map((item: unknown) => {
-                const itemRecord = item as Record<string, unknown>;
-                return {
-                  ...itemRecord,
-                  price: parseFloat(itemRecord.price as string) || 0,
-                  images: Array.isArray(itemRecord.images) ? itemRecord.images : [],
-                  allergens: Array.isArray(itemRecord.allergens) ? itemRecord.allergens : (itemRecord.allergens ? [itemRecord.allergens] : [])
-                };
-              })
-            : []
-        }));
-        
-        // Отладочная информация
-        const categoriesWithItems = processedMenu.filter((cat: Record<string, unknown>) => (cat.activeMenuItems as unknown[])?.length > 0);
-        const totalItems = processedMenu.reduce((sum: number, cat: Record<string, unknown>) => sum + ((cat.activeMenuItems as unknown[])?.length || 0), 0);
-        console.log(`Menu loaded: ${categoriesWithItems.length} categories with ${totalItems} total items`);
-        
-        setMenu(processedMenu);
+          if (data.success && Array.isArray(data.data)) {
+            setMenu(data.data);
       } else {
         setError(data.message || 'Failed to load menu');
       }
@@ -150,14 +116,7 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '400px',
-        fontSize: '18px',
-        color: '#6b7280'
-      }}>
+      <div className={styles.loading}>
         Loading menu...
       </div>
     );
@@ -165,90 +124,44 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
 
   if (error) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '400px',
-        fontSize: '18px',
-        color: '#ef4444'
-      }}>
+      <div className={styles.error}>
         Error: {error}
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+    <div className={styles.container}>
       {/* Statistics */}
-      {menu.length > 0 && (
-        <div style={{
-          marginBottom: '20px',
-          padding: '15px',
-          backgroundColor: '#f0f9ff',
-          borderRadius: '8px',
-          border: '1px solid #bae6fd'
-        }}>
-          <strong>Menu Statistics:</strong> {menu.length} categories, {menu.reduce((sum, cat) => sum + (cat.activeMenuItems?.length || 0), 0)} total items
+      {processedMenu.length > 0 && (
+        <div className={styles.stats}>
+          <strong>Menu Statistics:</strong> {processedMenu.length} categories, {processedMenu.reduce((sum, cat) => sum + (cat.activeMenuItems?.length || 0), 0)} total items
         </div>
       )}
 
       {/* Search and Filter */}
-      <div style={{ 
-        marginBottom: '40px',
-        display: 'flex',
-        gap: '20px',
-        flexWrap: 'wrap',
-        alignItems: 'center'
-      }}>
-        <div style={{ flex: '1', minWidth: '300px' }}>
+      <div className={styles.searchFilter}>
+        <div className={styles.searchInput}>
           <input
             type="text"
             placeholder="Search menu items..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              border: '2px solid #e5e7eb',
-              borderRadius: '8px',
-              fontSize: '16px',
-              outline: 'none',
-              transition: 'border-color 0.3s ease'
-            }}
-            onFocus={(e) => e.target.style.borderColor = '#EBDCC8'}
-            onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
           />
         </div>
         
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        <div className={styles.filterButtons}>
           <button
             onClick={() => setSelectedCategory(null)}
-            style={{
-              padding: '8px 16px',
-              border: selectedCategory === null ? '2px solid #EBDCC8' : '2px solid #e5e7eb',
-              backgroundColor: selectedCategory === null ? '#EBDCC8' : 'white',
-              borderRadius: '20px',
-              fontSize: '14px',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
+            className={`${styles.filterButton} ${selectedCategory === null ? styles.active : ''}`}
           >
             All Categories
           </button>
-          {menu.filter(cat => (cat.activeMenuItems || []).length > 0).map(category => (
+          {processedMenu.filter(cat => (cat.activeMenuItems || []).length > 0).map(category => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.name)}
-              style={{
-                padding: '8px 16px',
-                border: selectedCategory === category.name ? '2px solid #EBDCC8' : '2px solid #e5e7eb',
-                backgroundColor: selectedCategory === category.name ? '#EBDCC8' : 'white',
-                borderRadius: '20px',
-                fontSize: '14px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
+              className={`${styles.filterButton} ${selectedCategory === category.name ? styles.active : ''}`}
             >
               {category.name}
             </button>

@@ -1,7 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../contexts/AuthContext';
-import { Application, CartItem, User } from '../config/api';
+import {
+  Application,
+  CartItem,
+  User,
+  Order,
+  Address,
+} from '../types/common';
 import { makeApiRequest } from '../utils/apiHelpers';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../utils/queryKeys';
@@ -182,14 +188,14 @@ export const useOrderForm = () => {
         }
     }, [fromApplicationId, loadApplication, clients]);
 
-    const handleInputChange = (field: keyof OrderFormData, value: unknown) => {
+    const handleInputChange = (field: keyof OrderFormData, value: string | number | boolean) => {
         setFormData(prev => ({
             ...prev,
             [field]: value
         }));
     };
 
-    const handleRecurringChange = (field: keyof OrderFormData['recurring_schedule'], value: unknown) => {
+    const handleRecurringChange = (field: keyof OrderFormData['recurring_schedule'], value: string | number | boolean) => {
         setFormData(prev => ({
             ...prev,
             recurring_schedule: {

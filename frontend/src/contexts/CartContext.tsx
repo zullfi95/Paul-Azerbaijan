@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useAuth } from './AuthContext';
-import { CartItem } from '../config/api';
+import { CartItem, User, Order, Application, Address } from '@/types/unified';
 
 type GuestCartItem = Partial<CartItem> & { id: string; quantity?: number; price?: number };
 
@@ -42,7 +42,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const parsedCart = JSON.parse(savedCart);
         if (Array.isArray(parsedCart)) {
           // Валидация данных корзины
-          const validatedCart = parsedCart.filter((item: Record<string, unknown>) => {
+          const validatedCart = parsedCart.filter((item: Record<string, string | number | boolean>) => {
             return item.id && item.name && typeof item.price === 'number' && item.price >= 0;
           });
           setItems(validatedCart);
@@ -121,7 +121,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (isAuthenticated && user) {
         const guestCartRaw = localStorage.getItem('cart_guest');
         if (guestCartRaw) {
-          const parsed: unknown = JSON.parse(guestCartRaw);
+          const parsed: CartItem[] = JSON.parse(guestCartRaw);
           if (Array.isArray(parsed) && parsed.length > 0) {
             const guestCart = parsed as GuestCartItem[];
             setItems(prev => {
@@ -236,7 +236,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }
         };
         // Type the window as having addEventListener for storage events
-        (window as unknown as { addEventListener: (type: 'storage', listener: (e: StorageEvent) => void) => void }).addEventListener('storage', storageHandler);
+        window.addEventListener('storage', storageHandler);
       }
     } catch {
       console.error('Error setting up cart synchronization:');
@@ -250,7 +250,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } catch {}
       try {
         if (storageHandler) {
-          (window as unknown as { removeEventListener: (type: 'storage', listener: (e: StorageEvent) => void) => void }).removeEventListener('storage', storageHandler);
+          window.removeEventListener('storage', storageHandler);
         }
       } catch {}
     };

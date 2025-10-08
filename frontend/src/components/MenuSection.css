@@ -91,21 +91,22 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 75%;
+  width: 85%;
   background: #1a1a1a;
   padding: 10px 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 0;
+  border-radius: 11px 11px 0 0;
+
 }
 
 .menu-card-overlay h3 {
-  color: var(--Ivory-colour-PAUL, #FFFCF8);
-  leading-trim: both;
-  text-edge: cap;
+  color: var(--Ivory-colour-PAUL, #FFFAE6);
+
   font-family: "Sabon Next LT Pro";
-  font-size: 17px;
+  font-size: 19px;
   font-style: normal;
   font-weight: 300;
   line-height: normal;

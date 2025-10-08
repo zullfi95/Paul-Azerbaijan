@@ -162,28 +162,18 @@ const bread: Bread[] = [
   }
 ];
 
-const categories = [
-  { name: 'Savoury', icon: '🥐', image: '/images/category4.png' },
-  { name: 'Sweet French pastries', icon: '🥖', image: '/images/category3.png' },
-  { name: 'Pies and cakes', icon: '🍞', image: '/images/category5.png' },
-  { name: 'Macarons', icon: '🧁', image: '/images/category2.png' }
-];
 
 export default function BreadPage() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { showNotification } = useNotification();
 
-  const filteredBread = selectedCategory === 'All' 
-    ? bread 
-    : bread.filter(item => item.category === selectedCategory);
-
-  const sortedBread = [...filteredBread].sort((a, b) => {
+  const sortedBread = [...bread].sort((a, b) => {
     switch (sortBy) {
       case 'name':
         return a.name.localeCompare(b.name);
@@ -196,13 +186,20 @@ export default function BreadPage() {
     }
   });
 
+  const displayedBread = sortedBread.slice(0, visibleItems);
+  const hasMoreItems = visibleItems < sortedBread.length;
+
+  const loadMoreItems = () => {
+    setVisibleItems(prev => Math.min(prev + 8, sortedBread.length));
+  };
+
   const addToCart = (item: Bread) => {
     addItem({
       id: item.id,
       name: item.name,
       description: item.description,
       price: item.price,
-      image: item.image,
+      images: item.image ? [item.image] : [],
       category: item.category,
       available: item.available,
       isSet: item.isSet,
@@ -245,34 +242,6 @@ export default function BreadPage() {
           </div>
         </div>
 
-        {/* Category Navigation */}
-        <div className={styles.categorySection}>
-          <div className="container-paul">
-            <div className={styles.categoryNavigation}>
-              {categories.map((category) => (
-                <div
-                  key={category.name}
-                  className={styles.categoryItem}
-                  onClick={() => setSelectedCategory(category.name)}
-
-                >
-                  <div className={styles.categoryIcon}>
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      width={60}
-                      height={60}
-                      className={styles.categoryImage}
-                    />
-                  </div>
-                  <span className={styles.categoryName}>
-                    {category.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
 
         {/* Page Title and Sort Button */}
@@ -291,7 +260,7 @@ export default function BreadPage() {
 
             {/* Product Grid */}
             <div className={styles.productGrid}>
-              {sortedBread.map((item) => (
+              {displayedBread.map((item) => (
                 <div
                   key={item.id}
                   className={styles.productCard}
@@ -337,6 +306,18 @@ export default function BreadPage() {
                 </div>
               ))}
             </div>
+
+            {/* View More Button */}
+            {hasMoreItems && (
+              <div className={styles.viewMoreContainer}>
+                <button 
+                  className={styles.viewMoreButton}
+                  onClick={loadMoreItems}
+                >
+                  View More
+                </button>
+              </div>
+            )}
 
           </div>
         </div>

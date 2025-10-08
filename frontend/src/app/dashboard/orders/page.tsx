@@ -236,7 +236,7 @@ function OrdersPage() {
         quantity: item.quantity ?? 1,
         price: item.price ?? 0,
         description: (item as CartItem).description ?? '',
-        image: (item as CartItem).image ?? '',
+        images: (item as CartItem).images ?? [],
         category: (item as CartItem).category ?? '',
         available: (item as CartItem).available ?? true,
         isSet: (item as CartItem).isSet ?? false,
@@ -1789,7 +1789,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onEdit, onDelete }) => 
 interface PriceCalculatorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  calculatePrice: (basePrice: number, options: { [key: string]: unknown }) => { basePrice: number; appliedMarkups: Array<{ name: string; amount: number }>; totalPrice: number; deliveryFee: number; savings: number };
+  calculatePrice: (basePrice: number, options: { [key: string]: string | number | boolean }) => { basePrice: number; appliedMarkups: Array<{ name: string; amount: number }>; totalPrice: number; deliveryFee: number; savings: number };
   pricingRules: PricingRules;
 }
 

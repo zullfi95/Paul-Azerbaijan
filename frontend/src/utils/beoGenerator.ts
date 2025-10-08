@@ -1,6 +1,4 @@
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import type { Order } from '../config/api';
+import type { Order } from '../types/common';
 import { formatTotalAmount, parseTotalAmount } from './numberUtils';
 import { getStatusLabel } from './statusTranslations';
 
@@ -100,8 +98,8 @@ export async function generateBEOFile(order: Order): Promise<void> {
   
   const eventInfo = [
     ['Компания/Организация:', order.company_name],
-    ['Дата мероприятия:', formatDate(order.delivery_date as unknown as string)],
-    ['Время мероприятия:', formatTime(order.delivery_time as unknown as string)],
+    ['Дата мероприятия:', formatDate(order.delivery_date as string)],
+    ['Время мероприятия:', formatTime(order.delivery_time as string)],
     ['Статус заказа:', getStatusLabel(order.status)],
     ['Сумма заказа:', order.total_amount ? `${formatTotalAmount(order.total_amount)} ₼` : 'Не указано']
   ];

@@ -2,9 +2,10 @@
 
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { LanguageProvider } from "../contexts/LanguageContext";
-import { CartModalProvider } from "../contexts/CartModalContext";
-import { NotificationProvider } from "../contexts/NotificationContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
+import { CartModalProvider } from "@/contexts/CartModalContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient({
@@ -32,13 +33,15 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <CartModalProvider>
-          <NotificationProvider>
-            {children}
-          </NotificationProvider>
-        </CartModalProvider>
-      </LanguageProvider>
+      <AuthProvider>
+        <CartProvider>
+          <CartModalProvider>
+            <NotificationProvider>
+              {children}
+            </NotificationProvider>
+          </CartModalProvider>
+        </CartProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

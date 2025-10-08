@@ -1,33 +1,32 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../contexts/AuthContext';
-import { Order, API_CONFIG, getAuthHeaders, Address } from '../config/api';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  Order,
+  Address,
+  User,
+  Application,
+  CartItem,
+} from '@/types/unified';
+import { API_CONFIG, getAuthHeaders } from '@/config/api';
+import { makeApiRequest } from '@/utils/apiHelpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '../utils/queryKeys';
-import { getToken } from '../utils/tokenManager';
+import { queryKeys } from '@/utils/queryKeys';
+import { getToken } from '@/utils/tokenManager';
 
 const fetchActiveOrders = async (): Promise<Order[]> => {
-    const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CLIENT_ORDERS_ACTIVE}`, { headers: getAuthHeaders() });
-    if (!response.ok) throw new Error('Failed to fetch active orders');
-    const data = await response.json();
-    return data.success ? data.data : [];
+    const data = await makeApiRequest<Order[]>(API_CONFIG.ENDPOINTS.CLIENT_ORDERS_ACTIVE);
+    return data.success && data.data ? data.data : [];
 };
 
 const fetchUnreadCount = async (): Promise<number> => {
-    const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CLIENT_NOTIFICATIONS_UNREAD}`, { headers: getAuthHeaders() });
-    if (!response.ok) throw new Error('Failed to fetch unread count');
-    const data = await response.json();
-    return data.success ? data.data.unread_count : 0;
+    const data = await makeApiRequest<{unread_count: number}>(API_CONFIG.ENDPOINTS.CLIENT_NOTIFICATIONS_UNREAD);
+    return data.success && data.data ? data.data.unread_count : 0;
 };
 
 const fetchAddresses = async (): Promise<Address[]> => {
-    const response = await fetch(`${API_CONFIG.BASE_URL}/user/addresses`, { headers: getAuthHeaders() });
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP ${response.status}: Failed to fetch addresses`);
-    }
-    const data = await response.json();
-    return data.success ? data.data : [];
+    const data = await makeApiRequest<Address[]>('/user/addresses');
+    return data.success && data.data ? data.data : [];
 };
 
 
@@ -55,6 +54,9 @@ export const useUserProfile = () => {
     street: '',
     city: '',
     postal_code: '',
+    type: 'shipping' as const,
+    user_id: user?.id || 0,
+    country: 'Azerbaijan',
   });
 
   // Состояние для подписок
@@ -141,7 +143,7 @@ export const useUserProfile = () => {
     }
   };
 
-  const validateForm = (formData: Record<string, unknown>, formType: string) => {
+  const validateForm = (formData: Record<string, string | number | boolean>, formType: string) => {
     const errors: Record<string, string> = {};
     if (formType === 'edit') {
         if (!(formData.name as string).trim()) errors.name = 'Name is required';
@@ -157,7 +159,7 @@ export const useUserProfile = () => {
         if (!formData.current_password) errors.current_password = 'Current password is required';
         if (!formData.new_password) {
             errors.new_password = 'New password is required';
-        } else if (formData.new_password.length < 8) {
+        } else if (typeof formData.new_password === 'string' && formData.new_password.length < 8) {
             errors.new_password = 'Password must be at least 8 characters';
         }
         if (formData.new_password !== formData.confirm_password) {
@@ -179,7 +181,7 @@ export const useUserProfile = () => {
       }
     },
     onError: (error) => {
-      console.error('Update user error:', error);
+      // console.error('Update user error:', error); // Removed for production
       setEditError('Xəta baş verdi. Yenidən cəhd edin.');
     }
   });
@@ -189,9 +191,7 @@ export const useUserProfile = () => {
       const url = `${API_CONFIG.BASE_URL}/user/addresses`;
       const headers = getAuthHeaders();
       
-      console.log('Making request to:', url);
-      console.log('Headers:', headers);
-      console.log('Address data:', addressData);
+
       
       const response = await fetch(url, {
         method: 'POST',
@@ -199,71 +199,74 @@ export const useUserProfile = () => {
         body: JSON.stringify(addressData),
       });
       
-      console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      // console.log('Response status:', response.status); // Removed for production
+      // console.log('Response headers:', Object.fromEntries(response.headers.entries())); // Removed for production
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('Error response:', errorData);
+        // console.error('Error response:', errorData); // Removed for production
         throw new Error(errorData.message || `HTTP ${response.status}: Failed to add address`);
       }
       
       const result = await response.json();
-      console.log('Success response:', result);
+      // console.log('Success response:', result); // Removed for production
       return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.user.addresses(user?.id) });
       alert('Address added successfully!');
       // Reset shipping address form
-      setShippingAddress({ street: '', city: '', postal_code: '' });
+      setShippingAddress({ 
+        street: '', 
+        city: '', 
+        postal_code: '',
+        type: 'shipping' as const,
+        user_id: user?.id || 0,
+        country: 'Azerbaijan',
+      });
     },
     onError: (error: Error) => {
-      console.error('Add address error:', error);
+      // console.error('Add address error:', error); // Removed for production
       alert(`Failed to add address: ${error.message}`);
     }
   });
 
   const { mutate: setDefaultAddress } = useMutation({
     mutationFn: async (addressId: number) => {
-      const response = await fetch(`${API_CONFIG.BASE_URL}/user/addresses/${addressId}/default`, {
+      const response = await makeApiRequest(`/user/addresses/${addressId}/default`, {
         method: 'POST',
-        headers: getAuthHeaders(),
       });
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP ${response.status}: Failed to set default address`);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to set default address');
       }
-      return response.json();
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.user.addresses(user?.id) });
       alert('Default address updated!');
     },
     onError: (error: Error) => {
-      console.error('Set default address error:', error);
+      // console.error('Set default address error:', error); // Removed for production
       alert(`Failed to set default address: ${error.message}`);
     }
   });
 
   const { mutate: deleteAddress } = useMutation({
     mutationFn: async (addressId: number) => {
-      const response = await fetch(`${API_CONFIG.BASE_URL}/user/addresses/${addressId}`, {
+      const response = await makeApiRequest(`/user/addresses/${addressId}`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
       });
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP ${response.status}: Failed to delete address`);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to delete address');
       }
-      return response.json();
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.user.addresses(user?.id) });
       alert('Address deleted successfully!');
     },
     onError: (error: Error) => {
-      console.error('Delete address error:', error);
+      // console.error('Delete address error:', error); // Removed for production
       alert(`Failed to delete address: ${error.message}`);
     }
   });
@@ -288,21 +291,19 @@ export const useUserProfile = () => {
     setIsSubmitting(true);
     setPasswordError('');
     try {
-      const response = await fetch(`${API_CONFIG.BASE_URL}/auth/change-password`, {
+      const response = await makeApiRequest('/auth/change-password', {
         method: 'POST',
-        headers: getAuthHeaders(),
         body: JSON.stringify(passwordForm)
       });
-      if (response.ok) {
+      if (response.success) {
         setPasswordForm({ current_password: '', new_password: '', confirm_password: '' });
         setActiveSection('my-account');
         alert('Password changed successfully!');
       } else {
-        const errorData = await response.json();
-        setPasswordError(errorData.message || 'Failed to change password');
+        setPasswordError(response.message || 'Failed to change password');
       }
     } catch (error) {
-      console.error('Password change error:', error);
+      // console.error('Password change error:', error); // Removed for production
       setPasswordError('An error occurred while changing password');
     } finally {
       setIsSubmitting(false);
@@ -331,8 +332,8 @@ export const useUserProfile = () => {
       return;
     }
     
-    console.log('Submitting address:', shippingAddress);
-    console.log('User ID:', user.id);
+    // console.log('Submitting address:', shippingAddress); // Removed for production
+    // console.log('User ID:', user.id); // Removed for production
     console.log('Token exists:', !!token);
     
     addAddress(shippingAddress);
@@ -341,12 +342,11 @@ export const useUserProfile = () => {
   const handleNewsletterUpdate = async () => {
     setIsSubmitting(true);
     try {
-      const response = await fetch(`${API_CONFIG.BASE_URL}/user/newsletter-subscriptions`, {
+      const response = await makeApiRequest('/user/newsletter-subscriptions', {
         method: 'POST',
-        headers: getAuthHeaders(),
         body: JSON.stringify(newsletterSubscriptions)
       });
-      if (response.ok) {
+      if (response.success) {
         alert('Newsletter preferences updated successfully!');
       } else {
         alert('Failed to update newsletter preferences');
@@ -361,20 +361,13 @@ export const useUserProfile = () => {
 
   const handleDirectPayment = async (orderId: number) => {
     try {
-      const response = await fetch(`${API_CONFIG.BASE_URL}/payment/orders/${orderId}/create`, {
+      const response = await makeApiRequest<{payment_url: string}>(`/payment/orders/${orderId}/create`, {
         method: 'POST',
-        headers: getAuthHeaders(),
       });
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data.payment_url) {
-          window.location.href = data.data.payment_url;
-        } else {
-          alert(data.message || 'Ödəniş yaradıla bilmədi');
-        }
+      if (response.success && response.data?.payment_url) {
+        window.location.href = response.data.payment_url;
       } else {
-        const errorData = await response.json();
-        alert(errorData.message || 'Ödəniş yaradıla bilmədi');
+        alert(response.message || 'Failed to create payment');
       }
     } catch (error) {
       console.error('Payment error:', error);

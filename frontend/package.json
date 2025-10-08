@@ -15,7 +15,6 @@
     "@tanstack/react-query": "^5.90.2",
     "axios": "^1.11.0",
     "clsx": "^2.1.1",
-    "critters": "^0.0.23",
     "date-fns": "^3.6.0",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
@@ -28,7 +27,6 @@
     "react-hook-form": "^7.52.1",
     "react-hot-toast": "^2.4.1",
     "react-leaflet": "^4.2.1",
-    "react-query": "^3.39.3",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
     "zustand": "^5.0.8"
@@ -41,6 +39,7 @@
     "@types/react": "^19",
     "@types/react-big-calendar": "^1.16.2",
     "@types/react-dom": "^19",
+    "critters": "^0.0.23",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "eslint-plugin-react-refresh": "^0.4.7",

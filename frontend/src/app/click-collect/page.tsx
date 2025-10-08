@@ -3,14 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import FeaturesSection from '../../components/FeaturesSection';
-import Breadcrumbs from '../../components/Breadcrumbs';
-import CartModal from '../../components/CartModal';
-import { useCart } from '../../contexts/CartContext';
-import { useCartModal } from '../../contexts/CartModalContext';
-import { useNotification } from '../../contexts/NotificationContext';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import FeaturesSection from '@/components/FeaturesSection';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import CartModal from '@/components/CartModal';
+import { useCart } from '@/contexts/CartContext';
+import { useCartModal } from '@/contexts/CartModalContext';
+import { useNotification } from '@/contexts/NotificationContext';
+import { getApiUrl } from '@/config/api';
 
 interface MenuCategory {
   id: number;
@@ -66,7 +67,7 @@ export default function ClickCollectPage() {
     try {
       setLoading(true);
       
-      const response = await fetch(`http://localhost:8000/api/menu/full?organization_id=${organizationId}`);
+      const response = await fetch(getApiUrl(`menu/full?organization_id=${organizationId}`));
       
       if (!response.ok) {
         throw new Error('Failed to fetch menu');
@@ -75,11 +76,11 @@ export default function ClickCollectPage() {
       const data = await response.json();
       
       if (data.success && Array.isArray(data.data)) {
-        const processedMenu = data.data.map((category: Record<string, unknown>) => ({
+        const processedMenu = data.data.map((category: Record<string, string | number | boolean | object>) => ({
           ...category,
           activeMenuItems: Array.isArray(category.active_menu_items || category.activeMenuItems) 
-            ? ((category.active_menu_items || category.activeMenuItems) as unknown[]).map((item: unknown) => {
-                const itemRecord = item as Record<string, unknown>;
+            ? ((category.active_menu_items || category.activeMenuItems) as object[]).map((item: object) => {
+                const itemRecord = item as Record<string, string | number | boolean>;
                 return {
                   ...itemRecord,
                   price: parseFloat(itemRecord.price as string) || 0,

@@ -33,8 +33,8 @@ const platters: Platter[] = [
     name: 'Cheese & Charcuterie Platter',
     description: 'Selection of French cheeses and cured meats',
     price: 45.00,
-    image: '/images/Savoury.jpg',
-    category: 'Savoury',
+    image: '/images/Macarons3.png',
+    category: 'Macarons',
     available: true,
     isSet: true,
     persons: 4,
@@ -45,8 +45,8 @@ const platters: Platter[] = [
     name: 'Mediterranean Platter',
     description: 'Olives, hummus, pita bread, and fresh vegetables',
     price: 35.00,
-    image: '/images/Savoury (2).jpg',
-    category: 'Savoury',
+    image: '/images/Macarons4.png',
+    category: 'Macarons',
     available: true,
     isSet: true,
     persons: 3,
@@ -69,8 +69,8 @@ const platters: Platter[] = [
     name: 'Seafood Platter',
     description: 'Fresh seafood selection with dipping sauces',
     price: 55.00,
-    image: '/images/Savoury.jpg',
-    category: 'Savoury',
+    image: '/images/Macarons2.png',
+    category: 'Macarons',
     available: true,
     isSet: true,
     persons: 4,
@@ -81,8 +81,8 @@ const platters: Platter[] = [
     name: 'Vegetarian Delight',
     description: 'Fresh vegetables, dips, and artisanal breads',
     price: 30.00,
-    image: '/images/Savoury.jpg',
-    category: 'Savoury',
+    image: '/images/Macarons1.png',
+    category: 'Macarons',
     available: true,
     isSet: true,
     persons: 3,
@@ -93,8 +93,8 @@ const platters: Platter[] = [
     name: 'Dessert Platter',
     description: 'Selection of French pastries and desserts',
     price: 40.00,
-    image: '/images/Platters2.png',
-    category: 'Pies and cakes',
+    image: '/images/Macarons4.png',
+    category: 'Macarons',
     available: true,
     isSet: true,
     persons: 4,
@@ -105,8 +105,8 @@ const platters: Platter[] = [
     name: 'Wine & Cheese Pairing',
     description: 'Curated cheese selection with wine recommendations',
     price: 65.00,
-    image: '/images/Savoury (3).jpg',
-    category: 'Savoury',
+    image: '/images/Macarons4.png',
+    category: 'Macarons',
     available: true,
     isSet: true,
     persons: 4,
@@ -174,28 +174,18 @@ const platters: Platter[] = [
   }
 ];
 
-const categories = [
-  { name: 'Savoury', icon: '🧀', image: '/images/category4.png' },
-  { name: 'Sweet French pastries', icon: '🥖', image: '/images/category3.png' },
-  { name: 'Pies and cakes', icon: '🍞', image: '/images/category5.png' },
-  { name: 'Macarons', icon: '🧁', image: '/images/category2.png' }
-];
 
 export default function PlattersPage() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { showNotification } = useNotification();
 
-  const filteredPlatters = selectedCategory === 'All' 
-    ? platters 
-    : platters.filter(item => item.category === selectedCategory);
-
-  const sortedPlatters = [...filteredPlatters].sort((a, b) => {
+  const sortedPlatters = [...platters].sort((a, b) => {
     switch (sortBy) {
       case 'name':
         return a.name.localeCompare(b.name);
@@ -208,13 +198,20 @@ export default function PlattersPage() {
     }
   });
 
+  const displayedPlatters = sortedPlatters.slice(0, visibleItems);
+  const hasMoreItems = visibleItems < sortedPlatters.length;
+
+  const loadMoreItems = () => {
+    setVisibleItems(prev => Math.min(prev + 8, sortedPlatters.length));
+  };
+
   const addToCart = (item: Platter) => {
     addItem({
       id: item.id,
       name: item.name,
       description: item.description,
       price: item.price,
-      image: item.image,
+      images: item.image ? [item.image] : [],
       category: item.category,
       available: item.available,
       isSet: item.isSet,
@@ -257,34 +254,6 @@ export default function PlattersPage() {
           </div>
         </div>
 
-        {/* Category Navigation */}
-        <div className={styles.categorySection}>
-          <div className="container-paul">
-            <div className={styles.categoryNavigation}>
-              {categories.map((category) => (
-                <div
-                  key={category.name}
-                  className={styles.categoryItem}
-                  onClick={() => setSelectedCategory(category.name)}
-
-                >
-                  <div className={styles.categoryIcon}>
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      width={60}
-                      height={60}
-                      className={styles.categoryImage}
-                    />
-                  </div>
-                  <span className={styles.categoryName}>
-                    {category.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
 
 
@@ -304,7 +273,7 @@ export default function PlattersPage() {
 
             {/* Product Grid */}
             <div className={styles.productGrid}>
-              {sortedPlatters.map((item) => (
+              {displayedPlatters.map((item) => (
                 <div
                   key={item.id}
                   className={styles.productCard}
@@ -350,6 +319,18 @@ export default function PlattersPage() {
                 </div>
               ))}
             </div>
+
+            {/* View More Button */}
+            {hasMoreItems && (
+              <div className={styles.viewMoreContainer}>
+                <button 
+                  className={styles.viewMoreButton}
+                  onClick={loadMoreItems}
+                >
+                  View More
+                </button>
+              </div>
+            )}
 
           </div>
         </div>

@@ -1,7 +1,13 @@
 // Profile API utilities
 
-import { API_CONFIG, getAuthHeaders } from '../config/api';
-import { AddressData, PasswordForm, EditForm, NewsletterSubscriptions } from '../types/profile';
+import { API_CONFIG, getAuthHeaders } from '@/config/api';
+import {
+  PasswordForm,
+  EditForm,
+  NewsletterSubscriptions,
+  AddressData,
+} from '../types/profile';
+import { User, Order, Application, CartItem, Address } from '@/types/unified';
 
 export const profileApi = {
   // Address operations

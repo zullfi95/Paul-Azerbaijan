@@ -67,7 +67,7 @@ export default function DashboardPage() {
   const loadApplications = useCallback(async () => {
     setApplicationsLoading(true);
     try {
-      const result = await makeApiRequest<Application[]>("applications");
+      const result = await makeApiRequest<Application[]>("/applications");
       if (result.success) {
         setApplications(extractApiData(result.data || []));
       } else {
@@ -83,7 +83,7 @@ export default function DashboardPage() {
   const loadOrders = useCallback(async () => {
     if (!canManageOrders(user || { user_type: '', staff_role: '' })) return;
     try {
-      const result = await makeApiRequest<Order[]>("orders");
+      const result = await makeApiRequest<Order[]>("/orders");
       if (result.success) {
         setOrders(extractApiData(result.data || []));
       } else {
@@ -159,7 +159,7 @@ export default function DashboardPage() {
     }
 
     try {
-      const result = await makeApiRequest(`applications/${applicationId}/status`, {
+      const result = await makeApiRequest(`/applications/${applicationId}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status: newStatus, coordinator_comment: comment }),
       });

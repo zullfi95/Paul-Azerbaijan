@@ -4,7 +4,7 @@
 echo "🔄 Quick update starting..."
 
 # Update code
-cd /var/www/paul-azerbaijan
+cd /var/www/paul
 git pull origin master
 
 # Update backend

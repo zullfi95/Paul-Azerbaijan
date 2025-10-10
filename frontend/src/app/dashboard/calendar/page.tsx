@@ -27,7 +27,7 @@ export default function CalendarPage() {
   const loadOrders = useCallback(async () => {
     setOrdersLoading(true);
     try {
-      const result = await makeApiRequest<Order[]>("orders");
+      const result = await makeApiRequest<Order[]>("/orders");
       if (result.success) {
         setOrders(extractApiData(result.data || []));
       } else {

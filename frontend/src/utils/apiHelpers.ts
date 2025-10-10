@@ -10,6 +10,7 @@ import {
   ApiResponse,
 } from '../types/common';
 import { API_CONFIG } from '../config/api';
+import { getToken } from './tokenManager';
 
 // Стандартизированные типы для API ответов
 export interface StandardApiResponse<T> {
@@ -83,8 +84,8 @@ export async function makeApiRequest<T>(
   const { method = 'GET', body, token } = options;
 
   try {
-    // Получаем токен из localStorage или из переданного параметра
-    const authToken = token || (typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null);
+    // Получаем токен из tokenManager или из переданного параметра
+    const authToken = token || getToken();
 
     console.log('🔍 API Request:', {
       url: API_CONFIG.BASE_URL + endpoint,

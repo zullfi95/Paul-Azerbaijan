@@ -1,5 +1,6 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import FeedbackModal from '../../components/FeedbackModal';
 
 export default function AboutPage() {
   return (
@@ -203,6 +204,9 @@ export default function AboutPage() {
       </section>
 
       <Footer />
+      
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
     </div>
   );
 }

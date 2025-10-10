@@ -7,6 +7,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import FeedbackModal from '../../components/FeedbackModal';
 import { useCart } from '../../contexts/CartContext';
 import styles from './CartPage.module.css';
 
@@ -139,7 +140,7 @@ export default function CartPage() {
                     {/* Изображение товара */}
                     <div className={styles.productImage}>
                       <Image 
-                        src={item.image} 
+                        src={item.image || '/images/placeholder-food.svg'} 
                         alt={item.name}
                         width={170}
                         height={165}
@@ -235,6 +236,9 @@ export default function CartPage() {
 
       <FeaturesSection />
       <Footer />
+      
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
     </div>
   );
 }

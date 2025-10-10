@@ -151,8 +151,7 @@ body.menu-open {
   box-sizing: border-box;
 }
 
-.search-input:focus {
-}
+
 
 .search-icon {
   position: absolute;
@@ -803,6 +802,12 @@ body.menu-open {
   color: white;
 }
 
+/* Plan an Event container */
+.plan-event-container {
+  position: relative;
+  display: inline-block;
+}
+
 /* Plan an Event special styling */
 .action-button.plan-event {
   background-color: #000000;
@@ -817,6 +822,47 @@ body.menu-open {
   border-color: #000000;
   color: #ffffff;
   transform: translateY(-2px);
+}
+
+/* Plan an Event tooltip */
+.plan-event-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #000000;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 1000;
+  margin-top: 8px;
+  width: 100%;
+  max-width: 600px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.4;
+  overflow: hidden;
+}
+
+.plan-event-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: #000000;
+}
+
+.plan-event-container:hover .plan-event-tooltip {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Small exclamation badge on Plan Event */
@@ -1006,6 +1052,13 @@ body.menu-open {
     font-size: 7px;
     top: 2px;
     right: 2px;
+  }
+  
+  .plan-event-tooltip {
+    font-size: 10px;
+    padding: 6px 10px;
+    max-width: 250px;
+    margin-top: 6px;
   }
   
   .search-container.expanded .search-input {

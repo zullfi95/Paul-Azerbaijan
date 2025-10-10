@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import FeaturesSection from '@/components/FeaturesSection';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CartModal from '@/components/CartModal';
+import FeedbackModal from '@/components/FeedbackModal';
 import { useCart } from '@/contexts/CartContext';
 import { useCartModal } from '@/contexts/CartModalContext';
 import { useNotification } from '@/contexts/NotificationContext';
@@ -823,6 +824,9 @@ export default function ClickCollectPage() {
 
       <FeaturesSection />
       <Footer />
+      
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
     </div>
   );
 }

@@ -7,16 +7,12 @@ import Image from 'next/image';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
-import FeedbackButton from '../../components/FeedbackButton';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import FeedbackModal from '../../components/FeedbackModal';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import styles from './ProfilePage.module.css';
 import { Dashboard } from '@/components/profile/Dashboard';
-import dynamicImport from 'next/dynamic';
-
-const AddressMap = dynamicImport(() => import('@/components/maps/AddressMap'), {
-  ssr: false
-});
+import { AccountInfoInformation } from '@/components/profile/AccountInfoInformation';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -47,14 +43,13 @@ export default function ProfilePage() {
     handleEditFormChange,
     handleEditSubmit,
     handlePasswordSubmit,
+    handleEmailFormSubmit,
     handleAddressSubmit,
     handleNewsletterUpdate,
     handleDirectPayment,
     handlePasswordFormChange,
-    addresses,
-    loadingAddresses,
-    setDefaultAddress,
-    deleteAddress
+    shippingAddressData,
+    loadingShippingAddress
   } = useUserProfile();
 
   if (isAuthLoading) {
@@ -77,62 +72,75 @@ export default function ProfilePage() {
     <div className={styles.profilePage}>
       <Header />
       
-      <Breadcrumbs 
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'My Account', isActive: true }
-        ]}
-      />
+      <div style={{
+        padding: '1rem 0',
+        backgroundColor: '#FFFCF8',
+        borderBottom: '1px solid rgba(0,0,0,0.06)'
+      }}>
+        <div style={{
+          maxWidth: '1140px',
+          margin: '0 auto',
+          padding: '0 20px'
+        }}>
+          <Breadcrumbs 
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'My Account', isActive: true }
+            ]}
+          />
+        </div>
+      </div>
+      <h2 className={styles.sectionTitle}>
+        {{
+          'my-account': 'My Account',
+          'my-orders': 'My Orders',
+          'address-information': 'Address Information',
+          'edit-profile': 'Edit Profile',
+          'change-password': 'Change Password',
+          'newsletter-subscription': 'Newsletter Subscription'
+        }[activeSection] || 'My Account'}
+      </h2>
+
 
       <div className="navbar-spacing">
         <div className={styles.mainContent}>
           <aside className={styles.sidebar} role="navigation" aria-label="Account navigation">
             <nav className={styles.sidebarNav}>
-                  <button
+              <button
                 className={`${styles.sidebarButton} ${activeSection === 'my-account' ? styles.active : ''}`}
                 onClick={() => setActiveSection('my-account')}
                 aria-current={activeSection === 'my-account' ? 'page' : undefined}
               >
                 My Account
-                  </button>
-                    <button
+              </button>
+              <button
                 className={`${styles.sidebarButton} ${activeSection === 'my-orders' ? styles.active : ''}`}
                 onClick={() => setActiveSection('my-orders')}
                 aria-current={activeSection === 'my-orders' ? 'page' : undefined}
               >
                 My Orders
-                    </button>
-                    <button
+              </button>
+              <button
                 className={`${styles.sidebarButton} ${activeSection === 'address-information' ? styles.active : ''}`}
                 onClick={() => setActiveSection('address-information')}
                 aria-current={activeSection === 'address-information' ? 'page' : undefined}
               >
-                Address Information
-                    </button>
-                  <button
-                className={`${styles.sidebarButton} ${activeSection === 'edit-profile' ? styles.active : ''}`}
-                onClick={() => {
-                  setActiveSection('edit-profile');
-                  initializeEditForm();
-                }}
-                aria-current={activeSection === 'edit-profile' ? 'page' : undefined}
+                Address info information
+              </button>
+              <button
+                className={`${styles.sidebarButton} ${activeSection === 'account-info-information' ? styles.active : ''}`}
+                onClick={() => setActiveSection('account-info-information')}
+                aria-current={activeSection === 'account-info-information' ? 'page' : undefined}
               >
-                Edit Profile
-                  </button>
-                  <button
-                className={`${styles.sidebarButton} ${activeSection === 'change-password' ? styles.active : ''}`}
-                onClick={() => setActiveSection('change-password')}
-                aria-current={activeSection === 'change-password' ? 'page' : undefined}
+                Account info information
+              </button>
+              <button
+                className={`${styles.sidebarButton} ${activeSection === 'newsletter-subscriptions' ? styles.active : ''}`}
+                onClick={() => setActiveSection('newsletter-subscriptions')}
+                aria-current={activeSection === 'newsletter-subscriptions' ? 'page' : undefined}
               >
-                Change Password
-                  </button>
-                  <button
-                className={`${styles.sidebarButton} ${activeSection === 'newsletter-subscription' ? styles.active : ''}`}
-                onClick={() => setActiveSection('newsletter-subscription')}
-                aria-current={activeSection === 'newsletter-subscription' ? 'page' : undefined}
-              >
-                Newsletter Subscription
-                  </button>
+                Newsletter subscriptions
+              </button>
               <button 
                 className={styles.sidebarButton}
                 onClick={() => logout()}
@@ -141,21 +149,23 @@ export default function ProfilePage() {
               </button>
             </nav>
           </aside>
+          
 
           <main className={styles.content}>
             {activeSection === 'my-account' && (
-              <Dashboard
-                user={user}
-                activeOrders={activeOrders}
-                unreadCount={0}
-                onNavigate={setActiveSection}
-                onInitializeEditForm={initializeEditForm}
-              />
+              <section className={styles.section}>
+                <Dashboard
+                  user={user}
+                  activeOrders={activeOrders}
+                  unreadCount={0}
+                  shippingAddress={shippingAddressData}
+                  onNavigate={setActiveSection}
+                />
+              </section>
             )}
 
             {activeSection === 'my-orders' && (
               <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>My Orders</h2>
                 
                 <div className={styles.orderFilters}>
                 <button
@@ -310,33 +320,25 @@ export default function ProfilePage() {
 
             {activeSection === 'address-information' && (
               <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>Address Information</h2>
                 
-                {loadingAddresses ? (
-                  <p>Loading addresses...</p>
+                {loadingShippingAddress ? (
+                  <p>Loading address...</p>
                 ) : (
                   <div className={styles.addressList}>
-                    {addresses.map((address) => (
-                      <div key={address.id} className={styles.addressCard}>
-                        <p>{address.street}, {address.city}, {address.postal_code}, {address.country}</p>
-                        {address.is_default ? (
-                          <span className={styles.defaultBadge}>Default</span>
-                        ) : (
-                          <button onClick={() => setDefaultAddress(address.id)} className={styles.actionButton}>
-                            Set as default
-                          </button>
-                        )}
-                        <button onClick={() => deleteAddress(address.id)} className={`${styles.actionButton} ${styles.deleteButton}`}>
-                          Delete
-                        </button>
+                    {shippingAddressData ? (
+                      <div className={styles.addressCard}>
+                        <p>{shippingAddressData.street}, {shippingAddressData.city}, {shippingAddressData.postal_code}</p>
+                        <span className={styles.defaultBadge}>Default Shipping Address</span>
                       </div>
-                    ))}
+                    ) : (
+                      <p>No shipping address saved yet.</p>
+                    )}
                   </div>
                 )}
 
                 <div className={styles.singleColumnGrid}>
                   <div className={styles.infoBlock}>
-                    <h3 className={styles.infoTitle}>Add New Shipping Address</h3>
+                    <h3 className={styles.infoTitle}>{shippingAddressData ? 'Update Shipping Address' : 'Add Shipping Address'}</h3>
                     <form onSubmit={handleAddressSubmit} className={styles.addressForm}>
                       <div className={styles.formGroup}>
                         <label className={styles.formLabel}>Street Address</label>
@@ -377,18 +379,24 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                {addresses.length > 0 && (
-                  <div className={styles.mapContainer}>
-                    <h3 className={styles.infoTitle}>Your Address on Map</h3>
-                    <AddressMap address={`${addresses[0].street}, ${addresses[0].city}`} />
-                  </div>
-                )}
+              </section>
+            )}
+
+            {activeSection === 'account-info-information' && (
+              <section className={styles.section}>
+                <AccountInfoInformation
+                  user={user}
+                  onPasswordSubmit={handlePasswordSubmit}
+                  onEmailSubmit={handleEmailFormSubmit}
+                  isSubmitting={isSubmitting}
+                  passwordError={passwordError}
+                  editError={editError}
+                />
               </section>
             )}
 
             {activeSection === 'edit-profile' && (
               <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>Edit Profile</h2>
                 <form onSubmit={handleEditSubmit} className={styles.profileForm}>
                   {editError && (
                     <div className={styles.errorMessage}>
@@ -463,7 +471,6 @@ export default function ProfilePage() {
             
             {activeSection === 'change-password' && (
               <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>Change Password</h2>
                 <form onSubmit={handlePasswordSubmit} className={styles.profileForm}>
                   {passwordError && (
                     <div className={styles.errorMessage}>
@@ -536,9 +543,8 @@ export default function ProfilePage() {
               </section>
             )}
 
-            {activeSection === 'newsletter-subscription' && (
+            {activeSection === 'newsletter-subscriptions' && (
               <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>Newsletter Subscription</h2>
                 <div className={styles.newsletterSection}>
                   <div className={styles.infoBlock}>
                     <h3 className={styles.infoTitle}>Email Preferences</h3>
@@ -579,20 +585,6 @@ export default function ProfilePage() {
                         </label>
                       </div>
                       
-                      <div className={styles.subscriptionItem}>
-                        <label className={styles.checkboxLabel}>
-                          <input
-                            type="checkbox"
-                            checked={newsletterSubscriptions.order_updates}
-                            onChange={(e) => setNewsletterSubscriptions(prev => ({ ...prev, order_updates: e.target.checked }))}
-                            className={styles.checkbox}
-                          />
-                          <span className={styles.checkboxText}>
-                            <strong>Order Updates</strong>
-                            <small>Order confirmations, shipping notifications, and delivery updates</small>
-                          </span>
-                        </label>
-                      </div>
                     </div>
                     
                     <div className={styles.formActions}>
@@ -614,9 +606,10 @@ export default function ProfilePage() {
         <FeaturesSection />
         </div>
 
-      <Footer />
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
 
-      <FeedbackButton />
+      <Footer />
     </div>
   );
 }

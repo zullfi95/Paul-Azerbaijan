@@ -31,9 +31,9 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
-  max-width: 510px; /* Reduced by 15% from 600px */
-  max-height: 68vh; /* Reduced by 15% from 80vh */
-  background: #000000; /* Changed to black */
+  max-width: 510px; 
+  max-height: 68vh; 
+  background: #000000;
   border: 1px solid var(--paul-border);
   z-index: 50;
   animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -45,13 +45,13 @@
 
 /* Modal Header */
 .modalHeader {
-  padding: 1rem 1.7rem; /* Reduced by 15% from 1.5rem 2rem */
-  background: #000000; /* Changed to black */
+  padding: 1rem 1.7rem; 
+  background: #000000;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  font-family: 'Sabon Next LT Pro', serif; /* Added font-family */
+  font-family: 'Sabon Next LT Pro', serif;
 }
 
 .modalHeader::before {

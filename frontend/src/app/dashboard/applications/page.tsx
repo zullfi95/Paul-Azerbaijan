@@ -89,7 +89,7 @@ export default function ApplicationsPage() {
   const loadApplications = useCallback(async () => {
     setApplicationsLoading(true);
     try {
-      const result = await makeApiRequest<Application[]>("applications");
+      const result = await makeApiRequest<Application[]>("/applications");
       if (result.success) {
         setApplications(extractApiData(result.data || []));
       } else {
@@ -274,7 +274,7 @@ export default function ApplicationsPage() {
   // Загрузка истории изменений - перемещаем выше
   const loadApplicationHistory = useCallback(async (applicationId: number) => {
     try {
-      const result = await makeApiRequest<ApplicationHistory[]>(`applications/${applicationId}/history`);
+      const result = await makeApiRequest<ApplicationHistory[]>(`/applications/${applicationId}/history`);
       if (result.success) {
         setApplicationHistory(extractApiData(result.data || []));
       }
@@ -290,7 +290,7 @@ export default function ApplicationsPage() {
     comment: string = ""
   ) => {
     try {
-      const result = await makeApiRequest(`applications/${applicationId}/status`, {
+      const result = await makeApiRequest(`/applications/${applicationId}/status`, {
         method: "PATCH",
         body: JSON.stringify({ 
           status: newStatus, 
@@ -336,7 +336,7 @@ export default function ApplicationsPage() {
     if (action.type === 'status_change' && action.status) {
       try {
         const promises = selectedApps.map(app => 
-          makeApiRequest(`applications/${app.id}/status`, {
+          makeApiRequest(`/applications/${app.id}/status`, {
             method: "PATCH",
             body: JSON.stringify({ status: action.status, coordinator_comment: `Массовое изменение статуса на ${statusLabels[action.status!]}` }),
           })

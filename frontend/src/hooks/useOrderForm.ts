@@ -77,7 +77,9 @@ export const useOrderForm = () => {
     const { data: clients = [], isLoading: isLoadingClients } = useQuery<User[]>({
         queryKey: queryKeys.clients.lists(),
         queryFn: async () => {
-            const result = await makeApiRequest<{data: User[]}>('clients');
+            console.log('🔍 Loading clients...');
+            const result = await makeApiRequest<{data: User[]}>('/clients');
+            console.log('📡 Clients result:', result);
             return result.success ? result.data?.data || [] : [];
         },
         staleTime: 10 * 60 * 1000, // 10 минут
@@ -87,7 +89,7 @@ export const useOrderForm = () => {
         queryKey: queryKeys.menu.items(user?.id?.toString()),
         queryFn: async () => {
             const organizationId = (user && 'organization_id' in user) ? (user as User & { organization_id: string }).organization_id : 'default';
-            const result = await makeApiRequest<{data: CartItem[]}>(`menu/items?organization_id=${organizationId}`);
+            const result = await makeApiRequest<{data: CartItem[]}>(`/menu/items?organization_id=${organizationId}`);
             return result.success ? result.data?.data || [] : [];
         },
         enabled: !!user, // Only run query if user is available
@@ -142,7 +144,7 @@ export const useOrderForm = () => {
     const loadApplication = useCallback(async (clientId: string) => {
         setLoading(true);
         try {
-            const result = await makeApiRequest<Application>(`applications/${clientId}`);
+            const result = await makeApiRequest<Application>(`/applications/${clientId}`);
             if (result.success && result.data) {
                 const app = result.data;
                 setApplication(app);
@@ -213,16 +215,32 @@ export const useOrderForm = () => {
         const payload = {
             ...formData,
             client_id: formData.selected_client_id,
-            client_type: selectedClient?.client_category || 'one_time',
+            // Бэкенд использует client_category из базы данных, а не client_type из фронтенда
+            // Преобразуем ID в строки для совместимости с бэкендом
+            menu_items: formData.menu_items.map(item => ({
+                ...item,
+                id: item.id.toString()
+            }))
         };
         // @ts-expect-error - selected_client_id is intentionally removed
         delete payload.selected_client_id;
 
         try {
-            const result = await makeApiRequest('orders', {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
+            let result;
+            
+            // Если создаем заказ из заявки, используем специальный endpoint
+            if (fromApplicationId && formData.application_id) {
+                result = await makeApiRequest(`/applications/${fromApplicationId}/create-order`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+            } else {
+                // Обычное создание заказа
+                result = await makeApiRequest('/orders', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+            }
             
             if (result.success) {
                 router.push('/dashboard/orders');

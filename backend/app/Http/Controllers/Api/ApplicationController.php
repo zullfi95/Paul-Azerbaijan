@@ -165,4 +165,82 @@ class ApplicationController extends Controller
             ]
         ]);
     }
+
+    /**
+     * Создание заявки на мероприятие (публичный endpoint, без авторизации)
+     */
+    public function storeEventApplication(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'eventDate' => 'required|date_format:Y-m-d|after:today',
+            'location' => 'required|string|max:500',
+            'budget' => 'required|string|max:100',
+            'guestCount' => 'required|string|max:50',
+            'details' => 'nullable|string|max:1000',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'name' => 'nullable|string|max:255', // Имя контактного лица
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            \Log::info('Event application data received:', $request->all());
+            
+            // Создаем заявку на мероприятие
+            $application = Application::create([
+                'first_name' => $request->name ?: 'Event',
+                'last_name' => 'Organizer',
+                'company_name' => $request->name ?: 'Event Planning Request',
+                'contact_person' => $request->name ?: 'Event Organizer',
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'event_type' => 'Event Planning',
+                'event_date' => $request->eventDate,
+                'event_time' => '12:00:00', // Default time
+                'guest_count' => (int) $request->guestCount,
+                'budget' => $request->budget,
+                'special_requirements' => $request->details,
+                'status' => 'new',
+                'client_id' => null, // Публичная заявка
+                'coordinator_id' => null, // Будет назначен координатором
+            ]);
+
+            \Log::info('Event application created successfully:', ['id' => $application->id]);
+
+            // Отправляем уведомление координаторам
+            $notificationService = new NotificationService();
+            $notificationService->sendNewApplicationNotifications($application);
+
+            // Отправляем email подтверждение клиенту
+            try {
+                Mail::to($request->email)->send(new ApplicationReceived($application));
+            } catch (\Exception $e) {
+                // Логируем ошибку, но не прерываем процесс
+                \Log::error('Failed to send confirmation email: ' . $e->getMessage());
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Event application submitted successfully! We will contact you soon.',
+                'data' => [
+                    'application_id' => $application->id
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            \Log::error('Event application creation failed: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to submit event application. Please try again.'
+            ], 500);
+        }
+    }
 }

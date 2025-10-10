@@ -2,14 +2,14 @@
 
 .breadPage {
   min-height: 100vh;
-  background: #FFFFFF;
+  background: #fffcf8;
   font-family: 'Sabon Next LT Pro', serif;
 }
 
 /* Breadcrumbs */
 .breadcrumbsSection {
   padding: 1rem 0;
-  background-color: #FFFFFF;
+  background-color: #fffcf8;
   border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
@@ -126,7 +126,7 @@
 .viewMoreButton {
   padding: 1rem 2.5rem;
   background-color: #000000;
-  color: #ffffff;
+  color: #fffcf8;
   border: none;
   border-radius: 8px;
   font-size: 1rem;

@@ -72,17 +72,6 @@ function OrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [editingOrder, setEditingOrder] = useState<Order | null>(null);
-  const [formData, setFormData] = useState<OrderFormData & { status?: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled' }>({
-    company_name: '',
-    client_type: 'corporate',
-    menu_items: [],
-    comment: '',
-    delivery_date: '',
-    delivery_time: '',
-    status: 'pending',
-  });
 
   // State for filters and search
   const [searchTerm, setSearchTerm] = useState('');
@@ -122,7 +111,7 @@ function OrdersPage() {
   const loadOrders = useCallback(async () => {
     setOrdersLoading(true);
     try {
-      const result = await makeApiRequest<Order[]>('orders');
+      const result = await makeApiRequest<Order[]>('/orders');
       if (result.success) {
         const ordersData = extractApiData(result.data || []) as Order[];
         console.log('Orders data:', ordersData);
@@ -146,71 +135,13 @@ function OrdersPage() {
     }
   }, [hasAccess, loadOrders]);
 
-  const handleCreateOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const result = await makeApiRequest('orders', {
-        method: 'POST',
-        body: JSON.stringify(formData),
-      });
 
-      if (result.success) {
-        setShowCreateForm(false);
-        setFormData({
-          company_name: '',
-          client_type: 'corporate',
-          menu_items: [],
-          comment: '',
-          delivery_date: '',
-          delivery_time: '',
-          status: 'pending',
-        });
-        loadOrders();
-      } else {
-        alert(handleApiError(result, 'Error creating order'));
-      }
-    } catch (error) {
-      console.error('Error creating order:', error);
-      alert('An error occurred while creating the order');
-    }
-  };
-
-  const handleUpdateOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingOrder) return;
-
-    try {
-      const result = await makeApiRequest(`orders/${editingOrder.id}`, {
-        method: 'PUT',
-        body: JSON.stringify(formData),
-      });
-
-      if (result.success) {
-        setEditingOrder(null);
-        setFormData({
-          company_name: '',
-          client_type: 'corporate',
-          menu_items: [],
-          comment: '',
-          delivery_date: '',
-          delivery_time: '',
-          status: 'pending',
-        });
-        loadOrders();
-      } else {
-        alert(handleApiError(result, 'Error updating order'));
-      }
-    } catch (error) {
-      console.error('Error updating order:', error);
-      alert('An error occurred while updating the order');
-    }
-  };
 
   const handleDeleteOrder = async (orderId: number) => {
     if (!confirm('Are you sure you want to delete this order?')) return;
 
     try {
-      const result = await makeApiRequest(`orders/${orderId}`, {
+      const result = await makeApiRequest(`/orders/${orderId}`, {
         method: 'DELETE',
       });
 
@@ -225,61 +156,7 @@ function OrdersPage() {
     }
   };
 
-  const startEdit = (order: Order) => {
-    setEditingOrder(order);
-    setFormData({
-      company_name: order.company_name,
-      client_type: order.client_type || 'corporate',
-      menu_items: order.menu_items.map((item: MenuItem) => ({
-        id: item.id,
-        name: item.name,
-        quantity: item.quantity ?? 1,
-        price: item.price ?? 0,
-        description: (item as CartItem).description ?? '',
-        images: (item as CartItem).images ?? [],
-        category: (item as CartItem).category ?? '',
-        available: (item as CartItem).available ?? true,
-        isSet: (item as CartItem).isSet ?? false,
-      })),
-      comment: order.comment || '',
-      delivery_date: order.delivery_date ? order.delivery_date.split(' ')[0] : '',
-      delivery_time: order.delivery_time ? order.delivery_time.split(' ')[1] : '',
-      status: order.status as 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled' | undefined,
-    });
-  };
 
-  const addMenuItem = () => {
-    setFormData({
-      ...formData,
-      menu_items: [
-        ...formData.menu_items,
-        {
-          id: '',
-          name: '',
-          quantity: 1,
-          price: 0,
-          description: '',
-          image: '',
-          category: '',
-          available: true,
-          isSet: false,
-        }
-      ]
-    });
-  };
-
-  const removeMenuItem = (index: number) => {
-    setFormData({
-      ...formData,
-      menu_items: formData.menu_items.filter((_, i) => i !== index)
-    });
-  };
-
-  const updateMenuItem = (index: number, field: string, value: string | number) => {
-    const newMenuItems = [...formData.menu_items];
-    newMenuItems[index] = { ...newMenuItems[index], [field]: value };
-    setFormData({ ...formData, menu_items: newMenuItems });
-  };
 
   // Memoized filtering and sorting of orders
   const filteredAndSortedOrders = useMemo(() => {
@@ -398,7 +275,7 @@ function OrdersPage() {
   // Function for copying order
   const handleCopyOrder = useCallback(async (orderId: number) => {
     try {
-      const result = await makeApiRequest(`orders/${orderId}/copy`, {
+      const result = await makeApiRequest(`/orders/${orderId}/copy`, {
         method: 'POST'
       });
 
@@ -417,7 +294,7 @@ function OrdersPage() {
   // Функция для быстрого изменения статуса заказа
   const handleQuickStatusChange = useCallback(async (orderId: number, newStatus: string) => {
     try {
-      const result = await makeApiRequest(`orders/${orderId}/status`, {
+      const result = await makeApiRequest(`/orders/${orderId}/status`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus })
       });
@@ -440,7 +317,7 @@ function OrdersPage() {
 
     try {
       const promises = Array.from(selectedOrdersForCopy).map(orderId =>
-        makeApiRequest(`orders/${orderId}/copy`, { method: 'POST' })
+        makeApiRequest(`/orders/${orderId}/copy`, { method: 'POST' })
       );
 
       const results = await Promise.all(promises);
@@ -1048,7 +925,7 @@ function OrdersPage() {
                 <GroupedOrdersDisplay
                   groups={groupedOrders}
                   viewMode={viewMode}
-                  onEdit={startEdit}
+                  onEdit={() => {}}
                   onDelete={handleDeleteOrder}
                   onCopy={handleCopyOrder}
                   onQuickStatusChange={handleQuickStatusChange}
@@ -1066,7 +943,7 @@ function OrdersPage() {
               ) : viewMode === 'kanban' ? (
                 <KanbanOrdersView
                   orders={filteredAndSortedOrders}
-                  onEdit={startEdit}
+                  onEdit={() => {}}
                   onDelete={handleDeleteOrder}
                   onCopy={handleCopyOrder}
                   selectedOrders={selectedOrdersForCopy}
@@ -1090,7 +967,7 @@ function OrdersPage() {
                     <OrderCard
                       key={order.id}
                       order={order}
-                      onEdit={startEdit}
+                      onEdit={() => {}}
                       onDelete={handleDeleteOrder}
                       onCopy={handleCopyOrder}
                       onQuickStatusChange={handleQuickStatusChange}
@@ -1110,7 +987,7 @@ function OrdersPage() {
               ) : (
                 <OrderTable 
                   orders={filteredAndSortedOrders} 
-                  onEdit={startEdit} 
+                  onEdit={() => {}} 
                   onDelete={handleDeleteOrder}
                 />
               )}
@@ -1118,234 +995,6 @@ function OrdersPage() {
           )}
         </LoadingState>
 
-        {/* Modal для создания/редактирования заказа */}
-        {(showCreateForm || editingOrder) && (
-          <div style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '1rem'
-          }}>
-            <Card variant="elevated" padding="lg" style={{ maxWidth: '600px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}>
-              <CardHeader>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <CardTitle size="lg">
-                    {editingOrder ? 'Редактирование заказа' : 'Создание нового заказа'}
-                  </CardTitle>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => {
-                      setShowCreateForm(false);
-                      setEditingOrder(null);
-                      setFormData({
-                        company_name: '',
-                        client_type: 'corporate',
-                        menu_items: [],
-                        comment: '',
-                        delivery_date: '',
-                        delivery_time: '',
-                        status: 'pending',
-                      });
-                    }}
-                  >
-                    ✕
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={editingOrder ? handleUpdateOrder : handleCreateOrder} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                        Название компании *
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.company_name}
-                        onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
-                        style={{ 
-                          width: '100%', 
-                          padding: '0.75rem', 
-                          border: `1px solid ${paulColors.border}`, 
-                          borderRadius: '8px',
-                          outline: 'none'
-                        }}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                        Дата доставки
-                      </label>
-                      <input
-                        type="date"
-                        value={formData.delivery_date}
-                        onChange={(e) => setFormData({ ...formData, delivery_date: e.target.value })}
-                        style={{
-                          width: '100%',
-                          padding: '0.75rem',
-                          border: `1px solid ${paulColors.border}`,
-                          borderRadius: '8px',
-                          outline: 'none'
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                        Время доставки
-                      </label>
-                      <input
-                        type="time"
-                        value={formData.delivery_time}
-                        onChange={(e) => setFormData({ ...formData, delivery_time: e.target.value })}
-                        style={{
-                          width: '100%',
-                          padding: '0.75rem',
-                          border: `1px solid ${paulColors.border}`,
-                          borderRadius: '8px',
-                          outline: 'none'
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                        Статус заказа
-                      </label>
-                      <select
-                        value={formData.status}
-                        onChange={(e) => setFormData({ ...formData, status: e.target.value as 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled' })}
-                        style={{
-                          width: '100%',
-                          padding: '0.75rem',
-                          border: `1px solid ${paulColors.border}`,
-                          borderRadius: '8px',
-                          outline: 'none',
-                          backgroundColor: paulColors.white
-                        }}
-                      >
-                        <option value="draft">Черновик</option>
-                        <option value="submitted">Отправлен</option>
-                        <option value="processing">В обработке</option>
-                        <option value="completed">Завершен</option>
-                        <option value="cancelled">Отменен</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                        Комментарий
-                      </label>
-                      <textarea
-                        value={formData.comment}
-                        onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-                        placeholder="Комментарий к заказу..."
-                        rows={3}
-                        style={{
-                          width: '100%',
-                          padding: '0.75rem',
-                          border: `1px solid ${paulColors.border}`,
-                          borderRadius: '8px',
-                          outline: 'none',
-                          resize: 'vertical',
-                          backgroundColor: paulColors.white
-                        }}
-                      />
-                    </div>
-                  </div>
-
-
-
-                  <div style={{ marginTop: '1rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                      <label style={{ fontSize: '0.875rem', fontWeight: '600' }}>Пункты меню</label>
-                      <Button type="button" variant="secondary" size="sm" onClick={addMenuItem}>
-                        + Добавить
-                      </Button>
-                    </div>
-                    {formData.menu_items.map((item, index) => (
-                      <div key={index} style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '2fr 1fr 1fr auto', 
-                        gap: '0.5rem', 
-                        marginBottom: '0.5rem',
-                        padding: '0.75rem',
-                        backgroundColor: '#F9FAFB',
-                        borderRadius: '8px'
-                      }}>
-                        <input
-                          type="text"
-                          placeholder="Название"
-                          value={item.name}
-                          onChange={(e) => updateMenuItem(index, 'name', e.target.value)}
-                          style={{ padding: '0.5rem', border: `1px solid ${paulColors.border}`, borderRadius: '6px' }}
-                          required
-                        />
-                        <input
-                          type="number"
-                          placeholder="Кол-во"
-                          value={item.quantity}
-                          onChange={(e) => updateMenuItem(index, 'quantity', parseInt(e.target.value))}
-                          style={{ padding: '0.5rem', border: `1px solid ${paulColors.border}`, borderRadius: '6px' }}
-                          min="1"
-                          required
-                        />
-                        <input
-                          type="number"
-                          placeholder="Цена"
-                          value={item.price}
-                          onChange={(e) => updateMenuItem(index, 'price', parseFloat(e.target.value))}
-                          style={{ padding: '0.5rem', border: `1px solid ${paulColors.border}`, borderRadius: '6px' }}
-                          min="0"
-                          step="0.01"
-                          required
-                        />
-                        <Button type="button" variant="danger" size="sm" onClick={() => removeMenuItem(index)}>
-                          ✕
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
-                    <Button type="submit" variant="primary" style={{ flex: 1 }}>
-                      {editingOrder ? 'Обновить' : 'Создать'}
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
-                      onClick={() => {
-                        setShowCreateForm(false);
-                        setEditingOrder(null);
-                        setFormData({
-                          company_name: '',
-                          client_type: 'corporate',
-                          menu_items: [],
-                          comment: '',
-                          delivery_date: '',
-                          delivery_time: '',
-                          status: 'pending',
-                        });
-                      }}
-                      style={{ flex: 1 }}
-                    >
-                      Отмена
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
         {/* Калькулятор стоимости */}
         {showCalculator && (

@@ -41,7 +41,6 @@ export interface EditErrors {
 export interface NewsletterSubscriptions {
   general: boolean;
   promotions: boolean;
-  order_updates: boolean;
 }
 
 export type AddressType = 'billing' | 'shipping';

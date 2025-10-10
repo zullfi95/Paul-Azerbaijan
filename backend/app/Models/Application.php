@@ -11,6 +11,12 @@ class Application extends Model
     protected $fillable = [
         'first_name',
         'last_name',
+        'company_name',
+        'contact_person',
+        'event_type',
+        'guest_count',
+        'budget',
+        'special_requirements',
         'phone',
         'email',
         'message',

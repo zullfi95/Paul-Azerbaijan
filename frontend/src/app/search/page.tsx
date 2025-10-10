@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import FeedbackModal from '../../components/FeedbackModal';
 import FeaturesSection from '../../components/FeaturesSection';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import { useCart } from '../../contexts/CartContext';
@@ -394,7 +395,7 @@ function SearchPageContent() {
                 >
                   <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
                     <Image
-                      src={product.image}
+                      src={product.image || '/images/placeholder-food.svg'}
                       alt={product.name}
                       fill
                       style={{ objectFit: 'cover' }}
@@ -479,6 +480,9 @@ function SearchPageContent() {
 
       <FeaturesSection />
       <Footer />
+      
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import Footer from '../../../components/Footer';
 import FeaturesSection from '../../../components/FeaturesSection';
 import BasketIcon from '../../../components/BasketIcon';
 import Breadcrumbs from '../../../components/Breadcrumbs';
+import FeedbackModal from '../../../components/FeedbackModal';
 import { useCart } from '../../../contexts/CartContext';
 import Link from 'next/link';
 import styles from './ProductPage.module.css';
@@ -226,7 +227,7 @@ export default function ProductPage() {
             <div className={styles.imageColumn}>
               <div className={styles.imageWrapper}>
                 <Image
-                  src={product.image}
+                  src={product.image || '/images/placeholder-food.svg'}
                   alt={product.name}
                   className={styles.productImage}
                   width={500}
@@ -338,7 +339,7 @@ export default function ProductPage() {
               >
                 <div className={styles.relatedImageWrapper}>
                   <Image
-                    src={item.image}
+                    src={item.image || '/images/placeholder-food.svg'}
                     alt={item.name}
                     className={styles.relatedImage}
                     width={300}
@@ -375,6 +376,9 @@ export default function ProductPage() {
 
       <FeaturesSection />
       <Footer />
+      
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
     </div>
   );
 }

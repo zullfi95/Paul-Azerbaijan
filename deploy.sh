@@ -6,10 +6,10 @@
 echo "🚀 Starting PAUL Azerbaijan deployment..."
 
 # Navigate to project directory
-cd /var/www/paul-azerbaijan || {
+cd /var/www/paul || {
     echo "❌ Project directory not found. Creating it..."
-    mkdir -p /var/www/paul-azerbaijan
-    cd /var/www/paul-azerbaijan
+    mkdir -p /var/www/paul
+    cd /var/www/paul
     git clone https://github.com/zullfi95/Paul-Azerbaijan.git .
 }
 

@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  max-width: 800px; /* Match sidebar width */
   /* Padding will be handled by the parent container */
 }
 
@@ -85,11 +86,11 @@
 
 .sectionTitle {
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: 22px; /* Matched from ProfilePage.module.css .sectionTitle */
-  font-weight: 600;
+  font-size: 18px; /* Reduced from 22px */
+  font-weight: 200;
   color: #000000;
-  margin: 0 0 20px 0;
-  padding-bottom: 10px;
+  margin: 0 0 0 0;
+  padding-bottom: 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -138,15 +139,13 @@
 }
 
 /* Recent Orders */
-.recentOrders, .accountSummary {
+.recentOrders {
   background: #FFFCF8; /* Use brand ivory */
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle black border */
-  border-radius: 7px; /* Match header */
   padding: 24px;
   transition: all 0.2s ease;
 }
 
-.recentOrders:hover, .accountSummary:hover {
+.recentOrders:hover {
   border-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -245,8 +244,7 @@
 .summaryItem {
   padding: 16px;
   background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 5px;
+
 }
 
 .summaryLabel {
@@ -261,7 +259,7 @@
 .summaryValue {
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 200;
   color: #000000;
   margin: 0;
 }
@@ -328,5 +326,120 @@
   
   .welcomeText {
     font-size: 14px;
+  }
+}
+
+/* Account Information Styles */
+.accountInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.topRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.bottomRow {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.contactSection,
+.newslettersSection,
+.addressSection {
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.contactInfo,
+.newsletterInfo,
+.addressInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoLabel {
+  font-family: 'Parisine Pro Gris', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.infoValue {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.subscriptionText {
+  font-family: 'Sabon Next LT Pro', serif;
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.contactButtons,
+.newsletterButtons,
+.addressButtons {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.editButton,
+.changePasswordButton {
+  padding: 6px 12px;
+  color: black;
+  font-family: 'Sabon Next LT Pro';
+  font-size: 15px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border: 1px solid transparent;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editIcon {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .topRow {
+    grid-template-columns: 1fr;
+  }
+  
+  .contactButtons,
+  .newsletterButtons,
+  .addressButtons {
+    flex-direction: column;
+  }
+  
+  .editButton,
+  .changePasswordButton {
+    width: 100%;
+    text-align: center;
   }
 }

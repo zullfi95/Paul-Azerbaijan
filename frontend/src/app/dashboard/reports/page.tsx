@@ -50,8 +50,8 @@ export default function ReportsPage() {
     setLoading(true);
     try {
       const [ordersResult, applicationsResult] = await Promise.all([
-        makeApiRequest<Order[]>("orders"),
-        makeApiRequest<Application[]>("applications")
+        makeApiRequest<Order[]>("/orders"),
+        makeApiRequest<Application[]>("/applications")
       ]);
 
       if (ordersResult.success) {

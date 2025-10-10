@@ -1,0 +1,962 @@
+/* CreateOrderForm.module.css */
+
+.container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+.header {
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.headerContent {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+.backButton {
+  margin-right: 1rem;
+  padding: 0.5rem;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.backButton:hover {
+  color: #4b5563;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.formContainer {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Application Info Section */
+.applicationInfo {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.applicationTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1e40af;
+  margin-bottom: 0.5rem;
+}
+
+.applicationContent {
+  font-size: 0.875rem;
+  color: #1e3a8a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Form Sections */
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #3b82f6;
+  border-color: transparent;
+}
+
+.textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  resize: vertical;
+  transition: all 0.2s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #3b82f6;
+  border-color: transparent;
+}
+
+.select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.select:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #3b82f6;
+  border-color: transparent;
+}
+
+/* Client Type Display */
+.clientTypeDisplay {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.clientTypeIndicator {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.clientTypeIndicator.corporate {
+  background-color: #3b82f6;
+}
+
+.clientTypeIndicator.individual {
+  background-color: #10b981;
+}
+
+.clientTypeText {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Radio Group */
+.radioGroup {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+}
+
+.radioInput {
+  height: 1rem;
+  width: 1rem;
+  color: #2563eb;
+  border-color: #d1d5db;
+  margin-right: 0.5rem;
+}
+
+.radioInput:focus {
+  ring-color: #3b82f6;
+}
+
+.radioText {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+/* Grid Layouts */
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .grid3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Pricing Section */
+.pricingSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.pricingTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+/* Menu Items Section */
+.menuItemsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.menuItemsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menuItemsTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.addMenuButton {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+}
+
+.addMenuButton:hover {
+  background-color: #1d4ed8;
+}
+
+.addMenuIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}
+
+/* Menu Item Card */
+.menuItemCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.menuItemInfo {
+  flex: 1;
+}
+
+.menuItemName {
+  font-weight: 500;
+  color: #111827;
+}
+
+.menuItemDescription {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.menuItemPrice {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.menuItemControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quantityButton {
+  padding: 0.25rem;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.quantityButton:hover {
+  color: #4b5563;
+}
+
+.quantityInput {
+  width: 2rem;
+  text-align: center;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.removeButton {
+  padding: 0.25rem;
+  color: #f87171;
+  transition: color 0.2s ease;
+}
+
+.removeButton:hover {
+  color: #dc2626;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.emptyIcon {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 0.5rem;
+  color: #d1d5db;
+}
+
+.emptyText {
+  margin-bottom: 0.25rem;
+}
+
+.emptySubtext {
+  font-size: 0.875rem;
+}
+
+/* Price Calculator */
+.priceCalculator {
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.priceRow.discount {
+  color: #dc2626;
+}
+
+.priceRow.total {
+  font-weight: 500;
+  color: #111827;
+  padding-top: 0.5rem;
+  border-top: 1px solid #d1d5db;
+}
+
+.priceRow.totalAmount {
+  color: #2563eb;
+}
+
+/* Recurring Schedule */
+.recurringSection {
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.recurringCheckbox {
+  display: flex;
+  align-items: center;
+}
+
+.recurringCheckboxInput {
+  height: 1rem;
+  width: 1rem;
+  color: #4b5563;
+  border-color: #d1d5db;
+  border-radius: 0.25rem;
+  margin-right: 0.75rem;
+}
+
+.recurringCheckboxInput:focus {
+  ring-color: #6b7280;
+}
+
+.recurringCheckboxText {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.recurringForm {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recurringGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .recurringGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.recurringLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.recurringInput {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: white;
+}
+
+.recurringInput:focus {
+  outline: none;
+  ring: 1px;
+  ring-color: #6b7280;
+  border-color: #6b7280;
+}
+
+.recurringSelect {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: white;
+}
+
+.recurringSelect:focus {
+  outline: none;
+  ring: 1px;
+  ring-color: #6b7280;
+  border-color: #6b7280;
+}
+
+.recurringTextarea {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+
+.recurringTextarea:focus {
+  outline: none;
+  ring: 1px;
+  ring-color: #6b7280;
+  border-color: #6b7280;
+}
+
+/* Days Selection */
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.dayLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dayCheckbox {
+  height: 1rem;
+  width: 1rem;
+  color: #2563eb;
+  border-color: #d1d5db;
+  border-radius: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.dayCheckbox:focus {
+  ring-color: #3b82f6;
+}
+
+.dayText {
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+/* Additional Details */
+.additionalSection {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.additionalTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.resourceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.resourceSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resourceLabel {
+  display: block;
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+.resourceControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.resourceButton {
+  padding: 0.5rem 0.75rem;
+  background-color: #e5e7eb;
+  color: #374151;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.resourceButton:hover {
+  background-color: #d1d5db;
+}
+
+.resourceInput {
+  width: 5rem;
+  text-align: center;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.resourceInput:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #3b82f6;
+  border-color: transparent;
+}
+
+/* Buttons */
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.backButton {
+  padding: 0.5rem 1rem;
+  color: #4b5563;
+  transition: color 0.2s ease;
+}
+
+.backButton:hover {
+  color: #1f2937;
+}
+
+.submitButton {
+  padding: 0.5rem 1.5rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: #1d4ed8;
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 56rem;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.modalTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.modalCloseButton {
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.modalCloseButton:hover {
+  color: #4b5563;
+}
+
+.modalCloseIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Search */
+.searchContainer {
+  margin-bottom: 1rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #3b82f6;
+  border-color: transparent;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Menu Items Grid */
+.menuItemsGrid {
+  overflow-y: auto;
+  max-height: 24rem;
+}
+
+.menuItemsGridInner {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .menuItemsGridInner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.menuItemCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.menuItemCard:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.menuItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.menuItemName {
+  font-weight: 500;
+  color: #111827;
+}
+
+.menuItemPrice {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.menuItemDescription {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+.menuItemFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menuItemCategory {
+  font-size: 0.75rem;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.menuItemAddButton {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+}
+
+.menuItemAddButton:hover {
+  background-color: #1d4ed8;
+}
+
+.menuItemAddIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.25rem;
+}
+
+/* Preview Modal */
+.previewModal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.previewModalContent {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 42rem;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.previewSection {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.previewSectionTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.previewSectionContent {
+  font-size: 0.875rem;
+  color: #4b5563;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.previewTotalSection {
+  background-color: #eff6ff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.previewTotalTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1e40af;
+  margin-bottom: 0.5rem;
+}
+
+.previewTotalContent {
+  font-size: 0.875rem;
+  color: #1e3a8a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.previewTotalRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.previewTotalRow.total {
+  font-weight: 500;
+  border-top: 1px solid #bfdbfe;
+  padding-top: 0.25rem;
+}
+
+.previewButtons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.previewCancelButton {
+  padding: 0.5rem 1rem;
+  background-color: #d1d5db;
+  color: #374151;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.previewCancelButton:hover {
+  background-color: #9ca3af;
+}
+
+.previewConfirmButton {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.previewConfirmButton:hover {
+  background-color: #1d4ed8;
+}
+
+/* Loading Overlay */
+.loadingOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.loadingContent {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.loadingSpinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+.loadingText {
+  margin-top: 0.5rem;
+  text-align: center;
+  color: #4b5563;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

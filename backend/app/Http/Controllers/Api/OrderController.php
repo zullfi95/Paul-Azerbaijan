@@ -162,6 +162,8 @@ class OrderController extends Controller
         $validator = Validator::make($data, [
             // Клиент - теперь необязательно, если не указан, используется текущий пользователь
             'client_id' => 'nullable|exists:users,id',
+            'client_type' => 'nullable|in:corporate,one_time',
+            'application_id' => 'nullable|exists:applications,id',
             
             // Товары
             'menu_items' => 'required|array|min:1',
@@ -270,6 +272,7 @@ class OrderController extends Controller
             'delivery_address' => $data['delivery_address'] ?? null,
             'delivery_cost' => $deliveryCost,
             'recurring_schedule' => $data['recurring_schedule'] ?? null,
+            'application_id' => $data['application_id'] ?? null, // Связь с заявкой, если есть
             
             // Дополнительные поля
             'equipment_required' => $data['equipment_required'] ?? 0,
@@ -558,6 +561,7 @@ class OrderController extends Controller
             'delivery_address' => $request->delivery_address,
             'delivery_cost' => $deliveryCost,
             'recurring_schedule' => $request->recurring_schedule,
+            'application_id' => $application->id, // Связываем заказ с заявкой
             
             // Дополнительные поля
             'equipment_required' => $request->equipment_required ?? 0,

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Search, MapPin, ShoppingBag, FileText, Menu, X, Globe } from 'lucide-react';
 import CartModal from './CartModal';
 import EventPlanningModal from './EventPlanningModal';
+import EventSuccessNotification from './EventSuccessNotification';
 import { useCart } from '@/contexts/CartContext';
 import { useCartModal } from '@/contexts/CartModalContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,6 +23,7 @@ const Header: React.FC = React.memo(function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [email, setEmail] = useState('');
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [showEventSuccessNotification, setShowEventSuccessNotification] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMenuClosing, setIsMenuClosing] = useState(false);
@@ -159,7 +161,7 @@ const Header: React.FC = React.memo(function Header() {
             <Link href="/patisserie" className="nav-link">Patisserie</Link>
             <Link href="/platters" className="nav-link">Platters</Link>
             <Link href="/bread" className="nav-link">Bread</Link>
-            <Link href="/macarons" className="nav-link">Macarons</Link>
+            <Link href="/Savoury" className="nav-link">Savoury</Link>
           </nav>
 
           {/* Right Side Actions */}
@@ -294,13 +296,18 @@ const Header: React.FC = React.memo(function Header() {
           </button>
 
           {/* Plan an Event */}
-          <button 
-            className="action-button plan-event" 
-            onClick={() => handleActionClick('Plan an Event')}
-          >
-            <span>Plan an Event</span>
-            <span className="plan-event-badge">i</span>
-          </button>
+          <div className="plan-event-container">
+            <button 
+              className="action-button plan-event" 
+              onClick={() => handleActionClick('Plan an Event')}
+            >
+              <span>Plan an Event</span>
+              <span className="plan-event-badge">i</span>
+            </button>
+            <div className="plan-event-tooltip">
+              Planning an event is a great option for those who want to host but aren't sure what to order that fits their budget. Click here, and we'll assist you.
+            </div>
+          </div>
       </div>
     </div>
 
@@ -389,8 +396,8 @@ const Header: React.FC = React.memo(function Header() {
                 <Link href="/bread" className="mobile-nav-link" onClick={closeMobileMenu}>
                   Bread
                 </Link>
-                <Link href="/macarons" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  Macarons
+                <Link href="/Savoury" className="mobile-nav-link" onClick={closeMobileMenu}>
+                  Savoury
                 </Link>
               </nav>
 
@@ -544,8 +551,17 @@ const Header: React.FC = React.memo(function Header() {
     {/* Модальное окно планирования мероприятия */}
     <EventPlanningModal 
       isOpen={isEventModalOpen} 
-      onClose={() => setIsEventModalOpen(false)} 
+      onClose={() => setIsEventModalOpen(false)}
+      onSuccess={() => setShowEventSuccessNotification(true)}
     />
+
+    {/* Event Success Notification */}
+    {showEventSuccessNotification && (
+      <EventSuccessNotification
+        onClose={() => setShowEventSuccessNotification(false)}
+        duration={5000}
+      />
+    )}
     </>
   );
 });

@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import FeedbackModal from '../../components/FeedbackModal';
 import './OurStoryPage.css';
 
 export default function OurStoryPage() {
@@ -348,6 +349,9 @@ export default function OurStoryPage() {
       </main>
       
       <Footer />
+      
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
     </div>
   );
 }

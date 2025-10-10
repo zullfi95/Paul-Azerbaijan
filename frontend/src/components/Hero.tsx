@@ -122,7 +122,7 @@ const Hero: React.FC = () => {
           <div className="hero-image-column">
             <div className="hero-image-wrapper">
               <Image
-                src={currentSlideData.image}
+                src={currentSlideData.image || '/images/placeholder-food.svg'}
                 alt={currentSlideData.imageAlt}
                 fill
                 className={`hero-img ${isTransitioning ? 'fade-out' : 'fade-in'}`}

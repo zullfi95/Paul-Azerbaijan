@@ -8,6 +8,7 @@ import FeaturesSection from '../../components/FeaturesSection';
 import BasketIcon from '../../components/BasketIcon';
 import CartModal from '../../components/CartModal';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import FeedbackModal from '../../components/FeedbackModal';
 import { useCart } from '../../contexts/CartContext';
 import { useCartModal } from '../../contexts/CartModalContext';
 import { useNotification } from '../../contexts/NotificationContext';
@@ -2490,6 +2491,9 @@ export default function CateringPage() {
       />
 
       <Footer />
+      
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
 
       {/* Стили для анимаций */}
       <style jsx>{`

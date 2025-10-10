@@ -14,6 +14,7 @@ export interface User {
   email: string;
   phone?: string;
   address?: string;
+  shipping_address?: ShippingAddress;
   company_name?: string;
   position?: string;
   contact_person?: string;
@@ -38,6 +39,13 @@ export interface Address {
   is_default: boolean;
   created_at: string;
   updated_at: string;
+}
+
+// Shipping address as stored in backend (JSON field in users table)
+export interface ShippingAddress {
+  street: string;
+  city: string;
+  postal_code: string;
 }
 
 // ===== MENU TYPES =====

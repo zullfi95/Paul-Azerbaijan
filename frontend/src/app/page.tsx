@@ -5,7 +5,7 @@ import TastesSection from "../components/TastesSection";
 import ArtOfBread from "../components/ArtOfBread";
 import FeaturesSection from "../components/FeaturesSection";
 import Footer from "../components/Footer";
-import FeedbackButton from "../components/FeedbackButton";
+import FeedbackModal from "../components/FeedbackModal";
 
 export default function HomePage() {
   return (
@@ -18,7 +18,7 @@ export default function HomePage() {
         <ArtOfBread />
         <FeaturesSection />
         <Footer />
-        <FeedbackButton />
+        <FeedbackModal />
       </main>
     </div>
   );

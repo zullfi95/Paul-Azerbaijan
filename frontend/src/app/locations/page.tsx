@@ -5,7 +5,7 @@ import React from 'react';
 import Image from 'next/image';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import FeedbackButton from '../../components/FeedbackButton';
+import FeedbackModal from '../../components/FeedbackModal';
 import FeaturesSection from '../../components/FeaturesSection';
 import styles from './LocationsPage.module.css';
 
@@ -343,7 +343,7 @@ export default function LocationsPage() {
       <Footer />
       
       {/* Feedback Button */}
-      <FeedbackButton />
+      <FeedbackModal />
     </div>
   );
 }

@@ -106,7 +106,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   {/* Изображение товара */}
                   <div className={styles.productImage}>
                     <Image
-                      src={cartItem.image}
+                      src={(cartItem as any).image || (cartItem.images && cartItem.images[0]) || '/images/placeholder-food.svg'}
                       alt={cartItem.name}
                       fill
                       sizes="80px"
@@ -132,7 +132,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   {/* Управление количеством */}
                   <div className={styles.quantityControls}>
                     <button
-                      onClick={() => removeFromCart(cartItem.id)}
+                      onClick={() => removeFromCart(cartItem.id.toString())}
                       className={styles.quantityButton}
                     >
                       <Minus size={14} />
@@ -141,7 +141,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                       {cartItem.quantity}
                     </span>
                     <button
-                      onClick={() => addToCart(cartItem.id)}
+                      onClick={() => addToCart(cartItem.id.toString())}
                       className={styles.quantityButton}
                     >
                       <Plus size={14} />
@@ -150,7 +150,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
 
                   {/* Кнопка удаления */}
                   <button
-                    onClick={() => removeItem(cartItem.id)}
+                    onClick={() => removeItem(cartItem.id.toString())}
                     className={styles.removeButton}
                   >
                     <DeleteIcon size={14} className={styles.removeIcon} />

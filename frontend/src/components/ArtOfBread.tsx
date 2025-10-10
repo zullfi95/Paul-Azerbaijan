@@ -29,10 +29,10 @@ const ArtOfBread: React.FC = () => {
             />
             <div className="art-overlay-text">
               <span className="art-text-small">The</span>
-              <span className="art-text-large">art</span>
+              <span className="art-text-large">Art</span>
               <span className="art-text-small">of</span>
               <span className="art-text-medium">making</span>
-              <span className="art-text-large">bread</span>
+              <span className="art-text-large">Bread</span>
             </div>
           </div>
         </div>

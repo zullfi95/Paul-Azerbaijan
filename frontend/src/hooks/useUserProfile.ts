@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
   Order,
   Address,
+  ShippingAddress,
   User,
   Application,
   CartItem,
@@ -24,9 +25,9 @@ const fetchUnreadCount = async (): Promise<number> => {
     return data.success && data.data ? data.data.unread_count : 0;
 };
 
-const fetchAddresses = async (): Promise<Address[]> => {
-    const data = await makeApiRequest<Address[]>('/user/addresses');
-    return data.success && data.data ? data.data : [];
+const fetchShippingAddress = async (): Promise<ShippingAddress | null> => {
+    const data = await makeApiRequest<ShippingAddress>('/user/address/shipping');
+    return data.success && data.data ? data.data : null;
 };
 
 
@@ -50,20 +51,16 @@ export const useUserProfile = () => {
     city: '',
     postal_code: '',
   });
-  const [shippingAddress, setShippingAddress] = useState({
+  const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
     street: '',
     city: '',
     postal_code: '',
-    type: 'shipping' as const,
-    user_id: user?.id || 0,
-    country: 'Azerbaijan',
   });
 
   // Состояние для подписок
   const [newsletterSubscriptions, setNewsletterSubscriptions] = useState({
     general: true,
-    promotions: true,
-    order_updates: true
+    promotions: true
   });
 
   // Состояние для смены пароля
@@ -89,9 +86,9 @@ export const useUserProfile = () => {
     refetchInterval: 60 * 1000, // Обновление каждую минуту
   });
 
-  const { data: addresses = [], isLoading: loadingAddresses } = useQuery<Address[]>({
-    queryKey: queryKeys.user.addresses(user?.id),
-    queryFn: fetchAddresses,
+  const { data: shippingAddressData = null, isLoading: loadingShippingAddress } = useQuery<ShippingAddress | null>({
+    queryKey: ['user', 'shipping-address', user?.id],
+    queryFn: fetchShippingAddress,
     enabled: !!user,
   });
 
@@ -129,6 +126,13 @@ export const useUserProfile = () => {
       initializeEditForm();
     }
   }, [user, initializeEditForm]);
+
+  // Инициализация формы адреса при загрузке данных
+  useEffect(() => {
+    if (shippingAddressData) {
+      setShippingAddress(shippingAddressData);
+    }
+  }, [shippingAddressData]);
 
   // Функция для обработки изменений в форме
   const handleEditFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -186,90 +190,34 @@ export const useUserProfile = () => {
     }
   });
 
-  const { mutate: addAddress } = useMutation({
-    mutationFn: async (addressData: Omit<Address, 'id' | 'is_default' | 'created_at' | 'updated_at'>) => {
-      const url = `${API_CONFIG.BASE_URL}/user/addresses`;
-      const headers = getAuthHeaders();
-      
-
-      
-      const response = await fetch(url, {
+  const { mutate: saveShippingAddress } = useMutation({
+    mutationFn: async (addressData: ShippingAddress) => {
+      const response = await makeApiRequest('/user/address/shipping', {
         method: 'POST',
-        headers,
-        body: JSON.stringify(addressData),
+        body: JSON.stringify(addressData)
       });
       
-      // console.log('Response status:', response.status); // Removed for production
-      // console.log('Response headers:', Object.fromEntries(response.headers.entries())); // Removed for production
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        // console.error('Error response:', errorData); // Removed for production
-        throw new Error(errorData.message || `HTTP ${response.status}: Failed to add address`);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to save shipping address');
       }
       
-      const result = await response.json();
-      // console.log('Success response:', result); // Removed for production
-      return result;
+      return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.user.addresses(user?.id) });
-      alert('Address added successfully!');
+      queryClient.invalidateQueries({ queryKey: ['user', 'shipping-address', user?.id] });
+      alert('Shipping address saved successfully!');
       // Reset shipping address form
       setShippingAddress({ 
         street: '', 
         city: '', 
         postal_code: '',
-        type: 'shipping' as const,
-        user_id: user?.id || 0,
-        country: 'Azerbaijan',
       });
     },
     onError: (error: Error) => {
-      // console.error('Add address error:', error); // Removed for production
-      alert(`Failed to add address: ${error.message}`);
+      alert(`Failed to save shipping address: ${error.message}`);
     }
   });
 
-  const { mutate: setDefaultAddress } = useMutation({
-    mutationFn: async (addressId: number) => {
-      const response = await makeApiRequest(`/user/addresses/${addressId}/default`, {
-        method: 'POST',
-      });
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to set default address');
-      }
-      return response;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.user.addresses(user?.id) });
-      alert('Default address updated!');
-    },
-    onError: (error: Error) => {
-      // console.error('Set default address error:', error); // Removed for production
-      alert(`Failed to set default address: ${error.message}`);
-    }
-  });
-
-  const { mutate: deleteAddress } = useMutation({
-    mutationFn: async (addressId: number) => {
-      const response = await makeApiRequest(`/user/addresses/${addressId}`, {
-        method: 'DELETE',
-      });
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to delete address');
-      }
-      return response;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.user.addresses(user?.id) });
-      alert('Address deleted successfully!');
-    },
-    onError: (error: Error) => {
-      // console.error('Delete address error:', error); // Removed for production
-      alert(`Failed to delete address: ${error.message}`);
-    }
-  });
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -279,6 +227,33 @@ export const useUserProfile = () => {
       return;
     }
     mutateUser(editForm);
+  };
+
+  const handleEmailFormSubmit = async (emailData: { newEmail: string; confirmEmail: string }) => {
+    const errors: Record<string, string> = {};
+    
+    // Validate new email
+    if (!emailData.newEmail.trim()) {
+      errors.newEmail = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailData.newEmail)) {
+      errors.newEmail = 'Please enter a valid email';
+    }
+    
+    // Validate email confirmation
+    if (!emailData.confirmEmail.trim()) {
+      errors.confirmEmail = 'Please confirm your email';
+    } else if (emailData.newEmail !== emailData.confirmEmail) {
+      errors.confirmEmail = 'Emails do not match';
+    }
+    
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    
+    // Update the editForm with new email and submit
+    const updatedForm = { ...editForm, email: emailData.newEmail };
+    mutateUser(updatedForm);
   };
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
@@ -321,22 +296,11 @@ export const useUserProfile = () => {
     
     // Check if user is authenticated
     if (!user) {
-      alert('You must be logged in to add an address.');
+      alert('You must be logged in to save an address.');
       return;
     }
     
-    // Check if token exists
-    const token = getToken();
-    if (!token) {
-      alert('Authentication token not found. Please log in again.');
-      return;
-    }
-    
-    // console.log('Submitting address:', shippingAddress); // Removed for production
-    // console.log('User ID:', user.id); // Removed for production
-    console.log('Token exists:', !!token);
-    
-    addAddress(shippingAddress);
+    saveShippingAddress(shippingAddress);
   };
 
   const handleNewsletterUpdate = async () => {
@@ -406,10 +370,8 @@ export const useUserProfile = () => {
     activeOrders,
     unreadCount,
     loadingOrders,
-    addresses,
-    loadingAddresses,
-    setDefaultAddress,
-    deleteAddress,
+    shippingAddressData,
+    loadingShippingAddress,
     activeSection,
     setActiveSection,
     formErrors,
@@ -418,6 +380,7 @@ export const useUserProfile = () => {
     initializeEditForm,
     handleEditFormChange,
     handleEditSubmit,
+    handleEmailFormSubmit,
     handlePasswordSubmit,
     handleAddressSubmit,
     handleNewsletterUpdate,

@@ -8,6 +8,7 @@ import FeaturesSection from '../../components/FeaturesSection';
 import BasketIcon from '../../components/BasketIcon';
 import CartModal from '../../components/CartModal';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import FeedbackModal from '../../components/FeedbackModal';
 import { useCart } from '../../contexts/CartContext';
 import { useCartModal } from '../../contexts/CartModalContext';
 import { useNotification } from '../../contexts/NotificationContext';
@@ -168,7 +169,6 @@ export default function ViennoiseriePage() {
   const router = useRouter();
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
-  const [showFeedback, setShowFeedback] = useState(false);
   const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
@@ -334,41 +334,8 @@ export default function ViennoiseriePage() {
 
       <Footer />
 
-      {/* Fixed Feedback Button */}
-      <div>
-        <button
-          className={styles.feedbackButton}
-          onClick={() => setShowFeedback(!showFeedback)}
-        >
-          Feedback
-        </button>
-      </div>
-
-      {/* Feedback Modal */}
-      {showFeedback && (
-        <div className={styles.feedbackModal}>
-          <div className={styles.feedbackModalContent}>
-            <div className={styles.feedbackModalHeader}>
-              <h3 className={styles.feedbackModalTitle}>
-                Leave Your Feedback
-              </h3>
-              <button
-                className={styles.feedbackModalClose}
-                onClick={() => setShowFeedback(false)}
-              >
-                ×
-              </button>
-            </div>
-            <textarea
-              className={styles.feedbackTextarea}
-              placeholder="Tell us about your experience with our viennoiserie..."
-            />
-            <button className={styles.feedbackSubmit}>
-              Submit Feedback
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
 
     </div>
   );

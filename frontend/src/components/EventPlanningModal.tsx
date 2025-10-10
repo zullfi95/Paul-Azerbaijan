@@ -8,6 +8,7 @@ import styles from './EventPlanningModal.module.css';
 interface EventPlanningModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
 interface EventFormData {
@@ -18,10 +19,11 @@ interface EventFormData {
   details: string;
   email: string;
   phone: string;
+  name: string;
 }
 
-const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose }) => {
-  // const { t } = useLanguage(); // Не используется
+const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose, onSuccess }) => {
+  // const { t } = useLanguage(); // Not used
   const { showNotification } = useNotification();
   
   const [formData, setFormData] = useState<EventFormData>({
@@ -31,7 +33,8 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
     guestCount: '',
     details: '',
     email: '',
-    phone: ''
+    phone: '',
+    name: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,24 +52,43 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
     setIsSubmitting(true);
 
     try {
-      // Здесь будет логика отправки данных на сервер
-      // Пока что просто симулируем отправку
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      showNotification('Your event request has been sent successfully! We will contact you soon.');
-      onClose();
-      
-      // Сброс формы
-      setFormData({
-        eventDate: '',
-        location: '',
-        budget: '',
-        guestCount: '',
-        details: '',
-        email: '',
-        phone: ''
+      const response = await fetch('/api/event-applications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
-    } catch {
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Show custom success notification via parent component
+        console.log('Calling onSuccess callback');
+        if (onSuccess) {
+          onSuccess();
+        }
+        
+        // Close modal immediately
+        onClose();
+        
+        // Reset form
+        setFormData({
+          eventDate: '',
+          location: '',
+          budget: '',
+          guestCount: '',
+          details: '',
+          email: '',
+          phone: '',
+          name: ''
+        });
+      } else {
+        showNotification(result.message || 'Error sending request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Event application error:', error);
       showNotification('Error sending request. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -87,20 +109,20 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
 
   return (
     <>
-      {/* Полупрозрачный фон */}
+      {/* Semi-transparent background */}
       <div 
         onClick={onClose}
         className={styles.overlay}
       />
       
-      {/* Модальное окно */}
+      {/* Modal window */}
       <div 
         onClick={(e) => e.stopPropagation()}
         className={styles.modal}
       >
-        {/* Заголовок */}
+        {/* Header */}
         <div className={styles.header}>
-          {/* Кнопка закрытия */}
+          {/* Close button */}
           {/* <button
             onClick={onClose}
             className={styles.closeButton}
@@ -115,18 +137,18 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
           </div>
         </div>
 
-        {/* Форма */}
+        {/* Form */}
         <div className={styles.formContainer}>
           <form onSubmit={handleSubmit} className={styles.form}>
-            {/* Первая строка - Дата и Место (2 поля рядом) */}
+            {/* First row - Date and Location (2 fields side by side) */}
             <div className={styles.gridRow}>
-              {/* Дата мероприятия */}
+              {/* Event date */}
               <input
                 type="date"
                 name="eventDate"
                 value={formData.eventDate}
                 onChange={handleInputChange}
-                placeholder="Date of the event*"
+                placeholder="Date of the event* (DD/MM/YYYY)"
                 required
                 className={styles.input}
               />
@@ -179,7 +201,17 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               className={styles.textarea}
             />
 
-            {/* Пятая строка - Email и Телефон (2 поля рядом) */}
+            {/* Пятая строка - Имя (1 поле на всю ширину) */}
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Your name (optional)"
+              className={styles.inputLarge}
+            />
+
+            {/* Шестая строка - Email и Телефон (2 поля рядом) */}
             <div className={styles.gridRow}>
               {/* Email */}
               <input

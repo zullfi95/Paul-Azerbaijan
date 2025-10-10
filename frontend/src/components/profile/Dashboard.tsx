@@ -1,23 +1,24 @@
 // Dashboard component for profile overview
 
 import React from 'react';
-import { User, Order } from '../../config/api';
+import { Edit } from 'lucide-react';
 import styles from './Dashboard.module.css';
+import { User, Order, ShippingAddress } from '@/types/unified';
 
 interface DashboardProps {
   user: User | null;
   activeOrders: Order[];
   unreadCount: number;
+  shippingAddress?: ShippingAddress | null;
   onNavigate: (section: string) => void;
-  onInitializeEditForm: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
   user,
   activeOrders,
   unreadCount,
-  onNavigate,
-  onInitializeEditForm
+  shippingAddress,
+  onNavigate
 }) => {
   const getOrderStatusCount = (status: string) => {
     return activeOrders.filter(order => order.status === status).length;
@@ -82,22 +83,80 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       )}
 
-      {/* Account Summary */}
-      <div className={styles.accountSummary}>
-        <h3 className={styles.sectionTitle}>Account Summary</h3>
-        <div className={styles.summaryGrid}>
-          <div className={styles.summaryItem}>
-            <div className={styles.summaryLabel}>Email</div>
-            <div className={styles.summaryValue}>{user?.email || 'Not provided'}</div>
+      {/* Account Information */}
+      <div className={styles.accountInfo}>
+        {/* Top Row - Contact Information and Newsletters */}
+        <div className={styles.topRow}>
+          {/* Contact Information */}
+          <div className={styles.contactSection}>
+          <h3 className={styles.sectionTitle}>Contact Information</h3>
+            <div className={styles.contactInfo}>
+              <div className={styles.infoValue}>
+                {user?.name} {user?.last_name}
+              </div>
+              <div className={styles.infoValue}>{user?.email || 'Not provided'}</div>
+              <div className={styles.infoValue}>{user?.phone || 'Not provided'}</div>
+            </div>
+            <div className={styles.contactButtons}>
+              <button 
+                className={styles.editButton}
+                onClick={() => onNavigate('edit-profile')}
+              >
+                <Edit size={16} className={styles.editIcon} />
+                Edit
+              </button>
+              <button 
+                className={styles.changePasswordButton}
+                onClick={() => onNavigate('change-password')}
+              >
+                Change Password
+              </button>
+            </div>
           </div>
-          <div className={styles.summaryItem}>
-            <div className={styles.summaryLabel}>Phone</div>
-            <div className={styles.summaryValue}>{user?.phone || 'Not provided'}</div>
+
+          {/* Newsletters */}
+          <div className={styles.newslettersSection}>
+            <h3 className={styles.sectionTitle}>Newsletters</h3>
+            <div className={styles.newsletterInfo}>
+              <div className={styles.subscriptionText}>
+                You are subscribed to "General Subscription".
+              </div>
+            </div>
+            <div className={styles.newsletterButtons}>
+              <button 
+                className={styles.editButton}
+                onClick={() => onNavigate('newsletter-subscriptions')}
+              >
+                <Edit size={16} className={styles.editIcon} />
+                Edit
+              </button>
+            </div>
           </div>
-          <div className={styles.summaryItem}>
-            <div className={styles.summaryLabel}>Member Since</div>
-            <div className={styles.summaryValue}>
-              {user?.created_at ? formatDate(user.created_at) : 'Unknown'}
+        </div>
+
+        {/* Bottom Row - Address Information */}
+        <div className={styles.bottomRow}>
+          <div className={styles.addressSection}>
+            <h3 className={styles.sectionTitle}>Address Information</h3>
+            <div className={styles.addressInfo}>
+              <div className={styles.infoItem}>
+                <div className={styles.infoLabel}>Address</div>
+                <div className={styles.infoValue}>
+                  {shippingAddress 
+                    ? `${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.postal_code}`
+                    : 'Not provided'
+                  }
+                </div>
+              </div>
+            </div>
+            <div className={styles.addressButtons}>
+              <button 
+                className={styles.editButton}
+                onClick={() => onNavigate('address-information')}
+              >
+                <Edit size={16} className={styles.editIcon} />
+                Edit
+              </button>
             </div>
           </div>
         </div>

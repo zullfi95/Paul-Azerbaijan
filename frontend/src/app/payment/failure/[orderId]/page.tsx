@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Header from '../../../../components/Header';
 import Footer from '../../../../components/Footer';
+import FeedbackModal from '../../../../components/FeedbackModal';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { API_CONFIG, getAuthHeaders } from '../../../../config/api';
 
@@ -206,6 +207,9 @@ export default function PaymentFailurePage() {
         </div>
       </div>
       <Footer />
+      
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
     </div>
   );
 }

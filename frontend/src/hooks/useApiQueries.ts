@@ -38,7 +38,7 @@ export const useOrders = (filters?: Record<string, string | number | boolean>) =
   return useQuery({
     queryKey: queryKeys.orders.list(filters || {}),
     queryFn: async () => {
-      const result = await makeApiRequest<{data: Order[]}>('orders');
+      const result = await makeApiRequest<{data: Order[]}>('/orders');
       return result.success ? result.data?.data || [] : [];
     },
     staleTime: 2 * 60 * 1000, // 2 минуты для заказов
@@ -62,7 +62,7 @@ export const useApplications = (filters?: Record<string, string | number | boole
   return useQuery({
     queryKey: queryKeys.applications.list(filters || {}),
     queryFn: async () => {
-      const result = await makeApiRequest<{data: Application[]}>('applications');
+      const result = await makeApiRequest<{data: Application[]}>('/applications');
       return result.success ? result.data?.data || [] : [];
     },
     staleTime: 2 * 60 * 1000, // 2 минуты
@@ -73,7 +73,7 @@ export const useApplication = (id: number) => {
   return useQuery({
     queryKey: queryKeys.applications.detail(id),
     queryFn: async () => {
-      const result = await makeApiRequest<Application>(`applications/${id}`);
+      const result = await makeApiRequest<Application>(`/applications/${id}`);
       return result.success ? result.data : null;
     },
     enabled: !!id,
@@ -85,7 +85,7 @@ export const useClients = (filters?: Record<string, string | number | boolean>) 
   return useQuery({
     queryKey: queryKeys.clients.list(filters || {}),
     queryFn: async () => {
-      const result = await makeApiRequest<{data: User[]}>('clients');
+      const result = await makeApiRequest<{data: User[]}>('/clients');
       return result.success ? result.data?.data || [] : [];
     },
     staleTime: 10 * 60 * 1000, // 10 минут для клиентов
@@ -127,7 +127,7 @@ export const useCreateOrder = () => {
   
   return useMutation({
     mutationFn: async (orderData: Partial<Order>) => {
-      const result = await makeApiRequest('orders', {
+      const result = await makeApiRequest('/orders', {
         method: 'POST',
         body: JSON.stringify(orderData)
       });
@@ -145,7 +145,7 @@ export const useUpdateApplication = () => {
   
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<Application> }) => {
-      const result = await makeApiRequest(`applications/${id}`, {
+      const result = await makeApiRequest(`/applications/${id}`, {
         method: 'PUT',
         body: JSON.stringify(data)
       });

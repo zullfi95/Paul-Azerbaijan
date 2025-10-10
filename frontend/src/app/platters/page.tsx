@@ -8,6 +8,7 @@ import FeaturesSection from '../../components/FeaturesSection';
 import BasketIcon from '../../components/BasketIcon';
 import CartModal from '../../components/CartModal';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import FeedbackModal from '../../components/FeedbackModal';
 import { useCart } from '../../contexts/CartContext';
 import { useCartModal } from '../../contexts/CartModalContext';
 import { useNotification } from '../../contexts/NotificationContext';
@@ -179,7 +180,6 @@ export default function PlattersPage() {
   const router = useRouter();
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
-  const [showFeedback, setShowFeedback] = useState(false);
   const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
@@ -347,43 +347,8 @@ export default function PlattersPage() {
 
       <Footer />
 
-      {/* Fixed Feedback Button */}
-      <div >
-        <button
-          onClick={() => setShowFeedback(!showFeedback)}
-          className={styles.feedbackButton}
-        >
-          Feedback
-        </button>
-      </div>
-
-      {/* Feedback Modal */}
-      {showFeedback && (
-        <div className={styles.feedbackModal}>
-          <div className={styles.feedbackModalContent}>
-            <div className={styles.feedbackModalHeader}>
-              <h3 className={styles.feedbackModalTitle}>
-                Leave Your Feedback
-              </h3>
-              <button
-                onClick={() => setShowFeedback(false)}
-                className={styles.feedbackModalClose}
-              >
-                ×
-              </button>
-            </div>
-            <textarea
-              placeholder="Tell us about your experience with our platters..."
-              className={styles.feedbackTextarea}
-            />
-            <button className={styles.feedbackSubmit}>
-              Submit Feedback
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Стили для анимаций */}
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
       
     </div>
   );

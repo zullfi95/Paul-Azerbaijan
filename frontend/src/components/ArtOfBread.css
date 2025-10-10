@@ -98,7 +98,7 @@ line-height: normal;
   font-family: "Parisine Pro Clair";
   font-size: 18px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 300;
   line-height: normal;
 }
 
@@ -110,7 +110,7 @@ line-height: normal;
   font-size: 14px;
   font-weight: 600;
   font-family: "Sabon Next LT Pro", serif;
-  border-radius: 0;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;

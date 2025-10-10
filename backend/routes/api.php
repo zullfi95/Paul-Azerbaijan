@@ -30,6 +30,9 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,
 // Публичный endpoint для получения координаторов (для создания заявок)
 Route::get('/coordinators', [UserController::class, 'getCoordinators']);
 
+// Публичный endpoint для создания заявок на мероприятия (без авторизации)
+Route::post('/event-applications', [ApplicationController::class, 'storeEventApplication'])->middleware('throttle:5,1'); // Rate limiting
+
 // Публичные маршруты для меню (доступны всем)
 Route::prefix('menu')->group(function () {
     Route::get('/categories', [MenuController::class, 'getCategories']);

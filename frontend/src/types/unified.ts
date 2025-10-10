@@ -102,7 +102,8 @@ export interface Application {
 }
 
 // ===== ORDER TYPES =====
-export type OrderStatus = 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled';
+export type OrderStatus = 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled' | 'paid';
+export type PaymentStatus = 'pending' | 'authorized' | 'charged' | 'failed' | 'refunded' | 'credited' | 'paid';
 
 export interface Order {
   id: number;
@@ -123,6 +124,7 @@ export interface Order {
   menu_items: MenuItem[];
   comment?: string;
   status: OrderStatus;
+  payment_status?: PaymentStatus;
   coordinator_id?: number;
   client_id?: number;
   total_amount: number;

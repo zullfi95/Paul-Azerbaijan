@@ -20,6 +20,11 @@ const fetchActiveOrders = async (): Promise<Order[]> => {
     return data.success && data.data ? data.data : [];
 };
 
+const fetchAllOrders = async (): Promise<Order[]> => {
+    const data = await makeApiRequest<Order[]>(API_CONFIG.ENDPOINTS.CLIENT_ORDERS);
+    return data.success && data.data ? data.data : [];
+};
+
 const fetchUnreadCount = async (): Promise<number> => {
     const data = await makeApiRequest<{unread_count: number}>(API_CONFIG.ENDPOINTS.CLIENT_NOTIFICATIONS_UNREAD);
     return data.success && data.data ? data.data.unread_count : 0;
@@ -78,6 +83,13 @@ export const useUserProfile = () => {
     staleTime: 1 * 60 * 1000, // 1 минута
   });
 
+  const { data: allOrders = [], isLoading: loadingAllOrders } = useQuery<Order[]>({
+    queryKey: ['orders', 'all', user?.id],
+    queryFn: fetchAllOrders,
+    enabled: !!user && user.user_type === 'client',
+    staleTime: 1 * 60 * 1000, // 1 минута
+  });
+
   const { data: unreadCount = 0 } = useQuery<number>({
     queryKey: queryKeys.notifications.unreadCount(user?.id),
     queryFn: fetchUnreadCount,
@@ -100,7 +112,7 @@ export const useUserProfile = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   // Состояние для фильтра заказов
-  const [orderFilter, setOrderFilter] = useState<'all' | 'delivered' | 'in-progress' | 'payment-pending'>('all');
+  const [orderFilter, setOrderFilter] = useState<'all' | 'delivered' | 'in-progress' | 'payment-pending' | 'paid'>('all');
 
   useEffect(() => {
     if (!isAuthLoading && !isAuthenticated) {
@@ -368,8 +380,10 @@ export const useUserProfile = () => {
     passwordForm,
     passwordError,
     activeOrders,
+    allOrders,
     unreadCount,
     loadingOrders,
+    loadingAllOrders,
     shippingAddressData,
     loadingShippingAddress,
     activeSection,

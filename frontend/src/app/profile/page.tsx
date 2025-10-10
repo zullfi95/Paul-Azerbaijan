@@ -13,6 +13,7 @@ import { useUserProfile } from '../../hooks/useUserProfile';
 import styles from './ProfilePage.module.css';
 import { Dashboard } from '@/components/profile/Dashboard';
 import { AccountInfoInformation } from '@/components/profile/AccountInfoInformation';
+import { OrderStatus, PaymentStatus } from '@/types/unified';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -33,7 +34,9 @@ export default function ProfilePage() {
     passwordForm,
     passwordError,
     activeOrders,
+    allOrders,
     loadingOrders,
+    loadingAllOrders,
     activeSection,
     setActiveSection,
     formErrors,
@@ -192,16 +195,22 @@ export default function ProfilePage() {
                   >
                     Payment Pending
                 </button>
+                <button 
+                    className={`${styles.filterButton} ${orderFilter === 'paid' ? styles.active : ''}`}
+                    onClick={() => setOrderFilter('paid')}
+                  >
+                    Paid
+                </button>
               </div>
 
-              {loadingOrders ? (
+              {loadingAllOrders ? (
                   <div className={styles.loadingState}>
                     <div className={styles.loadingSpinner} />
                     <span>Loading orders...</span>
                 </div>
-                ) : activeOrders.length > 0 ? (
+                ) : allOrders.length > 0 ? (
                   <div className={styles.ordersList}>
-                    {activeOrders
+                    {allOrders
                       .filter((order) => {
                         if (orderFilter === 'delivered') {
                           return order.status === 'completed';
@@ -209,6 +218,8 @@ export default function ProfilePage() {
                           return order.status === 'processing';
                         } else if (orderFilter === 'payment-pending') {
                           return order.status === 'submitted';
+                        } else if (orderFilter === 'paid') {
+                          return order.status === 'paid' || order.payment_status === 'paid';
                         }
                         return true;
                       })
@@ -217,7 +228,12 @@ export default function ProfilePage() {
                       const firstItem = order.menu_items[0];
                       const orderDate = new Date(order.created_at);
                       
-                      const getOrderStatus = (status: string) => {
+                      const getOrderStatus = (status: string, paymentStatus?: string) => {
+                        // Check if order is paid (either by status or payment_status)
+                        if (status === 'paid' || paymentStatus === 'paid') {
+                          return { text: 'Paid', icon: '✅', isDelivered: false, needsPayment: false };
+                        }
+                        
                         switch (status) {
                           case 'completed':
                             return { text: 'Delivered', icon: '✓', isDelivered: true, needsPayment: false };
@@ -234,7 +250,7 @@ export default function ProfilePage() {
                         }
                       };
                       
-                      const orderStatus = getOrderStatus(order.status);
+                      const orderStatus = getOrderStatus(order.status, order.payment_status);
                       
                       return (
                         <div key={order.id} className={styles.orderCard}>
@@ -305,7 +321,10 @@ export default function ProfilePage() {
                   <div className={styles.emptyState}>
                     <div className={styles.emptyStateIcon}>📋</div>
                     <p className={styles.emptyStateText}>
-                      You have no active orders at the moment.
+                      {orderFilter === 'all' 
+                        ? 'You have no orders at the moment.'
+                        : `You have no ${orderFilter.replace('-', ' ')} orders at the moment.`
+                      }
                     </p>
                     <button 
                       className={styles.emptyStateButton}

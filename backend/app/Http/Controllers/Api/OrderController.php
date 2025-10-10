@@ -212,7 +212,15 @@ class OrderController extends Controller
         Log::info('Order creation validation passed');
 
         // Получаем клиента - если client_id не указан, используем текущего пользователя
-        $clientId = $data['client_id'] ?? $request->user()->id;
+        $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Пользователь не авторизован'
+            ], 401);
+        }
+        
+        $clientId = $data['client_id'] ?? $user->id;
         $client = User::where('id', $clientId)->first();
         
         Log::info('Client lookup result', ['client_found' => $client ? $client->toArray() : null, 'client_id' => $clientId]);
@@ -257,7 +265,7 @@ class OrderController extends Controller
             'menu_items' => $resolvedItems,
             'comment' => $data['comment'],
             'status' => 'submitted',
-            'coordinator_id' => $request->user()->id,
+            'coordinator_id' => $user->id,
             'total_amount' => round($subtotal, 2),
             'discount_fixed' => $discountFixed,
             'discount_percent' => $discountPercent,
@@ -465,6 +473,14 @@ class OrderController extends Controller
      */
     public function createFromApplication(Request $request, Application $application)
     {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Пользователь не авторизован'
+            ], 401);
+        }
+        
         $validator = Validator::make($request->all(), [
             'client_id' => 'nullable|exists:users,id,user_type,client', // Существующий клиент
             'menu_items' => 'required|array|min:1',
@@ -511,7 +527,8 @@ class OrderController extends Controller
         }
 
         // Ищем существующего клиента
-        $client = User::where('id', $request->client_id)
+        $clientId = $request->client_id;
+        $client = User::where('id', $clientId)
                     ->where('user_type', 'client')
                     ->first();
         
@@ -546,7 +563,7 @@ class OrderController extends Controller
             'menu_items' => $resolvedItems,
             'comment' => $request->comment,
             'status' => 'submitted',
-            'coordinator_id' => $request->user()->id,
+            'coordinator_id' => $user->id,
             'total_amount' => round($subtotal, 2),
             'discount_fixed' => $discountFixed,
             'discount_percent' => $discountPercent,
@@ -576,7 +593,7 @@ class OrderController extends Controller
         // Обновляем статус заявки на "approved" и привязываем клиента
         $application->update([
             'status' => 'approved',
-            'coordinator_id' => $request->user()->id,
+            'coordinator_id' => $user->id,
             'client_id' => $clientId,
             'processed_at' => now(),
         ]);
@@ -596,7 +613,15 @@ class OrderController extends Controller
      */
     public function getClientActiveOrders(Request $request)
     {
-        $clientId = $request->user()->id; // Предполагаем, что клиент авторизован
+        $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Пользователь не авторизован'
+            ], 401);
+        }
+        
+        $clientId = $user->id; // Предполагаем, что клиент авторизован
         
         // Активные заказы - это заказы со статусом "submitted" или "processing" 
         // и датой доставки не раньше сегодняшнего дня
@@ -622,7 +647,15 @@ class OrderController extends Controller
      */
     public function getClientOrders(Request $request)
     {
-        $clientId = $request->user()->id;
+        $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Пользователь не авторизован'
+            ], 401);
+        }
+        
+        $clientId = $user->id;
         
         $orders = Order::where('client_id', $clientId)
             ->with('coordinator')

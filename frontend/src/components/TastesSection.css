@@ -31,6 +31,8 @@
 
 .tastes-content-reverse .tastes-text-column {
   order: 1;
+  margin-left: 90px; /* Убираем отступ слева для второго блока */
+  margin-right: 10px; /* Добавляем отступ справа */
 }
 
 .tastes-content-reverse .tastes-image-column {
@@ -66,13 +68,14 @@
   display: flex;
   align-items: center;
   padding: 17px 0;
+  margin-left: 10px;
 }
 
 .tastes-text {
   max-width: 340px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   text-align: center;
 }
 
@@ -94,7 +97,6 @@
 
 /* Заголовок */
 .tastes-title {
-
   font-family: "Sabon Next LT Pro";
   font-size: 38px;
   font-style: italic;
@@ -114,6 +116,7 @@
   font-weight: 400;
   line-height: normal;
   margin: 0 0 21px 0;
+  text-align: left;
 }
 
 /* Кнопка */
@@ -124,7 +127,7 @@
   padding: 20px 50px;
   font-size: 1rem;
   font-weight: 500;
-  border-radius: 40px;
+  border-radius: 14px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -222,6 +225,8 @@
   
   .tastes-content-reverse .tastes-text-column {
     order: 2;
+    margin-left: 0;
+    margin-right: 0;
   }
   
   .tastes-text {

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import Header from '../../components/Header';
+import SimpleHeader from '../../components/SimpleHeader';
 import Footer from '../../components/Footer';
 import FeedbackModal from '../../components/FeedbackModal';
 import './OurStoryPage.css';
@@ -10,7 +10,7 @@ import './OurStoryPage.css';
 export default function OurStoryPage() {
   return (
     <div className="our-story-page">
-      <Header />
+      <SimpleHeader />
       
       <main className="our-story-main">
         {/* Hero Section */}

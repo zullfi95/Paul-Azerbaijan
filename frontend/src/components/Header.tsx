@@ -148,8 +148,8 @@ const Header: React.FC = React.memo(function Header() {
             <Image
               src="/images/logo.png"
               alt="PAUL"
-              width={100}
-              height={35}
+              width={329}
+              height={120}
               className="logo-image"
             />
           </div>
@@ -322,8 +322,8 @@ const Header: React.FC = React.memo(function Header() {
                   <Image
                     src="/images/logo.png"
                     alt="PAUL"
-                    width={100}
-                    height={35}
+                    width={329}
+                    height={120}
                     className="logo-image"
                     style={{ cursor: 'pointer' }}
                   />

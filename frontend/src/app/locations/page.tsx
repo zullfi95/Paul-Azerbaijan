@@ -69,10 +69,11 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Neftchilar Avenue, 123
                   </p>
-                  <p className={styles.locationPhone}>
-                    050 464 07 70<br />
-                    055 464 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:050464077">050 464 07 70</a>
+                    <br />
+                    <a href="tel:055464077">055 464 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>
@@ -97,9 +98,9 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Mammad Amin Razulzadeh Street, 8-10
                   </p>
-                  <p className={styles.locationPhone}>
-                    050 899 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0508990770">050 899 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>
@@ -124,9 +125,9 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Jafar Jabbarli Street, 44
                   </p>
-                  <p className={styles.locationPhone}>
-                    050 890 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0508900770">050 890 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>
@@ -151,9 +152,9 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Khojali Avenue, 37
                   </p>
-                  <p className={styles.locationPhone}>
-                    051 225 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0512250770">051 225 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>
@@ -178,9 +179,9 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Heydar Aliyev Avenue, 106A
                   </p>
-                  <p className={styles.locationPhone}>
-                    051 335 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0513350770">051 335 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>
@@ -205,9 +206,9 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Azadliq Avenue, 15a/4
                   </p>
-                  <p className={styles.locationPhone}>
-                    050 772 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0507720770">050 772 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>
@@ -232,9 +233,9 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Zarifa Aliyeva Street, 93
                   </p>
-                  <p className={styles.locationPhone}>
-                    051 206 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0512060770">051 206 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>
@@ -259,9 +260,9 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Heydar Aliyev Avenue, 155
                   </p>
-                  <p className={styles.locationPhone}>
-                    050 698 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0506980770">050 698 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>
@@ -286,9 +287,9 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Neftchilar avenue 66, 68 (Aypara Palace and Town)
                   </p>
-                  <p className={styles.locationPhone}>
-                    010 324 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0103240770">010 324 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>
@@ -313,9 +314,9 @@ export default function LocationsPage() {
                   <p className={styles.locationAddress}>
                     Ahmadbey Aghaoghlu str. 61
                   </p>
-                  <p className={styles.locationPhone}>
-                    010 321 07 70
-                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0103210770">010 321 07 70</a>
+                  </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
                   </p>

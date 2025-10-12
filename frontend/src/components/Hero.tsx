@@ -28,7 +28,7 @@ const slides: Slide[] = [
     description: "Discover the delightful world of our bakery, where every bite is a taste of happiness!",
     image: "/images/hero-bread.jpg",
     imageAlt: "Fresh artisan bread",
-    buttonText: "Catering",
+    buttonText: "MENU",
     buttonLink: "/catering"
   },
   {

@@ -152,10 +152,10 @@ const menuItems: CartItem[] = [
 ];
 
 const categories = [
-  { name: 'Brunch Menu', icon: '🥐', image: '/images/category4.png' },
-  { name: 'Lunch Menu', icon: '🥖', image: '/images/category3.png' },
-  { name: 'Coffee Breaks & Afternoon Teas', icon: '🍞', image: '/images/category5.png' },
-  { name: 'Sets', icon: '🍽️', image: '/images/category1.png' }
+  { name: 'Sets', icon: '🍽️', image: '/images/category4.png' },
+  { name: 'Brunch Menu', icon: '🥐', image: '/images/category3.png' },
+  { name: 'Lunch Menu', icon: '🥖', image: '/images/category5.png' },
+  { name: 'Coffee Breaks & Afternoon Teas', icon: '🍞', image: '/images/category1.png' }
 ];
 
 // Интерфейс для выбранных позиций Brunch Menu (только одна позиция из каждой категории)
@@ -176,7 +176,7 @@ interface LunchSelection {
 
 export default function CateringPage() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState('Brunch Menu');
+  const [selectedCategory, setSelectedCategory] = useState('Sets');
   const [sortBy] = useState('name');
   const [isMobile, setIsMobile] = useState(false);
   
@@ -441,6 +441,31 @@ export default function CateringPage() {
           </div>
         </div>
 
+        {/* Page Title */}
+        <div style={{
+          padding: '2rem 0 1rem 0',
+          backgroundColor: '#FFFCF8',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            maxWidth: '1140px',
+            margin: '0 auto',
+            padding: '0 20px'
+          }}>
+            <h1 style={{
+              color: '#000',
+              fontFamily: '"Sabon Next LT Pro"',
+              fontSize: '44px',
+              fontStyle: 'normal',
+              fontWeight: 'bold',
+              lineHeight: 'normal',
+              marginBottom: '0'
+            } as React.CSSProperties}>
+              Catering Menu
+            </h1>
+          </div>
+        </div>
+
         {/* Category Navigation */}
         <div style={{
           padding: '1.5rem 0',
@@ -516,28 +541,15 @@ export default function CateringPage() {
           </div>
         </div>
 
-        {/* Page Title */}
+        {/* Content Container */}
         <div style={{
-          padding: '2rem 0',
-          backgroundColor: '#FFFCF8',
-          textAlign: 'center'
+          backgroundColor: '#FFFCF8'
         }}>
           <div style={{
             maxWidth: '1140px',
             margin: '0 auto',
             padding: '0 20px'
           }}>
-            <h1 style={{
-              color: '#000',
-              fontFamily: '"Sabon Next LT Pro"',
-              fontSize: '44px',
-              fontStyle: 'normal',
-              fontWeight: 'bold',
-              lineHeight: 'normal',
-              marginBottom: '2rem'
-            } as React.CSSProperties}>
-              Catering Menu
-            </h1>
             
             {/* Brunch Menu Section */}
             {selectedCategory === 'Brunch Menu' && (
@@ -1101,7 +1113,7 @@ export default function CateringPage() {
                   }}></div>
                   
                   {/* Lunch Options Grid */}
-                  <div style={{
+                  <div className="lunch-options-grid" style={{
                     display: 'grid',
                     gridTemplateColumns: isMobile ? (window.innerWidth < 640 ? '1fr' : 'repeat(2, 1fr)') : 'repeat(5, 1fr)',
                     gap: '1.5rem',
@@ -2316,7 +2328,56 @@ export default function CateringPage() {
               </div>
             )}
             
-            {/* Product Grid */}
+            {/* Sort By Button - Only show when category is selected */}
+            {selectedCategory && (
+              <div style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginBottom: '1.5rem',
+                padding: '0 20px',
+                maxWidth: '1140px',
+                margin: '0 auto 1.5rem auto'
+              }}>
+                <button 
+                  onClick={() => setShowSortMenu(!showSortMenu)}
+                  data-sort-menu
+                  style={{
+                    backgroundColor: '#1A1A1A',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '20px',
+                    padding: '0.5rem 1.25rem',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.375rem',
+                    fontFamily: '"Sabon Next LT Pro"',
+                    letterSpacing: '0.05em',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation',
+                    minHeight: '36px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#000000';
+                    e.currentTarget.style.boxShadow = '0 4px 10px rgba(0,0,0,0.25)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#1A1A1A';
+                    e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+                  }}
+                >
+                  SORT BY
+                  <span style={{ fontSize: '16px', fontWeight: 'bold', lineHeight: '1' }}>...</span>
+                </button>
+              </div>
+            )}
+
+            {/* Product Grid - Only show when category is selected */}
+            {selectedCategory && (
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
@@ -2374,36 +2435,46 @@ export default function CateringPage() {
                       }}
                       style={{
                         position: 'absolute',
-                        bottom: '1rem',
-                        right: '1rem',
-                        width: '40px',
-                        height: '40px',
-                        backgroundColor: 'white',
+                        bottom: '0.75rem',
+                        right: '0.75rem',
+                        width: '36px',
+                        height: '36px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
                         color: '#1A1A1A',
-                        border: '1px solid #E5E7EB',
+                        border: '1.5px solid rgba(0, 0, 0, 0.15)',
                         borderRadius: '50%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         cursor: 'pointer',
-                        fontSize: '1.25rem',
+                        fontSize: '1rem',
                         transition: 'all 0.2s ease',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                        boxShadow: '0 3px 10px rgba(0,0,0,0.3)',
+                        zIndex: 10,
+                        backdropFilter: 'blur(4px)'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#F9FAFB';
-                        e.currentTarget.style.borderColor = '#D1D5DB';
+                        e.currentTarget.style.backgroundColor = '#1A1A1A';
+                        e.currentTarget.style.borderColor = '#1A1A1A';
+                        e.currentTarget.style.color = 'white';
                         e.currentTarget.style.transform = 'scale(1.1)';
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                        e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.4)';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'white';
-                        e.currentTarget.style.borderColor = '#E5E7EB';
+                        e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                        e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.15)';
+                        e.currentTarget.style.color = '#1A1A1A';
                         e.currentTarget.style.transform = 'scale(1)';
-                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                        e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.3)';
                       }}
                     >
-                      <BasketIcon size={20} />
+                      <BasketIcon 
+                        size={18}
+                        style={{
+                          color: '#1A1A1A',
+                          fill: '#1A1A1A'
+                        }}
+                      />
                     </button>
                   </div>
 
@@ -2442,9 +2513,11 @@ export default function CateringPage() {
                   </div>
                 </div>
               ))}
-                    </div>
+            </div>
+            )}
 
-            {/* View More Button */}
+            {/* View More Button - Only show when category is selected */}
+            {selectedCategory && (
             <div style={{
               display: 'flex',
               justifyContent: 'center',
@@ -2475,10 +2548,11 @@ export default function CateringPage() {
                 e.currentTarget.style.boxShadow = 'none';
               }}>
                 View More
-                              </button>
-                            </div>
-                    </div>
-                  </div>
+              </button>
+            </div>
+            )}
+          </div>
+        </div>
 
         {/* Features Section */}
         <FeaturesSection />
@@ -2614,9 +2688,35 @@ export default function CateringPage() {
           gap: 1.5rem;
         }
         
+        /* Product Add to Cart Button - Global */
+        .product-grid > div > div:first-child > button svg {
+          color: #1A1A1A;
+          fill: #1A1A1A;
+        }
+        
+        .product-grid > div > div:first-child > button svg path {
+          fill: #1A1A1A;
+        }
+        
         @media (max-width: 1024px) {
           .product-grid {
             grid-template-columns: repeat(3, 1fr);
+          }
+        }
+        
+        /* Tablet Adjustments */
+        @media (max-width: 900px) and (min-width: 769px) {
+          .lunch-options-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1.25rem !important;
+          }
+          
+          .category-navigation {
+            gap: 0.875rem !important;
+          }
+          
+          .category-item {
+            min-width: 130px !important;
           }
         }
         
@@ -2625,19 +2725,90 @@ export default function CateringPage() {
             padding: 0 1rem;
           }
           
-          .product-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+          /* Navbar Spacing */
+          .navbar-spacing {
+            padding-top: 0 !important;
           }
           
+          /* Product Grid */
+          .product-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1rem !important;
+          }
+          
+          /* Product Card */
+          .product-grid > div {
+            border-radius: 0.375rem !important;
+          }
+          
+          .product-grid > div > div:first-child {
+            height: 200px !important;
+          }
+          
+          .product-grid > div > div:nth-child(2) {
+            padding: 0.625rem !important;
+          }
+          
+          .product-grid h3 {
+            font-size: 0.8125rem !important;
+          }
+          
+          .product-grid p {
+            font-size: 0.6875rem !important;
+          }
+          
+          .product-grid span {
+            font-size: 0.875rem !important;
+          }
+          
+          /* Product Add to Cart Button - 768px */
+          .product-grid > div > div:first-child > button {
+            width: 34px !important;
+            height: 34px !important;
+            bottom: 0.625rem !important;
+            right: 0.625rem !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.35) !important;
+            border: 1.5px solid rgba(0, 0, 0, 0.2) !important;
+          }
+          
+          .product-grid > div > div:first-child > button svg {
+            width: 17px !important;
+            height: 17px !important;
+            color: #1A1A1A !important;
+            fill: #1A1A1A !important;
+          }
+          
+          .product-grid > div > div:first-child > button svg path {
+            fill: #1A1A1A !important;
+          }
+          
+          /* Typography */
           h1 {
-            font-size: 2rem !important;
+            font-size: 32px !important;
+            margin-bottom: 0 !important;
+            padding: 0 1rem !important;
+          }
+          
+          /* Page Title Section */
+          div[style*="padding: '2rem 0 1rem 0'"] {
+            padding: 1.5rem 0 0.75rem 0 !important;
           }
           
           h2 {
-            font-size: 1.5rem !important;
+            font-size: 18px !important;
+            margin-bottom: 1rem !important;
           }
           
+          h3 {
+            font-size: 16px !important;
+          }
+          
+          h4 {
+            font-size: 13px !important;
+          }
+          
+          /* Layout Utilities */
           .mobile-stack {
             flex-direction: column;
           }
@@ -2650,69 +2821,796 @@ export default function CateringPage() {
             display: none;
           }
           
-          /* Brunch Menu Mobile Styles */
-          .brunch-menu-grid {
-            grid-template-columns: 1fr !important;
-            gap: 2rem !important;
+          /* Category Navigation Section */
+          div[style*="padding: '1.5rem 0'"] {
+            padding: 1rem 0 !important;
           }
           
-          .brunch-menu-content {
-            grid-template-columns: 1fr !important;
+          /* Category Navigation - All 4 visible without scroll */
+          .category-navigation {
+            flex-wrap: nowrap !important;
+            gap: 0.5rem !important;
+            padding: 0 0.5rem !important;
+            justify-content: space-between !important;
+          }
+          
+          .category-item {
+            min-width: 0 !important;
+            flex: 1 1 23% !important;
+            padding: 0.75rem 0.375rem !important;
+            max-width: 25% !important;
+          }
+          
+          .category-item div {
+            width: 50px !important;
+            height: 50px !important;
+            margin: 0 auto !important;
+          }
+          
+          .category-item span {
+            font-size: 11px !important;
+            white-space: normal !important;
+            text-align: center !important;
+            line-height: 1.2 !important;
+            display: block !important;
+          }
+          
+          /* Brunch Menu Mobile Styles */
+          .brunch-menu-grid {
+            display: flex !important;
+            flex-direction: column !important;
             gap: 1.5rem !important;
           }
           
+          .brunch-menu-content {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
+          }
+          
+          /* Brunch Menu Items */
+          .brunch-menu-content > div {
+            margin-bottom: 0.75rem !important;
+          }
+          
+          .brunch-menu-content h3 {
+            font-size: 15px !important;
+            margin-bottom: 0.375rem !important;
+          }
+          
+          .brunch-menu-content p {
+            font-size: 12px !important;
+            margin-bottom: 0.5rem !important;
+          }
+          
+          /* Brunch Menu Labels */
+          .brunch-menu-content label {
+            padding: 0.375rem 0.5rem !important;
+            margin-bottom: 0.25rem !important;
+          }
+          
+          .brunch-menu-content label span {
+            font-size: 13px !important;
+          }
+          
+          .brunch-menu-content input[type="radio"] {
+            width: 14px !important;
+            height: 14px !important;
+          }
+          
+          /* Brunch Image Container */
+          .brunch-menu-grid > div:last-child {
+            order: -1 !important;
+            margin-bottom: 1rem !important;
+          }
+          
+          .brunch-menu-grid > div:last-child > div:first-child {
+            max-height: 220px !important;
+            border-radius: 8px !important;
+          }
+          
+          /* Brunch Add to Cart Button */
+          .brunch-menu-grid button {
+            padding: 0.75rem 1.25rem !important;
+            font-size: 14px !important;
+            width: 100% !important;
+            margin-top: 0.75rem !important;
+          }
+          
+          /* Sort By Button - Mobile */
+          div:has(button[data-sort-menu]) {
+            padding: 0 0.75rem !important;
+          }
+          
+          button[data-sort-menu] {
+            padding: 0.5rem 1.125rem !important;
+            font-size: 12.5px !important;
+          }
+          
+          /* Lunch Menu Options Grid */
+          .lunch-options-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+            padding: 0 0.5rem !important;
+          }
+          
+          /* Lunch Menu Option Cards */
+          .lunch-options-grid > div {
+            padding: 1.25rem !important;
+            min-height: auto !important;
+          }
+          
+          /* Menu Type Navigation */
           .menu-type-navigation {
             flex-direction: column !important;
             gap: 1rem !important;
           }
           
-          .category-navigation {
-            flex-wrap: wrap !important;
+          /* Section Paddings */
+          div[style*="padding: '1.5rem 0'"] {
+            padding: 1rem 0 !important;
           }
           
-          .category-item {
-            min-width: 120px !important;
-            flex: 0 0 calc(50% - 0.5rem) !important;
+          div[style*="padding: '2rem 0'"] {
+            padding: 1.25rem 0 !important;
+          }
+          
+          div[style*="padding: '1rem 0'"] {
+            padding: 0.75rem 0 !important;
+          }
+          
+          /* Brunch Menu Container */
+          div[style*="backgroundColor: '#FFFCF8'"][style*="padding: '1rem 0'"] {
+            padding: 1rem 0.5rem !important;
+          }
+          
+          /* Brunch Menu Divider */
+          .brunch-menu-grid + div + div {
+            margin-bottom: 2rem !important;
+          }
+          
+          /* Brunch Image Container */
+          .brunch-menu-grid > div:last-child {
+            margin-top: 0 !important;
+          }
+          
+          .brunch-menu-grid img {
+            max-height: 220px !important;
+            object-fit: cover !important;
+          }
+          
+          /* iOS Safari Touch Improvements */
+          button, a, label {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            -webkit-transform: translateZ(0);
+            min-height: 44px;
+            min-width: 44px;
+          }
+          
+          input[type="radio"],
+          input[type="checkbox"] {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
           }
         }
         
         
-        @media (max-width: 480px) {
+        /* Small Tablet / Large Phone */
+        @media (max-width: 640px) and (min-width: 481px) {
+          /* Product Grid */
           .product-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1rem !important;
           }
           
+          /* Typography */
+          h1 {
+            font-size: 30px !important;
+          }
+          
+          h2 {
+            font-size: 17px !important;
+          }
+          
+          /* Category Navigation - All 4 visible */
+          .category-navigation {
+            flex-wrap: nowrap !important;
+            gap: 0.375rem !important;
+            padding: 0 0.375rem !important;
+            justify-content: space-between !important;
+          }
+          
+          .category-item {
+            min-width: 0 !important;
+            flex: 1 1 23% !important;
+            padding: 0.75rem 0.25rem !important;
+            max-width: 25% !important;
+          }
+          
+          .category-item div {
+            width: 48px !important;
+            height: 48px !important;
+          }
+          
+          .category-item span {
+            font-size: 11px !important;
+            line-height: 1.15 !important;
+          }
+          
+          /* Page Title & Category Navigation - 640px */
+          div[style*="padding: '2rem 0 1rem 0'"] {
+            padding: 1.375rem 0 0.625rem 0 !important;
+          }
+          
+          div[style*="padding: '1.5rem 0'"] {
+            padding: 1.125rem 0 !important;
+          }
+          
+          /* Sort By Button - 640px */
+          div:has(button[data-sort-menu]) {
+            padding: 0 0.5rem !important;
+          }
+          
+          button[data-sort-menu] {
+            padding: 0.5rem 1.125rem !important;
+            font-size: 12.5px !important;
+          }
+          
+          /* Product Add to Cart Button - 640px */
+          .product-grid > div > div:first-child > button {
+            width: 33px !important;
+            height: 33px !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.38) !important;
+            border: 1.5px solid rgba(0, 0, 0, 0.22) !important;
+          }
+          
+          .product-grid > div > div:first-child > button svg {
+            width: 16px !important;
+            height: 16px !important;
+            color: #1A1A1A !important;
+            fill: #1A1A1A !important;
+          }
+          
+          .product-grid > div > div:first-child > button svg path {
+            fill: #1A1A1A !important;
+          }
+          
+          /* Lunch Options - 2 columns for this range */
+          .lunch-options-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1.25rem !important;
+          }
+          
+          /* Brunch Menu Styles for 640px */
+          .brunch-menu-grid {
+            gap: 1.375rem !important;
+          }
+          
+          .brunch-menu-content > div {
+            margin-bottom: 0.625rem !important;
+          }
+          
+          .brunch-menu-content h3 {
+            font-size: 14.5px !important;
+          }
+          
+          .brunch-menu-content p {
+            font-size: 11.5px !important;
+          }
+          
+          .brunch-menu-content label span {
+            font-size: 12.5px !important;
+          }
+          
+          .brunch-menu-grid > div:last-child > div:first-child {
+            max-height: 210px !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          /* Product Grid - KEEP 2 columns even on smallest screens */
+          .product-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.75rem !important;
+            padding: 0 0.5rem !important;
+          }
+          
+          /* Product Card Adjustments */
+          .product-grid > div {
+            border-radius: 0.5rem !important;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+          }
+          
+          .product-grid > div > div:first-child {
+            height: 180px !important;
+          }
+          
+          .product-grid > div > div:nth-child(2) {
+            padding: 0.625rem !important;
+          }
+          
+          .product-grid h3 {
+            font-size: 0.8125rem !important;
+            line-height: 1.2 !important;
+            margin-bottom: 0.125rem !important;
+          }
+          
+          .product-grid p {
+            font-size: 0.6875rem !important;
+            margin-bottom: 0.5rem !important;
+          }
+          
+          .product-grid span {
+            font-size: 0.875rem !important;
+          }
+          
+          /* Product Add to Cart Button */
+          .product-grid > div > div:first-child > button {
+            width: 32px !important;
+            height: 32px !important;
+            bottom: 0.5rem !important;
+            right: 0.5rem !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4) !important;
+            border: 1.5px solid rgba(0, 0, 0, 0.25) !important;
+          }
+          
+          .product-grid > div > div:first-child > button svg {
+            width: 16px !important;
+            height: 16px !important;
+            color: #1A1A1A !important;
+            fill: #1A1A1A !important;
+          }
+          
+          .product-grid > div > div:first-child > button svg path {
+            fill: #1A1A1A !important;
+          }
+          
+          /* Sort By Button */
+          div:has(button[data-sort-menu]) {
+            padding: 0 0.5rem !important;
+          }
+          
+          button[data-sort-menu] {
+            padding: 0.5rem 1rem !important;
+            font-size: 12px !important;
+            border-radius: 18px !important;
+            min-height: 36px !important;
+          }
+          
+          button[data-sort-menu] span {
+            font-size: 14px !important;
+          }
+          
+          /* View More Button Container */
+          div[style*="marginTop: '3rem'"] {
+            margin-top: 2rem !important;
+            padding: 0 0.5rem !important;
+          }
+          
+          /* Page Title Section */
+          div[style*="padding: '2rem 0 1rem 0'"] {
+            padding: 1.25rem 0 0.625rem 0 !important;
+          }
+          
+          /* Hero Section */
           .hero-padding {
-            padding: 4rem 0 2rem;
+            padding: 3rem 0 1.5rem !important;
           }
           
+          .hero-padding h1 {
+            font-size: 26px !important;
+          }
+          
+          .hero-padding p {
+            font-size: 15px !important; 
+          }
+          
+          /* Filter Buttons */
           .filter-buttons {
             flex-direction: column;
             align-items: stretch;
           }
           
-          .hero-padding h1 {
-            font-size: 1.75rem !important;
-          }
-          
-          /* Catering Menu Title Mobile */
+          /* Typography */
           h1 {
-            font-size: 28px !important;
+            font-size: 26px !important;
+            margin-bottom: 0 !important;
+            padding: 0 0.75rem !important;
           }
           
-          .hero-padding p {
-            font-size: 1rem !important; 
+          /* Category Navigation Spacing */
+          div[style*="padding: '1.5rem 0'"] {
+            padding: 0.875rem 0 !important;
           }
           
+          h2 {
+            font-size: 16px !important;
+          }
+          
+          h3 {
+            font-size: 15px !important;
+          }
+          
+          h4 {
+            font-size: 12px !important;
+          }
+          
+          /* Category Navigation - All 4 visible in one row */
           .category-navigation {
-            flex-wrap: wrap !important;
+            flex-wrap: nowrap !important;
+            gap: 0.375rem !important;
+            padding: 0 0.375rem !important;
+            justify-content: space-between !important;
           }
           
           .category-item {
-            min-width: 100px !important;
-            flex: 0 0 calc(50% - 0.5rem) !important;
+            min-width: 0 !important;
+            flex: 1 1 24% !important;
+            padding: 0.625rem 0.25rem !important;
+            max-width: 25% !important;
+          }
+          
+          .category-item div {
+            width: 45px !important;
+            height: 45px !important;
+            margin: 0 auto !important;
+          }
+          
+          .category-item span {
+            font-size: 10px !important;
+            line-height: 1.15 !important;
+            word-break: break-word !important;
+          }
+          
+          /* Brunch Menu Spacing */
+          .brunch-menu-grid {
+            gap: 1.25rem !important;
+            padding: 0 !important;
+          }
+          
+          .brunch-menu-content {
+            gap: 1rem !important;
+          }
+          
+          /* Brunch Menu Items */
+          .brunch-menu-content > div {
+            margin-bottom: 0.625rem !important;
+          }
+          
+          .brunch-menu-content h3 {
+            font-size: 14px !important;
+            margin-bottom: 0.325rem !important;
+          }
+          
+          .brunch-menu-content p {
+            font-size: 11px !important;
+            margin-bottom: 0.425rem !important;
+          }
+          
+          /* Brunch Menu Labels - Smaller */
+          .brunch-menu-content label {
+            padding: 0.3rem 0.425rem !important;
+            gap: 0.375rem !important;
+          }
+          
+          .brunch-menu-content label span {
+            font-size: 12px !important;
+            line-height: 1.3 !important;
+          }
+          
+          .brunch-menu-content input[type="radio"] {
+            width: 13px !important;
+            height: 13px !important;
+          }
+          
+          /* Brunch Image Container */
+          .brunch-menu-grid > div:last-child > div:first-child {
+            max-height: 200px !important;
+            border-radius: 6px !important;
+          }
+          
+          /* Brunch Add to Cart Button */
+          .brunch-menu-grid button {
+            padding: 0.625rem 1rem !important;
+            font-size: 13px !important;
+          }
+          
+          /* Brunch Menu Title */
+          div[style*="backgroundColor: '#FFFCF8'"] h2 {
+            font-size: 16px !important;
+            margin-bottom: 0.75rem !important;
+          }
+          
+          /* Brunch Price Text */
+          div[style*="marginBottom: '3rem'"] {
+            margin-bottom: 1.5rem !important;
+          }
+          
+          div[style*="marginBottom: '3rem'"] span {
+            font-size: 14px !important;
+          }
+          
+          /* Brunch Divider Line */
+          div[style*="maxWidth: '800px'"][style*="height: '2px'"] {
+            margin-bottom: 0.75rem !important;
+          }
+          
+          /* Radio/Checkbox Labels */
+          label {
+            padding: 0.25rem 0.375rem !important;
+          }
+          
+          label span {
+            font-size: 14px !important;
+          }
+          
+          /* Buttons */
+          button {
+            font-size: 14px !important;
+            padding: 0.625rem 1.25rem !important;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            touch-action: manipulation;
+          }
+          
+          /* Lunch Options Grid */
+          .lunch-options-grid {
+            gap: 1.25rem !important;
+            padding: 0 0.25rem !important;
+          }
+          
+          /* Lunch Option Cards */
+          .lunch-options-grid > div {
             padding: 1rem !important;
+            border-radius: 8px !important;
+          }
+          
+          .lunch-options-grid h3 {
+            font-size: 16px !important;
+          }
+          
+          .lunch-options-grid h4 {
+            font-size: 12.5px !important;
+          }
+          
+          .lunch-options-grid p {
+            font-size: 11px !important;
+          }
+          
+          /* View More Button Container */
+          div[style*="display: flex"][style*="justify-content: center"] {
+            padding: 0 1rem !important;
+          }
+          
+          /* Container Paddings */
+          div[style*="maxWidth: '1140px'"] {
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+          }
+          
+          /* Brunch Image */
+          .brunch-menu-grid > div:last-child > div:first-child {
+            max-height: 220px !important;
+          }
+          
+          /* Section Spacing */
+          div[style*="padding: '1rem 0'"] {
+            padding: 0.75rem 0 !important;
+          }
+          
+          /* Breadcrumbs */
+          div[style*="borderBottom"] {
+            padding: 0.75rem 0 !important;
+          }
+          
+          /* Price Text */
+          span[style*="fontSize: '17.6px'"] {
+            font-size: 15px !important;
+          }
+          
+          /* Lunch Description Section */
+          div[style*="maxWidth: '800px'"] {
+            padding: 0 1rem !important;
+          }
+          
+          div[style*="maxWidth: '800px'"] h3 {
+            font-size: 18px !important;
+          }
+          
+          div[style*="maxWidth: '800px'"] p {
+            font-size: 15px !important;
+            line-height: 1.5 !important;
+          }
+        }
+        
+        /* Mobile Landscape Orientation */
+        @media (max-height: 500px) and (orientation: landscape) {
+          /* Reduce vertical spacing in landscape */
+          h1 {
+            font-size: 24px !important;
+            margin-bottom: 0.75rem !important;
+          }
+          
+          h2 {
+            font-size: 16px !important;
+            margin-bottom: 0.5rem !important;
+          }
+          
+          .category-navigation {
+            gap: 0.5rem !important;
+            padding: 0.5rem 0 !important;
+          }
+          
+          .category-item {
+            padding: 0.5rem !important;
+            min-width: 80px !important;
+          }
+          
+          .category-item div {
+            width: 40px !important;
+            height: 40px !important;
+          }
+          
+          .category-item span {
+            font-size: 11px !important;
+          }
+          
+          div[style*="padding: '2rem 0'"] {
+            padding: 1rem 0 !important;
+          }
+          
+          div[style*="padding: '1.5rem 0'"] {
+            padding: 0.75rem 0 !important;
+          }
+          
+          .product-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+          }
+          
+          .brunch-menu-grid {
+            gap: 1rem !important;
+          }
+          
+          .lunch-options-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+          }
+        }
+        
+        /* Extra Small Screens */
+        @media (max-width: 360px) {
+          h1 {
+            font-size: 24px !important;
+          }
+          
+          /* Page Title Section */
+          div[style*="padding: '2rem 0 1rem 0'"] {
+            padding: 1rem 0 0.5rem 0 !important;
+          }
+          
+          /* Category Navigation Spacing */
+          div[style*="padding: '1.5rem 0'"] {
+            padding: 0.75rem 0 !important;
+          }
+          
+          .category-item {
+            min-width: 0 !important;
+            flex: 1 1 24% !important;
+            padding: 0.5rem 0.125rem !important;
+            max-width: 25% !important;
+          }
+          
+          .category-item div {
+            width: 40px !important;
+            height: 40px !important;
+            margin: 0 auto !important;
+          }
+          
+          .category-item span {
+            font-size: 9px !important;
+            line-height: 1.1 !important;
+            word-break: break-word !important;
+          }
+          
+          .product-grid {
+            gap: 0.625rem !important;
+          }
+          
+          .product-grid > div > div:first-child {
+            height: 160px !important;
+          }
+          
+          .product-grid h3 {
+            font-size: 0.75rem !important;
+          }
+          
+          .product-grid p {
+            font-size: 0.625rem !important;
+          }
+          
+          .product-grid span {
+            font-size: 0.8125rem !important;
+          }
+          
+          /* Product Add to Cart Button - 360px */
+          .product-grid > div > div:first-child > button {
+            width: 30px !important;
+            height: 30px !important;
+            bottom: 0.5rem !important;
+            right: 0.5rem !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.45) !important;
+            border: 1.5px solid rgba(0, 0, 0, 0.3) !important;
+          }
+          
+          .product-grid > div > div:first-child > button svg {
+            width: 15px !important;
+            height: 15px !important;
+            color: #1A1A1A !important;
+            fill: #1A1A1A !important;
+          }
+          
+          .product-grid > div > div:first-child > button svg path {
+            fill: #1A1A1A !important;
+          }
+          
+          button {
+            font-size: 13px !important;
+            padding: 0.5rem 1rem !important;
+          }
+          
+          /* Sort By Button - Extra Small */
+          div:has(button[data-sort-menu]) {
+            padding: 0 0.375rem !important;
+          }
+          
+          button[data-sort-menu] {
+            padding: 0.425rem 0.875rem !important;
+            font-size: 11.5px !important;
+            border-radius: 16px !important;
+          }
+          
+          button[data-sort-menu] span {
+            font-size: 13px !important;
+          }
+          
+          .lunch-options-grid > div {
+            padding: 0.875rem !important;
+          }
+          
+          /* Brunch Menu - Extra Small */
+          .brunch-menu-grid {
+            gap: 1rem !important;
+          }
+          
+          .brunch-menu-content h3 {
+            font-size: 13px !important;
+          }
+          
+          .brunch-menu-content p {
+            font-size: 10px !important;
+          }
+          
+          .brunch-menu-content label span {
+            font-size: 11px !important;
+          }
+          
+          .brunch-menu-content input[type="radio"] {
+            width: 12px !important;
+            height: 12px !important;
+          }
+          
+          .brunch-menu-grid > div:last-child > div:first-child {
+            max-height: 180px !important;
+          }
+          
+          .brunch-menu-grid button {
+            font-size: 12px !important;
+            padding: 0.5rem 0.875rem !important;
           }
         }
       `}</style>

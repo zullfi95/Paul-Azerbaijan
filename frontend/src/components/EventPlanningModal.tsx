@@ -123,12 +123,14 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
         {/* Header */}
         <div className={styles.header}>
           {/* Close button */}
-          {/* <button
+          <button
             onClick={onClose}
             className={styles.closeButton}
+            type="button"
+            aria-label="Close"
           >
             <X size={20} />
-          </button> */}
+          </button>
           
           <div className={styles.headerContent}>
             <h2 className={styles.title}>
@@ -142,16 +144,17 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
           <form onSubmit={handleSubmit} className={styles.form}>
             {/* First row - Date and Location (2 fields side by side) */}
             <div className={styles.gridRow}>
-              {/* Event date */}
-              <input
-                type="date"
-                name="eventDate"
-                value={formData.eventDate}
-                onChange={handleInputChange}
-                placeholder="Date of the event* (DD/MM/YYYY)"
-                required
-                className={styles.input}
-              />
+              {/* Event date with label */}
+              <div className={styles.inputWrapper} data-placeholder="Date of the event*">
+                <input
+                  type="date"
+                  name="eventDate"
+                  value={formData.eventDate}
+                  onChange={handleInputChange}
+                  required
+                  className={styles.input}
+                />
+              </div>
 
               {/* Место проведения */}
               <input
@@ -201,17 +204,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               className={styles.textarea}
             />
 
-            {/* Пятая строка - Имя (1 поле на всю ширину) */}
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="Your name (optional)"
-              className={styles.inputLarge}
-            />
-
-            {/* Шестая строка - Email и Телефон (2 поля рядом) */}
+            {/* Пятая строка - Email и Телефон (2 поля рядом) */}
             <div className={styles.gridRow}>
               {/* Email */}
               <input
@@ -224,26 +217,28 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 className={styles.input}
               />
 
-              {/* Телефон + кнопка отправки */}
-              <div className={styles.phoneButtonColumn}>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="Phone number*"
-                  required
-                  className={styles.inputLargePhone}
-                />
+              {/* Телефон */}
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Phone number*"
+                required
+                className={styles.input}
+              />
+            </div>
 
-                <button
-                  type="submit"
-                  disabled={!isFormValid() || isSubmitting}
-                  className={styles.submitButton}
-                >
-                  {isSubmitting ? 'Sending...' : 'Send a request'}
-                </button>
-              </div>
+            {/* Кнопка отправки */}
+            <div className={styles.buttonContainer}>
+              <button
+                type="submit"
+                disabled={!isFormValid() || isSubmitting}
+                className={styles.submitButton}
+                onTouchStart={() => {}} // iOS Safari touch fix
+              >
+                {isSubmitting ? 'Sending...' : 'Send a request'}
+              </button>
             </div>
 
             {/* Примечание о конфиденциальности */}

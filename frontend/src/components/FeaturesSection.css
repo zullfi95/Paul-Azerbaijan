@@ -35,9 +35,10 @@
 .feature-card:nth-child(3) { animation-delay: 0.3s; }
 .feature-card:nth-child(4) { animation-delay: 0.4s; }
 
-.feature-card:hover {
+/* Hover effects disabled */
+/* .feature-card:hover {
   transform: translateY(-8px);
-}
+} */
 
 .feature-image-wrapper {
   position: relative;
@@ -58,9 +59,10 @@
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.feature-card:hover .feature-image {
+/* Hover effects disabled */
+/* .feature-card:hover .feature-image {
   transform: scale(1.05);
-}
+} */
 
 .feature-content {
   max-width: 238px;

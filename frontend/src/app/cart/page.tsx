@@ -55,15 +55,40 @@ export default function CartPage() {
     getTotalPrice 
   } = useCart();
 
+  // Валидация и фильтрация данных корзины
+  const validatedCartData = useMemo(() => {
+    return cartData.filter(item => {
+      // Проверяем обязательные поля
+      if (!item.id || !item.name || typeof item.price !== 'number' || typeof item.quantity !== 'number') {
+        console.warn('Invalid cart item detected:', item);
+        return false;
+      }
+      // Проверяем корректность значений
+      if (item.price < 0 || item.quantity <= 0) {
+        console.warn('Invalid cart item values:', item);
+        return false;
+      }
+      return true;
+    });
+  }, [cartData]);
+
   // Подсчет общей суммы через useMemo для оптимизации
   const totalAmount = useMemo(() => getTotalPrice(), [getTotalPrice]);
 
   const goToCatering = useCallback(() => {
-    router.push('/catering');
+    try {
+      router.push('/catering');
+    } catch (error) {
+      console.error('Error navigating to catering:', error);
+    }
   }, [router]);
 
   const goToCheckout = useCallback(() => {
-    router.push('/catering/order');
+    try {
+      router.push('/catering/order');
+    } catch (error) {
+      console.error('Error navigating to checkout:', error);
+    }
   }, [router]);
 
   return (
@@ -90,7 +115,7 @@ export default function CartPage() {
             </h1>
           </div>
 
-          {cartData.length === 0 ? (
+          {validatedCartData.length === 0 ? (
             /* Пустая корзина */
             <div className={styles.emptyCart}>
               <h2 className={styles.emptyCartTitle}>
@@ -124,11 +149,17 @@ export default function CartPage() {
                     
               {/* Cart Items */}
               <div className={styles.cartItems}>
-                {cartData.map((item) => (
+                {validatedCartData.map((item) => (
                   <div key={item.id} className={styles.cartItem}>
                     {/* Кнопка удаления */}
                     <button
-                      onClick={() => removeItem(item.id.toString())}
+                      onClick={() => {
+                        try {
+                          removeItem(item.id.toString());
+                        } catch (error) {
+                          console.error('Error removing item from cart:', error);
+                        }
+                      }}
                       className={styles.deleteButton}
                       aria-label="Remove item"
                     >
@@ -141,7 +172,7 @@ export default function CartPage() {
                     <div className={styles.productImage}>
                       <Image 
                         src={item.image || '/images/placeholder-food.svg'} 
-                        alt={item.name}
+                        alt={item.name || 'Product image'}
                         width={170}
                         height={165}
                         style={{
@@ -163,11 +194,17 @@ export default function CartPage() {
                         </p>
                       )}
                       <p className={styles.productPrice}>
-                        {item.price} ₼
+                        {typeof item.price === 'number' ? item.price.toFixed(2) : '0.00'} ₼
                       </p>
                       <QuantitySelector 
                         quantity={item.quantity} 
-                        onUpdate={(newQuantity) => updateQuantity(item.id.toString(), newQuantity)} 
+                        onUpdate={(newQuantity) => {
+                          try {
+                            updateQuantity(item.id.toString(), newQuantity);
+                          } catch (error) {
+                            console.error('Error updating item quantity:', error);
+                          }
+                        }} 
                       />
                     </div>
 
@@ -176,7 +213,11 @@ export default function CartPage() {
 
                     {/* Общая цена товара */}
                     <div className={styles.itemTotalPrice}>
-                      {(item.price * item.quantity).toFixed(2)} ₼
+                      {(() => {
+                        const price = typeof item.price === 'number' ? item.price : 0;
+                        const quantity = typeof item.quantity === 'number' ? item.quantity : 0;
+                        return (price * quantity).toFixed(2);
+                      })()} ₼
                     </div>
                   </div>
                 ))}

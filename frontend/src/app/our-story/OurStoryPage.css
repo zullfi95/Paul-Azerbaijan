@@ -3,7 +3,10 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #FFFCF8;
+  background-color: #fef9e5;
+  width: 100%;
+  overflow-x: hidden;
+  padding-top: 84px;
 }
 
 .our-story-main {
@@ -12,6 +15,7 @@
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 20px;
+  box-sizing: border-box;
 }
 
 /* Hero Section */
@@ -20,8 +24,7 @@
   text-align: center;
   position: relative;
   margin-top: 30px;
-
-  
+  padding-top: 0;
 }
 
 .main-title {
@@ -52,8 +55,6 @@
 
 .hero-subtitle {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -70,6 +71,8 @@
   position: relative;
   max-width: 1140px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .timeline-item {
@@ -78,8 +81,6 @@
 
 .timeline-year {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 95.333px;
   font-style: normal;
@@ -118,8 +119,6 @@
 
 .timeline-1889 .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -146,8 +145,6 @@
 
 .timeline-1908 .timeline-text-block p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -166,8 +163,6 @@
 
 .timeline-1950s .timeline-year {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 100.333px;
   font-style: normal;
@@ -187,8 +182,6 @@
 
 .timeline-1950s .timeline-text-block p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -217,8 +210,6 @@
 
 .timeline-1953 .timeline-text-block p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -249,8 +240,6 @@
 
 .timeline-1972 .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -286,8 +275,6 @@
 
 .timeline-1985 .timeline-text-block p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -316,8 +303,6 @@
 
 .timeline-1993 .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -346,8 +331,6 @@
 
 .timeline-2000 .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -395,8 +378,6 @@
 .timeline-2007-column .timeline-text,
 .timeline-2019-column .timeline-text {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -415,7 +396,8 @@
 /* Today - Centered with Wide Image */
 .timeline-today {
   text-align: center;
-  width: 1140PX;
+  max-width: 1140px;
+  width: 100%;
 }
 
 .timeline-today .timeline-year {
@@ -433,8 +415,6 @@
 
 .timeline-today .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -464,6 +444,8 @@
   height: auto;
   object-fit: cover;
   border-radius: 0;
+  max-width: 100%;
+  display: block;
 }
 
 .story-image.large {
@@ -537,7 +519,7 @@
 /* Values Section */
 .values-section {
   padding: 60px 20px;
-  background-color: #FFFCF8;
+  background-color: #fef9e5;
 }
 
 .values-grid {
@@ -576,8 +558,6 @@
 
 .value-description {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -768,20 +748,41 @@
 
 /* Tablet (768px - 1023px) */
 @media (max-width: 1023px) {
+  .our-story-page {
+    overflow-x: hidden;
+    padding-top: 76px;
+  }
+
   .our-story-main {
     padding: 0 30px;
+    overflow-x: hidden;
+  }
+
+  .hero-section {
+    margin-top: 40px;
+    margin-bottom: 50px;
   }
 
   .timeline-section {
-    padding: 60px 0 40px;
+    padding: 0 30px 50px;
+    overflow-x: hidden;
   }
 
   .timeline-year {
     font-size: 72px;
+    margin-bottom: 12px;
   }
 
   .timeline-year.today {
     font-size: 54px;
+  }
+
+  .timeline-divider {
+    margin-bottom: 20px;
+  }
+
+  .timeline-item {
+    margin-bottom: 50px;
   }
 
   .values-grid {
@@ -800,12 +801,35 @@
   .timeline-1953 .timeline-content,
   .timeline-1985 .timeline-content {
     flex-direction: column;
-    gap: 40px;
+    gap: 20px;
+  }
+
+  .timeline-1908 .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-30px - 30px);
+    margin-right: calc(-30px - 30px);
+  }
+
+  .timeline-1950s .timeline-image-block,
+  .timeline-1953 .timeline-image-block,
+  .timeline-1985 .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-30px - 30px);
+    margin-right: calc(-30px - 30px);
+  }
+
+  .timeline-1908 .story-image,
+  .timeline-1950s .story-image,
+  .timeline-1953 .story-image,
+  .timeline-1985 .story-image {
+    width: 100%;
   }
 
   .timeline-2007-2019 {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 30px;
     margin-top: 0;
   }
 
@@ -815,60 +839,438 @@
 
   .timeline-1993 .timeline-content {
     flex-direction: column;
+    gap: 24px;
+  }
+
+  .timeline-1993 .timeline-column {
+    gap: 20px;
+  }
+
+  .timeline-1993 .timeline-image-block {
+    margin-bottom: 0;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-30px - 30px);
+    margin-right: calc(-30px - 30px);
+  }
+
+  .timeline-1972 .timeline-image-block,
+  .timeline-2007-column .timeline-image-block,
+  .timeline-2019-column .timeline-image-block,
+  .timeline-today .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-30px - 30px);
+    margin-right: calc(-30px - 30px);
+  }
+
+  .timeline-1972 .story-image,
+  .timeline-1993 .story-image,
+  .timeline-2007-column .story-image,
+  .timeline-2019-column .story-image,
+  .timeline-today .story-image {
+    width: 100%;
   }
 
   .timeline-vertical-divider {
     width: 100%;
     height: 1px;
-    margin: 40px 0;
+    margin: 0;
+  }
+
+  .section-divider {
+    margin: 50px auto;
+  }
+
+  .cta-section {
+    margin: 50px 0;
+  }
+
+  .values-section {
+    padding: 51px 30px;
+  }
+
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 34px;
+  }
+
+  .value-icon {
+    height: 40px;
+    margin-bottom: 20px;
+  }
+
+  .value-image {
+    max-width: 85px;
+    max-height: 40px;
+    object-fit: contain;
+  }
+
+  .value-title {
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 300;
+    margin-bottom: 14px;
+  }
+
+  .value-description {
+    font-size: 13px;
+    line-height: 1.5;
   }
 }
 
 @media (max-width: 768px) {
+  .our-story-page {
+    overflow-x: hidden;
+    padding-top: 68px;
+  }
+
+  .our-story-main {
+    padding: 0 16px;
+    overflow-x: hidden;
+  }
+
   .hero-section {
-    margin-top: 60px;
+    margin-top: 30px;
+    padding: 0 20px;
+    overflow-x: hidden;
+    margin-bottom: 40px;
   }
 
   .main-title {
-    font-size: 32px;
+    font-size: 28px;
     margin-bottom: 20px;
+    font-weight: 300;
   }
 
   .hero-subtitle {
-    font-size: 16px;
-    padding: 0 20px;
-  }
-
-  .timeline-section {
-    padding: 40px 30px;
-  }
-
-  .timeline-item {
-    margin-bottom: 60px;
-  }
-
-  .timeline-year {
-    font-size: 56px;
-  }
-
-  .timeline-year.today {
-    font-size: 44px;
-  }
-
-  .timeline-divider {
+    font-size: 14px;
+    padding: 0 10px;
+    line-height: 1.5;
     margin-bottom: 24px;
   }
 
-  .timeline-1889,
-  .timeline-1908 .timeline-content,
+  .hero-divider {
+    width: 100%;
+    margin: 20px auto;
+  }
+
+  .hero-divider-secondary {
+    width: 100%;
+    margin: 20px auto 0;
+  }
+
+  .timeline-section {
+    padding: 0 16px 40px;
+    overflow-x: hidden;
+  }
+
+  .timeline-item {
+    margin-bottom: 50px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .timeline-year {
+    font-size: 48px;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+  }
+
+  .timeline-year.today {
+    font-size: 40px;
+  }
+
+  .timeline-divider {
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .timeline-1889 {
+    flex-direction: column;
+    margin-left: 0;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .timeline-1889 .timeline-left-block {
+    width: 100%;
+  }
+
+  .timeline-1889 .timeline-year {
+    font-size: 56px;
+    text-align: left;
+    margin-bottom: 16px;
+  }
+
+  .timeline-1889 .timeline-divider {
+    width: 150px;
+    margin-left: 0;
+    margin-bottom: 20px;
+  }
+
+  .timeline-1889 .timeline-text {
+    width: 100%;
+    text-align: left;
+  }
+
+  .timeline-1889 .timeline-text p {
+    text-align: left;
+  }
+
+  .timeline-1908 .timeline-content {
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    align-items: flex-end;
+  }
+
+  .timeline-1908 .timeline-text-block {
+    width: 100%;
+    max-width: 100%;
+    order: 1;
+    box-sizing: border-box;
+    text-align: right;
+  }
+
+  .timeline-1908 .timeline-year {
+    font-size: 56px;
+    text-align: right;
+    margin-bottom: 16px;
+  }
+
+  .timeline-1908 .timeline-divider {
+    width: 150px;
+    margin-left: auto;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .timeline-1908 .timeline-text-block p {
+    text-align: right;
+  }
+
+  .timeline-1908 .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    order: 2;
+    box-sizing: border-box;
+    margin-left: calc(-16px - 16px);
+    margin-right: calc(-16px - 16px);
+  }
+
   .timeline-1950s .timeline-content,
   .timeline-1953 .timeline-content,
   .timeline-1985 .timeline-content {
-    gap: 30px;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    align-items: flex-start;
+  }
+
+  .timeline-1950s .timeline-year,
+  .timeline-1953 .timeline-year,
+  .timeline-1985 .timeline-year {
+    font-size: 56px;
+    text-align: left;
+    margin-bottom: 16px;
+  }
+
+  .timeline-1950s .timeline-divider,
+  .timeline-1953 .timeline-divider,
+  .timeline-1985 .timeline-divider {
+    width: 150px;
+    margin-left: 0;
+    margin-bottom: 20px;
+  }
+
+  .timeline-1950s .timeline-text-block,
+  .timeline-1953 .timeline-text-block,
+  .timeline-1985 .timeline-text-block {
+    width: 100%;
+    max-width: 100%;
+    order: 1;
+    box-sizing: border-box;
+    text-align: left;
+  }
+
+  .timeline-1950s .timeline-text-block p,
+  .timeline-1953 .timeline-text-block p,
+  .timeline-1985 .timeline-text-block p {
+    text-align: left;
+  }
+
+  .timeline-1950s .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    order: 2;
+    box-sizing: border-box;
+    margin-left: calc(-16px - 16px);
+    margin-right: calc(-16px - 16px);
+  }
+
+  .timeline-1953 .timeline-image-block,
+  .timeline-1985 .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    order: 2;
+    box-sizing: border-box;
+    margin-left: calc(-16px - 16px);
+    margin-right: calc(-16px - 16px);
+  }
+
+  .timeline-1950s .timeline-content,
+  .timeline-1985 .timeline-content {
+    margin-left: 0;
+  }
+
+  .timeline-1972 .timeline-year {
+    font-size: 56px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .timeline-1972 .timeline-divider {
+    width: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 24px;
+  }
+
+  .timeline-1972 .timeline-text p {
+    text-align: center;
+  }
+
+  .timeline-1993 .timeline-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .timeline-1993 .timeline-year,
+  .timeline-1993 .timeline-column .timeline-year {
+    font-size: 56px;
+    text-align: left;
+    margin-bottom: 16px;
+  }
+
+  .timeline-1993 .timeline-divider,
+  .timeline-1993 .timeline-column .timeline-divider {
+    width: 150px;
+    margin-left: 0;
+    margin-bottom: 20px;
+  }
+
+  .timeline-1993 .timeline-text p,
+  .timeline-1993 .timeline-column .timeline-text p {
+    text-align: left;
+  }
+
+  .timeline-1993 .timeline-column {
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .timeline-1993 .timeline-image-block {
+    margin-bottom: 0;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-16px - 16px);
+    margin-right: calc(-16px - 16px);
+  }
+
+  .timeline-1972 .timeline-image-block,
+  .timeline-2007-column .timeline-image-block,
+  .timeline-2019-column .timeline-image-block,
+  .timeline-today .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-16px - 16px);
+    margin-right: calc(-16px - 16px);
+  }
+
+  .timeline-1972 .story-image,
+  .timeline-1993 .story-image,
+  .timeline-2007-column .story-image,
+  .timeline-2019-column .story-image,
+  .timeline-today .story-image {
+    width: 100%;
   }
 
   .timeline-2007-2019 {
-    gap: 30px;
+    gap: 24px;
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-2007-column {
+    align-items: flex-start;
+  }
+
+  .timeline-2007-column .timeline-year {
+    font-size: 56px;
+    text-align: left;
+    margin-bottom: 16px;
+  }
+
+  .timeline-2007-column .timeline-divider {
+    width: 150px;
+    margin-left: 0;
+    margin-bottom: 20px;
+  }
+
+  .timeline-2007-column .timeline-text {
+    text-align: left;
+  }
+
+  .timeline-2007-column .timeline-text p {
+    text-align: left;
+  }
+
+  .timeline-2019-column {
+    align-items: center;
+  }
+
+  .timeline-2019-column .timeline-year {
+    font-size: 56px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .timeline-2019-column .timeline-divider {
+    width: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+  }
+
+  .timeline-2019-column .timeline-text {
+    text-align: center;
+  }
+
+  .timeline-2019-column .timeline-text p {
+    text-align: center;
+  }
+
+  .timeline-today .timeline-year {
+    font-size: 56px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .timeline-today .timeline-divider {
+    width: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 24px;
+  }
+
+  .timeline-today .timeline-text p {
+    text-align: center;
   }
 
   .timeline-1972 .timeline-text,
@@ -902,6 +1304,18 @@
   .story-image.small,
   .story-image.small-vertical {
     max-width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .timeline-1908 .story-image.large {
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+  }
+
+  .timeline-1950s .story-image {
+    width: 100%;
   }
 
   .timeline-2019-column .timeline-images-row {
@@ -909,26 +1323,402 @@
     gap: 20px;
   }
 
+  .timeline-vertical-divider {
+    margin: 0;
+  }
+
   .section-divider {
-    margin: 60px auto;
+    margin: 50px auto;
   }
 
   .cta-section {
-    margin: 60px 0 40px;
+    margin: 50px 0 50px;
   }
 
   .cta-button {
-    padding: 20px 40px;
-    font-size: 16px;
+    padding: 18px 36px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 320px;
   }
 
   .values-section {
-    padding: 40px 20px;
+    padding: 35px 16px;
   }
 
   .values-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px 20px;
+    max-width: 100%;
+  }
+
+  .value-item {
+    padding: 0;
+  }
+
+  .value-title {
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 300;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .value-description {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .value-icon {
+    height: 37px;
+    margin-bottom: 15px;
+  }
+
+  .value-image {
+    max-width: 80px;
+    max-height: 37px;
+    object-fit: contain;
+  }
+
+  .timeline-1889 .timeline-text p {
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .timeline-1908 .timeline-text-block p {
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: right;
+    max-width: 100%;
+  }
+
+  .timeline-1950s .timeline-text-block p,
+  .timeline-1953 .timeline-text-block p,
+  .timeline-1985 .timeline-text-block p {
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .timeline-1972 .timeline-text p {
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .timeline-1993 .timeline-text p,
+  .timeline-1993 .timeline-column .timeline-text p,
+  .timeline-2007-column .timeline-text p {
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .timeline-2019-column .timeline-text p,
+  .timeline-today .timeline-text p {
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .timeline-1953 .timeline-text-block p {
+    margin-bottom: 20px;
+  }
+}
+
+/* Small Mobile (less than 480px) */
+@media (max-width: 480px) {
+  .our-story-page {
+    overflow-x: hidden;
+    padding-top: 56px;
+  }
+
+  .our-story-main {
+    padding: 0 16px;
+    overflow-x: hidden;
+  }
+
+  .hero-section {
+    margin-top: 24px;
+    padding: 0 16px;
+    overflow-x: hidden;
+    margin-bottom: 30px;
+  }
+
+  .main-title {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+    padding: 0 8px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .timeline-section {
+    padding: 0 16px 30px;
+    overflow-x: hidden;
+  }
+
+  .timeline-year {
+    font-size: 40px;
+    margin-bottom: 10px;
+  }
+
+  .timeline-year.today {
+    font-size: 32px;
+  }
+
+  .timeline-divider {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .timeline-item {
+    margin-bottom: 40px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .timeline-1889 {
+    gap: 16px;
+  }
+
+  .timeline-1889 .timeline-year {
+    font-size: 48px;
+    text-align: left;
+    margin-bottom: 12px;
+  }
+
+  .timeline-1889 .timeline-divider {
+    width: 130px;
+    margin-left: 0;
+    margin-bottom: 16px;
+  }
+
+  .timeline-1889 .timeline-text p {
+    text-align: left;
+  }
+
+  .timeline-1908 .timeline-year {
+    font-size: 48px;
+    text-align: right;
+    margin-bottom: 12px;
+  }
+
+  .timeline-1908 .timeline-divider {
+    width: 130px;
+    margin-left: auto;
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
+
+  .timeline-1908 .timeline-text-block {
+    text-align: right;
+  }
+
+  .timeline-1908 .timeline-text-block p {
+    text-align: right;
+  }
+
+  .timeline-1908 .timeline-content {
+    align-items: flex-end;
+    gap: 16px;
+  }
+
+  .timeline-1908 .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-16px - 16px);
+    margin-right: calc(-16px - 16px);
+  }
+
+  .timeline-1950s .timeline-content,
+  .timeline-1953 .timeline-content,
+  .timeline-1985 .timeline-content {
+    gap: 16px;
+  }
+
+  .timeline-1950s .timeline-image-block,
+  .timeline-1953 .timeline-image-block,
+  .timeline-1985 .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-16px - 16px);
+    margin-right: calc(-16px - 16px);
+  }
+
+  .timeline-1908 .story-image,
+  .timeline-1950s .story-image,
+  .timeline-1953 .story-image,
+  .timeline-1985 .story-image {
+    width: 100%;
+  }
+
+  .timeline-1950s .timeline-year,
+  .timeline-1953 .timeline-year,
+  .timeline-1985 .timeline-year,
+  .timeline-1993 .timeline-year,
+  .timeline-1993 .timeline-column .timeline-year,
+  .timeline-2007-column .timeline-year {
+    font-size: 48px;
+    text-align: left;
+    margin-bottom: 12px;
+  }
+
+  .timeline-1950s .timeline-divider,
+  .timeline-1953 .timeline-divider,
+  .timeline-1985 .timeline-divider,
+  .timeline-1993 .timeline-divider,
+  .timeline-1993 .timeline-column .timeline-divider,
+  .timeline-2007-column .timeline-divider {
+    width: 130px;
+    margin-left: 0;
+    margin-bottom: 16px;
+  }
+
+  .timeline-1972 .timeline-year {
+    font-size: 48px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .timeline-1972 .timeline-divider {
+    width: 130px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+  }
+
+  .timeline-1972 .timeline-text p {
+    text-align: center;
+  }
+
+  .timeline-2019-column .timeline-year,
+  .timeline-today .timeline-year {
+    font-size: 48px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .timeline-2019-column .timeline-divider,
+  .timeline-today .timeline-divider {
+    width: 130px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+  }
+
+  .timeline-2019-column .timeline-text p,
+  .timeline-today .timeline-text p {
+    text-align: center;
+  }
+
+  .timeline-1993 .timeline-content {
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .timeline-1993 .timeline-column {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .timeline-1993 .timeline-column .timeline-text p {
+    text-align: left;
+  }
+
+  .timeline-1993 .timeline-image-block {
+    margin-bottom: 0;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-16px - 16px);
+    margin-right: calc(-16px - 16px);
+  }
+
+  .timeline-1972 .timeline-image-block,
+  .timeline-2007-column .timeline-image-block,
+  .timeline-2019-column .timeline-image-block,
+  .timeline-today .timeline-image-block {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-16px - 16px);
+    margin-right: calc(-16px - 16px);
+  }
+
+  .timeline-1972 .story-image,
+  .timeline-1993 .story-image,
+  .timeline-2007-column .story-image,
+  .timeline-2019-column .story-image,
+  .timeline-today .story-image {
+    width: 100%;
+  }
+
+  .timeline-2007-2019 {
+    gap: 20px;
+  }
+
+  .timeline-2007-column {
+    align-items: flex-start;
+  }
+
+  .timeline-2007-column .timeline-text p {
+    text-align: left;
+  }
+
+  .timeline-2019-column {
+    align-items: center;
+  }
+
+  .timeline-1889 .timeline-text p {
+    font-size: 13px;
+    line-height: 1.6;
+    text-align: left;
+  }
+
+  .timeline-1908 .timeline-text-block p {
+    font-size: 13px;
+    line-height: 1.6;
+    text-align: right;
+  }
+
+  .timeline-1950s .timeline-text-block p,
+  .timeline-1953 .timeline-text-block p,
+  .timeline-1985 .timeline-text-block p {
+    text-align: left;
+  }
+
+  .timeline-1993 .timeline-text p,
+  .timeline-1993 .timeline-column .timeline-text p,
+  .timeline-2007-column .timeline-text p {
+    text-align: left;
+  }
+
+  .timeline-1950s .timeline-text-block p,
+  .timeline-1953 .timeline-text-block p,
+  .timeline-1972 .timeline-text p,
+  .timeline-1985 .timeline-text-block p,
+  .timeline-1993 .timeline-text p,
+  .timeline-1993 .timeline-column .timeline-text p,
+  .timeline-2007-column .timeline-text p,
+  .timeline-2019-column .timeline-text p,
+  .timeline-today .timeline-text p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .cta-button {
+    padding: 16px 32px;
+    font-size: 13px;
   }
 
   .value-title {
@@ -936,20 +1726,56 @@
   }
 
   .value-description {
-    font-size: 14px;
+    font-size: 12px;
   }
 
-  .timeline-1889 .timeline-text p,
-  .timeline-1908 .timeline-text-block p,
-  .timeline-1950s .timeline-text-block p,
-  .timeline-1953 .timeline-text-block p,
-  .timeline-1972 .timeline-text p,
-  .timeline-1985 .timeline-text-block p,
-  .timeline-1993 .timeline-text p,
-  .timeline-2007-column .timeline-text p,
-  .timeline-2019-column .timeline-text p,
-  .timeline-today .timeline-text p {
+  .timeline-vertical-divider {
+    margin: 0;
+  }
+
+  .section-divider {
+    margin: 40px auto;
+  }
+
+  .cta-section {
+    margin: 40px 0 40px;
+  }
+
+  .values-section {
+    padding: 30px 16px;
+  }
+
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px 15px;
+    max-width: 100%;
+  }
+
+  .value-item {
+    padding: 0;
+  }
+
+  .value-icon {
+    height: 32px;
+    margin-bottom: 12px;
+  }
+
+  .value-image {
+    max-width: 70px;
+    max-height: 32px;
+    object-fit: contain;
+  }
+
+  .value-title {
     font-size: 14px;
+    font-style: italic;
+    font-weight: 300;
+    margin-bottom: 6px;
+  }
+
+  .value-description {
+    font-size: 11px;
+    line-height: 1.4;
   }
 }
 

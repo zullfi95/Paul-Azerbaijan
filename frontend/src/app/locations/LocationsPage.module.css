@@ -172,6 +172,16 @@
   line-height: 1.4;
 }
 
+.locationPhone a {
+  color: #000000;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.locationPhone a:hover {
+  color: #D4AF37;
+}
+
 .locationHours {
   font-family: 'Parisine Pro Gris', serif;
   font-size: 16px; /* 17.6px * 0.91 */
@@ -206,7 +216,7 @@
 }
 
 /* Responsive Design - относительно хедера */
-@media (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1024px) {
   .locationsGrid {
     grid-template-columns: repeat(2, 1fr);
     max-width: 900px;
@@ -246,28 +256,68 @@
   }
   
   .locationsGrid {
-    grid-template-columns: 1fr;
-    gap: 20px; /* 17.6px * 1.14 */
-    margin: 0 auto 32px auto; /* 17.6px * 1.8 */
-    max-width: 700px; /* Уменьшено для мобильных устройств */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0 auto 32px auto;
+    max-width: 100%;
+    padding: 0 16px;
+  }
+  
+  /* Horizontal card layout - фото слева, инфо справа */
+  .locationCard {
+    display: flex;
+    flex-direction: row;
+    background: #FFFFFF;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
   .locationImage {
-    height: 200px; /* 17.6px * 11.4 */
+    width: 145px;
+    min-width: 145px;
+    height: auto;
+    flex-shrink: 0;
+  }
+  
+  .locationImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   
   .locationInfo {
-    padding: 20px; /* 17.6px * 1.14 */
+    flex: 1;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   
   .locationName {
-    font-size: 20px; /* 17.6px * 1.14 */
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    line-height: 1.3;
   }
   
-  .locationAddress,
-  .locationPhone,
+  .locationAddress {
+    font-size: 13px;
+    margin: 0 0 6px 0;
+    line-height: 1.4;
+  }
+  
+  .locationPhone {
+    font-size: 13px;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+  }
+  
   .locationHours {
-    font-size: 15px; /* 17.6px * 0.85 */
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.3;
   }
   
   .descriptionSection {
@@ -318,27 +368,46 @@
   }
   
   .locationsGrid {
-    gap: 16px; /* 17.6px * 0.91 */
-    margin: 0 auto 24px auto; /* 17.6px * 1.36 */
-    max-width: 500px; /* Уменьшено для маленьких экранов */
+    gap: 14px;
+    margin: 0 auto 24px auto;
+    padding: 0 14px;
+  }
+  
+  /* Horizontal card layout - фото слева, инфо справа */
+  .locationCard {
+    display: flex;
+    flex-direction: row;
+    background: #FFFFFF;
+    border-radius: 0;
   }
   
   .locationImage {
-    height: 180px; /* 17.6px * 10.2 */
+    width: 130px;
+    min-width: 130px;
+    height: auto;
   }
   
   .locationInfo {
-    padding: 16px; /* 17.6px * 0.91 */
+    padding: 14px 12px;
   }
   
   .locationName {
-    font-size: 18px; /* 17.6px * 1.02 */
+    font-size: 15px;
+    margin: 0 0 5px 0;
   }
   
-  .locationAddress,
-  .locationPhone,
+  .locationAddress {
+    font-size: 12px;
+    margin: 0 0 5px 0;
+  }
+  
+  .locationPhone {
+    font-size: 12px;
+    margin: 0 0 3px 0;
+  }
+  
   .locationHours {
-    font-size: 14px; /* 17.6px * 0.8 */
+    font-size: 12px;
   }
   
   .descriptionSection {

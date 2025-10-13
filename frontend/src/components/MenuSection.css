@@ -66,9 +66,10 @@
 .menu-card:nth-child(2) { animation-delay: 0.2s; }
 .menu-card:nth-child(3) { animation-delay: 0.3s; }
 
-.menu-card:hover {
+/* Hover effects disabled */
+/* .menu-card:hover {
   transform: translateY(-4px);
-}
+} */
 
 .menu-card-image {
   width: 452px;
@@ -82,9 +83,10 @@
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.menu-card:hover .menu-card-img {
+/* Hover effects disabled */
+/* .menu-card:hover .menu-card-img {
   transform: scale(1.05);
-}
+} */
 
 .menu-card-overlay {
   position: absolute;

@@ -169,7 +169,6 @@ export default function ProfilePage() {
 
             {activeSection === 'my-orders' && (
               <section className={styles.section}>
-                
                 <div className={styles.orderFilters}>
                 <button
                     className={`${styles.filterButton} ${orderFilter === 'all' ? styles.active : ''}`}

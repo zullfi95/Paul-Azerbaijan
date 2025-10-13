@@ -130,7 +130,8 @@ line-height: normal;
   transition: left 0.5s;
 }
 
-.art-button:hover::before {
+/* Hover effects disabled */
+/* .art-button:hover::before {
   left: 100%;
 }
 
@@ -138,7 +139,7 @@ line-height: normal;
   background: #2d2d2d;
   color: #F5E9D6;
   transform: translateY(-2px);
-}
+} */
 
 .art-button:active {
   transform: translateY(0);

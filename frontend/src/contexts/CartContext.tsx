@@ -22,8 +22,11 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
   const { user, isAuthenticated } = useAuth();
   const broadcastChannelRef = React.useRef<BroadcastChannel | null>(null);
+
+  console.log('CartProvider render - items:', items.length, 'isInitialized:', isInitialized, 'isAuthenticated:', isAuthenticated);
 
   // Генерируем уникальный ключ для localStorage на основе пользователя
   const getStorageKey = useCallback(() => {
@@ -37,7 +40,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const loadCart = useCallback(() => {
     try {
       const storageKey = getStorageKey();
+      console.log('Loading cart with key:', storageKey);
       const savedCart = localStorage.getItem(storageKey);
+      
       if (savedCart) {
         const parsedCart = JSON.parse(savedCart);
         if (Array.isArray(parsedCart)) {
@@ -45,10 +50,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const validatedCart = parsedCart.filter((item: Record<string, string | number | boolean>) => {
             return item.id && item.name && typeof item.price === 'number' && item.price >= 0;
           });
+          console.log('Loaded cart items:', validatedCart.length);
           setItems(validatedCart);
         } else {
-          setItems([]);
+          console.warn('Invalid cart data format, keeping current items');
         }
+      } else {
+        console.log('No cart data found in localStorage for key:', storageKey);
+        // При перезагрузке страницы, если нет данных в localStorage, 
+        // устанавливаем пустую корзину (это нормально)
+        setItems([]);
       }
     } catch (error) {
       console.error('Error loading cart from localStorage:', error);
@@ -58,11 +69,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const backupCart = localStorage.getItem(backupKey);
         if (backupCart) {
           const parsedBackup = JSON.parse(backupCart);
-          setItems(Array.isArray(parsedBackup) ? parsedBackup : []);
+          if (Array.isArray(parsedBackup)) {
+            console.log('Restored cart from backup:', parsedBackup.length, 'items');
+            setItems(parsedBackup);
+          }
         } else {
+          // Если нет бэкапа, устанавливаем пустую корзину
           setItems([]);
         }
       } catch {
+        console.error('Failed to restore cart from backup');
+        // При ошибке устанавливаем пустую корзину
         setItems([]);
       }
     }
@@ -72,6 +89,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const saveCart = useCallback((cartItems: CartItem[]) => {
     try {
       const storageKey = getStorageKey();
+      console.log('Saving cart with key:', storageKey, 'items:', cartItems.length);
+      
       // normalize prices to 2 decimals
       const normalized = cartItems.map(it => ({
         ...it,
@@ -90,11 +109,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Удаляем самые старые товары (FIFO)
         const reducedCart = normalized.slice(-50); // Оставляем последние 50 товаров
         localStorage.setItem(storageKey, JSON.stringify(reducedCart));
+        console.log('Saved reduced cart:', reducedCart.length, 'items');
       } else {
         localStorage.setItem(storageKey, cartData);
+        console.log('Saved cart successfully:', normalized.length, 'items');
         // Создаём бэкап для восстановления
         try {
           localStorage.setItem(`${storageKey}_backup`, cartData);
+          console.log('Created cart backup');
         } catch {
           // Игнорируем ошибки бэкапа
         }
@@ -107,22 +129,38 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.removeItem(`${storageKey}_backup`);
         const cartData = JSON.stringify(cartItems.slice(-30)); // Уменьшаем до 30 товаров
         localStorage.setItem(storageKey, cartData);
+        console.log('Saved cart after cleanup:', cartItems.slice(-30).length, 'items');
       } catch {
         console.error('Failed to save cart even after cleanup');
       }
     }
   }, [getStorageKey]);
 
-  // Загружаем корзину при изменении пользователя
+  // Инициализация и загрузка корзины
   useEffect(() => {
-    loadCart();
-    // If user just logged in, merge guest cart into user cart
-    try {
-      if (isAuthenticated && user) {
-        const guestCartRaw = localStorage.getItem('cart_guest');
-        if (guestCartRaw) {
+    console.log('CartProvider effect running, isInitialized:', isInitialized, 'isAuthenticated:', isAuthenticated);
+    
+    // Инициализируем корзину при первом запуске
+    if (!isInitialized) {
+      console.log('Initializing cart for the first time...');
+      loadCart();
+      setIsInitialized(true);
+      return;
+    }
+    
+    // If user just logged in, check for guest cart and merge
+    if (isAuthenticated && user) {
+      console.log('User authenticated, checking for guest cart...');
+      const userCartKey = `cart_${user.id}`;
+      const guestCartRaw = localStorage.getItem('cart_guest');
+      const userCartRaw = localStorage.getItem(userCartKey);
+      
+      // If user cart is empty but guest cart has items, merge them
+      if (guestCartRaw && (!userCartRaw || userCartRaw === '[]')) {
+        try {
           const parsed: CartItem[] = JSON.parse(guestCartRaw);
           if (Array.isArray(parsed) && parsed.length > 0) {
+            console.log('Found guest cart with items, merging to user cart...');
             const guestCart = parsed as GuestCartItem[];
             setItems(prev => {
               // merge by id, summing quantities
@@ -155,17 +193,27 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 price: Math.round((Number(it.price || 0) + Number.EPSILON) * 100) / 100,
                 quantity: Number(it.quantity || 0)
               }));
-              // save merged under user key
-              try { localStorage.removeItem('cart_guest'); } catch {}
+              // save merged under user key and remove guest cart
+              try { 
+                localStorage.setItem(userCartKey, JSON.stringify(normalized));
+                localStorage.removeItem('cart_guest'); 
+                console.log('Merged guest cart to user cart and removed guest cart');
+              } catch (e) {
+                console.error('Error saving merged cart:', e);
+              }
               return normalized;
             });
           }
+        } catch (e) {
+          console.error('Error merging guest cart on login:', e);
         }
+      } else if (userCartRaw) {
+        // User cart exists, load it
+        console.log('Loading existing user cart...');
+        loadCart();
       }
-    } catch (e) {
-      console.error('Error merging guest cart on login:', e);
     }
-  }, [loadCart, isAuthenticated, user]);
+  }, [loadCart, isAuthenticated, user, isInitialized]);
 
   // Инициализация BroadcastChannel один раз
   useEffect(() => {
@@ -218,6 +266,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         const data = ev.data as { type?: string; items?: CartItem[] } | undefined;
         if (data && data.type === 'cart:update' && Array.isArray(data.items)) {
+          // Не обновляем корзину, если пришла пустая корзина, а у нас уже есть товары
+          // Это предотвращает случайную очистку корзины при открытии новой вкладки
+          if (data.items.length === 0 && items.length > 0) {
+            console.log('Ignoring empty cart update from other tab, keeping current items');
+            return;
+          }
           setItems(data.items);
         }
       } catch {
@@ -232,7 +286,23 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // fallback to storage event
         storageHandler = (e: StorageEvent) => {
           if (e.key === 'cart_last_update') {
-            loadCart();
+            // Загружаем корзину только если она действительно изменилась
+            // и не является пустой при наличии товаров в текущей корзине
+            const currentStorageKey = getStorageKey();
+            const currentCart = localStorage.getItem(currentStorageKey);
+            if (currentCart) {
+              try {
+                const parsedCart = JSON.parse(currentCart);
+                if (Array.isArray(parsedCart) && parsedCart.length > 0) {
+                  loadCart();
+                } else if (Array.isArray(parsedCart) && parsedCart.length === 0 && items.length === 0) {
+                  // Загружаем пустую корзину только если текущая тоже пустая
+                  loadCart();
+                }
+              } catch {
+                // При ошибке парсинга не загружаем
+              }
+            }
           }
         };
         // Type the window as having addEventListener for storage events

@@ -39,3 +39,77 @@ export const getAuthHeaders = (token?: string): Record<string, string> => {
   return headers;
 };
 
+// Types for API responses
+export interface CartItem {
+  id: string | number;
+  name: string;
+  description?: string;
+  price: number;
+  image?: string;
+  quantity: number;
+  notes?: string;
+  persons?: number;
+  category?: string;
+  available?: boolean;
+  isSet?: boolean;
+  currency?: string;
+  allergens?: string[];
+  is_available?: boolean;
+  sort_order?: number;
+  iiko_id?: string;
+  menu_category_id?: number;
+  organization_id?: string;
+}
+
+export interface MenuItem {
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  currency: string;
+  images?: string[];
+  allergens?: string[];
+  is_available: boolean;
+  sort_order: number;
+  iiko_id?: string;
+  menu_category_id?: number;
+  organization_id?: string;
+}
+
+export interface Order {
+  id: number;
+  company_name: string;
+  client_type?: 'corporate' | 'one_time';
+  customer?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    company?: string;
+    position?: string;
+  };
+  employees?: {
+    count?: number;
+    roles?: string[];
+    dietary_requirements?: string[];
+  };
+  menu_items: MenuItem[];
+  comment?: string;
+  status: string;
+  payment_status?: string;
+  coordinator_id?: number;
+  client_id?: number;
+  total_amount: number;
+  discount_fixed?: number;
+  discount_percent?: number;
+  discount_amount?: number;
+  items_total?: number;
+  final_amount?: number;
+  delivery_date?: string;
+  delivery_time?: string;
+  delivery_type?: 'delivery' | 'pickup' | 'buffet';
+  delivery_address?: string;
+  delivery_cost?: number;
+  created_at: string;
+  updated_at: string;
+}
+

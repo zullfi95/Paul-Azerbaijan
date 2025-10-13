@@ -87,12 +87,6 @@ export async function makeApiRequest<T>(
     // Получаем токен из tokenManager или из переданного параметра
     const authToken = token || getToken();
 
-    console.log('🔍 API Request:', {
-      url: API_CONFIG.BASE_URL + endpoint,
-      method,
-      hasToken: !!authToken,
-      endpoint
-    });
 
     const response = await fetch(API_CONFIG.BASE_URL + endpoint, {
       method,
@@ -105,11 +99,6 @@ export async function makeApiRequest<T>(
       body: body,
     });
 
-    console.log('📡 API Response:', {
-      status: response.status,
-      statusText: response.statusText,
-      url: response.url
-    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));

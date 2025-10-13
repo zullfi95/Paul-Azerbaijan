@@ -21,8 +21,23 @@ const fetchActiveOrders = async (): Promise<Order[]> => {
 };
 
 const fetchAllOrders = async (): Promise<Order[]> => {
-    const data = await makeApiRequest<Order[]>(API_CONFIG.ENDPOINTS.CLIENT_ORDERS);
-    return data.success && data.data ? data.data : [];
+    const response = await makeApiRequest<any>(API_CONFIG.ENDPOINTS.CLIENT_ORDERS);
+    
+    if (!response.success || !response.data) {
+        return [];
+    }
+    
+    // Handle paginated response - the actual orders are in response.data.data
+    if (response.data.data && Array.isArray(response.data.data)) {
+        return response.data.data;
+    }
+    
+    // Handle non-paginated response
+    if (Array.isArray(response.data)) {
+        return response.data;
+    }
+    
+    return [];
 };
 
 const fetchUnreadCount = async (): Promise<number> => {
@@ -76,19 +91,22 @@ export const useUserProfile = () => {
   });
   const [passwordError, setPasswordError] = useState('');
 
-  const { data: activeOrders = [], isLoading: loadingOrders } = useQuery<Order[]>({
+
+  const { data: activeOrders = [], isLoading: loadingOrders, error: activeOrdersError } = useQuery<Order[]>({
     queryKey: queryKeys.orders.active(user?.id),
     queryFn: fetchActiveOrders,
     enabled: !!user && user.user_type === 'client',
     staleTime: 1 * 60 * 1000, // 1 минута
   });
 
-  const { data: allOrders = [], isLoading: loadingAllOrders } = useQuery<Order[]>({
+
+  const { data: allOrders = [], isLoading: loadingAllOrders, error: allOrdersError } = useQuery<Order[]>({
     queryKey: ['orders', 'all', user?.id],
     queryFn: fetchAllOrders,
     enabled: !!user && user.user_type === 'client',
     staleTime: 1 * 60 * 1000, // 1 минута
   });
+
 
   const { data: unreadCount = 0 } = useQuery<number>({
     queryKey: queryKeys.notifications.unreadCount(user?.id),

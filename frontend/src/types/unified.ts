@@ -191,7 +191,7 @@ export interface CartItem {
   name: string;
   description?: string;
   price: number;
-  images?: string[];
+  image?: string; // Изменено с images на image для совместимости с кодом корзины
   quantity: number;
   notes?: string;
   persons?: number;

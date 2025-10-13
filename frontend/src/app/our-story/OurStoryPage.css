@@ -55,8 +55,6 @@
 
 .hero-subtitle {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -83,8 +81,6 @@
 
 .timeline-year {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 95.333px;
   font-style: normal;
@@ -123,8 +119,6 @@
 
 .timeline-1889 .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -151,8 +145,6 @@
 
 .timeline-1908 .timeline-text-block p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -171,8 +163,6 @@
 
 .timeline-1950s .timeline-year {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 100.333px;
   font-style: normal;
@@ -192,8 +182,6 @@
 
 .timeline-1950s .timeline-text-block p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -222,8 +210,6 @@
 
 .timeline-1953 .timeline-text-block p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -254,8 +240,6 @@
 
 .timeline-1972 .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -291,8 +275,6 @@
 
 .timeline-1985 .timeline-text-block p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -321,8 +303,6 @@
 
 .timeline-1993 .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -351,8 +331,6 @@
 
 .timeline-2000 .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -400,8 +378,6 @@
 .timeline-2007-column .timeline-text,
 .timeline-2019-column .timeline-text {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -439,8 +415,6 @@
 
 .timeline-today .timeline-text p {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;
@@ -584,8 +558,6 @@
 
 .value-description {
   color: #000;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Sabon Next LT Pro";
   font-size: 16px;
   font-style: normal;

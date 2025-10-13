@@ -33,4 +33,3 @@ const BasketIcon: React.FC<BasketIconProps> = ({ size = 24, className, style }) 
 };
 
 export default BasketIcon;
-

@@ -388,7 +388,7 @@ export default function CateringPage() {
       name: item.name,
       description: item.description,
       price: item.price,
-      images: item.image ? [item.image] : [],
+      image: item.image,
       category: item.category,
       available: item.available,
       isSet: item.isSet,
@@ -2419,7 +2419,7 @@ export default function CateringPage() {
                     onClick={() => router.push(`/product/${item.id}`)}
                   >
                     <Image
-                      src={item.image}
+                      src={item.image || '/images/placeholder.png'}
                       alt={item.name}
                       layout="fill"
                       style={{

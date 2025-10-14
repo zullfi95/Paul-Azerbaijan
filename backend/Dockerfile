@@ -29,9 +29,6 @@ COPY composer.json composer.lock ./
 # Устанавливаем PHP зависимости
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Копируем .env.example файл из корня проекта
-COPY ../docker.env.example ./.env.example
-
 # Копируем остальные файлы приложения
 COPY . .
 
@@ -43,8 +40,18 @@ RUN chown -R www-data:www-data /var/www/html \
 # Копируем конфигурацию Apache
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Создаем .env файл если его нет
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
+# Создаем базовый .env файл
+RUN echo "APP_NAME=Laravel" > .env \
+    && echo "APP_ENV=production" >> .env \
+    && echo "APP_KEY=" >> .env \
+    && echo "APP_DEBUG=false" >> .env \
+    && echo "APP_URL=http://localhost" >> .env \
+    && echo "DB_CONNECTION=mysql" >> .env \
+    && echo "DB_HOST=mysql" >> .env \
+    && echo "DB_PORT=3306" >> .env \
+    && echo "DB_DATABASE=paul_azerbaijan" >> .env \
+    && echo "DB_USERNAME=paul_user" >> .env \
+    && echo "DB_PASSWORD=paul_password" >> .env
 
 # Создаем базу данных SQLite если её нет
 RUN touch database/database.sqlite

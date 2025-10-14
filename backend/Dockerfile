@@ -29,8 +29,8 @@ COPY composer.json composer.lock ./
 # Устанавливаем PHP зависимости
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Копируем .env.example файл
-COPY .env.example ./
+# Копируем .env.example файл из корня проекта
+COPY ../docker.env.example ./.env.example
 
 # Копируем остальные файлы приложения
 COPY . .

@@ -29,10 +29,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
     const currentQuantity = cartItems.find(item => item.id === itemId)?.quantity || 0;
     if (currentQuantity > 1) {
       updateQuantity(itemId, currentQuantity - 1);
-      showNotification('Количество товара уменьшено');
+      showNotification('Item quantity decreased');
     } else {
       removeItem(itemId);
-      showNotification('Товар удален из корзины');
+      showNotification('Item removed from cart');
     }
   };
 
@@ -40,7 +40,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
     const item = cartItems.find(item => item.id === itemId);
     if (item) {
       updateQuantity(itemId, item.quantity + 1);
-      showNotification('Количество товара увеличено');
+      showNotification('Item quantity increased');
     }
   };
 
@@ -58,21 +58,21 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Полупрозрачный фон */}
+      {/* Semi-transparent background */}
       <div
         onClick={onClose}
         className={styles.modalOverlay}
       />
 
-      {/* Модальное окно корзины */}
+      {/* Cart modal window */}
       <div
         onClick={(e) => e.stopPropagation()}
         className={styles.modalContainer}
       >
-        {/* Заголовок корзины */}
+        {/* Cart header */}
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>
-            Корзина ({getTotalItems()})
+            Shopping Cart ({getTotalItems()})
           </h2>
           <button
             onClick={onClose}
@@ -82,31 +82,31 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Контент корзины */}
+        {/* Cart content */}
         <div className={styles.modalContent}>
           {cartItems.length === 0 ? (
             <div className={styles.emptyCart}>
               <h3 className={styles.emptyCartTitle}>
-                Ваша корзина пуста
+                Your cart is empty
               </h3>
               <p className={styles.emptyCartText}>
-                Просмотрите наше меню, чтобы добавить товары
+                Browse our menu to add items
               </p>
               <button
                 onClick={goToMenu}
                 className={styles.emptyCartButton}
               >
-                Просмотреть меню
+                Browse Menu
               </button>
             </div>
           ) : (
             <div className={styles.cartItemsContainer}>
               {cartItems.map((cartItem) => (
                 <div key={cartItem.id} className={styles.cartItem}>
-                  {/* Изображение товара */}
+                  {/* Product image */}
                   <div className={styles.productImage}>
                     <Image
-                      src={(cartItem as any).image || (cartItem.images && cartItem.images[0]) || '/images/placeholder-food.svg'}
+                      src={cartItem.image || '/images/placeholder-food.svg'}
                       alt={cartItem.name}
                       fill
                       sizes="80px"
@@ -116,7 +116,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
 
-                  {/* Информация о товаре */}
+                  {/* Product information */}
                   <div className={styles.productInfo}>
                     <h4 className={styles.productName}>
                       {cartItem.name}
@@ -129,43 +129,47 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                     </div>
                   </div>
 
-                  {/* Управление количеством */}
-                  <div className={styles.quantityControls}>
+                    {/* Quantity controls */}
+                  <div className={styles.quantityControlsContainer}>
+                    {/* Remove button */}
                     <button
-                      onClick={() => removeFromCart(cartItem.id.toString())}
-                      className={styles.quantityButton}
-                    >
-                      <Minus size={14} />
+                        onClick={() => removeItem(cartItem.id.toString())}
+                        className={styles.removeButton}
+                      >
+                        <DeleteIcon size={14} className={styles.removeIcon} />
                     </button>
-                    <span className={styles.quantityValue}>
-                      {cartItem.quantity}
-                    </span>
-                    <button
-                      onClick={() => addToCart(cartItem.id.toString())}
-                      className={styles.quantityButton}
-                    >
-                      <Plus size={14} />
-                    </button>
+                    
+                    <div className={styles.quantityControls}>
+                      <button
+                        onClick={() => removeFromCart(cartItem.id.toString())}
+                        className={styles.quantityButton}
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span className={styles.quantityValue}>
+                        {cartItem.quantity}
+                      </span>
+                      <button
+                        onClick={() => addToCart(cartItem.id.toString())}
+                        className={styles.quantityButton}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Кнопка удаления */}
-                  <button
-                    onClick={() => removeItem(cartItem.id.toString())}
-                    className={styles.removeButton}
-                  >
-                    <DeleteIcon size={14} className={styles.removeIcon} />
-                  </button>
+ 
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Подвал модального окна */}
+        {/* Modal footer */}
         {cartItems.length > 0 && (
           <div className={styles.modalFooter}>
             <div className={styles.totalSection}>
-              <span className={styles.totalLabel}>Итого:</span>
+              <span className={styles.totalLabel}>Order Summary:</span>
               <span className={styles.totalAmount}>
                 ₼{getTotalPrice().toFixed(2)}
               </span>
@@ -176,13 +180,13 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                 onClick={goToMenu}
                 className={styles.buttonSecondary}
               >
-                Продолжить покупки
+                Continue Shopping
               </button>
               <button
                 onClick={goToCartPage}
                 className={styles.buttonPrimary}
               >
-                Оформить заказ
+                Order Now
               </button>
             </div>
           </div>

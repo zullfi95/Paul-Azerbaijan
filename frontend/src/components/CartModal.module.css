@@ -35,6 +35,7 @@
   max-height: 78vh; 
   background: rgb(26, 26, 26);
   border: 1px solid var(--paul-border);
+  border-radius: 10px;
   z-index: 50;
   animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   backdrop-filter: blur(20px);
@@ -134,7 +135,7 @@
 }
 
 .emptyCartTitle {
-  font-family: 'Sabon Next LT Pro', serif;
+  font-family: 'Sabon Next LT Pro';
   font-size: 1.105rem;
   font-weight: 600;
   color: #ffffff;
@@ -144,8 +145,8 @@
 }
 
 .emptyCartText {
-  font-family: 'Parisine', sans-serif;
-  font-size: 0.8075rem; /* Reduced by 15% from 0.95rem */
+  font-family: 'Parisine';
+  font-size: 0.8505rem; /* Reduced by 15% from 0.95rem */
   color: rgba(255, 255, 255, 0.8); /* Changed to semi-transparent white */
   margin: 0 0 1.7rem 0; /* Reduced by 15% from 2rem */
   max-width: 272px; /* Reduced by 15% from 320px */
@@ -155,12 +156,12 @@
 }
 
 .emptyCartButton {
-  padding: 0.74375rem 1.7rem; /* Reduced by 15% from 0.875rem 2rem */
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Changed to white gradient */
-  color: rgb(26, 26, 26); /* Changed to black */
+  padding: 0.74375rem 1.7rem; 
+  background: #FFFAE6;
+  color: rgb(26, 26, 26); 
   border: none;
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: 0.8075rem; /* Reduced by 15% from 0.95rem */
+  font-size: 0.8075rem; 
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -171,8 +172,7 @@
 }
 
 .emptyCartButton:hover {
-  background: linear-gradient(135deg, var(--paul-gold) 0%, #f4d03f 100%);
-  color: var(--paul-black);
+  background: #FFFAE6;
   transform: translateY(-2px);
 }
 
@@ -425,12 +425,12 @@
 }
 
 .buttonSecondary {
-  padding: 0.85rem 1.7rem; /* Reduced by 15% from 1rem 2rem */
+  padding: 0.6rem 1.2rem; /* Reduced padding */
   background: #FFFAE6; /* Changed to dark gray gradient */
   border: 2px solid rgba(255, 255, 255, 0.2); /* Changed to semi-transparent white border */
-  border-radius: 10px;
+  border-radius: 8px;
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: 0.6075rem; /* Reduced by 15% from 0.95rem */
+  font-size: 0.55rem; /* Reduced font size */
   font-weight: 400;
   color: rgb(26, 26, 26); /* Changed to white */
   cursor: pointer;
@@ -439,7 +439,7 @@
   overflow: hidden;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  max-width: 200px;
+  max-width: 180px;
 
 }
 
@@ -451,12 +451,12 @@
 }
 
 .buttonPrimary {
-  padding: 0.85rem 1.7rem; /* Reduced by 15% from 1rem 2rem */
+  padding: 0.6rem 1.2rem; /* Reduced padding */
   background: transparent;
   border: 1px solid #FFFAE6;
-  border-radius: 10px;
+  border-radius: 8px;
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: 0.9075rem; /* Reduced by 15% from 0.95rem */
+  font-size: 0.8rem; /* Reduced font size */
   font-weight: 400;
   color: #FFFAE6;
   cursor: pointer;
@@ -465,7 +465,7 @@
   overflow: hidden;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  max-width: 200px;
+  max-width: 180px;
 }
 
 .buttonPrimary:hover {

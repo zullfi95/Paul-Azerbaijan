@@ -87,10 +87,13 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
           {cartItems.length === 0 ? (
             <div className={styles.emptyCart}>
               <h3 className={styles.emptyCartTitle}>
-                Your cart is empty
+                Your shopping cart is empty
               </h3>
               <p className={styles.emptyCartText}>
-                Browse our menu to add items
+                To continue shopping, please browse our menu
+              </p>
+              <p className={styles.emptyCartText}>
+                Have a nice experience!
               </p>
               <button
                 onClick={goToMenu}

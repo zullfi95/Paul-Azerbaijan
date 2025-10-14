@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Set the output file tracing root to avoid lockfile warnings
   outputFileTracingRoot: __dirname,
+  // Enable standalone output for Docker
+  output: 'standalone',
   // Disable TypeScript type checking during build
   typescript: {
     ignoreBuildErrors: true,

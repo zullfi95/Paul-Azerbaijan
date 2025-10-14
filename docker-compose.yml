@@ -1,0 +1,134 @@
+version: '3.8'
+
+services:
+  # База данных MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: paul_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: paul_azerbaijan
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: paul_user
+      MYSQL_PASSWORD: paul_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - paul_network
+
+  # Redis для кеширования и очередей
+  redis:
+    image: redis:7-alpine
+    container_name: paul_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - paul_network
+
+  # Laravel Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: paul_backend
+    restart: unless-stopped
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=paul_azerbaijan
+      - DB_USERNAME=paul_user
+      - DB_PASSWORD=paul_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+    volumes:
+      - ./backend/storage:/var/www/html/storage
+      - ./backend/bootstrap/cache:/var/www/html/bootstrap/cache
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - paul_network
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: paul_frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://backend/api
+      - NEXT_PUBLIC_APP_NAME=PAUL Azerbaijan
+    depends_on:
+      - backend
+    networks:
+      - paul_network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: paul_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - paul_network
+
+  # Worker для очередей Laravel
+  queue:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: paul_queue
+    restart: unless-stopped
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=paul_azerbaijan
+      - DB_USERNAME=paul_user
+      - DB_PASSWORD=paul_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+    volumes:
+      - ./backend/storage:/var/www/html/storage
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - paul_network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  paul_network:
+    driver: bridge

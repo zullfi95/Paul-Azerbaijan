@@ -2,6 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Header from '../../components/Header';
@@ -13,10 +14,16 @@ import { useUserProfile } from '../../hooks/useUserProfile';
 import styles from './ProfilePage.module.css';
 import { Dashboard } from '@/components/profile/Dashboard';
 import { AccountInfoInformation } from '@/components/profile/AccountInfoInformation';
+import { OrderDetailsModal } from '@/components/OrderDetailsModal';
 import { OrderStatus, PaymentStatus } from '@/types/unified';
 
 export default function ProfilePage() {
   const router = useRouter();
+  
+  // State for order details modal
+  const [selectedOrder, setSelectedOrder] = React.useState<any>(null);
+  const [isOrderModalOpen, setIsOrderModalOpen] = React.useState(false);
+  
   const {
     user,
     isAuthenticated,
@@ -54,6 +61,17 @@ export default function ProfilePage() {
     shippingAddressData,
     loadingShippingAddress
   } = useUserProfile();
+
+  // Functions for order modal
+  const openOrderModal = (order: any) => {
+    setSelectedOrder(order);
+    setIsOrderModalOpen(true);
+  };
+
+  const closeOrderModal = () => {
+    setSelectedOrder(null);
+    setIsOrderModalOpen(false);
+  };
 
   if (isAuthLoading) {
     return (
@@ -252,7 +270,7 @@ export default function ProfilePage() {
                       const orderStatus = getOrderStatus(order.status, order.payment_status);
                       
                       return (
-                        <div key={order.id} className={styles.orderCard}>
+                        <div key={order.id} className={styles.orderCard} onClick={() => openOrderModal(order)}>
                           <div className={styles.orderImage}>
                             <Image 
                               src="/images/cake1.png"
@@ -626,6 +644,14 @@ export default function ProfilePage() {
 
       {/* Feedback Modal Component */}
       <FeedbackModal />
+
+      {/* Order Details Modal */}
+      <OrderDetailsModal
+        order={selectedOrder}
+        isOpen={isOrderModalOpen}
+        onClose={closeOrderModal}
+        onPaymentClick={handleDirectPayment}
+      />
 
       <Footer />
     </div>

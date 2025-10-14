@@ -1,18 +1,17 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { ArrowLeft, Plus, Minus, ShoppingBag } from 'lucide-react';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import FeaturesSection from '../../../components/FeaturesSection';
-import BasketIcon from '../../../components/BasketIcon';
-import Breadcrumbs from '../../../components/Breadcrumbs';
 import FeedbackModal from '../../../components/FeedbackModal';
+import FeaturesSection from '../../../components/FeaturesSection';
+import Breadcrumbs from '../../../components/Breadcrumbs';
 import { useCart } from '../../../contexts/CartContext';
-import Link from 'next/link';
+import { useNotification } from '../../../contexts/NotificationContext';
 import styles from './ProductPage.module.css';
-import Image from "next/image";
-import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -22,354 +21,368 @@ interface Product {
   image: string;
   category: string;
   available: boolean;
-  weight: string;
-  storage: string;
-  nutritionalInfo: string;
-  allergens: string[];
-  allergensText: string;
+  ingredients?: string[];
+  nutritionInfo?: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
 }
-
-interface RelatedProduct {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-  category: string;
-  available: boolean;
-}
-
-// Mock data - в реальном приложении это будет загружаться из API
-const products: Product[] = [
-  {
-    id: '1',
-    name: 'Creamy sweet croissants, 12 pcs',
-    description: 'Indulge in a delightful box of 12 croissants from PAUL, featuring a tempting mix of flavors. Each croissant is freshly baked to perfection, making them ideal for any occasion. Whether you\'re hosting a brunch or enjoying a quiet afternoon, these treats are sure to impress!',
-    price: 80,
-    image: '/images/menuitem1.png',
-    category: 'Sweet French pastries',
-    available: true,
-    weight: '460 g',
-    storage: 'Store at 1°C - 5°C',
-    nutritionalInfo: 'Calories: 320 per 100g, Fat: 18g, Carbohydrates: 35g, Protein: 6g, Sugar: 12g',
-    allergens: ['Milk', 'Eggs', 'Gluten'],
-    allergensText: 'Our products may contain allergens such as peanuts, tree nuts, soy, milk, eggs, and wheat. We strive to reduce cross-contamination risks, but cannot ensure safety for those with allergies.'
-  },
-  {
-    id: '2',
-    name: 'Stuffed croissants, perfect bites, 20 pcs',
-    description: 'A perfect selection of 20 stuffed croissants with various savory fillings. Ideal for catering events and gatherings.',
-    price: 40,
-    image: '/images/menuitem2.png',
-    category: 'Savory filled pastries and quiche',
-    available: true,
-    weight: '600 g',
-    storage: 'Store at 1°C - 5°C',
-    nutritionalInfo: 'Calories: 280 per 100g, Fat: 15g, Carbohydrates: 28g, Protein: 8g, Sugar: 3g',
-    allergens: ['Milk', 'Gluten'],
-    allergensText: 'Our products may contain allergens such as peanuts, tree nuts, soy, milk, eggs, and wheat. We strive to reduce cross-contamination risks, but cannot ensure safety for those with allergies.'
-  },
-  {
-    id: '3',
-    name: 'Mini eclairs, savory delights, 6 pcs',
-    description: 'Delicate mini eclairs with savory fillings, perfect for elegant appetizers.',
-    price: 20,
-    image: '/images/menuitem3.png',
-    category: 'Savory filled pastries and quiche',
-    available: true,
-    weight: '200 g',
-    storage: 'Store at 1°C - 5°C',
-    nutritionalInfo: 'Calories: 350 per 100g, Fat: 22g, Carbohydrates: 30g, Protein: 7g, Sugar: 8g',
-    allergens: ['Milk', 'Eggs', 'Gluten'],
-    allergensText: 'Our products may contain allergens such as peanuts, tree nuts, soy, milk, eggs, and wheat. We strive to reduce cross-contamination risks, but cannot ensure safety for those with allergies.'
-  },
-  {
-    id: '4',
-    name: 'Fruit tarts, sweet treats, 25 pcs',
-    description: 'Beautiful assortment of fruit tarts with fresh seasonal fruits and delicate pastry.',
-    price: 50,
-    image: '/images/menuitem4.png',
-    category: 'Desserts and cakes',
-    available: true,
-    weight: '750 g',
-    storage: 'Store at 1°C - 5°C',
-    nutritionalInfo: 'Calories: 290 per 100g, Fat: 12g, Carbohydrates: 42g, Protein: 4g, Sugar: 25g',
-    allergens: ['Milk', 'Eggs', 'Gluten'],
-    allergensText: 'Our products may contain allergens such as peanuts, tree nuts, soy, milk, eggs, and wheat. We strive to reduce cross-contamination risks, but cannot ensure safety for those with allergies.'
-  }
-];
-
-const relatedProducts: RelatedProduct[] = [
-  {
-    id: '2',
-    name: 'Stuffed croissants, perfect bites, 20 pcs',
-    price: 40,
-    image: '/images/menuitem2.png',
-    description: 'A perfect selection of 20 stuffed croissants with various savory fillings.',
-    category: 'Savory filled pastries and quiche',
-    available: true
-  },
-  {
-    id: '3',
-    name: 'Mini eclairs, savory delights, 6 pcs',
-    price: 20,
-    image: '/images/menuitem3.png',
-    description: 'Delicate mini eclairs with savory fillings, perfect for elegant appetizers.',
-    category: 'Savory filled pastries and quiche',
-    available: true
-  },
-  {
-    id: '4',
-    name: 'Fruit tarts, sweet treats, 25 pcs',
-    price: 50,
-    image: '/images/menuitem4.png',
-    description: 'Beautiful assortment of fruit tarts with fresh seasonal fruits.',
-    category: 'Desserts and cakes',
-    available: true
-  },
-  {
-    id: '1',
-    name: 'Creamy sweet croissants, 12 pcs',
-    price: 80,
-    image: '/images/menuitem1.png',
-    description: 'Indulge in a delightful box of 12 croissants from PAUL.',
-    category: 'Sweet French pastries',
-    available: true
-  }
-];
 
 export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
-  const { addItem, updateQuantity, getItemQuantity } = useCart();
+  const { addItem } = useCart();
+  const { showNotification } = useNotification();
+  const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [activeAccordion, setActiveAccordion] = useState<string | null>('allergens'); // По умолчанию открыта секция аллергенов
-  const [showAddedNotification, setShowAddedNotification] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(0);
 
-  const productId = params.id as string;
-  const product = products.find(p => p.id === productId);
+  // Sample products data - in real app this would come from API
+  const products: Product[] = [
+    {
+      id: '1',
+      name: 'Croissant',
+      description: 'Fresh baked croissant with buttery layers, perfect for breakfast or as a light snack. Made with premium butter and traditional French techniques.',
+      price: 3.50,
+      image: '/images/menuitem1.png',
+      category: 'Pastries',
+      available: true,
+      ingredients: ['Flour', 'Butter', 'Yeast', 'Salt', 'Sugar'],
+      nutritionInfo: {
+        calories: 231,
+        protein: 4.2,
+        carbs: 25.8,
+        fat: 12.1
+      }
+    },
+    {
+      id: '2',
+      name: 'Pain au Chocolat',
+      description: 'Chocolate filled pastry with flaky layers, a perfect combination of buttery pastry and rich chocolate.',
+      price: 4.00,
+      image: '/images/menuitem2.png',
+      category: 'Pastries',
+      available: true,
+      ingredients: ['Flour', 'Butter', 'Chocolate', 'Yeast', 'Salt', 'Sugar'],
+      nutritionInfo: {
+        calories: 280,
+        protein: 5.1,
+        carbs: 28.5,
+        fat: 16.2
+      }
+    },
+    {
+      id: '3',
+      name: 'Baguette',
+      description: 'Traditional French bread with crispy crust and soft interior, perfect for sandwiches or as a side.',
+      price: 2.50,
+      image: '/images/menuitem3.png',
+      category: 'Bread',
+      available: true,
+      ingredients: ['Flour', 'Water', 'Yeast', 'Salt'],
+      nutritionInfo: {
+        calories: 265,
+        protein: 8.8,
+        carbs: 52.0,
+        fat: 1.2
+      }
+    },
+    {
+      id: '4',
+      name: 'Sandwich',
+      description: 'Fresh sandwich with premium ingredients, perfect for lunch or a quick meal.',
+      price: 5.50,
+      image: '/images/menuitem4.png',
+      category: 'Lunch',
+      available: true,
+      ingredients: ['Bread', 'Lettuce', 'Tomato', 'Cheese', 'Meat', 'Mayo'],
+      nutritionInfo: {
+        calories: 420,
+        protein: 18.5,
+        carbs: 35.2,
+        fat: 22.1
+      }
+    },
+    {
+      id: '5',
+      name: 'Quiche Lorraine',
+      description: 'Classic French quiche with bacon and cheese, a savory pie perfect for brunch or lunch.',
+      price: 6.00,
+      image: '/images/menuitem1.png',
+      category: 'Lunch',
+      available: true,
+      ingredients: ['Pastry', 'Eggs', 'Bacon', 'Cheese', 'Cream', 'Onions'],
+      nutritionInfo: {
+        calories: 380,
+        protein: 15.2,
+        carbs: 18.5,
+        fat: 28.8
+      }
+    },
+    {
+      id: '6',
+      name: 'Caesar Salad',
+      description: 'Fresh salad with romaine lettuce and caesar dressing, topped with parmesan and croutons.',
+      price: 7.50,
+      image: '/images/menuitem2.png',
+      category: 'Lunch',
+      available: true,
+      ingredients: ['Romaine Lettuce', 'Parmesan', 'Croutons', 'Caesar Dressing', 'Lemon'],
+      nutritionInfo: {
+        calories: 320,
+        protein: 12.5,
+        carbs: 15.8,
+        fat: 24.2
+      }
+    },
+    {
+      id: '7',
+      name: 'Cappuccino',
+      description: 'Rich espresso with steamed milk foam, the perfect coffee drink for any time of day.',
+      price: 2.00,
+      image: '/images/menuitem3.png',
+      category: 'Beverages',
+      available: true,
+      ingredients: ['Espresso', 'Steamed Milk', 'Milk Foam'],
+      nutritionInfo: {
+        calories: 80,
+        protein: 4.2,
+        carbs: 6.8,
+        fat: 3.5
+      }
+    },
+    {
+      id: '8',
+      name: 'Earl Grey Tea',
+      description: 'Classic black tea with bergamot flavor, a sophisticated and aromatic tea experience.',
+      price: 1.50,
+      image: '/images/menuitem4.png',
+      category: 'Beverages',
+      available: true,
+      ingredients: ['Black Tea', 'Bergamot Oil'],
+      nutritionInfo: {
+        calories: 2,
+        protein: 0.1,
+        carbs: 0.5,
+        fat: 0.0
+      }
+    },
+    {
+      id: '9',
+      name: 'Chocolate Cake',
+      description: 'Rich chocolate cake with ganache frosting, a decadent dessert perfect for special occasions.',
+      price: 4.50,
+      image: '/images/menuitem1.png',
+      category: 'Desserts',
+      available: true,
+      ingredients: ['Flour', 'Cocoa', 'Sugar', 'Butter', 'Eggs', 'Chocolate'],
+      nutritionInfo: {
+        calories: 450,
+        protein: 6.8,
+        carbs: 58.2,
+        fat: 22.5
+      }
+    },
+    {
+      id: '10',
+      name: 'Macaron Assortment',
+      description: 'Colorful French macarons in various flavors, a delicate and elegant treat.',
+      price: 1.50,
+      image: '/images/menuitem2.png',
+      category: 'Desserts',
+      available: true,
+      ingredients: ['Almond Flour', 'Sugar', 'Egg Whites', 'Food Coloring', 'Filling'],
+      nutritionInfo: {
+        calories: 95,
+        protein: 2.1,
+        carbs: 12.8,
+        fat: 4.2
+      }
+    }
+  ];
 
-  if (!product) {
+  useEffect(() => {
+    const productId = params.id as string;
+    const foundProduct = products.find(p => p.id === productId);
+    
+    if (foundProduct) {
+      setProduct(foundProduct);
+    } else {
+      // Product not found, redirect to 404 or home
+      router.push('/');
+    }
+    
+    setLoading(false);
+  }, [params.id, router]);
+
+  const handleAddToCart = () => {
+    if (product) {
+      for (let i = 0; i < quantity; i++) {
+        addItem({
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          image: product.image,
+          category: product.category,
+          available: product.available,
+          isSet: false
+        });
+      }
+      showNotification(`${product.name} added to cart (${quantity} item${quantity > 1 ? 's' : ''})`);
+    }
+  };
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity >= 1 && newQuantity <= 10) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  if (loading) {
     return (
-      <div className={styles.notFound}>
-        <h1>Product not found</h1>
-        <Link href="/catering">Back to Menu</Link>
+      <div className={styles.productPage}>
+        <Header />
+        <div className={styles.loadingState}>
+          <div className={styles.loadingSpinner} />
+          <span>Loading product...</span>
+        </div>
       </div>
     );
   }
 
-  const handleAddToCart = () => {
-    // Проверяем, есть ли уже товар в корзине
-    const currentQuantity = getItemQuantity(product.id);
-    
-    if (currentQuantity > 0) {
-      // Если товар уже есть в корзине, увеличиваем количество
-      updateQuantity(product.id, currentQuantity + quantity);
-    } else {
-      // Если товара нет в корзине, добавляем его
-      addItem({
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        images: product.image ? [product.image] : [],
-        category: product.category,
-        available: product.available,
-        isSet: false
-      });
-      
-      // Если количество больше 1, увеличиваем до нужного количества
-      if (quantity > 1) {
-        updateQuantity(product.id, quantity);
-      }
-    }
-    
-    // Показываем уведомление
-    setShowAddedNotification(true);
-    setTimeout(() => setShowAddedNotification(false), 3000);
-  };
-
-  const toggleAccordion = (section: string) => {
-    setActiveAccordion(activeAccordion === section ? null : section);
-  };
+  if (!product) {
+    return (
+      <div className={styles.productPage}>
+        <Header />
+        <div className={styles.notFoundState}>
+          <h2>Product not found</h2>
+          <button onClick={() => router.push('/')} className={styles.backButton}>
+            <ArrowLeft size={16} />
+            Back to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.productPage}>
       <Header />
       
-      {/* Notification */}
-      {showAddedNotification && (
-        <div className={styles.notification}>
-          <div className={styles.notificationContent}>
-            <span>✓ Product added to cart!</span>
-          </div>
-        </div>
-      )}
-      
       {/* Breadcrumbs */}
-      <div className={styles.breadcrumbs}>
-        <div className={styles.container}>
+      <div className={styles.breadcrumbsContainer}>
+        <div className={styles.breadcrumbsWrapper}>
           <Breadcrumbs 
             items={[
               { label: 'Home', href: '/' },
-              { label: 'Catering Menu', href: '/catering' },
+              { label: product.category, href: `/${product.category.toLowerCase()}` },
               { label: product.name, isActive: true }
             ]}
           />
         </div>
       </div>
 
-      {/* Main Product Section */}
-      <div className={styles.mainSection}>
-        <div className={styles.container}>
-          <div className={styles.productContent}>
-            {/* Left Column - Product Image */}
-            <div className={styles.imageColumn}>
-              <div className={styles.imageWrapper}>
-                <Image
-                  src={product.image || '/images/placeholder-food.svg'}
-                  alt={product.name}
-                  className={styles.productImage}
-                  width={500}
-                  height={500}
-                />
-              </div>
-            </div>
-
-            {/* Right Column - Product Details */}
-            <div className={styles.detailsColumn}>
-              <div className={styles.productDetails}>
-                {/* Product Info Section */}
-                <div className={styles.productInfo}>
-                  <h1 className={styles.productName}>{product.name}</h1>
-                  <div className={styles.price}>₼{product.price}</div>
-                  <div className={styles.weightStorage}>
-                    {product.weight}, {product.storage}
-                  </div>
-                  <p className={styles.description}>{product.description}</p>
-                </div>
-
-                {/* Product Actions Section */}
-                <div className={styles.productActions}>
-                  {/* Quantity Selector */}
-                  <div className={styles.quantitySelector}>
-                    <button 
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className={styles.quantityBtn}
-                    >
-                      -
-                    </button>
-                    <span className={styles.quantity}>{quantity}</span>
-                    <button 
-                      onClick={() => setQuantity(quantity + 1)}
-                      className={styles.quantityBtn}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  {/* Add to Cart Button */}
-                  <button 
-                    onClick={handleAddToCart}
-                    className={styles.addToCartBtn}
-                  >
-                    Add to cart
-                  </button>
-
-                  {/* Accordion Sections */}
-                  <div className={styles.accordion}>
-                    <div className={styles.accordionItem}>
-                      <button 
-                        className={styles.accordionHeader}
-                        onClick={() => toggleAccordion('nutritional')}
-                      >
-                        <span>Nutritional information</span>
-                        <span className={styles.accordionIcon}>
-                          {activeAccordion === 'nutritional' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                        </span>
-                      </button>
-                      {activeAccordion === 'nutritional' && (
-                        <div className={styles.accordionContent}>
-                          <p>{product.nutritionalInfo}</p>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className={styles.accordionItem}>
-                      <button 
-                        className={styles.accordionHeader}
-                        onClick={() => toggleAccordion('allergens')}
-                      >
-                        <span>Allergens</span>
-                        <span className={styles.accordionIcon}>
-                          {activeAccordion === 'allergens' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                        </span>
-                      </button>
-                      {activeAccordion === 'allergens' && (
-                        <div className={styles.accordionContent}>
-                          <div className={styles.allergensList}>
-                            {product.allergens.map((allergen, index) => (
-                              <span key={index} className={styles.allergenTag}>
-                                {allergen}
-                              </span>
-                            ))}
-                          </div>
-                          <p className={styles.allergensText}>{product.allergensText}</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
+      {/* Product Content */}
+      <div className={styles.productContent}>
+        <div className={styles.productContainer}>
+          {/* Product Images */}
+          <div className={styles.productImages}>
+            <div className={styles.mainImage}>
+              <Image
+                src={product.image || '/images/placeholder-food.svg'}
+                alt={product.name}
+                fill
+                style={{ objectFit: 'cover' }}
+              />
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Related Products Section */}
-      <div className={styles.relatedSection}>
-        <div className={styles.container}>
-          <h2 className={styles.relatedTitle}>Related products</h2>
-          <div className={styles.relatedGrid}>
-            {relatedProducts.map((item) => (
-              <div 
-                key={item.id} 
-                className={styles.relatedCard}
-                onClick={() => router.push(`/product/${item.id}`)}
-              >
-                <div className={styles.relatedImageWrapper}>
-                  <Image
-                    src={item.image || '/images/placeholder-food.svg'}
-                    alt={item.name}
-                    className={styles.relatedImage}
-                    width={300}
-                    height={300}
-                  />
-                  <button 
-                    className={styles.relatedCartBtn}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addItem({
-                        id: item.id,
-                        name: item.name,
-                        description: item.description,
-                        price: item.price,
-                        images: item.image ? [item.image] : [],
-                        category: item.category,
-                        available: item.available,
-                        isSet: false
-                      });
-                      setShowAddedNotification(true);
-                      setTimeout(() => setShowAddedNotification(false), 3000);
-                    }}
-                  >
-                    <BasketIcon size={16} />
-                  </button>
-                </div>
-                <h3 className={styles.relatedName}>{item.name}</h3>
-                <div className={styles.relatedPrice}>₼{item.price}</div>
+          {/* Product Info */}
+          <div className={styles.productInfo}>
+            <div className={styles.productHeader}>
+              <h1 className={styles.productName}>{product.name}</h1>
+              <div className={styles.productCategory}>{product.category}</div>
+            </div>
+
+            <div className={styles.productPrice}>₼{product.price.toFixed(2)}</div>
+
+            <div className={styles.productDescription}>
+              {product.description}
+            </div>
+
+            {/* Quantity Selector */}
+            <div className={styles.quantitySection}>
+              <label className={styles.quantityLabel}>Quantity:</label>
+              <div className={styles.quantityControls}>
+                <button
+                  onClick={() => handleQuantityChange(quantity - 1)}
+                  className={styles.quantityButton}
+                  disabled={quantity <= 1}
+                >
+                  <Minus size={16} />
+                </button>
+                <span className={styles.quantityValue}>{quantity}</span>
+                <button
+                  onClick={() => handleQuantityChange(quantity + 1)}
+                  className={styles.quantityButton}
+                  disabled={quantity >= 10}
+                >
+                  <Plus size={16} />
+                </button>
               </div>
-            ))}
+            </div>
+
+            {/* Add to Cart Button */}
+            <button
+              onClick={handleAddToCart}
+              className={styles.addToCartButton}
+              disabled={!product.available}
+            >
+              <ShoppingBag size={20} />
+              Add to Cart
+            </button>
+
+            {/* Product Details */}
+            {product.ingredients && (
+              <div className={styles.productDetails}>
+                <h3 className={styles.detailsTitle}>Ingredients</h3>
+                <ul className={styles.ingredientsList}>
+                  {product.ingredients.map((ingredient, index) => (
+                    <li key={index} className={styles.ingredientItem}>
+                      {ingredient}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {product.nutritionInfo && (
+              <div className={styles.productDetails}>
+                <h3 className={styles.detailsTitle}>Nutrition Information</h3>
+                <div className={styles.nutritionGrid}>
+                  <div className={styles.nutritionItem}>
+                    <span className={styles.nutritionLabel}>Calories</span>
+                    <span className={styles.nutritionValue}>{product.nutritionInfo.calories}</span>
+                  </div>
+                  <div className={styles.nutritionItem}>
+                    <span className={styles.nutritionLabel}>Protein</span>
+                    <span className={styles.nutritionValue}>{product.nutritionInfo.protein}g</span>
+                  </div>
+                  <div className={styles.nutritionItem}>
+                    <span className={styles.nutritionLabel}>Carbs</span>
+                    <span className={styles.nutritionValue}>{product.nutritionInfo.carbs}g</span>
+                  </div>
+                  <div className={styles.nutritionItem}>
+                    <span className={styles.nutritionLabel}>Fat</span>
+                    <span className={styles.nutritionValue}>{product.nutritionInfo.fat}g</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

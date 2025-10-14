@@ -1,7 +1,7 @@
 // API Configuration
 export const API_CONFIG = {
   // Base URL for API requests (Laravel automatically adds /api/ prefix to routes/api.php)
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api',
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL || '/api',
 
   // API endpoints
   ENDPOINTS: {

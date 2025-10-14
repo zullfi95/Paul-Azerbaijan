@@ -152,6 +152,31 @@ const menuItems: CartItem[] = [
   }
 ];
 
+// Категории продуктов (показываются в верхней секции после хедера)
+const productCategories = [
+  { 
+    name: 'Savory filled pastries and quiche', 
+    icon: '/images/category4.png'
+  },
+  { 
+    name: 'Sav/Bread and savoury pastries', 
+    icon: '/images/category5.png'
+  },
+  { 
+    name: 'Sweet French pastries', 
+    icon: '/images/category3.png'
+  },
+  { 
+    name: 'Pies and cakes', 
+    icon: '/images/category2.png'
+  },
+  { 
+    name: 'Macaroons', 
+    icon: '/images/category1.png'
+  }
+];
+
+// Категории меню кейтеринга (вкладки)
 const categories = [
   { name: 'Sets', icon: '🍽️', image: '/images/category4.png' },
   { name: 'Brunch Menu', icon: '🥐', image: '/images/category3.png' },
@@ -169,6 +194,16 @@ interface BrunchSelection {
   drinks: string | null;
 }
 
+// Интерфейс для количества по каждой секции Brunch Menu
+interface BrunchQuantities {
+  canapes: number;
+  sandwiches: number;
+  wraps: number;
+  salads: number;
+  desserts: number;
+  drinks: number;
+}
+
 // Интерфейс для выбранных опций Lunch Menu
 interface LunchSelection {
   selectedOption: string | null;
@@ -178,6 +213,7 @@ interface LunchSelection {
 export default function CateringPage() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('Sets');
+  const [selectedProductCategory, setSelectedProductCategory] = useState<string | null>(null);
   const [sortBy] = useState('name');
   const [isMobile, setIsMobile] = useState(false);
   
@@ -189,6 +225,16 @@ export default function CateringPage() {
     salads: null,
     desserts: null,
     drinks: null
+  });
+
+  // Состояние для количества по каждой секции Brunch Menu
+  const [brunchQuantities, setBrunchQuantities] = useState<BrunchQuantities>({
+    canapes: 11,
+    sandwiches: 11,
+    wraps: 11,
+    salads: 11,
+    desserts: 11,
+    drinks: 11
   });
 
   // Состояние для выбранных опций Lunch Menu
@@ -216,6 +262,14 @@ export default function CateringPage() {
 
   const isBrunchItemSelected = (category: keyof BrunchSelection, item: string) => {
     return brunchSelections[category] === item;
+  };
+
+  const updateBrunchQuantity = (category: keyof BrunchQuantities, quantity: number) => {
+    if (quantity < 1) return;
+    setBrunchQuantities(prev => ({
+      ...prev,
+      [category]: quantity
+    }));
   };
 
   const getTotalSelectedItems = () => {
@@ -421,6 +475,34 @@ export default function CateringPage() {
     <div className={styles.container}>
       <Header />
       
+      {/* Product Categories Section */}
+      <div className={styles.productCategoriesSection}>
+        <div className={styles.productCategoriesContainer}>
+          {productCategories.map((category) => (
+            <div
+              key={category.name}
+              className={`${styles.productCategoryItem} ${selectedProductCategory === category.name ? styles.productCategoryActive : ''}`}
+              onClick={() => setSelectedProductCategory(
+                selectedProductCategory === category.name ? null : category.name
+              )}
+            >
+              <div className={styles.productCategoryIcon}>
+                <Image
+                  src={category.icon}
+                  alt={category.name}
+                  width={50}
+                  height={50}
+                  style={{ objectFit: 'contain' }}
+                />
+              </div>
+              <span className={styles.productCategoryName}>
+                {category.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+      
       <div className={styles.navbarSpacing}>
         {/* Breadcrumbs */}
         <div className={styles.breadcrumbsContainer}>
@@ -443,32 +525,44 @@ export default function CateringPage() {
           </div>
         </div>
 
-        {/* Category Navigation */}
+        {/* Category Navigation with Sort Button */}
         <div className={styles.categoryNavigationContainer}>
           <div className={styles.categoryNavigationWrapper}>
-            <div className={styles.categoryNavigation}>
-              {categories.map((category) => (
-                <div
-                  key={category.name}
-                  className={`${styles.categoryItem} ${selectedCategory === category.name ? styles.categoryItemActive : ''}`}
-                  onClick={() => setSelectedCategory(category.name)}
-                >
-                  <div className={styles.categoryIcon}>
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      width={60}
-                      height={60}
-                      style={{
-                        objectFit: 'contain'
-                      }}
-                    />
+            <div className={styles.categoryTabsRow}>
+              <div className={styles.categoryNavigation}>
+                {categories.map((category) => (
+                  <div
+                    key={category.name}
+                    className={`${styles.categoryItem} ${selectedCategory === category.name ? styles.categoryItemActive : ''} ${category.name === 'Sets' ? styles.categoryItemSets : ''}`}
+                    onClick={() => setSelectedCategory(category.name)}
+                  >
+                    <div className={styles.categoryIcon}>
+                      <Image
+                        src={category.image}
+                        alt={category.name}
+                        width={60}
+                        height={60}
+                        style={{
+                          objectFit: 'contain'
+                        }}
+                      />
+                    </div>
+                    <span className={`${styles.categoryName} ${selectedCategory === category.name ? styles.categoryNameActive : ''}`}>
+                      {category.name}
+                    </span>
                   </div>
-                  <span className={`${styles.categoryName} ${selectedCategory === category.name ? styles.categoryNameActive : ''}`}>
-                    {category.name}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
+              
+              {/* Sort By Button */}
+              <button 
+                onClick={() => setShowSortMenu(!showSortMenu)}
+                data-sort-menu
+                className={styles.sortButton}
+              >
+                SORT BY
+                <span style={{ fontSize: '16px', fontWeight: 'bold', lineHeight: '1' }}>...</span>
+              </button>
             </div>
           </div>
         </div>
@@ -508,7 +602,7 @@ export default function CateringPage() {
                               (Choose of one)
                             </p>
                             <div className={styles.optionsContainer}>
-                              {['Mini Éclair Selection', 'Mini Tartine Selection', 'Mini Quiche Selection'].map((item) => (
+                              {['Mini Eclair Selection', 'Mini Tartine Selection', 'Mini Quiche Selection'].map((item) => (
                                 <label key={item} className={`${styles.optionLabel} ${isBrunchItemSelected('canapes', item) ? styles.optionLabelSelected : ''}`}>
                                   <input
                                     type="radio"
@@ -522,6 +616,25 @@ export default function CateringPage() {
                                   </span>
                                 </label>
                               ))}
+                            </div>
+                            
+                            {/* Quantity Selector */}
+                            <div className={styles.brunchQuantitySelector}>
+                              <button
+                                onClick={() => updateBrunchQuantity('canapes', brunchQuantities.canapes - 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                -
+                              </button>
+                              <span className={styles.brunchQuantityDisplay}>
+                                {brunchQuantities.canapes}
+                              </span>
+                              <button
+                                onClick={() => updateBrunchQuantity('canapes', brunchQuantities.canapes + 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                +
+                              </button>
                             </div>
                 </div>
                           
@@ -548,331 +661,226 @@ export default function CateringPage() {
                                 </label>
                               ))}
                             </div>
+                            
+                            {/* Quantity Selector */}
+                            <div className={styles.brunchQuantitySelector}>
+                              <button
+                                onClick={() => updateBrunchQuantity('sandwiches', brunchQuantities.sandwiches - 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                -
+                              </button>
+                              <span className={styles.brunchQuantityDisplay}>
+                                {brunchQuantities.sandwiches}
+                              </span>
+                              <button
+                                onClick={() => updateBrunchQuantity('sandwiches', brunchQuantities.sandwiches + 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                +
+                              </button>
+                            </div>
             </div>
                           
-                          <div style={{ marginBottom: '1.25rem' }}>
-                            <h3 style={{
-                              color: '#000',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '17.6px',
-                              fontStyle: 'normal',
-                              fontWeight: '500',
-                              lineHeight: 'normal',
-                              marginBottom: '0.5rem'
-                            } as React.CSSProperties}>
+                          <div className={styles.leftColumn}>
+                            <h3 className={styles.sectionTitle}>
                               Mini Wrap Rolls
                             </h3>
-                            <p style={{
-                              color: '#6b7280',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '14px',
-                              fontStyle: 'italic',
-                              fontWeight: 'normal',
-                              lineHeight: 'normal',
-                              marginBottom: '0.75rem'
-                            } as React.CSSProperties}>
+                            <p className={styles.sectionDescription}>
                               (Choose of one)
                             </p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            <div className={styles.optionsContainer}>
                               {['Ham&Cheese', 'Crispy Chicken', 'Beef with Vegetable'].map((item) => (
-                                <label key={item} style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '0.5rem',
-                                  cursor: 'pointer',
-                                  padding: '0.375rem 0.5rem',
-                                  borderRadius: '0',
-                                  transition: 'all 0.2s ease',
-                                  backgroundColor: isBrunchItemSelected('wraps', item) ? '#1A1A1A' : 'transparent',
-                                  border: isBrunchItemSelected('wraps', item) ? '1px solid #1A1A1A' : '1px solid transparent'
-                                }}>
+                                <label key={item} className={`${styles.optionLabel} ${isBrunchItemSelected('wraps', item) ? styles.optionLabelSelected : ''}`}>
                                   <input
                                     type="radio"
                                     name="wraps"
                                     checked={isBrunchItemSelected('wraps', item)}
                                     onChange={() => toggleBrunchSelection('wraps', item)}
-                                    style={{
-                                      width: '16px',
-                                      height: '16px',
-                                      accentColor: '#1A1A1A',
-                                      cursor: 'pointer',
-                                      flexShrink: 0
-                                    }}
+                                    className={styles.radioInput}
                                   />
-                                  <span style={{
-                                    fontSize: '15px',
-                                    color: isBrunchItemSelected('wraps', item) ? '#FFFFFF' : '#1A1A1A',
-                              fontFamily: '"Sabon Next LT Pro"',
-                                    fontWeight: isBrunchItemSelected('wraps', item) ? '500' : '400',
-                                    lineHeight: '1.4',
-                                    flex: 1
-                                  }}>
+                                  <span className={`${styles.optionText} ${isBrunchItemSelected('wraps', item) ? styles.optionTextSelected : ''}`}>
                                     {item}
                                   </span>
                                 </label>
                               ))}
                             </div>
-          </div>
+                            
+                            {/* Quantity Selector */}
+                            <div className={styles.brunchQuantitySelector}>
+                              <button
+                                onClick={() => updateBrunchQuantity('wraps', brunchQuantities.wraps - 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                -
+                              </button>
+                              <span className={styles.brunchQuantityDisplay}>
+                                {brunchQuantities.wraps}
+                              </span>
+                              <button
+                                onClick={() => updateBrunchQuantity('wraps', brunchQuantities.wraps + 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
 
-                        {/* Right Column */}
-                        <div style={{ marginBottom: '1.25rem' }}>
-                            <h3 style={{
-                              color: '#000',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '17.6px',
-                              fontStyle: 'normal',
-                              fontWeight: '500',
-                              lineHeight: 'normal',
-                              marginBottom: '0.5rem'
-                            } as React.CSSProperties}>
+                        <div className={styles.leftColumn}>
+                            <h3 className={styles.sectionTitle}>
                               Salads
                             </h3>
-                            <p style={{
-                              color: '#6b7280',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '14px',
-                              fontStyle: 'italic',
-                              fontWeight: 'normal',
-                              lineHeight: 'normal',
-                              marginBottom: '0.75rem'
-                            } as React.CSSProperties}>
+                            <p className={styles.sectionDescription}>
                               (Choose of one)
                             </p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            <div className={styles.optionsContainer}>
                               {['Chicken Pasta Salad', 'Greek Salad', 'Smoked Salmon Salad'].map((item) => (
-                                <label key={item} style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '0.5rem',
-                                  cursor: 'pointer',
-                                  padding: '0.375rem 0.5rem',
-                                  borderRadius: '0',
-                                  transition: 'all 0.2s ease',
-                                  backgroundColor: isBrunchItemSelected('salads', item) ? '#1A1A1A' : 'transparent',
-                                  border: isBrunchItemSelected('salads', item) ? '1px solid #1A1A1A' : '1px solid transparent'
-                                }}>
+                                <label key={item} className={`${styles.optionLabel} ${isBrunchItemSelected('salads', item) ? styles.optionLabelSelected : ''}`}>
                                   <input
                                     type="radio"
                                     name="salads"
                                     checked={isBrunchItemSelected('salads', item)}
                                     onChange={() => toggleBrunchSelection('salads', item)}
-                                    style={{
-                                      width: '16px',
-                                      height: '16px',
-                                      accentColor: '#1A1A1A',
-                                      cursor: 'pointer',
-                                      flexShrink: 0
-                                    }}
+                                    className={styles.radioInput}
                                   />
-                                  <span style={{
-                                    fontSize: '15px',
-                                    color: isBrunchItemSelected('salads', item) ? '#FFFFFF' : '#1A1A1A',
-                              fontFamily: '"Sabon Next LT Pro"',
-                                    fontWeight: isBrunchItemSelected('salads', item) ? '500' : '400',
-                                    lineHeight: '1.4',
-                                    flex: 1
-                                  }}>
+                                  <span className={`${styles.optionText} ${isBrunchItemSelected('salads', item) ? styles.optionTextSelected : ''}`}>
                                     {item}
                                   </span>
                                 </label>
                               ))}
                             </div>
+                            
+                            {/* Quantity Selector */}
+                            <div className={styles.brunchQuantitySelector}>
+                              <button
+                                onClick={() => updateBrunchQuantity('salads', brunchQuantities.salads - 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                -
+                              </button>
+                              <span className={styles.brunchQuantityDisplay}>
+                                {brunchQuantities.salads}
+                              </span>
+                              <button
+                                onClick={() => updateBrunchQuantity('salads', brunchQuantities.salads + 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                +
+                              </button>
+                            </div>
                           </div>
                           
-                          <div style={{ marginBottom: '1.25rem' }}>
-                            <h3 style={{
-                              color: '#000',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '17.6px',
-                              fontStyle: 'normal',
-                              fontWeight: '500',
-                              lineHeight: 'normal',
-                              marginBottom: '0.5rem'
-                            } as React.CSSProperties}>
+                          <div className={styles.leftColumn}>
+                            <h3 className={styles.sectionTitle}>
                               Dessert
                             </h3>
-                            <p style={{
-                              color: '#6b7280',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '14px',
-                              fontStyle: 'italic',
-                              fontWeight: 'normal',
-                              lineHeight: 'normal',
-                              marginBottom: '0.75rem'
-                            } as React.CSSProperties}>
+                            <p className={styles.sectionDescription}>
                               (Choose of one)
                             </p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            <div className={styles.optionsContainer}>
                               {['Seasonal Fruits', 'Flavored Natural Yoghurt', 'Mini sweets', 'Mini Viennoiseries'].map((item) => (
-                                <label key={item} style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '0.5rem',
-                                  cursor: 'pointer',
-                                  padding: '0.375rem 0.5rem',
-                                  borderRadius: '0',
-                                  transition: 'all 0.2s ease',
-                                  backgroundColor: isBrunchItemSelected('desserts', item) ? '#1A1A1A' : 'transparent',
-                                  border: isBrunchItemSelected('desserts', item) ? '1px solid #1A1A1A' : '1px solid transparent'
-                                }}>
+                                <label key={item} className={`${styles.optionLabel} ${isBrunchItemSelected('desserts', item) ? styles.optionLabelSelected : ''}`}>
                                   <input
                                     type="radio"
                                     name="desserts"
                                     checked={isBrunchItemSelected('desserts', item)}
                                     onChange={() => toggleBrunchSelection('desserts', item)}
-                                    style={{
-                                      width: '16px',
-                                      height: '16px',
-                                      accentColor: '#1A1A1A',
-                                      cursor: 'pointer',
-                                      flexShrink: 0
-                                    }}
+                                    className={styles.radioInput}
                                   />
-                                  <span style={{
-                                    fontSize: '15px',
-                                    color: isBrunchItemSelected('desserts', item) ? '#FFFFFF' : '#1A1A1A',
-                                    fontFamily: '"Sabon Next LT Pro"',
-                                    fontWeight: isBrunchItemSelected('desserts', item) ? '500' : '400',
-                                    lineHeight: '1.4',
-                                    flex: 1
-                                  }}>
+                                  <span className={`${styles.optionText} ${isBrunchItemSelected('desserts', item) ? styles.optionTextSelected : ''}`}>
                                     {item}
                                   </span>
                                 </label>
                               ))}
                             </div>
+                            
+                            {/* Quantity Selector */}
+                            <div className={styles.brunchQuantitySelector}>
+                              <button
+                                onClick={() => updateBrunchQuantity('desserts', brunchQuantities.desserts - 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                -
+                              </button>
+                              <span className={styles.brunchQuantityDisplay}>
+                                {brunchQuantities.desserts}
+                              </span>
+                              <button
+                                onClick={() => updateBrunchQuantity('desserts', brunchQuantities.desserts + 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                +
+                              </button>
+                            </div>
                           </div>
                           
-                          <div style={{ marginBottom: '1.25rem' }}>
-                            <h3 style={{
-                              color: '#000',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '17.6px',
-                              fontStyle: 'normal',
-                              fontWeight: '500',
-                              lineHeight: 'normal',
-                              marginBottom: '0.5rem'
-                            } as React.CSSProperties}>
+                          <div className={styles.leftColumn}>
+                            <h3 className={styles.sectionTitle}>
                               Drinks
                             </h3>
-                            <p style={{
-                              color: '#6b7280',
-                              fontFamily: '"Sabon Next LT Pro"',
-                              fontSize: '14px',
-                              fontStyle: 'italic',
-                              fontWeight: 'normal',
-                              lineHeight: 'normal',
-                              marginBottom: '0.75rem'
-                            } as React.CSSProperties}>
+                            <p className={styles.sectionDescription}>
                               (Choose of one)
                             </p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            <div className={styles.optionsContainer}>
                               {['Hot Beverages', 'Soft drinks', 'Fruit juices'].map((item) => (
-                                <label key={item} style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '0.5rem',
-                                  cursor: 'pointer',
-                                  padding: '0.375rem 0.5rem',
-                                  borderRadius: '0',
-                                  transition: 'all 0.2s ease',
-                                  backgroundColor: isBrunchItemSelected('drinks', item) ? '#1A1A1A' : 'transparent',
-                                  border: isBrunchItemSelected('drinks', item) ? '1px solid #1A1A1A' : '1px solid transparent'
-                                }}>
+                                <label key={item} className={`${styles.optionLabel} ${isBrunchItemSelected('drinks', item) ? styles.optionLabelSelected : ''}`}>
                                   <input
                                     type="radio"
                                     name="drinks"
                                     checked={isBrunchItemSelected('drinks', item)}
                                     onChange={() => toggleBrunchSelection('drinks', item)}
-                                    style={{
-                                      width: '16px',
-                                      height: '16px',
-                                      accentColor: '#1A1A1A',
-                                      cursor: 'pointer',
-                                      flexShrink: 0
-                                    }}
+                                    className={styles.radioInput}
                                   />
-                                  <span style={{
-                                    fontSize: '15px',
-                                    color: isBrunchItemSelected('drinks', item) ? '#FFFFFF' : '#1A1A1A',
-                              fontFamily: '"Sabon Next LT Pro"',
-                                    fontWeight: isBrunchItemSelected('drinks', item) ? '500' : '400',
-                                    lineHeight: '1.4',
-                                    flex: 1
-                                  }}>
+                                  <span className={`${styles.optionText} ${isBrunchItemSelected('drinks', item) ? styles.optionTextSelected : ''}`}>
                                     {item}
                                   </span>
                                 </label>
                               ))}
+                            </div>
+                            
+                            {/* Quantity Selector */}
+                            <div className={styles.brunchQuantitySelector}>
+                              <button
+                                onClick={() => updateBrunchQuantity('drinks', brunchQuantities.drinks - 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                -
+                              </button>
+                              <span className={styles.brunchQuantityDisplay}>
+                                {brunchQuantities.drinks}
+                              </span>
+                              <button
+                                onClick={() => updateBrunchQuantity('drinks', brunchQuantities.drinks + 1)}
+                                className={styles.brunchQuantityButton}
+                              >
+                                +
+                              </button>
                             </div>
                           </div>
                       </div>
                     </div>
                     
                     {/* Brunch Image and Add to Cart */}
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      height: '100%',
-                      gap: '1.5rem'
-                    }}>
-                      <div style={{
-                        width: '100%',
-                        height: '100%',
-                        maxHeight: '300px',
-                        borderRadius: '0',
-                        overflow: 'hidden',
-                        boxShadow: '0 8px 20px rgba(0,0,0,0.15)'
-                      }}>
+                    <div className={styles.brunchImageColumn}>
+                      <div className={styles.brunchImageWrapper}>
                         <Image
                           src="/images/brunch.jpg"
                           alt="Brunch Menu"
                           width={500}
                           height={400}
-                        style={{
-                          width: '100%',
+                          style={{
+                            width: '100%',
                             height: '100%',
                             objectFit: 'cover'
                           }}
                         />
                       </div>
                       
-                      
                       {/* Add to Cart Button */}
                       <button
                         onClick={addBrunchToCart}
                         disabled={getTotalSelectedItems() === 0}
-                        style={{
-                          backgroundColor: getTotalSelectedItems() > 0 ? '#1A1A1A' : '#D1D5DB',
-                          color: getTotalSelectedItems() > 0 ? '#FFFFFF' : '#9CA3AF',
-                          border: 'none',
-                          borderRadius: '0',
-                          padding: '0.75rem 1.5rem',
-                          fontSize: '15px',
-                          fontFamily: '"Sabon Next LT Pro"',
-                          fontWeight: '500',
-                          cursor: getTotalSelectedItems() > 0 ? 'pointer' : 'not-allowed',
-                          transition: 'all 0.3s ease',
-                          boxShadow: getTotalSelectedItems() > 0 ? '0 2px 8px rgba(26, 26, 26, 0.25)' : 'none',
-                          width: '100%',
-                          letterSpacing: '0.025em'
-                        }}
-                        onMouseEnter={(e) => {
-                          if (getTotalSelectedItems() > 0) {
-                            e.currentTarget.style.backgroundColor = '#000000';
-                            e.currentTarget.style.transform = 'translateY(-1px)';
-                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(26, 26, 26, 0.35)';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (getTotalSelectedItems() > 0) {
-                            e.currentTarget.style.backgroundColor = '#1A1A1A';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(26, 26, 26, 0.25)';
-                          }
-                        }}
+                        className={styles.brunchAddButton}
                       >
                         {getTotalSelectedItems() > 0 ? 'Add Brunch to Cart' : 'Select Items First'}
                       </button>
@@ -915,37 +923,10 @@ export default function CateringPage() {
                   }}></div>
                   
                   {/* Lunch Options Grid */}
-                  <div className="lunch-options-grid" style={{
-                    display: 'grid',
-                    gridTemplateColumns: isMobile ? (window.innerWidth < 640 ? '1fr' : 'repeat(2, 1fr)') : 'repeat(5, 1fr)',
-                    gap: '1.5rem',
-                    maxWidth: '1400px',
-                    margin: '0 auto',
-                    padding: '0 1rem'
-                  }}>
+                  <div className={styles.lunchOptionsGrid}>
                     
                     {/* Option I */}
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      backgroundColor: 'transparent',
-                      borderRadius: '12px',
-                      padding: '1.5rem',
-                      boxShadow: 'none',
-                      border: 'none',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      cursor: 'pointer',
-                      height: 'auto',
-                      minHeight: '500px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-                    }}>
+                    <div className={styles.lunchOptionCard}>
                       
                       {/* Header */}
                       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
@@ -1199,27 +1180,7 @@ export default function CateringPage() {
                     </div>
 
                     {/* Option II */}
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      backgroundColor: 'transparent',
-                      borderRadius: '12px',
-                      padding: '1.5rem',
-                      boxShadow: 'none',
-                      border: 'none',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      cursor: 'pointer',
-                      height: 'auto',
-                      minHeight: '500px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-                    }}>
+                    <div className={styles.lunchOptionCard}>
                       
                       {/* Header */}
                       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
@@ -1394,27 +1355,7 @@ export default function CateringPage() {
                     </div>
 
                     {/* Option III */}
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      backgroundColor: 'transparent',
-                      borderRadius: '12px',
-                      padding: '1.5rem',
-                      boxShadow: 'none',
-                      border: 'none',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      cursor: 'pointer',
-                      height: 'auto',
-                      minHeight: '500px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-                    }}>
+                    <div className={styles.lunchOptionCard}>
                       
                       {/* Header */}
                       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
@@ -1650,27 +1591,7 @@ export default function CateringPage() {
                     </div>
 
                     {/* Option IV */}
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      backgroundColor: 'transparent',
-                      borderRadius: '12px',
-                      padding: '1.5rem',
-                      boxShadow: 'none',
-                      border: 'none',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      cursor: 'pointer',
-                      height: 'auto',
-                      minHeight: '500px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-                    }}>
+                    <div className={styles.lunchOptionCard}>
                       
                       {/* Header */}
                       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
@@ -1866,27 +1787,7 @@ export default function CateringPage() {
                     </div>
 
                     {/* Option V */}
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      backgroundColor: 'transparent',
-                      borderRadius: '12px',
-                      padding: '1.5rem',
-                      boxShadow: 'none',
-                      border: 'none',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      cursor: 'pointer',
-                      height: 'auto',
-                      minHeight: '500px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-                    }}>
+                    <div className={styles.lunchOptionCard}>
                       
                       {/* Header */}
                       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
@@ -2100,86 +2001,35 @@ export default function CateringPage() {
                     </div>
                   </div>
                   
-                  {/* Lunch Description */}
-                  <div style={{
-                    textAlign: 'center',
-                    marginTop: '3rem',
-                    maxWidth: '800px',
-                    margin: '3rem auto 0'
-                  }}>
-                    <h3 style={{
-                      color: '#000',
-                      fontFamily: '"Sabon Next LT Pro"',
-                      fontSize: '20px',
-                      fontWeight: 'bold',
-                      marginBottom: '1rem'
-                    }}>
-                      Lunch Menu from PAUL
-                    </h3>
-                    <p style={{
-                      color: '#000',
-                      fontFamily: '"Sabon Next LT Pro"',
-                      fontSize: '18px',
-                      lineHeight: '1.6',
-                      textAlign: 'center'
-                    }}>
-                      At PAUL, we take pride in offering exceptional catering services that bring the delightful flavors of our restaurant directly to your event. Whether it&apos;s a corporate gathering, wedding, or a casual get-together, our team is dedicated to providing a seamless experience tailored to your needs. Our menu features a variety of freshly prepared dishes, showcasing the best of French cuisine. With a focus on quality ingredients and presentation, we ensure that every bite is a memorable one. Let us help you create an unforgettable dining experience for your guests!
-                    </p>
+                  {/* Lunch Menu Image and Description */}
+                  <div className={styles.lunchMenuImageSection}>
+                    <div className={styles.lunchMenuImage}>
+                      <Image
+                        src="/images/Lunch Menu.png"
+                        alt="Lunch Menu"
+                        width={1200}
+                        height={400}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </div>
+                    
+                    <div className={styles.lunchMenuDescription}>
+                      <h3>Lunch Menu from PAUL</h3>
+                      <p>
+                        At PAUL, we take pride in offering exceptional catering services that bring the delightful flavors of our restaurant directly to your event. Whether it&apos;s a corporate gathering, wedding, or a casual get-together, our team is dedicated to providing a seamless experience tailored to your needs. Our menu features a variety of freshly prepared dishes, showcasing the best of French cuisine. With a focus on quality ingredients and presentation, we ensure that every bite is a memorable one. Let us help you create an unforgettable dining experience for your guests!
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             )}
-            
-            {/* Sort By Button - Only show when category is selected */}
-            {selectedCategory && (
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginBottom: '1.5rem',
-                padding: '0 20px',
-                maxWidth: '1140px',
-                margin: '0 auto 1.5rem auto'
-              }}>
-                <button 
-                  onClick={() => setShowSortMenu(!showSortMenu)}
-                  data-sort-menu
-                  style={{
-                    backgroundColor: '#1A1A1A',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '20px',
-                    padding: '0.5rem 1.25rem',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.375rem',
-                    fontFamily: '"Sabon Next LT Pro"',
-                    letterSpacing: '0.05em',
-                    transition: 'all 0.2s ease',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                    WebkitTapHighlightColor: 'transparent',
-                    touchAction: 'manipulation',
-                    minHeight: '36px'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#000000';
-                    e.currentTarget.style.boxShadow = '0 4px 10px rgba(0,0,0,0.25)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#1A1A1A';
-                    e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
-                  }}
-                >
-                  SORT BY
-                  <span style={{ fontSize: '16px', fontWeight: 'bold', lineHeight: '1' }}>...</span>
-                </button>
-              </div>
-            )}
 
-            {/* Product Grid - Only show when category is selected */}
-            {selectedCategory && (
+            {/* Product Grid - Only show when category is selected and not Brunch Menu or Lunch Menu */}
+            {selectedCategory && selectedCategory !== 'Brunch Menu' && selectedCategory !== 'Lunch Menu' && (
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
@@ -2318,8 +2168,8 @@ export default function CateringPage() {
             </div>
             )}
 
-            {/* View More Button - Only show when category is selected */}
-            {selectedCategory && (
+            {/* View More Button - Only show when category is selected and not Brunch Menu or Lunch Menu */}
+            {selectedCategory && selectedCategory !== 'Brunch Menu' && selectedCategory !== 'Lunch Menu' && (
             <div style={{
               display: 'flex',
               justifyContent: 'center',
@@ -2355,6 +2205,16 @@ export default function CateringPage() {
             )}
           </div>
         </div>
+
+        {/* Catering from PAUL Section - Hide for Brunch Menu and Lunch Menu as they have their own descriptions */}
+        {selectedCategory !== 'Brunch Menu' && selectedCategory !== 'Lunch Menu' && (
+        <div className={styles.cateringDescription}>
+          <h2>Catering from PAUL</h2>
+          <p>
+            At PAUL, we take pride in offering exceptional catering services that bring the delightful flavors of our restaurant directly to your event. Whether it's a corporate gathering, wedding, or a casual get-together, our team is dedicated to providing a seamless experience tailored to your needs. Our menu features a variety of freshly prepared dishes, showcasing the best of French cuisine. With a focus on quality ingredients and presentation, we ensure that every bite is a memorable one. Let us help you create an unforgettable dining experience for your guests!
+          </p>
+        </div>
+        )}
 
         {/* Features Section */}
         <FeaturesSection />

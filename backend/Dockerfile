@@ -40,17 +40,11 @@ RUN chown -R www-data:www-data /var/www/html \
 # Копируем конфигурацию Apache
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Генерируем ключ приложения и настраиваем Laravel
-RUN php artisan key:generate --force \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# Создаем .env файл если его нет
+RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
 # Создаем базу данных SQLite если её нет
 RUN touch database/database.sqlite
-
-# Выполняем миграции
-RUN php artisan migrate --force
 
 # Открываем порт 80
 EXPOSE 80

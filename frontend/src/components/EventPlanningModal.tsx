@@ -27,7 +27,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
   const { showNotification } = useNotification();
   
   const [formData, setFormData] = useState<EventFormData>({
-    eventDate: '',
+    eventDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
     location: '',
     budget: '',
     guestCount: '',
@@ -65,7 +65,6 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
 
       if (result.success) {
         // Show custom success notification via parent component
-        console.log('Calling onSuccess callback');
         if (onSuccess) {
           onSuccess();
         }
@@ -75,7 +74,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
         
         // Reset form
         setFormData({
-          eventDate: '',
+          eventDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
           location: '',
           budget: '',
           guestCount: '',
@@ -144,19 +143,17 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
           <form onSubmit={handleSubmit} className={styles.form}>
             {/* First row - Date and Location (2 fields side by side) */}
             <div className={styles.gridRow}>
-              {/* Event date with label */}
-              <div className={styles.inputWrapper} data-placeholder="Date of the event*">
-                <input
-                  type="date"
-                  name="eventDate"
-                  value={formData.eventDate}
-                  onChange={handleInputChange}
-                  required
-                  className={styles.input}
-                />
-              </div>
+              {/* Event date */}
+              <input
+                type="date"
+                name="eventDate"
+                value={formData.eventDate}
+                onChange={handleInputChange}
+                required
+                className={styles.input}
+              />
 
-              {/* Место проведения */}
+              {/* Location */}
               <input
                 type="text"
                 name="location"
@@ -168,7 +165,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               />
             </div>
 
-            {/* Вторая строка - Бюджет (1 поле на всю ширину) */}
+            {/* Second row - Budget (1 field full width) */}
             <input
               type="number"
               name="budget"
@@ -181,7 +178,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               className={styles.inputLarge}
             />
 
-            {/* Третья строка - Количество гостей (1 поле на всю ширину) */}
+            {/* Third row - Number of guests (1 field full width) */}
             <input
               type="number"
               name="guestCount"
@@ -193,7 +190,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               className={styles.inputLarge}
             />
 
-            {/* Четвертая строка - Детали запроса (1 поле на всю ширину) */}
+            {/* Fourth row - Request details (1 field full width) */}
             <textarea
               name="details"
               value={formData.details}
@@ -204,7 +201,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               className={styles.textarea}
             />
 
-            {/* Пятая строка - Email и Телефон (2 поля рядом) */}
+            {/* Fifth row - Email and Phone (2 fields side by side) */}
             <div className={styles.gridRow}>
               {/* Email */}
               <input
@@ -217,7 +214,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 className={styles.input}
               />
 
-              {/* Телефон */}
+              {/* Phone */}
               <input
                 type="tel"
                 name="phone"
@@ -229,7 +226,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               />
             </div>
 
-            {/* Кнопка отправки */}
+            {/* Submit button */}
             <div className={styles.buttonContainer}>
               <button
                 type="submit"
@@ -241,7 +238,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               </button>
             </div>
 
-            {/* Примечание о конфиденциальности */}
+            {/* Privacy notice */}
             <p className={styles.privacyNotice}>
               PAUL respects your privacy and is committed to protecting your personal data in line with applicable data protection laws.
             </p>

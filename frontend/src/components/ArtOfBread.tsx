@@ -18,7 +18,6 @@ const ArtOfBread: React.FC = () => {
     <section className={`art-of-bread ${isMobile ? 'art-of-bread-mobile' : ''}`}>
       <div className="art-container">
         {/* Верхняя часть - изображение с наложенным текстом */}
-        <div className="art-image-section">
           <div className="art-image-wrapper">
             <Image
               src="/images/artofbread.jpg"
@@ -27,15 +26,8 @@ const ArtOfBread: React.FC = () => {
               className="art-image"
               priority
             />
-            <div className="art-overlay-text">
-              <span className="art-text-small">The</span>
-              <span className="art-text-large">Art</span>
-              <span className="art-text-small">of</span>
-              <span className="art-text-medium">making</span>
-              <span className="art-text-large">Bread</span>
-            </div>
           </div>
-        </div>
+
 
         {/* Нижняя часть - заголовок, описание и кнопка */}
         <div className="art-content-section">

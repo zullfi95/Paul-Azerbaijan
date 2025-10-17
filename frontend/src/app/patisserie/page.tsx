@@ -199,7 +199,7 @@ export default function PatisseriePage() {
       name: item.name,
       description: item.description,
       price: item.price,
-      images: item.image ? [item.image] : [],
+      image: item.image,
       category: item.category,
       available: item.available,
       isSet: item.isSet,
@@ -249,7 +249,7 @@ export default function PatisseriePage() {
           <div className="container-paul">
             <div className={styles.pageHeaderContent}>
               <h1 className={styles.pageTitle}>
-                Our Patisserie
+                Patisserie
               </h1>
               <button className={styles.filterButton}
 >

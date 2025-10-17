@@ -35,6 +35,7 @@
   max-height: 78vh; 
   background: rgb(26, 26, 26);
   border: 1px solid var(--paul-border);
+  border-radius: 10px;
   z-index: 50;
   animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   backdrop-filter: blur(20px);
@@ -88,8 +89,6 @@
 }
 
 .closeButton:hover {
-  background-color: rgba(220, 53, 69, 0.8);
-  border-color: #dc3545;
   transform: scale(1.1) rotate(90deg);
 }
 
@@ -134,7 +133,7 @@
 }
 
 .emptyCartTitle {
-  font-family: 'Sabon Next LT Pro', serif;
+  font-family: 'Sabon Next LT Pro';
   font-size: 1.105rem;
   font-weight: 600;
   color: #ffffff;
@@ -144,8 +143,8 @@
 }
 
 .emptyCartText {
-  font-family: 'Parisine', sans-serif;
-  font-size: 0.8075rem; /* Reduced by 15% from 0.95rem */
+  font-family: 'Parisine';
+  font-size: 0.8505rem; /* Reduced by 15% from 0.95rem */
   color: rgba(255, 255, 255, 0.8); /* Changed to semi-transparent white */
   margin: 0 0 1.7rem 0; /* Reduced by 15% from 2rem */
   max-width: 272px; /* Reduced by 15% from 320px */
@@ -155,12 +154,12 @@
 }
 
 .emptyCartButton {
-  padding: 0.74375rem 1.7rem; /* Reduced by 15% from 0.875rem 2rem */
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Changed to white gradient */
-  color: rgb(26, 26, 26); /* Changed to black */
+  padding: 0.74375rem 1.7rem; 
+  background: #FFFAE6;
+  color: rgb(26, 26, 26); 
   border: none;
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: 0.8075rem; /* Reduced by 15% from 0.95rem */
+  font-size: 0.8075rem; 
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -171,8 +170,7 @@
 }
 
 .emptyCartButton:hover {
-  background: linear-gradient(135deg, var(--paul-gold) 0%, #f4d03f 100%);
-  color: var(--paul-black);
+  background: #FFFAE6;
   transform: translateY(-2px);
 }
 
@@ -384,7 +382,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
 }
 
@@ -400,7 +398,7 @@
 .totalLabel {
   font-family: 'Sabon Next LT Pro';
   font-size: 1.02rem; /* Reduced by 15% from 1.2rem */
-  font-weight: 600;
+  font-weight: 500;
   color: #FFFAE6; /* Changed to white */
   margin: 0;
   position: relative;
@@ -410,7 +408,7 @@
 .totalAmount {
   font-family: 'Parisine Pro Gris';
   font-size: 1.275rem; /* Reduced by 15% from 1.5rem */
-  font-weight: 700;
+  font-weight: 500;
   color: #FFFAE6;
   margin: 0;
   position: relative;
@@ -422,15 +420,16 @@
   gap: 0.85rem; /* Reduced by 15% from 1rem */
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 1.275rem;
 }
 
 .buttonSecondary {
-  padding: 0.85rem 1.7rem; /* Reduced by 15% from 1rem 2rem */
+  padding: 0.6rem 1.2rem; /* Reduced padding */
   background: #FFFAE6; /* Changed to dark gray gradient */
   border: 2px solid rgba(255, 255, 255, 0.2); /* Changed to semi-transparent white border */
-  border-radius: 10px;
+  border-radius: 8px;
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: 0.6075rem; /* Reduced by 15% from 0.95rem */
+  font-size: 0.55rem; /* Reduced font size */
   font-weight: 400;
   color: rgb(26, 26, 26); /* Changed to white */
   cursor: pointer;
@@ -439,24 +438,22 @@
   overflow: hidden;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  max-width: 200px;
+  max-width: 180px;
 
 }
 
 .buttonSecondary:hover {
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Changed to white gradient */
-  border-color: #ffffff; /* Changed to white */
   color: rgb(26, 26, 26); /* Changed to black */
   transform: translateY(-2px);
 }
 
 .buttonPrimary {
-  padding: 0.85rem 1.7rem; /* Reduced by 15% from 1rem 2rem */
+  padding: 0.6rem 1.2rem; /* Reduced padding */
   background: transparent;
   border: 1px solid #FFFAE6;
-  border-radius: 10px;
+  border-radius: 8px;
   font-family: 'Sabon Next LT Pro', serif;
-  font-size: 0.9075rem; /* Reduced by 15% from 0.95rem */
+  font-size: 0.8rem; /* Reduced font size */
   font-weight: 400;
   color: #FFFAE6;
   cursor: pointer;
@@ -465,7 +462,7 @@
   overflow: hidden;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  max-width: 200px;
+  max-width: 180px;
 }
 
 .buttonPrimary:hover {

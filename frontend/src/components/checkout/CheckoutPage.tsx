@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import FeedbackModal from '@/components/FeedbackModal';
 import { getApiUrl, API_CONFIG } from '@/config/api';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -294,14 +295,16 @@ export default function CheckoutPage() {
       <div className={styles.contentWrapper}>
         {/* Breadcrumbs */}
         <div className={styles.breadcrumbsContainer}>
-          <Breadcrumbs 
-            items={[
-              { label: 'Home', href: '/' },
-              { label: 'Catering Menu', href: '/catering' },
-              { label: 'Shopping Cart', href: '/cart' },
-              { label: 'Checkout', isActive: true }
-            ]}
-          />
+          <div className={styles.breadcrumbsWrapper}>
+            <Breadcrumbs 
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'Catering Menu', href: '/catering' },
+                { label: 'Shopping Cart', href: '/cart' },
+                { label: 'Checkout', isActive: true }
+              ]}
+            />
+          </div>
         </div>
 
         {/* Main Title */}
@@ -422,6 +425,9 @@ export default function CheckoutPage() {
       )}
 
       <Footer />
+      
+      {/* Feedback Modal Component */}
+      <FeedbackModal />
     </div>
   );
 }

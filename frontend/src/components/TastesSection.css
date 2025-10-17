@@ -121,15 +121,18 @@
 
 /* Кнопка */
 .tastes-button {
-  background: #000;
-  color: #F5E9D6;
-  border: none;
-  padding: 20px 50px;
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: 14px;
+  color: #FEF4E6;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 2.5rem;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1rem;
+  font-weight: 400;
+  transition: all 0.3s;
   position: relative;
   overflow: hidden;
 }

@@ -47,6 +47,7 @@ export default function RegisterPage() {
     setLoading(true);
     setError(null);
 
+
     // Validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
@@ -60,6 +61,7 @@ export default function RegisterPage() {
       return;
     }
 
+    
     const { ok } = await register(
       formData.email, 
       formData.password, 
@@ -67,6 +69,7 @@ export default function RegisterPage() {
       formData.surname,
       formData.phone
     );
+    
     
     setLoading(false);
     if (ok) {

@@ -8,6 +8,7 @@ import { Search, MapPin, ShoppingBag, FileText, Menu, X, Globe } from 'lucide-re
 import CartModal from './CartModal';
 import EventPlanningModal from './EventPlanningModal';
 import EventSuccessNotification from './EventSuccessNotification';
+import SearchDropdown from './SearchDropdown';
 import { useCart } from '@/contexts/CartContext';
 import { useCartModal } from '@/contexts/CartModalContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -25,6 +26,7 @@ const Header: React.FC = React.memo(function Header() {
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [showEventSuccessNotification, setShowEventSuccessNotification] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMenuClosing, setIsMenuClosing] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('en');
@@ -64,7 +66,6 @@ const Header: React.FC = React.memo(function Header() {
       // TODO: Implement newsletter subscription endpoint
       // Temporary notification
       alert('Newsletter subscription is coming soon! Thank you for your interest.');
-      console.log('Subscribed with email:', email);
       setEmail('');
       closeMobileMenu();
     }
@@ -75,6 +76,7 @@ const Header: React.FC = React.memo(function Header() {
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
       setIsSearchExpanded(false);
+      setIsSearchDropdownOpen(false);
       setSearchQuery('');
     }
   }, [searchQuery, router]);
@@ -83,7 +85,7 @@ const Header: React.FC = React.memo(function Header() {
     if (isMobile) {
       setIsSearchExpanded(true);
     } else {
-      setIsSearchExpanded(true);
+      setIsSearchDropdownOpen(true);
     }
   }, [isMobile]);
 
@@ -98,6 +100,7 @@ const Header: React.FC = React.memo(function Header() {
 
   const handleSearchClose = useCallback(() => {
     setIsSearchExpanded(false);
+    setIsSearchDropdownOpen(false);
     setSearchQuery('');
   }, []);
 
@@ -116,7 +119,6 @@ const Header: React.FC = React.memo(function Header() {
         setIsEventModalOpen(true);
         break;
       default:
-        console.log('Действие:', action);
     }
   }, [router]);
 
@@ -179,7 +181,7 @@ const Header: React.FC = React.memo(function Header() {
 
             {/* Search - Desktop */}
             {!isMobile && (
-              <div className="search-container">
+              <div className="search-container" style={{ position: 'relative' }}>
                 <form onSubmit={handleSearch} suppressHydrationWarning>
                   <input
                     type="text"
@@ -187,10 +189,16 @@ const Header: React.FC = React.memo(function Header() {
                     className="search-input"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsSearchDropdownOpen(true)}
                     suppressHydrationWarning
                   />
                   <Search className="search-icon" size={18} />
                 </form>
+                <SearchDropdown
+                  isOpen={isSearchDropdownOpen}
+                  onClose={() => setIsSearchDropdownOpen(false)}
+                  isMobile={false}
+                />
               </div>
             )}
 
@@ -506,39 +514,11 @@ const Header: React.FC = React.memo(function Header() {
 
         {/* Mobile Search Modal */}
         {isMobile && isSearchExpanded && (
-          <div className="mobile-search-modal" onClick={handleSearchClose}>
-            <div className="mobile-search-content" onClick={(e) => e.stopPropagation()}>
-              <div className="mobile-search-header">
-                <h3>Search</h3>
-                <button 
-                  className="mobile-search-close"
-                  onClick={handleSearchClose}
-                  aria-label="Close search"
-                  onTouchStart={() => {}} // iOS Safari touch fix
-                  type="button"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-              <form onSubmit={handleSearch} className="mobile-search-form">
-                <input
-                  type="text"
-                  placeholder="search for product"
-                  className="mobile-search-input"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  autoFocus
-                />
-                <button 
-                  type="submit" 
-                  className="mobile-search-button"
-                  onTouchStart={() => {}} // iOS Safari touch fix
-                >
-                  <Search size={20} />
-                </button>
-              </form>
-            </div>
-          </div>
+          <SearchDropdown
+            isOpen={isSearchExpanded}
+            onClose={handleSearchClose}
+            isMobile={true}
+          />
         )}
     </div>
       

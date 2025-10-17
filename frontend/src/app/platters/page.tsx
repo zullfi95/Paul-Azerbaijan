@@ -211,7 +211,7 @@ export default function PlattersPage() {
       name: item.name,
       description: item.description,
       price: item.price,
-      images: item.image ? [item.image] : [],
+      image: item.image,
       category: item.category,
       available: item.available,
       isSet: item.isSet,

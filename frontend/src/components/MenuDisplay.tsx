@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { getApiUrl } from '@/config/api';
 import styles from './MenuDisplay.module.css';
 
@@ -38,6 +39,7 @@ interface MenuDisplayProps {
 }
 
 export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
+  const router = useRouter();
   const [menu, setMenu] = useState<MenuCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +67,7 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
         setError(data.message || 'Failed to load menu');
       }
     } catch (err) {
-      setError('Failed to connect to server. Please make sure the backend is running on port 8000.');
+      setError('Failed to connect to server. Please check your connection.');
       console.error('Menu fetch error:', err);
     } finally {
       setLoading(false);
@@ -133,9 +135,9 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
   return (
     <div className={styles.container}>
       {/* Statistics */}
-      {processedMenu.length > 0 && (
+      {menu.length > 0 && (
         <div className={styles.stats}>
-          <strong>Menu Statistics:</strong> {processedMenu.length} categories, {processedMenu.reduce((sum, cat) => sum + (cat.activeMenuItems?.length || 0), 0)} total items
+          <strong>Menu Statistics:</strong> {menu.length} categories, {menu.reduce((sum: number, cat: MenuCategory) => sum + (cat.activeMenuItems?.length || 0), 0)} total items
         </div>
       )}
 
@@ -157,7 +159,7 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
           >
             All Categories
           </button>
-          {processedMenu.filter(cat => (cat.activeMenuItems || []).length > 0).map(category => (
+          {menu.filter((cat: MenuCategory) => (cat.activeMenuItems || []).length > 0).map((category: MenuCategory) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.name)}
@@ -219,7 +221,6 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
                 
                 // Отладочная информация для категории
                 if (items.length > 0) {
-                  console.log(`Category ${category.name}: ${items.length} items, ${filteredItems.length} after filter`);
                 }
                 
                 if (filteredItems.length === 0) {
@@ -244,8 +245,10 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
                     borderRadius: '12px',
                     overflow: 'hidden',
                     backgroundColor: 'white',
-                    transition: 'transform 0.3s ease'
+                    transition: 'transform 0.3s ease',
+                    cursor: 'pointer'
                   }}
+                  onClick={() => router.push(`/product/${item.id}`)}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)';
                   }}
@@ -316,6 +319,10 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
                       
                       <button
                         disabled={!item.is_available}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Add to cart logic here
+                        }}
                         style={{
                           backgroundColor: item.is_available ? '#EBDCC8' : '#e5e7eb',
                           color: item.is_available ? '#1A1A1A' : '#9ca3af',

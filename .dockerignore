@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Old deployment scripts
+deploy.sh
+quick-update.sh
+update_design_files.sh
+update-to-commit.sh
+
+# Old nginx config
+nginx-paul.conf
+
+# Node modules (should be in frontend/)
+node_modules/
+package-lock.json
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

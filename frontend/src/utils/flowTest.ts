@@ -123,30 +123,22 @@ export const testApiCalls = {
 
 // Функция для полного теста потока
 export const testCompleteFlow = () => {
-  console.log('🧪 Начинаем тест полного потока кейтеринга...');
   
   // 1. Тест корзины
-  console.log('1️⃣ Тестируем операции с корзиной...');
   let cart: CartItem[] = [];
   
   // Добавляем товар
   cart = testCartOperations.addItem(cart, mockCartItem);
-  console.log('✅ Товар добавлен в корзину:', cart);
   
   // Проверяем общую стоимость
   const totalPrice = testCartOperations.getTotalPrice(cart);
   const totalItems = testCartOperations.getTotalItems(cart);
-  console.log(`✅ Общая стоимость: ${totalPrice}, Количество товаров: ${totalItems}`);
   
   // 2. Тест навигации
-  console.log('2️⃣ Тестируем навигацию...');
   const cartPath = testNavigation.goToCart();
   const orderPath = testNavigation.goToOrder();
-  console.log(`✅ Путь к корзине: ${cartPath}`);
-  console.log(`✅ Путь к оформлению: ${orderPath}`);
   
   // 3. Тест валидации формы
-  console.log('3️⃣ Тестируем валидацию формы...');
   const validFormData = {
     firstName: 'John',
     lastName: 'Doe',
@@ -158,17 +150,13 @@ export const testCompleteFlow = () => {
   };
   
   const validation = testFormValidation.validateOrderForm(validFormData);
-  console.log('✅ Валидация формы:', validation);
   
   // 4. Тест API
-  console.log('4️⃣ Тестируем API вызов...');
   testApiCalls.createOrder(mockOrderData).then(response => {
     response.json().then(data => {
-      console.log('✅ API ответ:', data);
     });
   });
   
-  console.log('🎉 Все тесты пройдены успешно!');
   
   return {
     cart,

@@ -49,10 +49,12 @@
 }
 
 .pageTitle {
-  font-size: 1.5rem;
-  font-family: 'Sabon Next LT Pro', 'Playfair Display', serif;
   color: #1A1A1A;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1.5rem;
+  font-weight: 400;
   margin: 0;
+  line-height: 1.2;
 }
 
 /* Product Grid */
@@ -75,11 +77,11 @@
 .viewMoreButton {
   padding: 1rem 2.5rem;
   background-color: #000000;
-  color: #ffffff;
+  color: #FEF4E6;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 400;
   font-family: "Sabon Next LT Pro", serif;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -103,7 +105,6 @@
   transition: all 0.3s ease;
   position: relative;
   border: none;
-  box-shadow: none;
 }
 
 .productCard:hover {
@@ -144,7 +145,6 @@
   cursor: pointer;
   font-size: 1rem;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   z-index: 10;
 }
 
@@ -152,7 +152,6 @@
   background: #F9FAFB;
   border-color: #D1D5DB;
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .productInfo {

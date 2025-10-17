@@ -232,7 +232,7 @@ export default function CakesPage() {
       name: cake.name,
       description: cake.description,
       price: cake.price,
-      images: cake.image ? [cake.image] : [],
+      image: cake.image,
       category: cake.category,
       available: cake.available,
       isSet: cake.isSet,
@@ -282,7 +282,8 @@ export default function CakesPage() {
         <div className={styles.pageHeader}>
           <div className="container-paul">
             <div className={styles.pageHeaderContent}>
-
+              <h1 className={styles.pageTitle}>Cakes & Pies</h1>
+              
               <button className={styles.filterButton}>
                 Filter
                 <span className={styles.filterButtonIcon}>⋯</span>

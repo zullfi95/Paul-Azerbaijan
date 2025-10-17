@@ -24,16 +24,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
-    console.log('🔍 Fetching current user via token...');
 
     const token = getToken();
     const userData = localStorage.getItem('user');
 
-    console.log('🔑 Auth token present:', !!token);
-    console.log('👤 User data present:', !!userData);
 
     if (!token) {
-      console.log('❌ No auth token found');
       setUser(null);
       return;
     }
@@ -41,7 +37,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (userData) {
       try {
         const parsedUser = JSON.parse(userData);
-        console.log('👤 Parsed user data:', parsedUser);
         setUser(parsedUser);
       } catch (e) {
         console.error('❌ Error parsing user data:', e);
@@ -50,7 +45,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     try {
       const url = getApiUrl('user');
-      console.log('🌐 Making request to:', url);
 
       const response = await fetch(url, {
         headers: {
@@ -59,12 +53,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         },
       });
 
-      console.log('📡 Response status:', response.status, response.statusText);
 
       if (!response.ok) {
         // При любой ошибке аутентификации - logout
         if (response.status === 401 || response.status === 403) {
-          console.log('❌ Authentication failed, logging out');
           setUser(null);
           localStorage.removeItem('user');
           removeToken();
@@ -76,17 +68,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 // Токен валиден, обновляем данные пользователя
         try {
           const userData = await response.json();
-          console.log('✅ User data received:', userData);
-          console.log('✅ User data structure:', {
-            success: userData.success,
-            hasData: !!userData.data,
-            userInData: userData.data?.user,
-            userType: userData.data?.user?.user_type,
-            staffRole: userData.data?.user?.staff_role
-          });
 
           if (userData.success && userData.data) {
-            console.log('✅ Setting user data:', userData.data.user);
             setUser(userData.data.user);
             localStorage.setItem('user', JSON.stringify(userData.data.user));
           } else {
@@ -139,17 +122,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return false;
       }
 
-      console.log('🔄 Updating user data:', userData);
 
       const response = await makeApiRequest('/user', {
         method: 'PUT',
         body: JSON.stringify(userData),
       });
 
-      console.log('📡 Update user response:', {
-        success: response.success,
-        message: response.message,
-      });
 
       if (!response.success) {
         console.error('❌ Update user failed - Response message:', response.message);
@@ -172,22 +150,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [user]);
 
   useEffect(() => {
-    console.log('🚀 AuthContext: Initializing...');
 
     // При token-аутентификации проверяем наличие токена и валидность
-    console.log('🔄 AuthContext: Checking token with backend...');
     fetchUser().finally(() => setIsLoading(false));
   }, [fetchUser]);
 
   const login = useCallback(async (email: string, password: string) => {
     try {
       const url = getApiUrl('login');
-      console.log('!!! CRITICAL DEBUG: Attempting to fetch login URL:', url);
-      console.log('🔐 Login attempt:', { 
-        email, 
-        url,
-        baseUrl: API_CONFIG.BASE_URL
-      });
       
       // CSRF отключен для API, но оставляем cookie для совместимости
       // const baseUrl = API_CONFIG.BASE_URL;
@@ -201,11 +171,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         body: JSON.stringify({ email, password }),
       });
 
-      console.log('📡 Login response:', {
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries())
-      });
 
       if (!response.ok) {
         const responseText = await response.text();
@@ -221,7 +186,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       const responseText = await response.text();
-      console.log('📄 Login response body:', responseText);
 
       let data;
       try {
@@ -234,17 +198,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (data.success && data.data) {
         // Сохраняем токен в localStorage
         const token = data.data.token;
-        console.log('💾 Saving auth token:', !!token);
-        console.log('💾 Login response data:', data.data);
-        console.log('💾 User data:', data.data.user);
         setToken(token);
 
         // Сохраняем пользователя
         setUser(data.data.user);
         localStorage.setItem('user', JSON.stringify(data.data.user));
-        console.log('✅ Login successful, user:', data.data.user.name);
-        console.log('✅ User type:', data.data.user.user_type);
-        console.log('✅ Staff role:', data.data.user.staff_role);
         return { ok: true, user: data.data.user };
       } else {
         console.warn('⚠️ Unexpected login response format:', data);
@@ -259,14 +217,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const register = useCallback(async (email: string, password: string, name: string, surname: string, phone: string) => {
     try {
       const url = getApiUrl('register');
-      console.log('🔐 Register attempt:', { 
+      const requestData = { 
         email, 
-        name,
-        surname,
-        phone,
-        url,
-        baseUrl: API_CONFIG.BASE_URL
-      });
+        password, 
+        name, 
+        surname, 
+        phone 
+      };
+      
+      
       
       const response = await fetch(url, {
         method: 'POST',
@@ -274,20 +233,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: JSON.stringify({ 
-          email, 
-          password, 
-          name, 
-          surname, 
-          phone 
-        }),
+        body: JSON.stringify(requestData),
       });
 
-      console.log('📡 Register response:', {
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries())
-      });
 
       if (!response.ok) {
         const responseText = await response.text();
@@ -303,7 +251,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       const responseText = await response.text();
-      console.log('📄 Register response body:', responseText);
 
       let data;
       try {
@@ -316,16 +263,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (data.success && data.data) {
         // Сохраняем токен в localStorage
         const token = data.data.token;
-        console.log('💾 Saving auth token:', !!token);
-        console.log('💾 Register response data:', data.data);
-        console.log('💾 User data:', data.data.user);
         setToken(token);
 
         // Сохраняем пользователя
         setUser(data.data.user);
         localStorage.setItem('user', JSON.stringify(data.data.user));
-        console.log('✅ Register successful, user:', data.data.user.name);
-        console.log('✅ User type:', data.data.user.user_type);
         return { ok: true, user: data.data.user };
       } else {
         console.warn('⚠️ Unexpected register response format:', data);

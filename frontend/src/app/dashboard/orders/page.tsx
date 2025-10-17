@@ -114,7 +114,6 @@ function OrdersPage() {
       const result = await makeApiRequest<Order[]>('/orders');
       if (result.success) {
         const ordersData = extractApiData(result.data || []) as Order[];
-        console.log('Orders data:', ordersData);
         setOrders(ordersData);
       } else {
         console.error('Failed to load orders:', handleApiError(result));

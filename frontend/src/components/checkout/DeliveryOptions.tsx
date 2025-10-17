@@ -60,13 +60,20 @@ export default function DeliveryOptions({ formData, errors, onInputChange }: Del
   const handleDateSelect = (day: number) => {
     const selectedDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
     setSelectedDate(selectedDate);
-    const dateString = selectedDate.toISOString().split('T')[0];
+    // Используем локальную дату вместо UTC для избежания сдвига на день
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(selectedDate.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${dayStr}`;
     onInputChange('deliveryDate', dateString);
   };
 
   const isDateDisabled = (day: number) => {
     const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    return date < minDate;
+    // Сравниваем только даты без времени
+    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const minDateOnly = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+    return dateOnly < minDateOnly;
   };
 
   const isDateSelected = (day: number) => {

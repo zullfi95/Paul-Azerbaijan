@@ -89,8 +89,6 @@
 }
 
 .closeButton:hover {
-  background-color: rgba(220, 53, 69, 0.8);
-  border-color: #dc3545;
   transform: scale(1.1) rotate(90deg);
 }
 
@@ -384,7 +382,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
 }
 
@@ -400,7 +398,7 @@
 .totalLabel {
   font-family: 'Sabon Next LT Pro';
   font-size: 1.02rem; /* Reduced by 15% from 1.2rem */
-  font-weight: 600;
+  font-weight: 500;
   color: #FFFAE6; /* Changed to white */
   margin: 0;
   position: relative;
@@ -410,7 +408,7 @@
 .totalAmount {
   font-family: 'Parisine Pro Gris';
   font-size: 1.275rem; /* Reduced by 15% from 1.5rem */
-  font-weight: 700;
+  font-weight: 500;
   color: #FFFAE6;
   margin: 0;
   position: relative;
@@ -422,6 +420,7 @@
   gap: 0.85rem; /* Reduced by 15% from 1rem */
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 1.275rem;
 }
 
 .buttonSecondary {
@@ -444,8 +443,6 @@
 }
 
 .buttonSecondary:hover {
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Changed to white gradient */
-  border-color: #ffffff; /* Changed to white */
   color: rgb(26, 26, 26); /* Changed to black */
   transform: translateY(-2px);
 }

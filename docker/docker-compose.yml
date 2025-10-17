@@ -49,12 +49,13 @@ services:
       - DB_PASSWORD=paul_password
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - CACHE_DRIVER=redis
-      - SESSION_DRIVER=redis
-      - QUEUE_CONNECTION=redis
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=file
+      - QUEUE_CONNECTION=sync
     volumes:
       - ./backend/storage:/var/www/html/storage
       - ./backend/bootstrap/cache:/var/www/html/bootstrap/cache
+      - ./backend/public:/var/www/html/public
     depends_on:
       - mysql
       - redis
@@ -70,7 +71,7 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://backend/api
+      - NEXT_PUBLIC_API_URL=/api
       - NEXT_PUBLIC_APP_NAME=PAUL Azerbaijan
     depends_on:
       - backend
@@ -85,6 +86,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "8080:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
@@ -114,9 +116,9 @@ services:
       - DB_PASSWORD=paul_password
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - CACHE_DRIVER=redis
-      - SESSION_DRIVER=redis
-      - QUEUE_CONNECTION=redis
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=file
+      - QUEUE_CONNECTION=sync
     volumes:
       - ./backend/storage:/var/www/html/storage
     depends_on:

@@ -6,24 +6,45 @@
 }
 
 .contentWrapper {
-  padding-top: 110px;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
+/* Global section header styles */
+.paul-section-header {
+  background-color: #000000;
+  color: #FFFAE6;
+  padding: 0.8rem 1.5rem;
+  font-family: "Sabon Next LT Pro", 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 0 auto 2.5rem auto;
+  max-width: 1140px;
+}
+
+
+
 .breadcrumbsContainer {
-  padding: 0.2rem 0 1rem;
-  max-width: 1440px;
+  padding: 20px 0;
+  background: #fffcf8;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.breadcrumbsWrapper {
+  max-width: 1140px;
   margin: 0 auto;
-  padding-left: 100px;
-  padding-right: 100px;
+  padding: 0 20px;
 }
 
 .titleContainer {
   text-align: center;
   margin-bottom: 3rem;
-  max-width: 1440px;
+  max-width: 1140px;
   margin-left: auto;
   margin-right: auto;
-  padding: 0 100px;
+  padding: 0 20px;
 }
 
 .title {
@@ -32,9 +53,9 @@
 }
 
 .form {
-  max-width: 1440px;
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 0 100px;
+  padding: 0 20px;
 }
 
 .orderSummarySection {

@@ -117,43 +117,6 @@
   gap: 0.6rem;
 }
 
-/* Input Wrapper for date field */
-.inputWrapper {
-  position: relative;
-  width: 100%;
-}
-
-.inputWrapper input {
-  width: 100%;
-}
-
-/* Placeholder effect for empty date input */
-.inputWrapper::before {
-  content: attr(data-placeholder);
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgba(0, 0, 0, 0.4);
-  font-size: 0.85rem;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.inputWrapper input[type="date"]:focus::before,
-.inputWrapper input[type="date"]:valid::before {
-  display: none;
-}
-
-.inputWrapper input[type="date"]:not(:placeholder-shown)::before {
-  display: none;
-}
-
-/* Hide placeholder when date has value */
-.inputWrapper:has(input[type="date"]:valid)::before,
-.inputWrapper:has(input[type="date"]:focus)::before {
-  display: none;
-}
 
 /* Input Fields */
 .input {
@@ -259,20 +222,7 @@
   color-scheme: light;
 }
 
-/* Date input placeholder effect */
-.input[type="date"]::-webkit-datetime-edit-text,
-.input[type="date"]::-webkit-datetime-edit-month-field,
-.input[type="date"]::-webkit-datetime-edit-day-field,
-.input[type="date"]::-webkit-datetime-edit-year-field {
-  color: rgba(0, 0, 0, 0.4);
-}
 
-.input[type="date"]:focus::-webkit-datetime-edit-text,
-.input[type="date"]:focus::-webkit-datetime-edit-month-field,
-.input[type="date"]:focus::-webkit-datetime-edit-day-field,
-.input[type="date"]:focus::-webkit-datetime-edit-year-field {
-  color: #000000;
-}
 
 .input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0);
@@ -494,15 +444,6 @@
     font-size: 16px;
   }
 
-  /* Input wrapper placeholder on mobile */
-  .inputWrapper::before {
-    left: 0.7rem;
-    font-size: 0.8rem;
-  }
-
-  .inputWrapper input {
-    width: 100%;
-  }
 
   .inputLarge {
     width: 100%;
@@ -605,15 +546,6 @@
     gap: 0.55rem;
   }
 
-  /* Input wrapper placeholder on tablet */
-  .inputWrapper::before {
-    left: 0.8rem;
-    font-size: 0.75rem;
-  }
-
-  .inputWrapper input {
-    width: 100%;
-  }
 
   .input {
     width: 100%;
@@ -738,15 +670,6 @@
     gap: 0.45rem;
   }
 
-  /* Input wrapper placeholder on very small screens */
-  .inputWrapper::before {
-    left: 0.6rem;
-    font-size: 0.75rem;
-  }
-
-  .inputWrapper input {
-    width: 100%;
-  }
 
   .input {
     padding: 0.7rem 0.6rem;

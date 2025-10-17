@@ -26,7 +26,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const { user, isAuthenticated } = useAuth();
   const broadcastChannelRef = React.useRef<BroadcastChannel | null>(null);
 
-  console.log('CartProvider render - items:', items.length, 'isInitialized:', isInitialized, 'isAuthenticated:', isAuthenticated);
+  // Убираем избыточные логи для улучшения производительности
 
   // Генерируем уникальный ключ для localStorage на основе пользователя
   const getStorageKey = useCallback(() => {
@@ -40,7 +40,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const loadCart = useCallback(() => {
     try {
       const storageKey = getStorageKey();
-      console.log('Loading cart with key:', storageKey);
       const savedCart = localStorage.getItem(storageKey);
       
       if (savedCart) {
@@ -50,13 +49,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const validatedCart = parsedCart.filter((item: Record<string, string | number | boolean>) => {
             return item.id && item.name && typeof item.price === 'number' && item.price >= 0;
           });
-          console.log('Loaded cart items:', validatedCart.length);
           setItems(validatedCart);
         } else {
           console.warn('Invalid cart data format, keeping current items');
         }
       } else {
-        console.log('No cart data found in localStorage for key:', storageKey);
         // При перезагрузке страницы, если нет данных в localStorage, 
         // устанавливаем пустую корзину (это нормально)
         setItems([]);
@@ -70,7 +67,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (backupCart) {
           const parsedBackup = JSON.parse(backupCart);
           if (Array.isArray(parsedBackup)) {
-            console.log('Restored cart from backup:', parsedBackup.length, 'items');
             setItems(parsedBackup);
           }
         } else {
@@ -89,7 +85,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const saveCart = useCallback((cartItems: CartItem[]) => {
     try {
       const storageKey = getStorageKey();
-      console.log('Saving cart with key:', storageKey, 'items:', cartItems.length);
       
       // normalize prices to 2 decimals
       const normalized = cartItems.map(it => ({
@@ -109,14 +104,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Удаляем самые старые товары (FIFO)
         const reducedCart = normalized.slice(-50); // Оставляем последние 50 товаров
         localStorage.setItem(storageKey, JSON.stringify(reducedCart));
-        console.log('Saved reduced cart:', reducedCart.length, 'items');
       } else {
         localStorage.setItem(storageKey, cartData);
-        console.log('Saved cart successfully:', normalized.length, 'items');
         // Создаём бэкап для восстановления
         try {
           localStorage.setItem(`${storageKey}_backup`, cartData);
-          console.log('Created cart backup');
         } catch {
           // Игнорируем ошибки бэкапа
         }
@@ -129,7 +121,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.removeItem(`${storageKey}_backup`);
         const cartData = JSON.stringify(cartItems.slice(-30)); // Уменьшаем до 30 товаров
         localStorage.setItem(storageKey, cartData);
-        console.log('Saved cart after cleanup:', cartItems.slice(-30).length, 'items');
       } catch {
         console.error('Failed to save cart even after cleanup');
       }
@@ -138,11 +129,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Инициализация и загрузка корзины
   useEffect(() => {
-    console.log('CartProvider effect running, isInitialized:', isInitialized, 'isAuthenticated:', isAuthenticated);
     
     // Инициализируем корзину при первом запуске
     if (!isInitialized) {
-      console.log('Initializing cart for the first time...');
       loadCart();
       setIsInitialized(true);
       return;
@@ -150,7 +139,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
     // If user just logged in, check for guest cart and merge
     if (isAuthenticated && user) {
-      console.log('User authenticated, checking for guest cart...');
       const userCartKey = `cart_${user.id}`;
       const guestCartRaw = localStorage.getItem('cart_guest');
       const userCartRaw = localStorage.getItem(userCartKey);
@@ -160,7 +148,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
           const parsed: CartItem[] = JSON.parse(guestCartRaw);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            console.log('Found guest cart with items, merging to user cart...');
             const guestCart = parsed as GuestCartItem[];
             setItems(prev => {
               // merge by id, summing quantities
@@ -197,7 +184,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               try { 
                 localStorage.setItem(userCartKey, JSON.stringify(normalized));
                 localStorage.removeItem('cart_guest'); 
-                console.log('Merged guest cart to user cart and removed guest cart');
               } catch (e) {
                 console.error('Error saving merged cart:', e);
               }
@@ -209,11 +195,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
       } else if (userCartRaw) {
         // User cart exists, load it
-        console.log('Loading existing user cart...');
         loadCart();
       }
     }
-  }, [loadCart, isAuthenticated, user, isInitialized]);
+  }, [isAuthenticated, user, isInitialized, getStorageKey]);
 
   // Инициализация BroadcastChannel один раз
   useEffect(() => {
@@ -269,7 +254,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           // Не обновляем корзину, если пришла пустая корзина, а у нас уже есть товары
           // Это предотвращает случайную очистку корзины при открытии новой вкладки
           if (data.items.length === 0 && items.length > 0) {
-            console.log('Ignoring empty cart update from other tab, keeping current items');
             return;
           }
           setItems(data.items);
@@ -324,7 +308,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
       } catch {}
     };
-  }, [loadCart]);
+  }, [getStorageKey, items.length]);
 
   const addItem = useCallback((item: Omit<CartItem, 'quantity'>) => {
     setItems(prevItems => {
@@ -403,7 +387,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return item ? item.quantity : 0;
   }, [items]);
 
-  const value: CartContextType = {
+  const value: CartContextType = React.useMemo(() => ({
     items,
     addItem,
     removeItem,
@@ -413,7 +397,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     getTotalItems,
     isInCart,
     getItemQuantity,
-  };
+  }), [items, addItem, removeItem, updateQuantity, clearCart, getTotalPrice, getTotalItems, isInCart, getItemQuantity]);
 
   return (
     <CartContext.Provider value={value}>

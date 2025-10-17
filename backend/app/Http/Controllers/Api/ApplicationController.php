@@ -21,6 +21,7 @@ class ApplicationController extends Controller
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
+            'company_name' => 'nullable|string|max:255',
             'phone' => 'required|string|max:20',
             'email' => 'required|email|max:255',
             'message' => 'nullable|string|max:1000',
@@ -55,6 +56,7 @@ class ApplicationController extends Controller
         $application = Application::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
+            'company_name' => $request->company_name,
             'phone' => $request->phone,
             'email' => $request->email,
             'message' => $request->message,
@@ -69,9 +71,14 @@ class ApplicationController extends Controller
             'client_id' => $clientId,
         ]);
 
-        // Отправляем уведомления
-        $notificationService = new NotificationService();
-        $notificationService->sendNewApplicationNotifications($application);
+        // Отправляем уведомления (временно отключено для отладки)
+        \Log::info('Application created successfully', ['application_id' => $application->id]);
+        // try {
+        //     $notificationService = new NotificationService();
+        //     $notificationService->sendNewApplicationNotifications($application);
+        // } catch (\Exception $e) {
+        //     \Log::error('Notification error: ' . $e->getMessage());
+        // }
 
         return response()->json([
             'success' => true,
@@ -171,8 +178,24 @@ class ApplicationController extends Controller
      */
     public function storeEventApplication(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'eventDate' => 'required|date_format:Y-m-d|after:today',
+        \Log::info('Event application request received:', [
+            'method' => $request->method(),
+            'content_type' => $request->header('Content-Type'),
+            'raw_content' => $request->getContent(),
+            'all_data' => $request->all(),
+            'json_data' => $request->json()->all()
+        ]);
+        
+        // Получаем данные из JSON или из тела запроса
+        $data = $request->json()->all();
+        if (empty($data)) {
+            $data = json_decode($request->getContent(), true) ?: [];
+        }
+        
+        \Log::info('Parsed data:', $data);
+        
+        $validator = Validator::make($data, [
+            'eventDate' => 'required|date_format:Y-m-d|after_or_equal:today',
             'location' => 'required|string|max:500',
             'budget' => 'required|string|max:100',
             'guestCount' => 'required|string|max:50',
@@ -191,40 +214,40 @@ class ApplicationController extends Controller
         }
 
         try {
-            \Log::info('Event application data received:', $request->all());
+            \Log::info('Event application data received:', $data);
             
             // Создаем заявку на мероприятие
             $application = Application::create([
-                'first_name' => $request->name ?: 'Event',
+                'first_name' => $data['name'] ?? 'Event',
                 'last_name' => 'Organizer',
-                'company_name' => $request->name ?: 'Event Planning Request',
-                'contact_person' => $request->name ?: 'Event Organizer',
-                'email' => $request->email,
-                'phone' => $request->phone,
+                'company_name' => $data['name'] ?? 'Event Planning Request',   
+                'contact_person' => $data['name'] ?? 'Event Organizer',        
+                'email' => $data['email'],
+                'phone' => $data['phone'],
                 'event_type' => 'Event Planning',
-                'event_date' => $request->eventDate,
+                'event_date' => $data['eventDate'],
                 'event_time' => '12:00:00', // Default time
-                'guest_count' => (int) $request->guestCount,
-                'budget' => $request->budget,
-                'special_requirements' => $request->details,
+                'guest_count' => (int) $data['guestCount'],
+                'budget' => $data['budget'],
+                'special_requirements' => $data['details'] ?? null,
                 'status' => 'new',
                 'client_id' => null, // Публичная заявка
-                'coordinator_id' => null, // Будет назначен координатором
+                'coordinator_id' => null, // Будет назначен координатором       
             ]);
 
             \Log::info('Event application created successfully:', ['id' => $application->id]);
 
-            // Отправляем уведомление координаторам
-            $notificationService = new NotificationService();
-            $notificationService->sendNewApplicationNotifications($application);
+            // Отправляем уведомление координаторам (временно отключено для отладки)
+            // $notificationService = new NotificationService();
+            // $notificationService->sendNewApplicationNotifications($application);
 
-            // Отправляем email подтверждение клиенту
-            try {
-                Mail::to($request->email)->send(new ApplicationReceived($application));
-            } catch (\Exception $e) {
-                // Логируем ошибку, но не прерываем процесс
-                \Log::error('Failed to send confirmation email: ' . $e->getMessage());
-            }
+            // Отправляем email подтверждение клиенту (временно отключено для отладки)
+            // try {
+            //     Mail::to($request->email)->send(new ApplicationReceived($application));
+            // } catch (\Exception $e) {
+            //     // Логируем ошибку, но не прерываем процесс
+            //     \Log::error('Failed to send confirmation email: ' . $e->getMessage());
+            // }
 
             return response()->json([
                 'success' => true,

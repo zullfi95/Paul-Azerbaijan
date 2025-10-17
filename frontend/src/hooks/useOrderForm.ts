@@ -77,9 +77,7 @@ export const useOrderForm = () => {
     const { data: clients = [], isLoading: isLoadingClients } = useQuery<User[]>({
         queryKey: queryKeys.clients.lists(),
         queryFn: async () => {
-            console.log('🔍 Loading clients...');
             const result = await makeApiRequest<{data: User[]}>('/clients');
-            console.log('📡 Clients result:', result);
             return result.success ? result.data?.data || [] : [];
         },
         staleTime: 10 * 60 * 1000, // 10 минут

@@ -8,16 +8,16 @@ $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-// Check if coordinator already exists
-$existingCoordinator = User::where('staff_role', 'coordinator')->first();
+// Check if this specific coordinator already exists
+$existingCoordinator = User::where('email', 'fidan@paul.az')->first();
 
 if ($existingCoordinator) {
-    echo "Coordinator already exists: " . $existingCoordinator->email . "\n";
+    echo "Coordinator fidan@paul.az already exists with ID: " . $existingCoordinator->id . "\n";
 } else {
     // Create coordinator
     $coordinator = User::create([
-        'name' => 'Admin Coordinator',
-        'email' => 'admin@paul.com',
+        'name' => 'Fidan',
+        'email' => 'fidan@paul.az',
         'password' => Hash::make('password123'),
         'user_type' => 'staff',
         'staff_role' => 'coordinator',
@@ -31,7 +31,7 @@ if ($existingCoordinator) {
     ]);
     
     echo "Coordinator created successfully!\n";
-    echo "Email: admin@paul.com\n";
+    echo "Email: fidan@paul.az\n";
     echo "Password: password123\n";
 }
 

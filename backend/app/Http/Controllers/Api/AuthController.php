@@ -18,107 +18,47 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        Log::info('Register attempt received.', ['content' => $request->getContent()]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email',
+                'password' => 'required|string|min:6',
+            ]);
 
-        $data = $request->all();
-        $content = $request->getContent();
-
-        if (!empty($content) && is_string($content)) {
-            $decodedData = json_decode($content, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $data = array_merge($data, $decodedData);
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ошибка валидации',
+                    'errors' => $validator->errors()
+                ], 422);
             }
-        }
 
-        $baseRules = [
-            'name' => 'required|string|max:255',
-            'surname' => 'nullable|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:6',
-            'phone' => 'nullable|string|max:20',
-            'user_group' => 'sometimes|in:client,staff',
-            'staff_role' => 'required_if:user_group,staff|in:coordinator,observer',
-            'client_category' => 'required_if:user_group,client|in:corporate,one_time',
-            'company_name' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-            'contact_person' => 'nullable|string|max:255',
-        ];
-
-        $group = $data['user_group'] ?? 'client';
-
-        // All users are now in the same table
-        $baseRules['email'] .= '|unique:users,email';
-
-        $validator = Validator::make($data, $baseRules);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // Если регистрируется персонал, создаем пользователя; если клиент — создаем клиента
-        if ($group === 'staff') {
             $user = User::create([
-                'name' => $data['name'],
-                'last_name' => $data['surname'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'staff_role' => $data['staff_role'] ?? 'observer',
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'user_type' => 'client',
                 'status' => 'active',
-                'user_type' => 'staff',
             ]);
 
             // Создаем Sanctum токен для автоматического входа
             $token = $user->createToken('auth-token')->plainTextToken;
 
-            // Добавляем user_type в объект пользователя для фронтенда
-            $userArray = $user->toArray();
-            $userArray['user_type'] = 'staff';
-
             return response()->json([
                 'success' => true,
-                'message' => 'Сотрудник успешно зарегистрирован',
+                'message' => 'Пользователь успешно зарегистрирован',
                 'data' => [
-                    'user' => $userArray,
-                    'token' => $token,
+                    'user' => $user,
+                    'token' => $token
                 ]
             ], 201);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ошибка при регистрации: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Иначе — это клиент
-        $client = User::create([
-            'name' => $data['name'],
-            'last_name' => $data['surname'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'phone' => $data['phone'],
-            'company_name' => $data['company_name'] ?? null,
-            'position' => $data['position'] ?? null,
-            'contact_person' => $data['contact_person'] ?? null,
-            'user_type' => 'client',
-            'client_category' => $data['client_category'] ?? 'one_time',
-            'status' => 'active',
-        ]);
-
-        // Создаем Sanctum токен для автоматического входа
-        $token = $client->createToken('auth-token')->plainTextToken;
-
-        // Добавляем user_type в объект пользователя для фронтенда
-        $userArray = $client->toArray();
-        $userArray['user_type'] = 'client';
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Клиент успешно зарегистрирован',
-            'data' => [
-                'user' => $userArray,
-                'token' => $token,
-            ]
-        ], 201);
     }
 
     /**

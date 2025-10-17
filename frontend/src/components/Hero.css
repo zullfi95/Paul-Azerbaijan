@@ -159,20 +159,24 @@
 
 .hero-btn {
   color: #FEF4E6;
-  font-family: "Sabon Next LT Pro";
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 2.5rem;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 1rem;
+  font-weight: 400;
+  transition: all 0.3s;
   width: 224px;
   height: 66.887px;
-  border-radius: 14px;
-
 }
 
 .hero-btn.primary {
-  background: #1a1a1a;
-  color: #F5E9D6;
+  background-color: #000;
+  color: #FEF4E6;
 }
 
 

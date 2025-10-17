@@ -66,7 +66,6 @@ const Header: React.FC = React.memo(function Header() {
       // TODO: Implement newsletter subscription endpoint
       // Temporary notification
       alert('Newsletter subscription is coming soon! Thank you for your interest.');
-      console.log('Subscribed with email:', email);
       setEmail('');
       closeMobileMenu();
     }
@@ -120,7 +119,6 @@ const Header: React.FC = React.memo(function Header() {
         setIsEventModalOpen(true);
         break;
       default:
-        console.log('Действие:', action);
     }
   }, [router]);
 

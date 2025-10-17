@@ -12,6 +12,17 @@ import {
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import './Footer.css';
 
+interface FooterLink {
+  label: string;
+  href: string;
+  target?: string;
+}
+
+interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
+
 // Кастомный триггер аккордеона для футера
 const FooterAccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
@@ -39,46 +50,42 @@ const Footer: React.FC = () => {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
-      console.log('Subscribed with email:', email);
       setEmail('');
     }
   };
 
-  const footerSections = [
+  const footerSections: FooterSection[] = [
     {
       title: 'Explore PAUL',
       links: [
-        { label: 'In-Store Menu', href: '#' },
-        { label: 'Find a PAUL', href: '#' },
-        { label: 'Allergens', href: '#' },
+        { label: 'In-Store Menu', href: '/menu.pdf', target: '_blank' },
+        { label: 'Find a PAUL', href: '/locations' },
       ],
     },
     {
-      title: 'Cakes',
+      title: 'Menu',
       links: [
-        { label: 'Birthday', href: '#' },
-        { label: 'Personalised', href: '#' },
-        { label: 'Celebration', href: '#' },
-        { label: 'Traditional', href: '#' },
-        { label: 'French', href: '#' },
+        { label: 'Lunch Menu', href: '/catering#lunch' },
+        { label: 'Brunch Menu', href: '/catering#brunch' },
+        { label: 'Catering Menu', href: '/catering' },
       ],
     },
     {
       title: 'Company',
       links: [
         { label: 'Our Story', href: '/our-story' },
+        { label: 'My Account', href: '/profile' },
       ],
     },
     {
       title: 'Customer',
       links: [
-        { label: 'Contact Information', href: '#' },
-        { label: 'Delivery Information', href: '#' },
-        { label: 'My Account', href: '#' },
-        { label: 'FAQ', href: '#' },
-        { label: 'Terms & Conditions', href: '#' },
-        { label: 'Privacy Policy', href: '#' },
-        { label: 'Cookie Policy', href: '#' },
+        { label: 'Contact info', href: '/contact' },
+        { label: 'Delivery info', href: '/delivery' },
+        { label: 'Terms & Conditions', href: '/terms' },
+        { label: 'Privacy policy', href: '/privacy' },
+        { label: 'Cookie policy', href: '/cookies' },
+        { label: 'FAQ', href: '/faq' },
       ],
     },
   ];
@@ -101,7 +108,12 @@ const Footer: React.FC = () => {
                       <ul className="footer-links">
                         {section.links.map((link, linkIndex) => (
                           <li key={linkIndex}>
-                            <a href={link.href} className="footer-link">
+                            <a 
+                              href={link.href} 
+                              className="footer-link"
+                              target={link.target || '_self'}
+                              rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                            >
                               {link.label}
                             </a>
                           </li>
@@ -191,7 +203,12 @@ const Footer: React.FC = () => {
                       <ul className="footer-links">
                         {section.links.map((link, linkIndex) => (
                           <li key={linkIndex}>
-                            <a href={link.href} className="footer-link">
+                            <a 
+                              href={link.href} 
+                              className="footer-link"
+                              target={link.target || '_self'}
+                              rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                            >
                               {link.label}
                             </a>
                           </li>

@@ -151,7 +151,6 @@ export default function CartPage() {
               <div className={styles.cartItems}>
                 {validatedCartData.map((item) => (
                   <div key={item.id} className={styles.cartItem}>
-                    {/* Кнопка удаления */}
                     <button
                       onClick={() => {
                         try {

@@ -14,17 +14,11 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || '/api',
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'PAUL Azerbaijan',
   },
   images: {
     remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '8000',
-        pathname: '/**',
-      },
       {
         protocol: 'https',
         hostname: 'paul.az',
@@ -37,7 +31,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'http',
-        hostname: '46.62.208.132',
+        hostname: '46.62.152.225',
         pathname: '/**',
       },
     ],
@@ -47,8 +41,8 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   async rewrites() {
-    // Use environment variable for API URL, fallback to localhost for development
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    // Use environment variable for API URL, fallback to relative path for production
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
     
     return [
       {

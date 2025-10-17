@@ -12,7 +12,9 @@ RUN apt-get update && apt-get install -y \
     unzip \
     sqlite3 \
     libsqlite3-dev \
-    && docker-php-ext-install pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd \
+    && pecl install redis \
+    && docker-php-ext-enable redis
 
 # Включаем mod_rewrite для Apache
 RUN a2enmod rewrite

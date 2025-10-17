@@ -49,7 +49,11 @@ export function isPastDate(date: Date): boolean {
  */
 export function getMinOrderDate(): string {
   const minDate = addHours(new Date(), 72);
-  return minDate.toISOString().split('T')[0];
+  // Используем локальную дату вместо UTC для избежания сдвига на день
+  const year = minDate.getFullYear();
+  const month = String(minDate.getMonth() + 1).padStart(2, '0');
+  const day = String(minDate.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /**

@@ -44,7 +44,6 @@ const FeedbackModal: React.FC = () => {
 
   const handleSubmit = () => {
     // Здесь будет логика отправки feedback
-    console.log('Rating:', rating, 'Feedback:', feedbackText);
     handleFeedbackClose();
   };
 

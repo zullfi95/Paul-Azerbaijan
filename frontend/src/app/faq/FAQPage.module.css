@@ -1,0 +1,1034 @@
+/* Main Container */
+.faqPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFCF8;
+  width: 100%;
+  overflow-x: hidden;
+  padding-top: 84px;
+}
+
+.faqMain {
+  flex: 1;
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Hero Section */
+.heroSection {
+  padding: 0;
+  text-align: center;
+  position: relative;
+  margin-top: 30px;
+  padding-top: 0;
+  margin-bottom: 60px;
+}
+
+.mainTitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin-bottom: 10px;
+}
+
+.heroSubtitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.heroDivider {
+  width: 50%;
+  max-width: 1140px;
+  height: 1px;
+  background-color: #000000;
+  margin: 10px auto 10px;
+}
+
+.heroDividerSecondary {
+  width: 100%;
+  max-width: 1140px;
+  height: 1px;
+  background-color: #000000;
+  margin: 0 auto;
+}
+
+/* Search Section */
+.searchSection {
+  padding: 20px 0 40px;
+  background: #FEF4E6;
+  border-radius: 12px;
+  margin-bottom: 40px;
+}
+
+.searchContainer {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.searchBox {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #FFFCF8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  gap: 12px;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  color: #000;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.categoryFilter {
+  min-width: 200px;
+}
+
+.categorySelect {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: #FFFCF8;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  color: #000;
+  outline: none;
+  cursor: pointer;
+}
+
+/* FAQ Content */
+.faqContentSection {
+  padding: 40px 0 60px;
+  position: relative;
+  max-width: 1140px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.faqContentContainer {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.faqItem {
+  background: #FEF4E6;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.faqItem:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.faqQuestion {
+  width: 100%;
+  padding: 20px 30px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.faqQuestion:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.questionText {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.questionIcon {
+  color: #000;
+  transition: transform 0.3s ease;
+}
+
+.faqAnswer {
+  padding: 0 30px 20px;
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.noResults {
+  text-align: center;
+  padding: 60px 20px;
+  color: #000;
+}
+
+.noResults h3 {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 24px;
+  font-weight: 500;
+  margin: 20px 0 10px;
+}
+
+.noResults p {
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Contact Section */
+.contactSection {
+  margin-top: 60px;
+  padding: 40px;
+  background: #FEF4E6;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.contactTitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.contactDescription {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.contactMethods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.contactMethod {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: #FFFCF8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.contactMethod h4 {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 5px 0;
+}
+
+.contactMethod p {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 0 5px 0;
+}
+
+.contactMethod span {
+  color: rgba(0, 0, 0, 0.6);
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.contactActions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.contactBtn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #000000;
+  color: #FEF4E6;
+}
+
+.contactBtn:hover {
+  background-color: #D4AF37;
+  color: #1A1A1A;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .faqMain {
+    padding: 0 16px;
+  }
+  
+  .mainTitle {
+    font-size: 36px;
+  }
+  
+  .heroSubtitle {
+    font-size: 14px;
+  }
+  
+  .searchContainer {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .categoryFilter {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .faqQuestion {
+    padding: 16px 20px;
+  }
+  
+  .questionText {
+    font-size: 16px;
+  }
+  
+  .faqAnswer {
+    padding: 0 20px 16px;
+    font-size: 14px;
+  }
+  
+  .contactMethods {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .contactMethod {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .contactActions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .contactBtn {
+    width: 100%;
+    max-width: 200px;
+    justify-content: center;
+  }
+  
+  .contactSection {
+    padding: 30px 20px;
+  }
+  
+  .contactTitle {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .faqMain {
+    padding: 0 12px;
+  }
+  
+  .mainTitle {
+    font-size: 28px;
+  }
+  
+  .heroSubtitle {
+    font-size: 13px;
+  }
+  
+  .searchSection {
+    padding: 16px 0 30px;
+  }
+  
+  .searchContainer {
+    padding: 0 16px;
+  }
+  
+  .searchBox {
+    padding: 10px 12px;
+  }
+  
+  .searchInput {
+    font-size: 14px;
+  }
+  
+  .categorySelect {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .faqQuestion {
+    padding: 12px 16px;
+  }
+  
+  .questionText {
+    font-size: 15px;
+  }
+  
+  .faqAnswer {
+    padding: 0 16px 12px;
+    font-size: 13px;
+  }
+  
+  .contactSection {
+    padding: 20px 16px;
+  }
+  
+  .contactTitle {
+    font-size: 20px;
+  }
+  
+  .contactMethod {
+    padding: 16px;
+  }
+  
+  .contactMethod h4 {
+    font-size: 16px;
+  }
+  
+  .contactMethod p {
+    font-size: 14px;
+  }
+  
+  .contactMethod span {
+    font-size: 12px;
+  }
+  
+  .contactBtn {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}
+
+/* Search and Filter Section */
+.search-filter-section {
+  padding: 40px 0;
+}
+
+.search-filter-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.search-box {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box svg {
+  position: absolute;
+  left: 16px;
+  color: #6c757d;
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 48px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background-color: #FFFCF8;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #1A1A1A;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.search-input::placeholder {
+  color: #6c757d;
+}
+
+.category-filter {
+  min-width: 200px;
+}
+
+.category-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background-color: #FFFCF8;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #1A1A1A;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-select:focus {
+  outline: none;
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* FAQ Content Section */
+.faq-content-section {
+  padding: 40px 0 80px;
+}
+
+.faq-content-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-item {
+  background: #FFFCF8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.faq-item:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.faq-question {
+  width: 100%;
+  padding: 24px 30px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+  background: #FEF4E6;
+}
+
+.question-text {
+  font-family: "Sabon Next LT Pro";
+  font-size: 18px;
+  font-weight: 500;
+  color: #1A1A1A;
+  flex: 1;
+  margin-right: 16px;
+}
+
+.question-icon {
+  color: #D4AF37;
+  transition: transform 0.3s ease;
+}
+
+.faq-answer {
+  padding: 0 30px 24px 30px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.3s ease-out;
+}
+
+.faq-answer p {
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #4A4A4A;
+  line-height: 1.6;
+  margin: 20px 0 0 0;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+}
+
+.no-results svg {
+  margin-bottom: 20px;
+  color: #D4AF37;
+}
+
+.no-results h3 {
+  font-family: "Sabon Next LT Pro";
+  font-size: 24px;
+  font-weight: 500;
+  color: #1A1A1A;
+  margin: 0 0 12px 0;
+}
+
+.no-results p {
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Contact Section */
+.contact-section {
+  padding: 60px 0;
+  background: #FEF4E6;
+  margin-top: 40px;
+}
+
+.contact-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.contact-title {
+  font-family: "Sabon Next LT Pro";
+  font-size: 32px;
+  font-weight: 500;
+  color: #1A1A1A;
+  margin: 0 0 16px 0;
+}
+
+.contact-description {
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #4A4A4A;
+  margin: 0 0 50px 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.contact-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.contact-method {
+  background: #FFFCF8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 40px 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.contact-method:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.contact-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background: #000000;
+  color: #FEF4E6;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  transition: all 0.3s ease;
+}
+
+.contact-method:hover .contact-icon {
+  background: #D4AF37;
+  color: #1A1A1A;
+}
+
+.contact-method h3 {
+  font-family: "Sabon Next LT Pro";
+  font-size: 20px;
+  font-weight: 500;
+  color: #1A1A1A;
+  margin: 0 0 12px 0;
+}
+
+.contact-method p {
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 500;
+  color: #D4AF37;
+  margin: 0 0 8px 0;
+}
+
+.contact-method span {
+  font-family: "Sabon Next LT Pro";
+  font-size: 14px;
+  font-weight: 300;
+  color: #6c757d;
+}
+
+/* Responsive Design */
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) {
+  .faq-page {
+    padding-top: 76px;
+  }
+
+  .faq-main {
+    padding: 0 30px;
+  }
+
+  .hero-section {
+    margin-top: 40px;
+    margin-bottom: 50px;
+  }
+
+  .main-title {
+    font-size: 42px;
+  }
+
+  .hero-subtitle {
+    font-size: 15px;
+  }
+
+  .search-filter-section {
+    padding: 30px 0;
+  }
+
+  .search-filter-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .category-filter {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .faq-content-section {
+    padding: 30px 0 60px;
+  }
+
+  .faq-question {
+    padding: 20px 24px;
+  }
+
+  .question-text {
+    font-size: 16px;
+  }
+
+  .faq-answer {
+    padding: 0 24px 20px 24px;
+  }
+
+  .faq-answer p {
+    font-size: 15px;
+  }
+
+  .contact-section {
+    padding: 40px 0;
+  }
+
+  .contact-title {
+    font-size: 28px;
+  }
+
+  .contact-description {
+    font-size: 15px;
+  }
+
+  .contact-methods {
+    gap: 30px;
+  }
+
+  .contact-method {
+    padding: 30px 20px;
+  }
+}
+
+/* Mobile (768px and below) */
+@media (max-width: 768px) {
+  .faq-page {
+    padding-top: 68px;
+  }
+
+  .faq-main {
+    padding: 0 16px;
+  }
+
+  .hero-section {
+    margin-top: 30px;
+    margin-bottom: 40px;
+  }
+
+  .main-title {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .search-filter-section {
+    padding: 20px 0;
+  }
+
+  .search-input,
+  .category-select {
+    padding: 10px 12px 10px 44px;
+    font-size: 14px;
+  }
+
+  .search-box svg {
+    left: 12px;
+  }
+
+  .faq-content-section {
+    padding: 20px 0 40px;
+  }
+
+  .faq-question {
+    padding: 16px 20px;
+  }
+
+  .question-text {
+    font-size: 15px;
+    margin-right: 12px;
+  }
+
+  .faq-answer {
+    padding: 0 20px 16px 20px;
+  }
+
+  .faq-answer p {
+    font-size: 14px;
+    margin-top: 16px;
+  }
+
+  .no-results {
+    padding: 40px 20px;
+  }
+
+  .no-results h3 {
+    font-size: 20px;
+  }
+
+  .no-results p {
+    font-size: 14px;
+  }
+
+  .contact-section {
+    padding: 30px 0;
+  }
+
+  .contact-title {
+    font-size: 24px;
+  }
+
+  .contact-description {
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+
+  .contact-methods {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .contact-method {
+    padding: 24px 20px;
+  }
+
+  .contact-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 16px;
+  }
+
+  .contact-method h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .contact-method p {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .contact-method span {
+    font-size: 13px;
+  }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .faq-page {
+    padding-top: 56px;
+  }
+
+  .main-title {
+    font-size: 28px;
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+  }
+
+  .search-input,
+  .category-select {
+    padding: 8px 10px 8px 40px;
+    font-size: 13px;
+  }
+
+  .search-box svg {
+    left: 10px;
+  }
+
+  .faq-question {
+    padding: 14px 16px;
+  }
+
+  .question-text {
+    font-size: 14px;
+    margin-right: 8px;
+  }
+
+  .faq-answer {
+    padding: 0 16px 14px 16px;
+  }
+
+  .faq-answer p {
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  .no-results {
+    padding: 30px 16px;
+  }
+
+  .no-results h3 {
+    font-size: 18px;
+  }
+
+  .no-results p {
+    font-size: 13px;
+  }
+
+  .contact-section {
+    padding: 20px 0;
+  }
+
+  .contact-title {
+    font-size: 22px;
+  }
+
+  .contact-description {
+    font-size: 13px;
+    margin-bottom: 25px;
+  }
+
+  .contact-method {
+    padding: 20px 16px;
+  }
+
+  .contact-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .contact-method h3 {
+    font-size: 16px;
+  }
+
+  .contact-method p {
+    font-size: 14px;
+  }
+
+  .contact-method span {
+    font-size: 12px;
+  }
+}

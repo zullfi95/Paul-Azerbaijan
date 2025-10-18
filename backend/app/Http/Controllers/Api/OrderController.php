@@ -473,15 +473,60 @@ class OrderController extends Controller
      */
     public function createFromApplication(Request $request, Application $application)
     {
+        Log::info('=== CREATE FROM APPLICATION START ===');
+        Log::info('Request data:', $request->all());
+        Log::info('Request content:', ['content' => $request->getContent()]);
+        Log::info('Application ID:', ['id' => $application->id]);
+        
         $user = $request->user();
         if (!$user) {
+            Log::error('User not authenticated');
             return response()->json([
                 'success' => false,
                 'message' => 'Пользователь не авторизован'
             ], 401);
         }
         
-        $validator = Validator::make($request->all(), [
+        Log::info('User authenticated:', ['user_id' => $user->id, 'user_name' => $user->name]);
+        
+        // Handle JSON data parsing
+        $data = $request->all();
+        $content = $request->getContent();
+        
+        Log::info('Raw content:', ['content' => $content]);
+        
+        if ($request->isJson() && !empty($content)) {
+            $decoded = json_decode($content, true);
+            Log::info('JSON decode result:', ['decoded' => $decoded, 'json_error' => json_last_error_msg()]);
+            
+            if (is_array($decoded)) {
+                // Check if data is wrapped in 'content' field
+                if (isset($decoded['content']) && is_string($decoded['content'])) {
+                    Log::info('Data wrapped in content field, decoding inner JSON');
+                    $innerDecoded = json_decode($decoded['content'], true);
+                    if (is_array($innerDecoded)) {
+                        $data = $innerDecoded;
+                        Log::info('Inner JSON decoded successfully:', $data);
+                    } else {
+                        // Try to fix the JSON format
+                        $fixedJson = preg_replace('/(\w+):/', '"$1":', $decoded['content']);
+                        Log::info('Fixed JSON:', ['fixed' => $fixedJson]);
+                        $fixedDecoded = json_decode($fixedJson, true);
+                        if (is_array($fixedDecoded)) {
+                            $data = $fixedDecoded;
+                            Log::info('Fixed JSON decoded successfully:', $data);
+                        }
+                    }
+                } else {
+                    $data = $decoded;
+                    Log::info('JSON data decoded successfully:', $data);
+                }
+            }
+        }
+        
+        Log::info('Final data for validation:', $data);
+        
+        $validator = Validator::make($data, [
             'client_id' => 'nullable|exists:users,id,user_type,client', // Существующий клиент
             'menu_items' => 'required|array|min:1',
             'menu_items.*.id' => 'required|string',
@@ -518,7 +563,7 @@ class OrderController extends Controller
         }
 
         // Требуем обязательного указания client_id
-        if (!$request->client_id) {
+        if (!isset($data['client_id'])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Необходимо указать ID клиента',
@@ -527,7 +572,7 @@ class OrderController extends Controller
         }
 
         // Ищем существующего клиента
-        $clientId = $request->client_id;
+        $clientId = $data['client_id'];
         $client = User::where('id', $clientId)
                     ->where('user_type', 'client')
                     ->first();
@@ -541,7 +586,7 @@ class OrderController extends Controller
         }
 
         // Resolve menu items and compute authoritative subtotal
-        $requestedItems = $request->menu_items ?? [];
+        $requestedItems = $data['menu_items'] ?? [];
         $resolvedItems = $this->resolveMenuItems($requestedItems);
 
         $subtotal = collect($resolvedItems)->sum(function ($item) {
@@ -549,11 +594,11 @@ class OrderController extends Controller
             return round($item['quantity'] * $price, 2);
         });
 
-        $discountFixed = (float) ($request->discount_fixed ?? 0);
-        $discountPercent = (float) ($request->discount_percent ?? 0);
+        $discountFixed = (float) ($data['discount_fixed'] ?? 0);
+        $discountPercent = (float) ($data['discount_percent'] ?? 0);
         $discountAmount = $discountFixed + ($subtotal * $discountPercent / 100);
         $itemsTotal = max(0, $subtotal - $discountAmount);
-        $deliveryCost = (float) ($request->delivery_cost ?? 0);
+        $deliveryCost = (float) ($data['delivery_cost'] ?? 0);
         $finalAmount = $itemsTotal + $deliveryCost;
 
         $order = Order::create([
@@ -561,7 +606,7 @@ class OrderController extends Controller
             'company_name' => $client->company_name ?? $client->name,
             'client_type' => $client->client_category ?? 'one_time',
             'menu_items' => $resolvedItems,
-            'comment' => $request->comment,
+            'comment' => $data['comment'] ?? null,
             'status' => 'submitted',
             'coordinator_id' => $user->id,
             'total_amount' => round($subtotal, 2),
@@ -570,20 +615,20 @@ class OrderController extends Controller
             'discount_amount' => $discountAmount,
             'items_total' => $itemsTotal,
             'final_amount' => round($finalAmount, 2),
-            'delivery_date' => $request->delivery_date,
-            'delivery_time' => $request->delivery_date && $request->delivery_time
-                ? $request->delivery_date . ' ' . $request->delivery_time
+            'delivery_date' => $data['delivery_date'] ?? null,
+            'delivery_time' => isset($data['delivery_date']) && isset($data['delivery_time'])
+                ? $data['delivery_date'] . ' ' . $data['delivery_time']
                 : null,
-            'delivery_type' => $request->delivery_type ?? 'delivery',
-            'delivery_address' => $request->delivery_address,
+            'delivery_type' => $data['delivery_type'] ?? 'delivery',
+            'delivery_address' => $data['delivery_address'] ?? null,
             'delivery_cost' => $deliveryCost,
-            'recurring_schedule' => $request->recurring_schedule,
+            'recurring_schedule' => $data['recurring_schedule'] ?? null,
             'application_id' => $application->id, // Связываем заказ с заявкой
             
             // Дополнительные поля
-            'equipment_required' => $request->equipment_required ?? 0,
-            'staff_assigned' => $request->staff_assigned ?? 0,
-            'special_instructions' => $request->special_instructions ?? null,
+            'equipment_required' => $data['equipment_required'] ?? 0,
+            'staff_assigned' => $data['staff_assigned'] ?? 0,
+            'special_instructions' => $data['special_instructions'] ?? null,
         ]);
 
         // Отправляем уведомления о новом заказе

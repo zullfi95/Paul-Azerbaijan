@@ -58,7 +58,7 @@ const Footer: React.FC = () => {
     {
       title: 'Explore PAUL',
       links: [
-        { label: 'In-Store Menu', href: '/menu.pdf', target: '_blank' },
+        { label: 'In-Store Menu', href: '/cakes', target: '_self' },
         { label: 'Find a PAUL', href: '/locations' },
       ],
     },
@@ -151,7 +151,7 @@ const Footer: React.FC = () => {
 
               {/* Social Media */}
               <div className="social-media">
-                <a href="#" className="social-link" aria-label="Instagram">
+                <a href="https://instagram.com/paulbakery" className="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                   <Image
                     src="/images/3463469_instagram_social media_social_network_icon 1.svg"
                     alt="Instagram"
@@ -159,7 +159,7 @@ const Footer: React.FC = () => {
                     height={23}
                   />
                 </a>
-                <a href="#" className="social-link" aria-label="YouTube">
+                <a href="https://youtube.com/paulbakery" className="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
                   <Image
                     src="/images/3463481_media_network_social_youtube_icon 1.svg"
                     alt="YouTube"
@@ -167,7 +167,7 @@ const Footer: React.FC = () => {
                     height={23}
                   />
                 </a>
-                <a href="#" className="social-link" aria-label="Facebook">
+                <a href="https://facebook.com/paulbakery" className="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                   <Image
                     src="/images/3463465_facebook_media_network_social_icon 1.svg"
                     alt="Facebook"
@@ -264,7 +264,7 @@ const Footer: React.FC = () => {
 
                 {/* Social Media */}
                 <div className="social-media">
-                  <a href="#" className="social-link" aria-label="Instagram">
+                  <a href="https://instagram.com/paulbakery" className="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                     <Image
                       src="/images/3463469_instagram_social media_social_network_icon 1.svg"
                       alt="Instagram"
@@ -272,7 +272,7 @@ const Footer: React.FC = () => {
                       height={23}
                     />
                   </a>
-                  <a href="#" className="social-link" aria-label="YouTube">
+                  <a href="https://youtube.com/paulbakery" className="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
                     <Image
                       src="/images/3463481_media_network_social_youtube_icon 1.svg"
                       alt="YouTube"
@@ -280,7 +280,7 @@ const Footer: React.FC = () => {
                       height={23}
                     />
                   </a>
-                  <a href="#" className="social-link" aria-label="Facebook">
+                  <a href="https://facebook.com/paulbakery" className="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                     <Image
                       src="/images/3463465_facebook_media_network_social_icon 1.svg"
                       alt="Facebook"

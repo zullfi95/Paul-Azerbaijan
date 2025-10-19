@@ -481,7 +481,7 @@ const Header: React.FC = React.memo(function Header() {
 
               {/* Social Media */}
               <div className="mobile-menu-social">
-                <a href="#" className="mobile-menu-social-link" aria-label="Instagram">
+                <a href="https://instagram.com/paulbakery" className="mobile-menu-social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                   <Image
                     src="/images/3463469_instagram_social media_social_network_icon 1.svg"
                     alt="Instagram"
@@ -489,7 +489,7 @@ const Header: React.FC = React.memo(function Header() {
                     height={26}
                   />
                 </a>
-                <a href="#" className="mobile-menu-social-link" aria-label="YouTube">
+                <a href="https://youtube.com/paulbakery" className="mobile-menu-social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
                   <Image
                     src="/images/3463481_media_network_social_youtube_icon 1.svg"
                     alt="YouTube"
@@ -497,7 +497,7 @@ const Header: React.FC = React.memo(function Header() {
                     height={26}
                   />
                 </a>
-                <a href="#" className="mobile-menu-social-link" aria-label="Facebook">
+                <a href="https://facebook.com/paulbakery" className="mobile-menu-social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                   <Image
                     src="/images/3463465_facebook_media_network_social_icon 1.svg"
                     alt="Facebook"

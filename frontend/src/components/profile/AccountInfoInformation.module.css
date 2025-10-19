@@ -8,7 +8,7 @@
 }
 
 .accountInfoSection {
-  background: white;
+  background: #FFFCF8;
   border-radius: 12px;
   padding: 24px;
   display: flex;
@@ -42,7 +42,7 @@
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 16px;
   color: #1f2937;
-  background: white;
+  background: #FFFCF8;
   transition: border-color 0.2s ease;
 }
 
@@ -90,7 +90,7 @@
 }
 
 .changeFormSection {
-  background: white;
+  background: #FFFCF8;
   border-radius: 12px;
   padding: 24px;
   display: flex;
@@ -134,7 +134,7 @@
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 14px;
   color: #1f2937;
-  background: white;
+  background: #FFFCF8;
   transition: border-color 0.2s ease;
 }
 
@@ -159,7 +159,7 @@
   border: none;
   border-radius: 6px;
   background: #000000;
-  color: white;
+  color: #FFFCF8;
   font-family: 'Sabon Next LT Pro', sans-serif;
   font-size: 18px;
   font-weight: 500;

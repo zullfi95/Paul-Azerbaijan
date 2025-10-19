@@ -1,0 +1,339 @@
+/* Coffee Breaks & Afternoon Teas Styles */
+
+.coffeeBreaksSection {
+  background-color: #FFFCF8;
+  padding: 2rem 0;
+  margin-bottom: 1rem;
+}
+
+.coffeeBreaksWrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.coffeeBreaksTitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro";
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.dividerLine {
+  width: 100%;
+  height: 1px;
+  background-color: #D1D5DB;
+  margin: 0 auto 2rem auto;
+  max-width: 1200px;
+}
+
+/* Options Grid */
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-bottom: 3rem;
+}
+
+.optionCard {
+  background-color: #FFFCF8;
+  border: none;
+  border-right: 1px solid #D1D5DB;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 450px;
+}
+
+.optionCard:last-child {
+  border-right: none;
+}
+
+.optionTitle {
+  font-family: "Sabon Next LT Pro";
+  font-size: 18px;
+  font-weight: bold;
+  color: #1A1A1A;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+}
+
+.optionSubtitle {
+  font-family: "Sabon Next LT Pro";
+  font-size: 13px;
+  color: #1A1A1A;
+  text-align: center;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.4;
+}
+
+.optionContent {
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.optionItem {
+  font-family: "Sabon Next LT Pro";
+  font-size: 14px;
+  font-weight: 500;
+  color: #1A1A1A;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.optionDetail {
+  font-family: "Parisine Pro Gris";
+  font-size: 12px;
+  color: #666;
+  margin: 0.25rem 0;
+  line-height: 1.4;
+}
+
+.optionPrice {
+  font-family: "Parisine Pro Gris";
+  font-size: 14px;
+  font-style: italic;
+  color: #1A1A1A;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 1rem 0;
+}
+
+.quantitySelector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0 auto 1rem auto;
+  background-color: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 0;
+  padding: 0.5rem 1rem;
+  width: fit-content;
+}
+
+.quantitySelector button {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: normal;
+  cursor: pointer;
+  padding: 0;
+  color: #1A1A1A;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantitySelector span {
+  font-size: 13px;
+  min-width: 24px;
+  text-align: center;
+  font-weight: 400;
+  color: #1A1A1A;
+  font-family: "Sabon Next LT Pro";
+}
+
+.addToCartButton {
+  background-color: #1A1A1A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 0;
+  padding: 0.75rem 1.5rem;
+  font-size: 14px;
+  font-family: "Sabon Next LT Pro";
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  letter-spacing: 0.025em;
+}
+
+.addToCartButton:hover {
+  background-color: #000000;
+  transform: translateY(-1px);
+}
+
+/* Additional Items Section */
+.additionalItemsSection {
+  margin-top: 4rem;
+}
+
+.additionalItemsTitle {
+  font-family: "Sabon Next LT Pro";
+  font-size: 24px;
+  font-weight: 500;
+  color: #1A1A1A;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.additionalItemsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+.additionalColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.columnTitle {
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: bold;
+  color: #1A1A1A;
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+.additionalItemRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.itemQuantityControl {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: transparent;
+  border: 1px solid #CCCCCC;
+  border-radius: 0;
+  padding: 0.15rem 0.35rem;
+  max-width: 70px;
+}
+
+.itemQuantityControl button {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: normal;
+  cursor: pointer;
+  color: #1A1A1A;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemQuantityControl span {
+  font-size: 12px;
+  min-width: 18px;
+  text-align: center;
+  font-weight: 400;
+  color: #1A1A1A;
+  font-family: "Sabon Next LT Pro";
+}
+
+.itemName {
+  font-family: "Parisine Pro Gris";
+  font-size: 13px;
+  color: #1A1A1A;
+}
+
+.addToOrderButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.addToOrderButton {
+  background-color: #1A1A1A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 0;
+  padding: 1rem 3rem;
+  font-size: 15px;
+  font-family: "Sabon Next LT Pro";
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.025em;
+}
+
+.addToOrderButton:hover {
+  background-color: #000000;
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+
+@media (max-width: 1024px) {
+  .optionsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .optionCard:nth-child(2n) {
+    border-right: none;
+  }
+  
+  .additionalItemsGrid {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .coffeeBreaksTitle {
+    font-size: 22px !important;
+    margin-bottom: 2rem !important;
+  }
+  
+  .optionsGrid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  
+  .optionCard {
+    min-height: auto !important;
+    padding: 1.25rem !important;
+    border-right: none !important;
+  }
+  
+  .additionalItemsSection {
+    margin-top: 3rem !important;
+  }
+  
+  .additionalItemsTitle {
+    font-size: 20px !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .additionalItemsGrid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .coffeeBreaksWrapper {
+    padding: 0 1rem !important;
+  }
+  
+  .optionCard {
+    padding: 1rem !important;
+  }
+  
+  .optionTitle {
+    font-size: 16px !important;
+  }
+  
+  .optionSubtitle {
+    font-size: 12px !important;
+  }
+  
+  .additionalItemRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

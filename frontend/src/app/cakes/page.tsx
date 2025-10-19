@@ -34,7 +34,7 @@ const cakes: Cake[] = [
     name: 'Stuffed croissants, perfect bites',
     description: '20 pcs',
     price: 40,
-    image: '/images/cake5.jpg',
+    image: '/images/cake1.png',
     category: 'Savory filled pastries and quiche',
     available: true,
     isSet: false,
@@ -45,7 +45,7 @@ const cakes: Cake[] = [
     name: 'Mini eclairs, savory delights',
     description: '6 pcs',
     price: 20,
-    image: '/images/cake6.jpg',
+    image: '/images/cake2.png',
     category: 'Savory filled pastries and quiche',
     available: true,
     isSet: false,
@@ -56,7 +56,7 @@ const cakes: Cake[] = [
     name: 'Fruit tarts, sweet treats',
     description: '25 pcs',
     price: 50,
-    image: '/images/pies.jpg',
+    image: '/images/cake3.png',
     category: 'Desserts and cakes',
     available: true,
     isSet: false,
@@ -67,7 +67,7 @@ const cakes: Cake[] = [
     name: 'Creamy sweet croissants',
     description: '12 pcs',
     price: 80,
-    image: '/images/pies2.png',
+    image: '/images/cake4.png',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -100,7 +100,7 @@ const cakes: Cake[] = [
     name: 'Layered raspberry cake',
     description: '1 whole cake',
     price: 42,
-    image: '/images/pies.jpg',
+    image: '/images/cake1.png',
     category: 'Desserts and cakes',
     available: true,
     isSet: false,
@@ -111,7 +111,7 @@ const cakes: Cake[] = [
     name: 'Vanilla bean cheesecake',
     description: '1 whole cake',
     price: 38,
-    image: '/images/pies2.png',
+    image: '/images/cake2.png',
     category: 'Desserts and cakes',
     available: true,
     isSet: false,
@@ -122,7 +122,7 @@ const cakes: Cake[] = [
     name: 'Red velvet cake',
     description: '1 whole cake',
     price: 40,
-    image: '/images/cake5.jpg',
+    image: '/images/cake3.png',
     category: 'Desserts and cakes',
     available: true,
     isSet: false,
@@ -133,7 +133,7 @@ const cakes: Cake[] = [
     name: 'Lemon meringue pie',
     description: '1 whole pie',
     price: 32,
-    image: '/images/cake6.jpg',
+    image: '/images/cake4.png',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -144,7 +144,7 @@ const cakes: Cake[] = [
     name: 'Opera cake',
     description: '1 whole cake',
     price: 48,
-    image: '/images/pies.jpg',
+    image: '/images/cake5.jpg',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -155,7 +155,7 @@ const cakes: Cake[] = [
     name: 'Tiramisu',
     description: '1 whole cake',
     price: 36,
-    image: '/images/pies2.png',
+    image: '/images/cake6.jpg',
     category: 'Desserts and cakes',
     available: true,
     isSet: false,
@@ -166,7 +166,7 @@ const cakes: Cake[] = [
     name: 'Carrot cake',
     description: '1 whole cake',
     price: 34,
-    image: '/images/cake5.jpg',
+    image: '/images/cake1.png',
     category: 'Desserts and cakes',
     available: true,
     isSet: false,
@@ -177,7 +177,7 @@ const cakes: Cake[] = [
     name: 'Chocolate fudge cake',
     description: '1 whole cake',
     price: 44,
-    image: '/images/cake6.jpg',
+    image: '/images/cake2.png',
     category: 'Desserts and cakes',
     available: true,
     isSet: false,
@@ -188,11 +188,88 @@ const cakes: Cake[] = [
     name: 'Strawberry shortcake',
     description: '1 whole cake',
     price: 39,
-    image: '/images/pies.jpg',
+    image: '/images/cake3.png',
     category: 'Desserts and cakes',
     available: true,
     isSet: false,
     rating: 4
+  },
+  {
+    id: '16',
+    name: 'Apple Pie',
+    description: 'Classic American apple pie with cinnamon',
+    price: 28,
+    image: '/images/pies.jpg',
+    category: 'Pies',
+    available: true,
+    isSet: false,
+    rating: 5
+  },
+  {
+    id: '17',
+    name: 'Cherry Pie',
+    description: 'Sweet cherry pie with lattice crust',
+    price: 30,
+    image: '/images/pies2.png',
+    category: 'Pies',
+    available: true,
+    isSet: false,
+    rating: 5
+  },
+  {
+    id: '18',
+    name: 'Pumpkin Pie',
+    description: 'Traditional pumpkin pie with whipped cream',
+    price: 32,
+    image: '/images/pies.jpg',
+    category: 'Pies',
+    available: true,
+    isSet: false,
+    rating: 4
+  },
+  {
+    id: '19',
+    name: 'Blueberry Pie',
+    description: 'Fresh blueberry pie with buttery crust',
+    price: 29,
+    image: '/images/pies2.png',
+    category: 'Pies',
+    available: true,
+    isSet: false,
+    rating: 5
+  },
+  {
+    id: '20',
+    name: 'Pecan Pie',
+    description: 'Rich pecan pie with caramel filling',
+    price: 35,
+    image: '/images/pies.jpg',
+    category: 'Pies',
+    available: true,
+    isSet: false,
+    rating: 5
+  },
+  {
+    id: '21',
+    name: 'Key Lime Pie',
+    description: 'Tangy key lime pie with graham cracker crust',
+    price: 31,
+    image: '/images/pies2.png',
+    category: 'Pies',
+    available: true,
+    isSet: false,
+    rating: 4
+  },
+  {
+    id: '22',
+    name: 'French Silk Pie',
+    description: 'Decadent chocolate silk pie',
+    price: 33,
+    image: '/images/pies.jpg',
+    category: 'Pies',
+    available: true,
+    isSet: false,
+    rating: 5
   }
 ];
 
@@ -202,11 +279,19 @@ export default function CakesPage() {
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 100 });
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { showNotification } = useNotification();
 
-  const sortedCakes = [...cakes].sort((a, b) => {
+  // Filter and sort cakes
+  const filteredCakes = cakes.filter(cake => {
+    const priceMatch = cake.price >= priceRange.min && cake.price <= priceRange.max;
+    return priceMatch;
+  });
+
+  const sortedCakes = [...filteredCakes].sort((a, b) => {
     switch (sortBy) {
       case 'name':
         return a.name.localeCompare(b.name);
@@ -225,6 +310,16 @@ export default function CakesPage() {
   const loadMoreItems = () => {
     setVisibleItems(prev => Math.min(prev + 8, sortedCakes.length));
   };
+
+  const clearFilters = () => {
+    setPriceRange({ min: 0, max: 100 });
+    setVisibleItems(8);
+  };
+
+  // Reset visible items when filters change
+  React.useEffect(() => {
+    setVisibleItems(8);
+  }, [priceRange]);
 
   const addToCart = (cake: Cake) => {
     addItem({
@@ -247,16 +342,19 @@ export default function CakesPage() {
       if (!(event.target as Element).closest('[data-sort-menu]')) {
         setShowSortMenu(false);
       }
+      if (!(event.target as Element).closest('[data-filter-menu]')) {
+        setShowFilterMenu(false);
+      }
     };
 
-    if (showSortMenu) {
+    if (showSortMenu || showFilterMenu) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showSortMenu]);
+  }, [showSortMenu, showFilterMenu]);
 
   return (
     <div className={styles.cakesPage}>
@@ -284,10 +382,42 @@ export default function CakesPage() {
             <div className={styles.pageHeaderContent}>
               <h1 className={styles.pageTitle}>Cakes & Pies</h1>
               
-              <button className={styles.filterButton}>
-                Filter
-                <span className={styles.filterButtonIcon}>⋯</span>
-              </button>
+              <div className={styles.filterContainer} data-filter-menu>
+                <button 
+                  className={styles.filterButton}
+                  onClick={() => setShowFilterMenu(!showFilterMenu)}
+                >
+                  Filter
+                  <span className={styles.filterButtonIcon}>⋯</span>
+                </button>
+                
+                {showFilterMenu && (
+                  <div className={styles.filterMenu}>
+                    <div className={styles.filterSection}>
+                      <h4>Price Range</h4>
+                      <div className={styles.priceRange}>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={priceRange.max}
+                          onChange={(e) => setPriceRange(prev => ({ ...prev, max: parseInt(e.target.value) }))}
+                        />
+                        <span>₼{priceRange.min} - ₼{priceRange.max}</span>
+                      </div>
+                    </div>
+                    
+                    <div className={styles.filterActions}>
+                      <button onClick={clearFilters} className={styles.clearButton}>
+                        Clear All
+                      </button>
+                      <button onClick={() => setShowFilterMenu(false)} className={styles.applyButton}>
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Product Grid */}

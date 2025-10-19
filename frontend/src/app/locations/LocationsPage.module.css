@@ -268,7 +268,7 @@
   .locationCard {
     display: flex;
     flex-direction: row;
-    background: #FFFFFF;
+    background: #FFFCF8;
     border-radius: 0;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -377,7 +377,7 @@
   .locationCard {
     display: flex;
     flex-direction: row;
-    background: #FFFFFF;
+    background: #FFFCF8;
     border-radius: 0;
   }
   

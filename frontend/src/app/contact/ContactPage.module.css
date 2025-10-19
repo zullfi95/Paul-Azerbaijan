@@ -1,3 +1,5 @@
+/* Contact Page Styles */
+
 /* Main Container */
 .contactPage {
   min-height: 100vh;
@@ -6,153 +8,108 @@
   background-color: #FFFCF8;
   width: 100%;
   overflow-x: hidden;
-  padding-top: 84px;
 }
 
-.contactMain {
-  flex: 1;
-  width: 100%;
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
-
-/* Hero Section */
-.heroSection {
-  padding: 0;
-  text-align: center;
-  position: relative;
-  margin-top: 30px;
+.navbarSpacing {
   padding-top: 0;
 }
 
-.mainTitle {
-  color: #000;
-  font-family: "Sabon Next LT Pro";
-  font-size: 52px;
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  margin-bottom: 20px;
+/* Breadcrumbs */
+.breadcrumbsContainer {
+  padding: 1rem 0;
+  background-color: #FFFCF8;
 }
 
-.heroSubtitle {
-  color: #000;
-  font-family: "Sabon Next LT Pro";
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.heroDivider {
-  width: 50%;
+.breadcrumbsWrapper {
   max-width: 1140px;
-  height: 1px;
-  background-color: #000000;
-  margin: 10px auto 10px;
-}
-
-.heroDividerSecondary {
-  width: 100%;
-  max-width: 1140px;
-  height: 1px;
-  background-color: #000000;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
-/* Contact Information Section */
-.contactInfoSection {
-  padding: 60px 0;
+/* Page Title */
+.pageTitleContainer {
+  background-color: #FFFCF8;
+  text-align: center;
 }
 
-.contactInfoGrid {
+.pageTitleWrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.pageTitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro";
+  font-size: 44px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin-bottom: 0;
+}
+
+/* Main Content */
+.mainContent {
+  background-color: #FFFCF8;
+  padding: 1rem 0;
+}
+
+.contentWrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Two Column Layout */
+.twoColumnLayout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 40px;
-  max-width: 1140px;
-  margin: 0 auto;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
 }
 
-.contactInfoCard {
-  background: #FFFCF8;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  padding: 40px 30px;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.contactInfoCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-.contactIcon {
+/* Left Column - Image */
+.leftColumn {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60px;
-  height: 60px;
-  background: #000000;
-  color: #FEF4E6;
-  border-radius: 50%;
-  margin: 0 auto 20px;
-  transition: all 0.3s ease;
 }
 
-.contactInfoCard:hover .contactIcon {
-  background: #D4AF37;
-  color: #1A1A1A;
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.contactTitle {
-  font-family: "Sabon Next LT Pro";
-  font-size: 20px;
-  font-weight: 500;
-  color: #1A1A1A;
-  margin: 0 0 16px 0;
+.contactImage {
+  object-fit: cover;
+  object-position: center;
 }
 
-.contactDescription {
-  font-family: "Sabon Next LT Pro";
-  font-size: 16px;
-  font-weight: 300;
-  color: #4A4A4A;
-  line-height: 1.6;
-  margin: 0;
+/* Right Column - Form */
+.rightColumn {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Contact Form Section */
-.contactFormSection {
-  padding: 60px 0;
-  background: #FEF4E6;
-  margin: 40px 0;
-  border-radius: 0;
-}
-
-.contactFormContainer {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 20px;
+.formContainer {
+  background: #FFFCF8;
 }
 
 .formHeader {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 2rem;
 }
 
 .formTitle {
   font-family: "Sabon Next LT Pro";
-  font-size: 32px;
-  font-weight: 500;
+  font-size: 28px;
+  font-weight: 400;
   color: #1A1A1A;
-  margin: 0 0 16px 0;
+  margin: 0 0 1rem 0;
 }
 
 .formSubtitle {
@@ -164,33 +121,24 @@
   margin: 0;
 }
 
+/* Form Styles */
 .contactForm {
-  background: #FFFCF8;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  padding: 40px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 1.5rem;
 }
 
 .formGroup {
-  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
 }
 
-.formLabel {
-  display: block;
-  font-family: "Sabon Next LT Pro";
-  font-size: 14px;
-  font-weight: 500;
-  color: #1A1A1A;
-  margin-bottom: 8px;
-}
 
 .formInput,
 .formSelect,
@@ -289,213 +237,67 @@
   border: 1px solid #f5c6cb;
 }
 
-/* Additional Information Section */
-.additionalInfoSection {
-  padding: 60px 0;
-}
-
-.infoGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  max-width: 1140px;
-  margin: 0 auto;
-}
-
-.infoCard {
-  background: #FFFCF8;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  padding: 40px 30px;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.infoCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-.infoTitle {
-  font-family: "Sabon Next LT Pro";
-  font-size: 20px;
-  font-weight: 500;
-  color: #1A1A1A;
-  margin: 0 0 16px 0;
-}
-
-.infoDescription {
-  font-family: "Sabon Next LT Pro";
-  font-size: 16px;
-  font-weight: 300;
-  color: #4A4A4A;
-  line-height: 1.6;
-  margin: 0;
-}
-
 /* Responsive Design */
 
 /* Tablet (768px - 1023px) */
 @media (max-width: 1023px) {
-  .contactPage {
-    padding-top: 76px;
+  .pageTitle {
+    font-size: 36px;
   }
 
-  .contactMain {
-    padding: 0 30px;
+  .twoColumnLayout {
+    gap: 3rem;
   }
 
-  .heroSection {
-    margin-top: 40px;
-    margin-bottom: 50px;
+  .imageContainer {
+    height: 400px;
   }
 
-  .mainTitle {
-    font-size: 42px;
-  }
-
-  .heroSubtitle {
-    font-size: 15px;
-  }
-
-  .contactInfoSection {
-    padding: 40px 0;
-  }
-
-  .contactInfoGrid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-  }
-
-  .contactInfoCard {
-    padding: 30px 20px;
-  }
-
-  .contactFormSection {
-    padding: 40px 0;
-    margin: 30px 0;
-  }
-
-  .contactFormContainer {
-    padding: 0 30px;
+  .formContainer {
+    padding: 2rem;
   }
 
   .formTitle {
-    font-size: 28px;
-  }
-
-  .contactForm {
-    padding: 30px;
-  }
-
-  .additionalInfoSection {
-    padding: 40px 0;
-  }
-
-  .infoGrid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-  }
-
-  .infoCard {
-    padding: 30px 20px;
+    font-size: 24px;
   }
 }
 
 /* Mobile (768px and below) */
 @media (max-width: 768px) {
-  .contactPage {
-    padding-top: 68px;
-  }
-
-  .contactMain {
+  .breadcrumbsWrapper,
+  .pageTitleWrapper,
+  .contentWrapper {
     padding: 0 16px;
   }
 
-  .heroSection {
-    margin-top: 30px;
-    margin-bottom: 40px;
-  }
-
-  .mainTitle {
+  .pageTitle {
     font-size: 32px;
-    margin-bottom: 16px;
   }
 
-  .heroSubtitle {
-    font-size: 14px;
-    margin-bottom: 24px;
-  }
-
-  .contactInfoSection {
-    padding: 30px 0;
-  }
-
-  .contactInfoGrid {
+  .twoColumnLayout {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 2rem;
   }
 
-  .contactInfoCard {
-    padding: 24px 20px;
+  .imageContainer {
+    height: 300px;
   }
 
-  .contactIcon {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 16px;
-  }
-
-  .contactTitle {
-    font-size: 18px;
-    margin-bottom: 12px;
-  }
-
-  .contactDescription {
-    font-size: 14px;
-  }
-
-  .contactFormSection {
-    padding: 30px 0;
-    margin: 20px 0;
-  }
-
-  .contactFormContainer {
-    padding: 0 16px;
-  }
-
-  .formHeader {
-    margin-bottom: 30px;
+  .formContainer {
+    padding: 1.5rem;
   }
 
   .formTitle {
-    font-size: 24px;
-    margin-bottom: 12px;
+    font-size: 22px;
   }
 
   .formSubtitle {
     font-size: 14px;
   }
 
-  .contactForm {
-    padding: 24px;
-  }
-
   .formRow {
     grid-template-columns: 1fr;
-    gap: 0;
-    margin-bottom: 0;
-  }
-
-  .formGroup {
-    margin-bottom: 20px;
-  }
-
-  .formLabel {
-    font-size: 13px;
-    margin-bottom: 6px;
+    gap: 1rem;
   }
 
   .formInput,
@@ -513,71 +315,28 @@
     padding: 14px 24px;
     font-size: 14px;
   }
-
-  .additionalInfoSection {
-    padding: 30px 0;
-  }
-
-  .infoGrid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .infoCard {
-    padding: 24px 20px;
-  }
-
-  .infoTitle {
-    font-size: 18px;
-    margin-bottom: 12px;
-  }
-
-  .infoDescription {
-    font-size: 14px;
-  }
 }
 
 /* Small Mobile (480px and below) */
 @media (max-width: 480px) {
-  .contactPage {
-    padding-top: 56px;
-  }
-
-  .mainTitle {
+  .pageTitle {
     font-size: 28px;
   }
 
-  .heroSubtitle {
-    font-size: 13px;
+  .imageContainer {
+    height: 250px;
   }
 
-  .contactInfoCard {
-    padding: 20px 16px;
-  }
-
-  .contactIcon {
-    width: 45px;
-    height: 45px;
-  }
-
-  .contactTitle {
-    font-size: 16px;
-  }
-
-  .contactDescription {
-    font-size: 13px;
+  .formContainer {
+    padding: 1.25rem;
   }
 
   .formTitle {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .formSubtitle {
     font-size: 13px;
-  }
-
-  .contactForm {
-    padding: 20px;
   }
 
   .formInput,
@@ -589,18 +348,6 @@
 
   .formSubmitButton {
     padding: 12px 20px;
-    font-size: 13px;
-  }
-
-  .infoCard {
-    padding: 20px 16px;
-  }
-
-  .infoTitle {
-    font-size: 16px;
-  }
-
-  .infoDescription {
     font-size: 13px;
   }
 }

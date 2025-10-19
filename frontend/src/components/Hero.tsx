@@ -40,7 +40,7 @@ const slides: Slide[] = [
     image: "/images/cakeHero.jpg",
     imageAlt: "Delicious French pastries",
     buttonText: "Menu",
-    buttonLink: "/menu"
+    buttonLink: "/cakes"
   },
   {
     id: 3,
@@ -51,7 +51,7 @@ const slides: Slide[] = [
     image: "/images/cakes.jpg",
     imageAlt: "PAUL bakery store interior",
     buttonText: "Find Store",
-    buttonLink: "/stores"
+    buttonLink: "/locations"
   }
 ];
 

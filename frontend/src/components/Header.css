@@ -209,7 +209,7 @@ body.menu-open {
   top: -2px;
   right: -2px;
   background: #ef4444;
-  color: white;
+  color: #FFFCF8;
   border-radius: 50%;
   width: 15px;
   height: 15px;
@@ -694,7 +694,7 @@ body.menu-open {
   background: #1a1a1a;
   border: none;
   border-radius: 8px;
-  color: white;
+  color: #FFFCF8;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
@@ -774,7 +774,7 @@ body.menu-open {
   line-height: 1.2;
   border: 1px solid #d1d5db;
   border-radius: 12px;
-  background: white;
+  background: #FFFCF8;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
@@ -799,7 +799,7 @@ body.menu-open {
   background-color: #1a1a1a;
   border-color: #1a1a1a;
   transform: translateY(-2px);
-  color: white;
+  color: #FFFCF8;
 }
 
 /* Plan an Event container */
@@ -900,7 +900,7 @@ body.menu-open {
 }
 
 .action-button:hover .action-button-icon {
-  color: white;
+  color: #FFFCF8;
   transform: scale(1.1);
 }
 

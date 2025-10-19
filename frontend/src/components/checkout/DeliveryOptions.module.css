@@ -252,7 +252,7 @@
 
 .calendarDay.selectedDay {
   background-color: #000;
-  color: white;
+  color: #FFFCF8;
 }
 
 .calendarDay.disabledDay {
@@ -312,7 +312,7 @@
 
 .timeSlot.selectedTimeSlot {
   background-color: #000;
-  color: white;
+  color: #FFFCF8;
 }
 
 .timeSlot.selectedTimeSlot:hover {

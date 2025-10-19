@@ -1796,7 +1796,7 @@ export default function ApplicationsPage() {
             left: 0 !important;
             height: 100vh !important;
             z-index: 1000 !important;
-            background: white !important;
+            background: #FFFCF8 !important;
           }
         }
         

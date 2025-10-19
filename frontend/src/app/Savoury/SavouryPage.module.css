@@ -2,14 +2,14 @@
 
 .macaronsPage {
   min-height: 100vh;
-  background: #FFFFFF;
+  background: #FFFCF8;
   font-family: 'Sabon Next LT Pro', serif;
 }
 
 /* Breadcrumbs */
 .breadcrumbsSection {
   padding: 1rem 0;
-  background-color: #FFFFFF;
+  background-color: #FFFCF8;
   border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
@@ -148,7 +148,7 @@
 }
 
 .productCard {
-  background: white;
+  background: #FFFCF8;
   overflow: hidden;
   transition: all 0.3s ease;
   position: relative;
@@ -183,7 +183,7 @@
   right: 10px;
   width: 35px;
   height: 35px;
-  background: white;
+  background: #FFFCF8;
   color: #000000;
   border: none;
   border-radius: 50%;
@@ -281,7 +281,7 @@
   text-orientation: mixed;
   padding: 1rem 0.5rem;
   background-color: #1A1A1A;
-  color: white;
+  color: #FFFCF8;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -311,7 +311,7 @@
 }
 
 .feedbackModalContent {
-  background-color: white;
+  background-color: #FFFCF8;
   padding: 2rem;
   border-radius: 12px;
   max-width: 500px;
@@ -358,7 +358,7 @@
   width: 100%;
   padding: 0.75rem;
   background-color: #1A1A1A;
-  color: white;
+  color: #FFFCF8;
   border: none;
   border-radius: 8px;
   cursor: pointer;

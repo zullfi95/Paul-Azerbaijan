@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import SimpleHeader from '../../components/SimpleHeader';
+import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeedbackModal from '../../components/FeedbackModal';
 import { Truck, Clock, MapPin, CreditCard, Shield, Phone, Mail } from 'lucide-react';
@@ -10,7 +10,7 @@ import styles from './DeliveryPage.module.css';
 export default function DeliveryInfoPage() {
   return (
     <div className="delivery-page">
-      <SimpleHeader />
+      <Header />
       
       <main className="delivery-main">
         {/* Hero Section */}

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import SimpleHeader from '../../components/SimpleHeader';
+import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeedbackModal from '../../components/FeedbackModal';
 import { HelpCircle, ChevronDown, ChevronUp, Search, Mail, Phone } from 'lucide-react';
@@ -141,7 +141,7 @@ export default function FAQPage() {
 
   return (
     <div className={styles.faqPage}>
-      <SimpleHeader />
+      <Header />
       
       <main className={styles.faqMain}>
         {/* Hero Section */}

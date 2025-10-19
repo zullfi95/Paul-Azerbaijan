@@ -6,7 +6,6 @@
   background-color: #FFFCF8;
   width: 100%;
   overflow-x: hidden;
-  padding-top: 84px;
 }
 
 .cookiesMain {
@@ -702,12 +701,12 @@
 
 .cookie-status.required {
   background: #dc3545;
-  color: white;
+  color: #FFFCF8;
 }
 
 .cookie-status.optional {
   background: #6c757d;
-  color: white;
+  color: #FFFCF8;
 }
 
 .cookie-examples {
@@ -898,7 +897,7 @@
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: #FFFCF8;
   transition: 0.3s;
   border-radius: 50%;
 }

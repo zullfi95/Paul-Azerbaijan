@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useIsMobile } from '../hooks/use-mobile';
 import './MenuSection.css';
 
@@ -25,7 +26,7 @@ const MenuSection: React.FC = () => {
 
         {/* Карточки категорий */}
         <div className="menu-categories">
-          <div className="menu-card">
+          <Link href="/bread" className="menu-card">
             <div className="menu-card-image">
               <Image
                 src="/images/bread.jpg"
@@ -37,9 +38,9 @@ const MenuSection: React.FC = () => {
                 <h3>Bread</h3>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="menu-card">
+          <Link href="/platters" className="menu-card">
             <div className="menu-card-image">
               <Image
                 src="/images/plattes.png"
@@ -51,9 +52,9 @@ const MenuSection: React.FC = () => {
                 <h3>Platters</h3>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="menu-card">
+          <Link href="/cakes" className="menu-card">
             <div className="menu-card-image">
               <Image
                 src="/images/cakes.jpg"
@@ -65,7 +66,7 @@ const MenuSection: React.FC = () => {
                 <h3>Cakes</h3>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
         
         {/* Разделитель после карточек */}

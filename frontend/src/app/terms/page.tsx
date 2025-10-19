@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import SimpleHeader from '../../components/SimpleHeader';
+import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeedbackModal from '../../components/FeedbackModal';
 import { FileText, Calendar, Shield, AlertCircle, Mail, Phone } from 'lucide-react';
@@ -10,7 +10,7 @@ import styles from './TermsPage.module.css';
 export default function TermsAndConditionsPage() {
   return (
     <div className={styles.termsPage}>
-      <SimpleHeader />
+      <Header />
       
       <main className={styles.termsMain}>
         {/* Hero Section */}

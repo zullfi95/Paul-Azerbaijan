@@ -6,7 +6,7 @@
   background-color: #FFFCF8;
   width: 100%;
   overflow-x: hidden;
-  padding-top: 84px;
+  padding-top: 80px; /* Space for fixed header */
 }
 
 .deliveryMain {
@@ -630,7 +630,7 @@
 /* Tablet (768px - 1023px) */
 @media (max-width: 1023px) {
   .delivery-page {
-    padding-top: 76px;
+    padding-top: 76px; /* Adjusted for tablet header height */
   }
 
   .delivery-main {

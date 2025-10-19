@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import SimpleHeader from '../../components/SimpleHeader';
+import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeedbackModal from '../../components/FeedbackModal';
 import { Cookie, Settings, Check, X, Info, Mail, Phone } from 'lucide-react';
@@ -55,7 +55,7 @@ export default function CookiePolicyPage() {
 
   return (
     <div className={styles.cookiesPage}>
-      <SimpleHeader />
+      <Header />
       
       <main className={styles.cookiesMain}>
         {/* Hero Section */}

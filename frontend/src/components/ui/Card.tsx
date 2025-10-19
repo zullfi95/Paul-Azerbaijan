@@ -14,7 +14,7 @@ const paulColors = {
   beige: '#EBDCC8',
   border: '#EDEAE3',
   gray: '#4A4A4A',
-  white: '#FFFFFF'
+  white: '#FFFCF8'
 };
 
 export const Card: React.FC<CardProps> = ({

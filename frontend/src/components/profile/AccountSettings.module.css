@@ -61,7 +61,7 @@
 }
 
 .activeTab {
-  background: white;
+  background: #FFFCF8;
   color: #1f2937;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -72,7 +72,7 @@
 
 /* Tab Content */
 .tabContent {
-  background: white;
+  background: #FFFCF8;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 32px;
@@ -126,7 +126,7 @@
 
 .submitButton {
   background: #1f2937;
-  color: white;
+  color: #FFFCF8;
   border: none;
   padding: 12px 24px;
   border-radius: 8px;

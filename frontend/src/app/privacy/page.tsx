@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import SimpleHeader from '../../components/SimpleHeader';
+import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeedbackModal from '../../components/FeedbackModal';
 import { Shield, Eye, Lock, Database, Mail, Phone } from 'lucide-react';
@@ -10,7 +10,7 @@ import styles from './PrivacyPage.module.css';
 export default function PrivacyPolicyPage() {
   return (
     <div className={styles.privacyPage}>
-      <SimpleHeader />
+      <Header />
       
       <main className={styles.privacyMain}>
         {/* Hero Section */}

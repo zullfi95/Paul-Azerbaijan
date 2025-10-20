@@ -138,6 +138,38 @@
   fill: #1A1A1A;
 }
 
+/* View More Button */
+.viewMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.viewMoreButton {
+  padding: 1rem 2.5rem;
+  background-color: #000000;
+  color: #FEF4E6;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: "Sabon Next LT Pro", serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.viewMoreButton:hover {
+  background-color: #333333;
+  transform: translateY(-2px);
+}
+
+.viewMoreButton:active {
+  transform: translateY(0);
+}
+
 /* Sort Button */
 .sortButton {
   background-color: #1A1A1A;
@@ -320,7 +352,6 @@
 }
 
 .viewMoreButton:hover {
-  background-color: #D4AF37;
   color: #1A1A1A;
   transform: translateY(-2px);
 }

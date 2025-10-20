@@ -120,6 +120,7 @@
   justify-content: flex-start;
   margin-bottom: 0.5rem;
   text-align: left;
+  flex-wrap: nowrap; /* prevent squeezing checkbox */
 }
 
 .lunchCheckbox {
@@ -130,6 +131,11 @@
   border-radius: 50%;
   appearance: none;
   border: 2px solid #1A1A1A;
+  box-sizing: content-box; /* keep visual size consistent */
+  flex: 0 0 16px; /* don't shrink in flex */
+  min-width: 16px;
+  min-height: 16px;
+  display: inline-block;
 }
 
 .lunchCheckbox:checked {

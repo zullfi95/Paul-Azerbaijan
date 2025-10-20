@@ -393,7 +393,10 @@ function SearchPageContent() {
                   e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
                 }}
                 >
-                  <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
+                  <div 
+                    style={{ position: 'relative', height: '200px', overflow: 'hidden', cursor: 'pointer' }}
+                    onClick={() => router.push(`/product/${product.id}`)}
+                  >
                     <Image
                       src={product.image || '/images/placeholder-food.svg'}
                       alt={product.name}
@@ -416,12 +419,16 @@ function SearchPageContent() {
                   </div>
                   
                   <div style={{ padding: '20px' }}>
-                    <h3 style={{ 
-                      fontSize: '1.25rem', 
-                      fontWeight: 'bold', 
-                      marginBottom: '8px',
-                      color: '#1A1A1A'
-                    }}>
+                    <h3 
+                      style={{ 
+                        fontSize: '1.25rem', 
+                        fontWeight: 'bold', 
+                        marginBottom: '8px',
+                        color: '#1A1A1A',
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => router.push(`/product/${product.id}`)}
+                    >
                       {product.name}
                     </h3>
                     

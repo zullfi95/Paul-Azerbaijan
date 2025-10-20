@@ -124,8 +124,7 @@
 }
 
 .viewMoreButton:hover {
-  background-color: #D4AF37;
-  color: #1A1A1A;
+  color: #FEF4E6;
   transform: translateY(-2px);
 }
 

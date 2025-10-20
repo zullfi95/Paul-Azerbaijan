@@ -63,7 +63,7 @@ export default function LunchMenu({
               </div>
 
               {/* Choice Section */}
-              <div className={styles.lunchOptionSection}>
+              <div className={`${styles.lunchOptionSection} ${styles.lunchOptionSectionWithChoices}`}>
                 <div className={styles.lunchChoiceWrapper}>
                   <label className={styles.lunchChoiceLabel}>
                     <input
@@ -212,7 +212,7 @@ export default function LunchMenu({
 
             <div className={styles.lunchOptionContent}>
               {/* Choice Section */}
-              <div className={styles.lunchOptionSection}>
+              <div className={`${styles.lunchOptionSection} ${styles.lunchOptionSectionWithChoices}`}>
                 <div className={styles.lunchChoiceWrapper}>
                   <label className={styles.lunchChoiceLabel}>
                     <input

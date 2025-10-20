@@ -81,6 +81,10 @@
   text-align: center;
 }
 
+.lunchOptionSectionWithChoices {
+  text-align: left;
+}
+
 .lunchOptionSectionAuto {
   margin-top: auto;
 }
@@ -103,15 +107,19 @@
 
 .lunchChoiceWrapper {
   margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .lunchChoiceLabel {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
   cursor: pointer;
-  justify-content: center;
+  justify-content: flex-start;
   margin-bottom: 0.5rem;
+  text-align: left;
 }
 
 .lunchCheckbox {

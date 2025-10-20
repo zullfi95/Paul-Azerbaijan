@@ -32,6 +32,7 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleInputChange = (field: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
@@ -101,12 +102,26 @@ export default function LoginPage() {
 
             <div className={styles.formField}>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password*"
                 value={formData.password}
                 onChange={handleInputChange('password')}
                 required
               />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? '◉' : '○'}
+              </button>
+            </div>
+
+            <div className={styles.forgotPasswordSection}>
+              <Link href="/auth/forgot-password" className={styles.forgotPasswordLink}>
+                Forgot password?
+              </Link>
             </div>
 
             {error && (

@@ -67,6 +67,7 @@ const Footer: React.FC = () => {
       links: [
         { label: 'Lunch Menu', href: '/catering#lunch' },
         { label: 'Brunch Menu', href: '/catering#brunch' },
+        { label: 'Coffee Breaks\n& Afternoon Teas', href: '/catering#coffee-breaks' },
         { label: 'Catering Menu', href: '/catering' },
       ],
     },
@@ -74,12 +75,12 @@ const Footer: React.FC = () => {
       title: 'Company',
       links: [
         { label: 'Our Story', href: '/our-story' },
-        { label: 'My Account', href: '/profile' },
       ],
     },
     {
       title: 'Customer',
       links: [
+        { label: 'My Account', href: '/profile' },
         { label: 'Contact info', href: '/contact' },
         { label: 'Delivery info', href: '/delivery' },
         { label: 'Terms & Conditions', href: '/terms' },
@@ -181,10 +182,20 @@ const Footer: React.FC = () => {
               <div className="footer-payment">
                 <div className="payment-logos">
                   <Image
-                    src="/images/visamaster.png"
-                    alt="Visa and Mastercard"
-                    width={120}
-                    height={40}
+                    src="/images/visa.png"
+                    alt="Visa"
+                    width={100}
+                    height={44}
+                    style={{
+                      objectFit: 'contain',
+                      marginRight: '10px'
+                    }}
+                  />
+                  <Image
+                    src="/images/mastercart.svg"
+                    alt="Mastercard"
+                    width={40}
+                    height={25}
                     style={{
                       objectFit: 'contain'
                     }}
@@ -222,10 +233,20 @@ const Footer: React.FC = () => {
                 <div className="footer-payment">
                   <div className="payment-logos">
                     <Image
-                      src="/images/visamaster.png"
-                      alt="Visa and Mastercard"
-                      width={120}
-                      height={40}
+                      src="/images/visa.png"
+                      alt="Visa"
+                      width={100}
+                      height={44}
+                      style={{
+                        objectFit: 'contain',
+                        marginRight: '10px'
+                      }}
+                    />
+                    <Image
+                      src="/images/mastercart.svg"
+                      alt="Mastercard"
+                      width={50}
+                      height={35}
                       style={{
                         objectFit: 'contain'
                       }}

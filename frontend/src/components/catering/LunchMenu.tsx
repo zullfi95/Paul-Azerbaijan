@@ -443,7 +443,7 @@ export default function LunchMenu({
         <div className={styles.lunchMenuImageSection}>
           <div className={styles.lunchMenuImage}>
             <Image
-              src="/images/Lunch_Menu.png"
+              src="/images/Lunch Menu.png"
               alt="Lunch Menu"
               width={1200}
               height={400}

@@ -113,16 +113,15 @@ const EventSuccessNotification: React.FC<EventSuccessNotificationProps> = ({
             marginBottom: '10px'
           }}
         >
-          <div
+          <Image
+            src="/images/blackLogo.png"
+            alt="Paul Logo"
+            width={50}
+            height={50}
             style={{
-              fontSize: '32px',
-              fontWeight: 'bold',
-              color: '#000000',
-              fontFamily: 'serif'
+              objectFit: 'contain'
             }}
-          >
-            P
-          </div>
+          />
         </div>
 
         {/* Success message */}

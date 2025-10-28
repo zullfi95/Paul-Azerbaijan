@@ -101,7 +101,14 @@ export async function makeApiRequest<T>(
 
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      let errorData = {};
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        // Если не JSON, создаем базовую ошибку
+        errorData = { message: `HTTP ${response.status}` };
+      }
+      
       return {
         success: false,
         message: errorData.message || `HTTP ${response.status}`,

@@ -21,7 +21,9 @@ export interface UsersResponse {
 
 // Request types for creating/updating orders
 export interface OrderCreateRequest {
-  client_type: 'corporate' | 'one_time';
+  client_id?: number;
+  client_type?: 'corporate' | 'one_time';
+  application_id?: number;
   
   // Corporate client
   company_name?: string;
@@ -38,6 +40,8 @@ export interface OrderCreateRequest {
     last_name: string;
     email?: string;
     phone?: string;
+    company?: string;
+    position?: string;
   };
   
   // Common fields
@@ -61,16 +65,23 @@ export interface OrderCreateRequest {
     delivery_time?: string;
     notes?: string;
   };
+  
+  // Additional fields
+  equipment_required?: number;
+  staff_assigned?: number;
+  special_instructions?: string;
 }
 
 export interface OrderUpdateRequest extends Partial<OrderCreateRequest> {
-  status?: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled';
+  status?: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled' | 'paid';
 }
 
 // Request types for creating/updating applications
 export interface ApplicationCreateRequest {
   first_name: string;
-  last_name: string;
+  last_name?: string;
+  company_name?: string;
+  contact_person?: string;
   phone: string;
   email: string;
   message?: string;
@@ -80,6 +91,8 @@ export interface ApplicationCreateRequest {
   event_lat?: number;
   event_lng?: number;
   cart_items?: CartItem[];
+  coordinator_id?: number;
+  client_id?: number;
 }
 
 export interface ApplicationUpdateRequest extends Partial<ApplicationCreateRequest> {

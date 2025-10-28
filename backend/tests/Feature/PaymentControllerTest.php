@@ -26,7 +26,7 @@ class PaymentControllerTest extends TestCase
         // Create test users
         $this->coordinator = User::factory()->create([
             'user_type' => 'staff',
-            'staff_role' => 'coordinator',
+            'user_type' => 'staff',
             'status' => 'active',
         ]);
 

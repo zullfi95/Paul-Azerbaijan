@@ -2,167 +2,152 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateClientRequest;
+use App\Http\Requests\UpdateClientRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class ClientController extends Controller
+class ClientController extends BaseApiController
 {
+    /**
+     * Получение списка клиентов
+     */
     public function index(Request $request)
     {
-        $query = User::where('user_type', 'client');
+        try {
+            $this->authorize('viewAny', User::class);
+            
+            $query = User::where('user_type', 'client');
 
-        if ($request->filled('client_category')) {
-            $query->where('client_category', $request->client_category);
+            if ($request->filled('client_category')) {
+                $query->where('client_category', $request->client_category);
+            }
+
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->filled('company_name')) {
+                $query->where('company_name', 'like', '%' . $request->company_name . '%');
+            }
+
+            $clients = $query->orderBy('created_at', 'desc')->paginate(20);
+
+            return $this->paginatedResponse($clients, 'Клиенты получены успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('company_name')) {
-            $query->where('company_name', 'like', '%' . $request->company_name . '%');
-        }
-
-        $clients = $query->orderBy('created_at', 'desc')->paginate(20);
-
-        return response()->json([
-            'success' => true,
-            'data' => $clients,
-        ]);
     }
 
+    /**
+     * Получение клиента по ID
+     */
     public function show(User $client)
     {
-        // Проверяем, что это клиент
-        if ($client->user_type !== 'client') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Пользователь не является клиентом',
-            ], 404);
-        }
+        try {
+            $this->authorize('view', $client);
+            
+            // Проверяем, что это клиент
+            if ($client->user_type !== 'client') {
+                return $this->notFoundResponse('Пользователь не является клиентом');
+            }
 
-        return response()->json([
-            'success' => true,
-            'data' => [
+            return $this->successResponse([
                 'client' => $client,
-            ],
-        ]);
+            ], 'Клиент получен успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
-    public function store(Request $request)
+    /**
+     * Создание нового клиента
+     */
+    public function store(CreateClientRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-            'company_name' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'contact_person' => 'nullable|string|max:255',
-            'client_category' => 'required|in:corporate,one_time',
-            'status' => 'in:active,inactive,suspended',
-        ]);
+        try {
+            $this->authorize('create', User::class);
+            
+            $validatedData = $request->validated();
+            $validatedData['user_type'] = 'client';
+            $validatedData['password'] = bcrypt('password123'); // Временный пароль
+            
+            $client = User::create($validatedData);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        $clientData = $validator->validated();
-        $clientData['user_type'] = 'client';
-        $clientData['password'] = bcrypt('password123'); // Временный пароль
-        
-        $client = User::create($clientData);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Клиент успешно создан',
-            'data' => [
+            return $this->createdResponse([
                 'client' => $client,
-            ],
-        ], 201);
+            ], 'Клиент успешно создан');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
-    public function update(Request $request, User $client)
+    /**
+     * Обновление клиента
+     */
+    public function update(UpdateClientRequest $request, User $client)
     {
-        // Проверяем, что это клиент
-        if ($client->user_type !== 'client') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Пользователь не является клиентом',
-            ], 404);
+        try {
+            $this->authorize('update', $client);
+            
+            // Проверяем, что это клиент
+            if ($client->user_type !== 'client') {
+                return $this->notFoundResponse('Пользователь не является клиентом');
+            }
+
+            $validatedData = $request->validated();
+
+            $client->update($validatedData);
+
+            return $this->updatedResponse([
+                'client' => $client->fresh()
+            ], 'Клиент успешно обновлен');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $client->id,
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-            'company_name' => 'nullable|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'contact_person' => 'nullable|string|max:255',
-            'client_category' => 'sometimes|in:corporate,one_time',
-            'status' => 'sometimes|in:active,inactive,suspended',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        $client->update($validator->validated());
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Клиент успешно обновлен',
-            'data' => [
-                'client' => $client->fresh(),
-            ],
-        ]);
     }
 
+    /**
+     * Удаление клиента
+     */
     public function destroy(User $client)
     {
-        // Проверяем, что это клиент
-        if ($client->user_type !== 'client') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Пользователь не является клиентом',
-            ], 404);
+        try {
+            $this->authorize('delete', $client);
+            
+            // Проверяем, что это клиент
+            if ($client->user_type !== 'client') {
+                return $this->notFoundResponse('Пользователь не является клиентом');
+            }
+
+            $client->delete();
+
+            return $this->deletedResponse('Клиент успешно удален');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
-
-        $client->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Клиент успешно удален',
-        ]);
     }
 
-    public function statistics()
+    /**
+     * Получение статистики клиентов
+     */
+    public function statistics(Request $request)
     {
-        $stats = [
-            'total' => User::where('user_type', 'client')->count(),
-            'corporate' => User::where('user_type', 'client')->where('client_category', 'corporate')->count(),
-            'one_time' => User::where('user_type', 'client')->where('client_category', 'one_time')->count(),
-            'active' => User::where('user_type', 'client')->where('status', 'active')->count(),
-            'inactive' => User::where('user_type', 'client')->where('status', 'inactive')->count(),
-            'suspended' => User::where('user_type', 'client')->where('status', 'suspended')->count(),
-        ];
+        try {
+            $this->authorize('viewStatistics', User::class);
+            
+            $stats = [
+                'total' => User::where('user_type', 'client')->count(),
+                'corporate' => User::where('user_type', 'client')->where('client_category', 'corporate')->count(),
+                'one_time' => User::where('user_type', 'client')->where('client_category', 'one_time')->count(),
+                'active' => User::where('user_type', 'client')->where('status', 'active')->count(),
+                'inactive' => User::where('user_type', 'client')->where('status', 'inactive')->count(),
+                'suspended' => User::where('user_type', 'client')->where('status', 'suspended')->count(),
+            ];
 
-        return response()->json([
-            'success' => true,
-            'data' => $stats,
-        ]);
+            return $this->successResponse($stats, 'Статистика клиентов получена успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 }
-
-

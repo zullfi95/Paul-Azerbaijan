@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\AlgoritmaService;
 use App\Services\NotificationService;
@@ -12,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 
-class PaymentController extends Controller
+class PaymentController extends BaseApiController
 {
     private AlgoritmaService $algoritmaService;
     private NotificationService $notificationService;
@@ -29,6 +28,8 @@ class PaymentController extends Controller
     public function createPayment(Request $request, Order $order): JsonResponse
     {
         try {
+            $this->authorize('createPayment', $order);
+            
             Log::info('PaymentController::createPayment called', [
                 'order_id' => $order->id,
                 'user_id' => $request->user()?->id,
@@ -36,52 +37,19 @@ class PaymentController extends Controller
                 'user_status' => $request->user()?->status,
             ]);
 
-            $user = $request->user();
-            if (!$user || !$user->isActive()) {
-                Log::warning('Payment authorization failed', [
-                    'user_exists' => !!$user,
-                    'user_active' => $user ? $user->isActive() : false,
-                    'user_status' => $user ? $user->status : null,
-                ]);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Доступ запрещен. Требуется авторизация.'
-                ], 403);
+            $user = $this->getAuthenticatedUser($request);
+
+            // Проверяем, что заказ может быть оплачен
+            if (!$order->isPendingPayment()) {
+                return $this->errorResponse('Заказ не может быть оплачен в текущем статусе', 400);
             }
 
-            // Проверяем права доступа к заказу
-            $hasAccess = false;
-            
-            Log::info('Checking payment access rights', [
-                'user_type' => $user->user_type,
-                'user_role' => $user->staff_role,
-                'is_coordinator' => $user->isCoordinator(),
-                'is_client' => $user->isClient(),
-                'order_client_id' => $order->client_id,
-                'user_id' => $user->id,
-            ]);
-            
-            // Координаторы могут создавать платежи для любых заказов
-            if ($user->isCoordinator()) {
-                $hasAccess = true;
+            // Проверяем лимит попыток оплаты
+            if (!$order->canRetryPayment()) {
+                return $this->errorResponse('Превышен лимит попыток оплаты (3 попытки)', 400);
             }
-            // Клиенты могут создавать платежи только для своих заказов
-            elseif ($user->isClient() && $order->client_id === $user->id) {
-                $hasAccess = true;
-            }
-            
-            if (!$hasAccess) {
-                Log::warning('Payment access denied', [
-                    'user_type' => $user->user_type,
-                    'order_client_id' => $order->client_id,
-                    'user_id' => $user->id,
-                ]);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Доступ запрещен. Нет прав для создания платежа для этого заказа.'
-                ], 403);
-            }
-            // Разрешены оплаты только для одноразовых клиентов (грузим клиента явно)
+
+            // Разрешены оплаты только для одноразовых клиентов
             $order->loadMissing('client');
             $client = $order->client ?: User::find($order->client_id);
             
@@ -97,121 +65,122 @@ class PaymentController extends Controller
                     'client_category' => $client ? $client->client_category : null,
                     'required_category' => 'one_time',
                 ]);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Оплата доступна только для одноразовых клиентов.'
-                ], 400);
-            }
-
-            // Проверяем, что заказ может быть оплачен
-            Log::info('Checking order payment status', [
-                'order_status' => $order->status,
-                'payment_status' => $order->payment_status,
-                'can_pay' => $order->isPendingPayment(),
-            ]);
-            
-            if (!$order->isPendingPayment()) {
-                Log::warning('Payment denied - order status check failed', [
-                    'order_status' => $order->status,
-                    'payment_status' => $order->payment_status,
-                ]);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Заказ не может быть оплачен в текущем статусе'
-                ], 400);
-            }
-
-            // Проверяем лимит попыток (разрешаем до 3 попыток, независимо от статуса)
-            if (($order->payment_attempts ?? 0) >= 3) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Превышен лимит попыток оплаты (3 попытки)'
-                ], 400);
+                return $this->errorResponse('Оплата разрешена только для разовых клиентов', 400);
             }
 
             // Увеличиваем счетчик попыток
             $order->incrementPaymentAttempts();
 
-            // Подготавливаем данные для Algoritma
+            // Подготавливаем данные для создания платежа
+            $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
+            $returnUrl = $frontendUrl . '/payment/success/' . $order->id;
+            $failureUrl = $frontendUrl . '/payment/failure/' . $order->id;
+
             $orderData = [
-                'amount' => (string) $order->final_amount,
+                'amount' => number_format($order->final_amount, 2, '.', ''),
                 'currency' => 'USD',
                 'merchant_order_id' => (string) $order->id,
-                'description' => "Заказ #{$order->id} - {$order->company_name}",
+                'description' => "Заказ №{$order->id} - PAUL Catering",
                 'client' => [
-                    'name' => $order->client->name ?? 'Client',
-                    'email' => $order->client->email ?? '',
-                    'phone' => $order->client->phone ?? '',
+                    'name' => $client->name,
+                    'email' => $client->email,
+                    'phone' => $client->phone ?? '',
                 ],
                 'location' => [
                     'ip' => $request->ip(),
                 ],
-                'return_url' => URL::to("/payment/success/{$order->id}"),
-                'language' => 'en',
+                'return_url' => $returnUrl,
+                'language' => 'ru',
                 'template' => '1',
                 'mobile' => '1',
             ];
 
-            // Создаем заказ в Algoritma
-            Log::info('Creating Algoritma order', [
-                'order_data' => $orderData,
-            ]);
-            
-            $result = $this->algoritmaService->createOrder($orderData);
-            
-            Log::info('Algoritma order creation result', [
-                'success' => $result['success'] ?? false,
-                'order_id' => $result['order_id'] ?? null,
-                'payment_url' => $result['payment_url'] ?? null,
-                'error' => $result['error'] ?? null,
-            ]);
-
-            if ($result['success']) {
-                // Обновляем заказ с информацией о платеже
-                $order->update([
-                    'algoritma_order_id' => $result['order_id'],
-                    'payment_url' => $result['payment_url'],
-                    'payment_created_at' => now(),
-                    'payment_status' => 'pending',
-                ]);
-
-                Log::info('Payment created successfully', [
-                    'order_id' => $order->id,
-                    'algoritma_order_id' => $result['order_id'],
-                    'payment_url' => $result['payment_url']
-                ]);
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Платеж создан успешно',
-                    'data' => [
-                        'payment_url' => $result['payment_url'],
-                        'order_id' => $order->id,
-                        'attempts' => $order->payment_attempts,
-                    ]
-                ]);
-            } else {
-                Log::error('Failed to create payment', [
-                    'order_id' => $order->id,
-                    'error' => $result['error'] ?? 'Unknown error'
-                ]);
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Ошибка создания платежа: ' . ($result['error'] ?? 'Неизвестная ошибка')
-                ], 500);
-            }
-        } catch (\Exception $e) {
-            Log::error('Exception in createPayment', [
+            Log::info('Creating payment with Algoritma', [
                 'order_id' => $order->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'amount' => $orderData['amount'],
+                'merchant_order_id' => $orderData['merchant_order_id'],
+                'return_url' => $returnUrl,
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Внутренняя ошибка сервера'
-            ], 500);
+            // Создаем платеж через Algoritma
+            $result = $this->algoritmaService->createOrder($orderData);
+
+            if (!$result['success']) {
+                Log::error('Failed to create payment with Algoritma', [
+                    'order_id' => $order->id,
+                    'error' => $result['error'] ?? 'Unknown error',
+                ]);
+                return $this->errorResponse('Не удалось создать платеж: ' . ($result['error'] ?? 'Неизвестная ошибка'), 500);
+            }
+
+            // Обновляем заказ с информацией о платеже
+            $order->update([
+                'algoritma_order_id' => $result['order_id'],
+                'payment_url' => $result['payment_url'],
+                'payment_status' => 'pending',
+                'payment_created_at' => now(),
+            ]);
+
+            Log::info('Payment created successfully', [
+                'order_id' => $order->id,
+                'algoritma_order_id' => $result['order_id'],
+                'payment_url' => $result['payment_url'],
+            ]);
+
+            return $this->successResponse([
+                'payment_url' => $result['payment_url'],
+                'order_id' => $order->id,
+                'attempts' => $order->payment_attempts,
+            ], 'Платеж создан успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Получить информацию о платеже
+     */
+    public function getPaymentInfo(Request $request, Order $order): JsonResponse
+    {
+        try {
+            $this->authorize('viewPayment', $order);
+            
+            if (!$order->algoritma_order_id) {
+                return $this->notFoundResponse('Заказ не имеет связанного платежа');
+            }
+
+            // Получаем информацию о платеже от Algoritma
+            $paymentInfo = $this->algoritmaService->getOrderInfo($order->algoritma_order_id);
+
+            if (!$paymentInfo['success']) {
+                Log::error('Failed to get payment info from Algoritma', [
+                    'order_id' => $order->id,
+                    'algoritma_order_id' => $order->algoritma_order_id,
+                    'error' => $paymentInfo['error'] ?? 'Unknown error',
+                ]);
+                return $this->errorResponse('Не удалось получить информацию о платеже', 500);
+            }
+
+            $algoritmaOrder = $paymentInfo['data']['orders'][0] ?? null;
+            if (!$algoritmaOrder) {
+                return $this->notFoundResponse('Платеж не найден в системе Algoritma');
+            }
+
+            return $this->successResponse([
+                'order_id' => $order->id,
+                'payment_status' => $order->payment_status,
+                'order_status' => $order->status,
+                'amount' => $order->final_amount,
+                'amount_charged' => $algoritmaOrder['amount_charged'] ?? '0.00',
+                'attempts' => $order->payment_attempts,
+                'can_retry' => $order->canRetryPayment(),
+                'payment_url' => $order->payment_url,
+                'created_at' => $order->payment_created_at,
+                'completed_at' => $order->payment_completed_at,
+                'details' => $algoritmaOrder,
+            ], 'Информация о платеже получена успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
     }
 
@@ -221,38 +190,17 @@ class PaymentController extends Controller
     public function handleSuccess(Request $request, Order $order): JsonResponse
     {
         try {
-            $user = $request->user();
-            if (!$user || !$user->isActive()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Доступ запрещен. Требуется авторизация.'
-                ], 403);
+            $this->authorize('viewPayment', $order);
+            
+            if (!$order->algoritma_order_id) {
+                return $this->errorResponse('Заказ не имеет связанного платежа', 400);
             }
 
-            // Проверяем права доступа к заказу
-            $hasAccess = false;
-            
-            // Координаторы могут обрабатывать любые заказы
-            if ($user->isCoordinator()) {
-                $hasAccess = true;
-            }
-            // Клиенты могут обрабатывать только свои заказы
-            elseif ($user->isClient() && $order->client_id === $user->id) {
-                $hasAccess = true;
-            }
-            
-            if (!$hasAccess) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Доступ запрещен. Нет прав для обработки этого заказа.'
-                ], 403);
-            }
-            if (!$order->algoritma_order_id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Заказ не найден или не имеет связанного платежа'
-                ], 404);
-            }
+            Log::info('Payment success callback received', [
+                'order_id' => $order->id,
+                'algoritma_order_id' => $order->algoritma_order_id,
+                'request_data' => $request->all(),
+            ]);
 
             // Проверяем статус платежа в Algoritma
             $paymentStatus = $this->algoritmaService->checkPaymentStatus($order->algoritma_order_id);
@@ -261,54 +209,33 @@ class PaymentController extends Controller
                 Log::error('Failed to check payment status', [
                     'order_id' => $order->id,
                     'algoritma_order_id' => $order->algoritma_order_id,
-                    'error' => $paymentStatus['error'] ?? 'Unknown error'
+                    'error' => $paymentStatus['error'] ?? 'Unknown error',
                 ]);
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Ошибка проверки статуса платежа'
-                ], 500);
+                return $this->errorResponse('Не удалось проверить статус платежа', 500);
             }
 
-            $status = $paymentStatus['payment_status'] ?? 'unknown';
-            $details = $paymentStatus['data'] ?? [];
+            Log::info('Payment status checked', [
+                'order_id' => $order->id,
+                'payment_status' => $paymentStatus['payment_status'],
+                'amount_charged' => $paymentStatus['amount_charged'] ?? '0.00',
+            ]);
 
-            // Обновляем статус платежа
-            $order->updatePaymentStatus($status, $details);
+            // Обновляем статус платежа в заказе
+            $order->updatePaymentStatus($paymentStatus['payment_status'], $paymentStatus);
 
-            // Отправляем уведомления
-            if ($status === 'charged') {
+            // Если платеж успешен, отправляем уведомления
+            if ($paymentStatus['payment_status'] === 'charged') {
                 $this->notificationService->sendPaymentSuccessNotification($order);
                 $this->notificationService->sendNewOrderNotifications($order);
             }
 
-            Log::info('Payment status updated', [
+            return $this->successResponse([
                 'order_id' => $order->id,
-                'payment_status' => $status,
-                'algoritma_order_id' => $order->algoritma_order_id
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Статус платежа обновлен',
-                'data' => [
-                    'order_id' => $order->id,
-                    'payment_status' => $status,
-                    'order_status' => $order->status,
-                    'amount_charged' => $paymentStatus['amount_charged'] ?? '0.00',
-                ]
-            ]);
+                'payment_status' => $paymentStatus['payment_status'],
+                'amount_charged' => $paymentStatus['amount_charged'] ?? '0.00',
+            ], 'Статус платежа обновлен');
         } catch (\Exception $e) {
-            Log::error('Exception in handleSuccess', [
-                'order_id' => $order->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Внутренняя ошибка сервера'
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -318,166 +245,61 @@ class PaymentController extends Controller
     public function handleFailure(Request $request, Order $order): JsonResponse
     {
         try {
-            $user = $request->user();
-            if (!$user || !$user->isActive()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Доступ запрещен. Требуется авторизация.'
-                ], 403);
+            $this->authorize('viewPayment', $order);
+            
+            if (!$order->algoritma_order_id) {
+                return $this->errorResponse('Заказ не имеет связанного платежа', 400);
             }
 
-            // Проверяем права доступа к заказу
-            $hasAccess = false;
-            
-            // Координаторы могут обрабатывать любые заказы
-            if ($user->isCoordinator()) {
-                $hasAccess = true;
-            }
-            // Клиенты могут обрабатывать только свои заказы
-            elseif ($user->isClient() && $order->client_id === $user->id) {
-                $hasAccess = true;
-            }
-            
-            if (!$hasAccess) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Доступ запрещен. Нет прав для обработки этого заказа.'
-                ], 403);
-            }
-            if (!$order->algoritma_order_id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Заказ не найден или не имеет связанного платежа'
-                ], 404);
-            }
+            Log::info('Payment failure callback received', [
+                'order_id' => $order->id,
+                'algoritma_order_id' => $order->algoritma_order_id,
+                'request_data' => $request->all(),
+            ]);
 
             // Проверяем статус платежа в Algoritma
             $paymentStatus = $this->algoritmaService->checkPaymentStatus($order->algoritma_order_id);
 
-            if ($paymentStatus['success']) {
-                $status = $paymentStatus['payment_status'];
-                $details = $paymentStatus['data'] ?? [];
-
-                // Обновляем статус платежа
-                $order->updatePaymentStatus($status, $details);
-
-                Log::info('Payment failure status updated', [
-                    'order_id' => $order->id,
-                    'payment_status' => $status,
-                    'algoritma_order_id' => $order->algoritma_order_id
-                ]);
-            } else {
-                // Если не удалось проверить статус, помечаем как неуспешный
-                $order->updatePaymentStatus('failed', [
-                    'error' => $paymentStatus['error'] ?? 'Unknown error'
-                ]);
-
-                Log::error('Payment status check failed, marked as failed', [
+            if (!$paymentStatus['success']) {
+                Log::error('Failed to check payment status', [
                     'order_id' => $order->id,
                     'algoritma_order_id' => $order->algoritma_order_id,
-                    'error' => $paymentStatus['error'] ?? 'Unknown error'
+                    'error' => $paymentStatus['error'] ?? 'Unknown error',
                 ]);
+                return $this->errorResponse('Не удалось проверить статус платежа', 500);
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Статус неуспешного платежа обработан',
-                'data' => [
-                    'order_id' => $order->id,
-                    'payment_status' => $order->payment_status,
-                    'can_retry' => $order->canRetryPayment(),
-                    'attempts' => $order->payment_attempts,
-                ]
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Exception in handleFailure', [
-                'order_id' => $order->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            // Обновляем статус платежа в заказе
+            $order->updatePaymentStatus($paymentStatus['payment_status'], $paymentStatus);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Внутренняя ошибка сервера'
-            ], 500);
+            return $this->successResponse([
+                'order_id' => $order->id,
+                'payment_status' => $paymentStatus['payment_status'],
+            ], 'Статус неуспешного платежа обработан');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
     }
 
     /**
-     * Получить информацию о платеже
-     */
-    public function getPaymentInfo(Order $order): JsonResponse
-    {
-        try {
-            if (!$order->algoritma_order_id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Заказ не имеет связанного платежа'
-                ], 404);
-            }
-
-            // Получаем актуальную информацию о платеже
-            $paymentStatus = $this->algoritmaService->checkPaymentStatus($order->algoritma_order_id);
-
-            if (!$paymentStatus['success']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Ошибка получения информации о платеже'
-                ], 500);
-            }
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'order_id' => $order->id,
-                    'payment_status' => $paymentStatus['payment_status'],
-                    'order_status' => $order->status,
-                    'amount' => $order->final_amount,
-                    'amount_charged' => $paymentStatus['amount_charged'] ?? '0.00',
-                    'amount_refunded' => $paymentStatus['amount_refunded'] ?? '0.00',
-                    'attempts' => $order->payment_attempts,
-                    'can_retry' => $order->canRetryPayment(),
-                    'payment_url' => $order->payment_url,
-                    'created_at' => $order->payment_created_at,
-                    'completed_at' => $order->payment_completed_at,
-                    'details' => $paymentStatus['data'] ?? [],
-                ]
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Exception in getPaymentInfo', [
-                'order_id' => $order->id,
-                'error' => $e->getMessage()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Внутренняя ошибка сервера'
-            ], 500);
-        }
-    }
-
-    /**
-     * Тест подключения к Algoritma API
+     * Тест подключения к Algoritma
      */
     public function testConnection(): JsonResponse
     {
         try {
             $result = $this->algoritmaService->testConnection();
 
-            return response()->json([
-                'success' => $result['success'],
-                'message' => $result['success'] ? 'Подключение успешно' : 'Ошибка подключения',
-                'data' => $result
-            ]);
+            if ($result['success']) {
+                return $this->successResponse([
+                    'message' => $result['message'],
+                    'date' => $result['date'] ?? null,
+                    'response_data' => $result['response_data'] ?? null,
+                ], 'Подключение успешно');
+            } else {
+                return $this->errorResponse('Ошибка подключения: ' . ($result['error'] ?? 'Неизвестная ошибка'), 500);
+            }
         } catch (\Exception $e) {
-            Log::error('Exception in testConnection', [
-                'error' => $e->getMessage()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Внутренняя ошибка сервера'
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -489,19 +311,9 @@ class PaymentController extends Controller
         try {
             $testCards = $this->algoritmaService->getTestCards();
 
-            return response()->json([
-                'success' => true,
-                'data' => $testCards
-            ]);
+            return $this->successResponse($testCards, 'Тестовые карты получены успешно');
         } catch (\Exception $e) {
-            Log::error('Exception in getTestCards', [
-                'error' => $e->getMessage()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Внутренняя ошибка сервера'
-            ], 500);
+            return $this->handleException($e);
         }
     }
 }

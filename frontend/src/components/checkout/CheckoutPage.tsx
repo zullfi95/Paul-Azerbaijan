@@ -150,6 +150,13 @@ export default function CheckoutPage() {
     }
     if (!formData.deliveryDate) {
       newErrors.deliveryDate = 'Delivery date is required';
+    } else {
+      const selectedDate = new Date(formData.deliveryDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selectedDate < today) {
+        newErrors.deliveryDate = 'Delivery date must be today or later';
+      }
     }
     if (!formData.deliveryTime) {
       newErrors.deliveryTime = 'Delivery time is required';

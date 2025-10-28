@@ -20,12 +20,12 @@ export interface User {
   email: string;
   phone?: string;
   address?: string;
+  shipping_address?: string;
   company_name?: string;
   position?: string;
   contact_person?: string;
   email_verified_at?: string;
   user_type: 'client' | 'staff';
-  staff_role?: 'coordinator' | 'observer';
   client_category?: 'corporate' | 'one_time';
   status: 'active' | 'inactive' | 'suspended';
   created_at: string;
@@ -36,16 +36,16 @@ export interface User {
 export interface Application {
   id: number;
   first_name: string;
-  last_name: string;
-  phone: string;
+  last_name?: string;
+  company_name?: string;
+  contact_person?: string;
   email: string;
+  phone: string;
   message?: string;
   event_address?: string;
   event_date?: string;
   event_time?: string;
-  event_lat?: number;
-  event_lng?: number;
-  cart_items: CartItem[] | null;
+  cart_items?: CartItem[] | null;
   status: 'new' | 'processing' | 'approved' | 'rejected';
   coordinator_comment?: string;
   coordinator_id?: number;
@@ -61,7 +61,7 @@ export interface Application {
 export interface MenuItem {
   id: string;
   name: string;
-  quantity: number;
+  quantity?: number;
   price: number;
 }
 
@@ -93,20 +93,23 @@ export interface Order {
   company_name: string;
   client_type?: 'corporate' | 'one_time';
   customer?: {
-    name?: string;
+    first_name?: string;
+    last_name?: string;
     email?: string;
     phone?: string;
     company?: string;
     position?: string;
   };
-  employees?: {
-    count?: number;
-    roles?: string[];
-    dietary_requirements?: string[];
-  };
+  employees?: Array<{
+    first_name: string;
+    last_name: string;
+    email?: string;
+    phone?: string;
+  }>;
   menu_items: MenuItem[];
   comment?: string;
-  status: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled';
+  status: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled' | 'paid';
+  payment_status?: 'pending' | 'authorized' | 'charged' | 'failed' | 'refunded' | 'credited';
   coordinator_id?: number;
   client_id?: number;
   total_amount: number;
@@ -122,37 +125,20 @@ export interface Order {
   delivery_cost?: number;
   recurring_schedule?: {
     enabled: boolean;
-    frequency: 'weekly' | 'monthly';
-    days: string[];
-    delivery_time: string;
-    notes: string;
+    frequency?: 'weekly' | 'monthly';
+    days?: string[];
+    delivery_time?: string;
+    notes?: string;
   };
-  // Новые поля
+  // Новые поля для совместимости с бекендом
   equipment_required?: number;
   staff_assigned?: number;
   special_instructions?: string;
-  beo_file_path?: string;
-  beo_generated_at?: string;
-  preparation_timeline?: {
-    start_time?: string;
-    end_time?: string;
-    stages?: Array<{
-      name: string;
-      duration: number;
-      responsible?: string;
-    }>;
-  };
   is_urgent?: boolean;
-  order_deadline?: string;
-  modification_deadline?: string;
   application_id?: number;
-  // Поля для платежей
   algoritma_order_id?: string;
-  payment_status?: 'pending' | 'authorized' | 'charged' | 'failed' | 'refunded' | 'credited';
   payment_url?: string;
   payment_attempts?: number;
-  payment_created_at?: string;
-  payment_completed_at?: string;
   payment_details?: {
     method?: string;
     transaction_id?: string;
@@ -222,12 +208,20 @@ export interface RegisterRequest {
 
 export interface ApplicationRequest {
   first_name: string;
-  last_name: string | null;
+  last_name?: string;
+  company_name?: string;
+  contact_person?: string;
   phone: string;
   email: string;
-  message?: string | null;
+  message?: string;
+  event_address?: string;
+  event_date?: string;
+  event_time?: string;
+  event_lat?: number;
+  event_lng?: number;
   cart_items?: CartItem[];
   coordinator_id?: number;
+  client_id?: number;
 }
 
 // Error Types

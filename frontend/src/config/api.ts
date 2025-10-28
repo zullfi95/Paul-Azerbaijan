@@ -13,6 +13,23 @@ export const API_CONFIG = {
     CLIENT_ORDERS_ACTIVE: '/client/orders/active',
     CLIENT_NOTIFICATIONS: '/client/notifications',
     CLIENT_NOTIFICATIONS_UNREAD: '/client/notifications/unread-count',
+    // Menu endpoints
+    MENU_CATEGORIES: '/menu/categories',
+    MENU_ITEMS: '/menu/items',
+    MENU_FULL: '/menu/full',
+    MENU_SEARCH: '/menu/search',
+    MENU_STATS: '/menu/stats',
+    // Public endpoints
+    COORDINATORS: '/coordinators',
+    EVENT_APPLICATIONS: '/event-applications',
+    // Payment endpoints
+    PAYMENT_TEST: '/payment/test-connection',
+    PAYMENT_CARDS: '/payment/test-cards',
+    PAYMENT_CREATE: '/payment/orders',
+    // IIKO endpoints
+    IIKO_ORGS: '/iiko/organizations',
+    IIKO_MENU: '/iiko/menu',
+    IIKO_SYNC: '/iiko/sync-menu',
   }
 };
 

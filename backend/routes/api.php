@@ -66,22 +66,23 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::patch('/applications/{application}/status', [ApplicationController::class, 'updateStatus']); // Обновление статуса
         
         // Пользователи (сотрудники)
+        Route::get('/users/statistics', [UserController::class, 'statistics']); // Статистика пользователей - ДОЛЖЕН БЫТЬ ПЕРЕД {user}
         Route::get('/users', [UserController::class, 'index']); // Список пользователей
         Route::get('/users/{user}', [UserController::class, 'show']); // Просмотр пользователя
         Route::post('/users', [UserController::class, 'store'])->middleware('throttle:5,1'); // Rate limiting
         Route::put('/users/{user}', [UserController::class, 'update'])->middleware('throttle:5,1'); // Rate limiting
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('throttle:3,1'); // Rate limiting
-        Route::get('/users/statistics', [UserController::class, 'statistics']); // Статистика пользователей
 
         // Клиенты
+        Route::get('/clients/statistics', [ClientController::class, 'statistics']); // Статистика клиентов - ДОЛЖЕН БЫТЬ ПЕРЕД {client}
         Route::get('/clients', [ClientController::class, 'index']);
         Route::get('/clients/{client}', [ClientController::class, 'show']);
         Route::post('/clients', [ClientController::class, 'store']);
         Route::put('/clients/{client}', [ClientController::class, 'update']);
         Route::delete('/clients/{client}', [ClientController::class, 'destroy']);
-        Route::get('/clients/statistics', [ClientController::class, 'statistics']);
         
         // Заказы (только для координаторов)
+        Route::get('/orders/statistics', [OrderController::class, 'statistics']); // Статистика заказов - ДОЛЖЕН БЫТЬ ПЕРЕД {order}
         Route::get('/orders', [OrderController::class, 'index']); // Список заказов
         Route::get('/orders/{order}', [OrderController::class, 'show']); // Просмотр заказа
         Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:10,1'); // Rate limiting
@@ -89,8 +90,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->middleware('throttle:10,1'); // Rate limiting
         Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->middleware('throttle:3,1'); // Rate limiting
         Route::post('/applications/{application}/create-order', [OrderController::class, 'createFromApplication']); // Создание заказа из заявки
-        Route::get('/orders/statistics', [OrderController::class, 'statistics']); // Статистика заказов
-
         // iiko API интеграция
         Route::prefix('iiko')->group(function () {
             Route::get('/test-connection', [IikoController::class, 'testConnection']); // Проверка подключения
@@ -100,8 +99,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/price-categories', [IikoController::class, 'getPriceCategories']); // Категории цен
             Route::post('/sync-menu', [IikoController::class, 'syncMenu']); // Синхронизация меню
         });
-        // (перемещено ниже, вне группы coordinator)
-
     });
 
     // Маршруты для клиентов

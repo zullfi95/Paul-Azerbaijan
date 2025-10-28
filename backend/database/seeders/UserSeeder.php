@@ -19,14 +19,8 @@ class UserSeeder extends Seeder
             'name' => 'Эльдар Мамедов',
             'email' => 'admin@example.com',
             'password' => Hash::make('password123'),
-            'staff_role' => 'coordinator',
+            'user_type' => 'staff',
             'status' => 'active',
-            'notification_settings' => json_encode([
-                'email' => true,
-                'sms' => false,
-                'new_applications' => true,
-                'order_updates' => true
-            ]),
         ]);
 
         // Создаем наблюдателя - ПЕРСОНАЛ
@@ -34,14 +28,8 @@ class UserSeeder extends Seeder
             'name' => 'Айгюн Алиева',
             'email' => 'observer@example.com',
             'password' => Hash::make('password123'),
-            'staff_role' => 'observer',
+            'user_type' => 'staff',
             'status' => 'active',
-            'notification_settings' => json_encode([
-                'email' => true,
-                'sms' => true,
-                'new_applications' => false,
-                'order_updates' => true
-            ]),
         ]);
 
         // Создаем корпоративного клиента - КЛИЕНТ

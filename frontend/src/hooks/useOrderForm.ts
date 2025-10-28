@@ -209,6 +209,18 @@ export const useOrderForm = () => {
         e.preventDefault();
         setLoading(true);
 
+        // Валидация даты доставки
+        if (formData.delivery_date) {
+            const selectedDate = new Date(formData.delivery_date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (selectedDate < today) {
+                alert('Дата доставки должна быть сегодня или позже');
+                setLoading(false);
+                return;
+            }
+        }
+
         const selectedClient = clients.find(c => c.id === formData.selected_client_id);
         const payload = {
             ...formData,

@@ -30,7 +30,6 @@ class User extends Authenticatable
         'company_name',
         'position',
         'contact_person',
-        'staff_role',
         'status',
         'user_type', // 'staff' or 'client'
         'client_category', // 'corporate' | 'one_time'
@@ -73,15 +72,7 @@ class User extends Authenticatable
      */
     public function isCoordinator(): bool
     {
-        return $this->isStaff() && $this->staff_role === 'coordinator';
-    }
-
-    /**
-     * Проверяет, является ли пользователь наблюдателем
-     */
-    public function isObserver(): bool
-    {
-        return $this->isStaff() && $this->staff_role === 'observer';
+        return $this->isStaff();
     }
 
     /**

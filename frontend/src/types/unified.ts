@@ -78,23 +78,28 @@ export interface MenuItem {
 }
 
 // ===== APPLICATION TYPES =====
-export type ApplicationStatus = 'pending' | 'approved' | 'rejected' | 'in_progress' | 'completed' | 'cancelled';
+export type ApplicationStatus = 'new' | 'processing' | 'approved' | 'rejected';
 
 export interface Application {
   id: number;
-  company_name: string;
-  contact_person: string;
+  first_name: string;
+  last_name?: string;
+  company_name?: string;
+  contact_person?: string;
   email: string;
   phone: string;
-  event_type: string;
-  event_date: string;
-  event_time: string;
-  guest_count: number;
-  budget?: number;
-  special_requirements?: string;
+  message?: string;
+  event_address?: string;
+  event_date?: string;
+  event_time?: string;
+  event_lat?: number;
+  event_lng?: number;
+  cart_items?: CartItem[] | null;
   status: ApplicationStatus;
-  client_id: number;
+  coordinator_comment?: string;
   coordinator_id?: number;
+  client_id?: number;
+  processed_at?: string;
   created_at: string;
   updated_at: string;
   client?: User;
@@ -110,17 +115,19 @@ export interface Order {
   company_name: string;
   client_type?: 'corporate' | 'one_time';
   customer?: {
-    name?: string;
+    first_name?: string;
+    last_name?: string;
     email?: string;
     phone?: string;
     company?: string;
     position?: string;
   };
-  employees?: {
-    count?: number;
-    roles?: string[];
-    dietary_requirements?: string[];
-  };
+  employees?: Array<{
+    first_name: string;
+    last_name: string;
+    email?: string;
+    phone?: string;
+  }>;
   menu_items: MenuItem[];
   comment?: string;
   status: OrderStatus;
@@ -140,10 +147,10 @@ export interface Order {
   delivery_cost?: number;
   recurring_schedule?: {
     enabled: boolean;
-    frequency: 'weekly' | 'monthly';
-    days: string[];
-    delivery_time: string;
-    notes: string;
+    frequency?: 'weekly' | 'monthly';
+    days?: string[];
+    delivery_time?: string;
+    notes?: string;
   };
   // Новые поля
   equipment_required?: number;
@@ -166,7 +173,6 @@ export interface Order {
   application_id?: number;
   // Поля для платежей
   algoritma_order_id?: string;
-  payment_status?: 'pending' | 'authorized' | 'charged' | 'failed' | 'refunded' | 'credited';
   payment_url?: string;
   payment_attempts?: number;
   payment_created_at?: string;

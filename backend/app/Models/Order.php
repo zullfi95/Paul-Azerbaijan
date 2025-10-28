@@ -36,21 +36,13 @@ class Order extends Model
         'equipment_required',
         'staff_assigned',
         'special_instructions',
-        'beo_file_path',
-        'beo_generated_at',
-        'preparation_timeline',
         'is_urgent',
-        'order_deadline',
-        'modification_deadline',
         'application_id',
         // Поля для платежей
         'algoritma_order_id',
         'payment_status',
         'payment_url',
         'payment_attempts',
-        'payment_created_at',
-        'payment_completed_at',
-        'payment_details',
     ];
 
     protected $casts = [
@@ -60,12 +52,8 @@ class Order extends Model
         'recurring_schedule' => 'array',
         'equipment_required' => 'integer',
         'staff_assigned' => 'integer',
-        'preparation_timeline' => 'array',
         'delivery_date' => 'date',
         'delivery_time' => 'datetime',
-        'beo_generated_at' => 'datetime',
-        'order_deadline' => 'datetime',
-        'modification_deadline' => 'datetime',
         'total_amount' => 'float',
         'discount_fixed' => 'float',
         'discount_percent' => 'float',
@@ -76,9 +64,6 @@ class Order extends Model
         'is_urgent' => 'boolean',
         // Поля для платежей
         'payment_attempts' => 'integer',
-        'payment_created_at' => 'datetime',
-        'payment_completed_at' => 'datetime',
-        'payment_details' => 'array',
     ];
 
     /**
@@ -137,7 +122,7 @@ class Order extends Model
      */
     public function isPendingPayment(): bool
     {
-        return $this->payment_status === 'pending' && $this->status === 'submitted';
+        return $this->status === 'pending_payment';
     }
 
     /**

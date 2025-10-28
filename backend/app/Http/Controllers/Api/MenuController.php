@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\MenuCategory;
 use App\Models\MenuItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
-class MenuController extends Controller
+class MenuController extends BaseApiController
 {
     /**
      * Получить все категории меню для организации
@@ -25,15 +24,9 @@ class MenuController extends Controller
                 ->orderBy('sort_order')
                 ->get();
 
-            return response()->json([
-                'success' => true,
-                'data' => $categories
-            ]);
+            return $this->successResponse($categories, 'Категории меню получены успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении категорий: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -60,15 +53,9 @@ class MenuController extends Controller
 
             $items = $query->get();
 
-            return response()->json([
-                'success' => true,
-                'data' => $items
-            ]);
+            return $this->successResponse($items, 'Элементы меню получены успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении элементов меню: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -90,15 +77,9 @@ class MenuController extends Controller
                 ->orderBy('sort_order')
                 ->get();
 
-            return response()->json([
-                'success' => true,
-                'data' => $categories
-            ]);
+            return $this->successResponse($categories, 'Полное меню получено успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении меню: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -113,21 +94,12 @@ class MenuController extends Controller
                 ->find($id);
 
             if (!$item) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Элемент меню не найден'
-                ], 404);
+                return $this->notFoundResponse('Элемент меню не найден');
             }
 
-            return response()->json([
-                'success' => true,
-                'data' => $item
-            ]);
+            return $this->successResponse($item, 'Элемент меню получен успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении элемента меню: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -142,26 +114,21 @@ class MenuController extends Controller
         ]);
 
         try {
+            $searchQuery = $request->input('query');
             $items = MenuItem::active()
                 ->available()
                 ->forOrganization($request->organization_id)
                 ->with('menuCategory')
-                ->where(function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->query . '%')
-                          ->orWhere('description', 'like', '%' . $request->query . '%');
+                ->where(function ($query) use ($searchQuery) {
+                    $query->where('name', 'like', '%' . $searchQuery . '%')
+                          ->orWhere('description', 'like', '%' . $searchQuery . '%');
                 })
                 ->orderBy('sort_order')
                 ->get();
 
-            return response()->json([
-                'success' => true,
-                'data' => $items
-            ]);
+            return $this->successResponse($items, 'Результаты поиска получены успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при поиске: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -189,15 +156,9 @@ class MenuController extends Controller
                     ->count(),
             ];
 
-            return response()->json([
-                'success' => true,
-                'data' => $stats
-            ]);
+            return $this->successResponse($stats, 'Статистика меню получена успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении статистики: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 }

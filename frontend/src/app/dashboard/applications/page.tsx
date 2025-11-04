@@ -52,6 +52,12 @@ const statusColors = {
   rejected: '#EF4444'
 };
 
+// Helper function to calculate total amount from cart items
+const calculateTotalAmount = (cartItems: any[] | null | undefined): number => {
+  if (!cartItems || !Array.isArray(cartItems)) return 0;
+  return cartItems.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
+};
+
 export default function ApplicationsPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
@@ -173,8 +179,8 @@ export default function ApplicationsPage() {
           bValue = b.status;
           break;
         case 'amount':
-          aValue = a.total_amount || 0;
-          bValue = b.total_amount || 0;
+          aValue = calculateTotalAmount(a.cart_items || []);
+          bValue = calculateTotalAmount(b.cart_items || []);
           break;
         case 'date':
         default:
@@ -311,7 +317,7 @@ export default function ApplicationsPage() {
 
       if (result.success) {
         // Download file
-        const blob = new Blob([result.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const blob = new Blob([result.data as BlobPart], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -577,8 +583,8 @@ export default function ApplicationsPage() {
                         )}
                       </td>
                       <td className="table-cell">
-                        {app.event_name ? (
-                          <div className="event-address">{app.event_name}</div>
+                        {app.event_address ? (
+                          <div className="event-address">{app.event_address}</div>
                         ) : (
                           <div className="no-event">Не указано</div>
                         )}
@@ -596,7 +602,7 @@ export default function ApplicationsPage() {
                       </td>
                       <td className="table-cell">
                         <div className="amount-value">
-                          {app.total_amount ? `₽${app.total_amount.toLocaleString()}` : '—'}
+                          {calculateTotalAmount(app.cart_items) ? `₽${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
                         </div>
                       </td>
                       <td className="table-cell">
@@ -653,13 +659,13 @@ export default function ApplicationsPage() {
                   <div className="card-field">
                     <div className="field-label">Мероприятие</div>
                     <div className="field-value">
-                      {app.event_name || 'Не указано'}
+                      {app.event_address || 'Не указано'}
                     </div>
                   </div>
                   <div className="card-field">
                     <div className="field-label">Сумма</div>
                     <div className="field-value">
-                      {app.total_amount ? `₽${app.total_amount.toLocaleString()}` : '—'}
+                      {calculateTotalAmount(app.cart_items) ? `₽${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
                     </div>
                   </div>
                   <div className="card-footer">
@@ -667,7 +673,7 @@ export default function ApplicationsPage() {
                       {app.created_at ? new Date(app.created_at).toLocaleDateString('ru-RU') : '—'}
                     </div>
                     <div className="card-amount">
-                      {app.total_amount ? `₽${app.total_amount.toLocaleString()}` : '—'}
+                      {calculateTotalAmount(app.cart_items) ? `₽${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
                     </div>
                   </div>
                 </div>
@@ -697,15 +703,15 @@ export default function ApplicationsPage() {
                             {app.first_name} {app.last_name || ''}
                           </div>
                           <div className="kanban-email">{app.email}</div>
-                          {app.event_name && (
-                            <div className="kanban-event">{app.event_name}</div>
+                          {app.event_address && (
+                            <div className="kanban-event">{app.event_address}</div>
                           )}
                           <div className="kanban-footer">
                             <div className="kanban-date">
                               {app.created_at ? new Date(app.created_at).toLocaleDateString('ru-RU') : '—'}
                             </div>
                             <div className="kanban-amount">
-                              {app.total_amount ? `₽${app.total_amount.toLocaleString()}` : '—'}
+                              {calculateTotalAmount(app.cart_items) ? `₽${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
                             </div>
                           </div>
                         </div>

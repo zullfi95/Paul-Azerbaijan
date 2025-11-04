@@ -86,9 +86,19 @@ export const useOrderForm = () => {
     const { data: menuItems = [], isLoading: isLoadingMenuItems } = useQuery<CartItem[]>({
         queryKey: queryKeys.menu.items(user?.id?.toString()),
         queryFn: async () => {
-            const organizationId = (user && 'organization_id' in user) ? (user as User & { organization_id: string }).organization_id : 'default';
-            const result = await makeApiRequest<{data: CartItem[]}>(`/menu/items?organization_id=${organizationId}`);
-            return result.success ? result.data?.data || [] : [];
+            console.log('📥 Загрузка меню...');
+            // Загружаем все позиции меню без фильтра по организации
+            const result = await makeApiRequest<{data: CartItem[]}>('/menu/items');
+            console.log('📦 Ответ от API:', result);
+            
+            if (result.success && result.data) {
+                const items = result.data.data || result.data || [];
+                console.log('✅ Получено товаров:', items.length);
+                return Array.isArray(items) ? items : [];
+            }
+            
+            console.log('❌ Не удалось загрузить меню');
+            return [];
         },
         enabled: !!user, // Only run query if user is available
         staleTime: 15 * 60 * 1000, // 15 минут

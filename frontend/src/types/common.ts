@@ -23,6 +23,7 @@ export interface User {
   shipping_address?: string;
   company_name?: string;
   position?: string;
+  staff_role?: string; // Для обратной совместимости
   contact_person?: string;
   email_verified_at?: string;
   user_type: 'client' | 'staff';
@@ -45,6 +46,8 @@ export interface Application {
   event_address?: string;
   event_date?: string;
   event_time?: string;
+  event_lat?: number;
+  event_lng?: number;
   cart_items?: CartItem[] | null;
   status: 'new' | 'processing' | 'approved' | 'rejected';
   coordinator_comment?: string;

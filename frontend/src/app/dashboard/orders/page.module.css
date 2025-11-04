@@ -1,0 +1,492 @@
+/* Orders Page Styles */
+
+/* Modal Overlays */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+.kpi-grid {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+/* Calculator Modal */
+.calculatorCard {
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.calculatorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calculatorContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  display: block;
+}
+
+.inputLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.inputField {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.optionsSection {
+  display: block;
+}
+
+.optionsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.optionsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.dateTimeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.calculationResult {
+  padding: 1.5rem;
+  background-color: #F8FAFC;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+}
+
+.resultTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.resultRows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resultRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.resultValue {
+  font-weight: 600;
+}
+
+.markupRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.markupPositive {
+  color: #EF4444;
+}
+
+.markupNegative {
+  color: #10B981;
+}
+
+.resultDivider {
+  margin: 0.5rem 0;
+  border: none;
+  border-top: 1px solid #E2E8F0;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.savingsRow {
+  display: flex;
+  justify-content: space-between;
+  color: #10B981;
+  font-size: 0.875rem;
+}
+
+/* Analytics Modal */
+.analyticsCard {
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.analyticsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.analyticsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.analyticsSection {
+  display: block;
+}
+
+.sectionTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.statCard {
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.statCardGreen {
+  background-color: #F0FDF4;
+}
+
+.statCardBlue {
+  background-color: #EFF6FF;
+}
+
+.statCardYellow {
+  background-color: #FEF3C7;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.statValueGreen {
+  color: #16A34A;
+}
+
+.statValueBlue {
+  color: #2563EB;
+}
+
+.statValueYellow {
+  color: #D97706;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+}
+
+.statLabelGreen {
+  color: #15803D;
+}
+
+.statLabelBlue {
+  color: #1D4ED8;
+}
+
+.statLabelYellow {
+  color: #B45309;
+}
+
+.clientsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.clientCard {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: #F8FAFC;
+  border-radius: 8px;
+}
+
+.clientInfo {
+  display: block;
+}
+
+.clientName {
+  font-weight: 600;
+}
+
+.clientOrders {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+.clientAmount {
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.75rem;
+}
+
+.itemCard {
+  padding: 0.75rem;
+  background-color: #F8FAFC;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+}
+
+.itemName {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.itemQuantity {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+.itemRevenue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #16A34A;
+}
+
+.monthsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.monthCard {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: #F8FAFC;
+  border-radius: 8px;
+}
+
+.monthName {
+  font-weight: 600;
+}
+
+.monthStats {
+  display: flex;
+  gap: 1rem;
+}
+
+.monthOrders {
+  color: #64748B;
+}
+
+.monthRevenue {
+  font-weight: 700;
+  color: #16A34A;
+}
+
+/* Grouped Orders */
+.groupedContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.groupHeader {
+  margin-bottom: 1rem;
+}
+
+.groupTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.groupBadge {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  background-color: #F3F4F6;
+  border-radius: 12px;
+  color: #374151;
+}
+
+.groupGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Kanban View */
+.kanbanGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.kanbanColumn {
+  display: block;
+}
+
+.kanbanHeader {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.kanbanTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kanbanBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+}
+
+.kanbanList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 400px;
+}
+
+.kanbanCard {
+  padding: 1rem;
+  background-color: #F8FAFC;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.kanbanCard:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.kanbanCardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.kanbanCardCheckbox {
+  cursor: pointer;
+}
+
+.kanbanCardInfo {
+  flex: 1;
+}
+
+.kanbanCardTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: #1F2937;
+}
+
+.kanbanCardSubtitle {
+  font-size: 0.75rem;
+  color: #6B7280;
+  margin: 0;
+}
+
+.kanbanCardPrice {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin-bottom: 0.75rem;
+}
+
+.kanbanCardActions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.kanbanActionButton {
+  flex: 1;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.kanbanCopyButton {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .dateTimeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .groupGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kanbanGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .itemsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+

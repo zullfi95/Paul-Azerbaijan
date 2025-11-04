@@ -122,7 +122,9 @@ class Order extends Model
      */
     public function isPendingPayment(): bool
     {
-        return $this->status === 'pending_payment';
+        // Разрешаем оплату для заказов в статусе pending_payment или submitted
+        // (submitted - когда заказ только создан и требует оплаты для one_time клиентов)
+        return in_array($this->status, ['pending_payment', 'submitted']);
     }
 
     /**
@@ -138,7 +140,11 @@ class Order extends Model
      */
     public function canRetryPayment(): bool
     {
-        return $this->payment_attempts < 3 && $this->payment_status === 'failed';
+        // Разрешаем оплату если:
+        // 1. Меньше 3 попыток И статус pending (первая попытка)
+        // 2. Меньше 3 попыток И статус failed (повторная попытка)
+        return $this->payment_attempts < 3 && 
+               in_array($this->payment_status, ['pending', 'failed']);
     }
 
     /**

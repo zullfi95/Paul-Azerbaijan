@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useAuthGuard, isCoordinator } from '../../../utils/authConstants';
+import DashboardLayout from '../../../components/DashboardLayout';
 import ResetPasswordForm from '../../../components/ResetPasswordForm';
 
 export default function ResetPasswordPage() {
@@ -12,33 +13,34 @@ export default function ResetPasswordPage() {
   const [showForm, setShowForm] = useState(false);
 
   // Проверяем, что пользователь является координатором
-  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, isCoordinator, router);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', position: '', staff_role: '' }, isCoordinator, router);
 
   if (!hasAccess) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔒</div>
-          <h2 style={{ 
-            fontSize: '1.5rem', 
-            fontFamily: 'Playfair Display, serif',
-            color: '#1A1A1A',
-            marginBottom: '1rem'
-          }}>
-            Доступ запрещен
-          </h2>
-          <p style={{ color: '#4A4A4A' }}>
-            Только координаторы могут сбрасывать пароли пользователей
-          </p>
+      <DashboardLayout>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔒</div>
+            <h2 style={{ 
+              fontSize: '1.5rem', 
+              fontFamily: 'Playfair Display, serif',
+              color: '#1A1A1A',
+              marginBottom: '1rem'
+            }}>
+              Доступ запрещен
+            </h2>
+            <p style={{ color: '#4A4A4A' }}>
+              Только координаторы могут сбрасывать пароли пользователей
+            </p>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#F9F9F6' }}>
-      <div style={{ padding: '2rem' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <DashboardLayout>
+      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <div style={{ marginBottom: '2rem' }}>
             <h1 style={{
               fontSize: '2.5rem',
@@ -141,8 +143,7 @@ export default function ResetPasswordPage() {
             </ul>
           </div>
         </div>
-      </div>
-    </div>
+    </DashboardLayout>
   );
 }
 

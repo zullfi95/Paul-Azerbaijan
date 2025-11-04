@@ -222,7 +222,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         password, 
         name, 
         surname, 
-        phone 
+        phone,
+        user_type: 'client' // Обязательное поле для backend
       };
       
       

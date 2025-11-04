@@ -48,19 +48,30 @@ class AlgoritmaService
         }
 
         try {
+            // Формируем options, добавляя только существующие параметры
+            $options = [
+                'return_url' => $orderData['return_url'],
+                'language' => $orderData['language'] ?? 'en',
+            ];
+            
+            // Добавляем template если указан
+            if (isset($orderData['template'])) {
+                $options['template'] = $orderData['template'];
+            }
+            
+            // Добавляем mobile только если указан и нет template
+            if (isset($orderData['mobile']) && !isset($orderData['template'])) {
+                $options['mobile'] = $orderData['mobile'];
+            }
+            
             $payload = [
                 'amount' => $orderData['amount'],
-                'currency' => $orderData['currency'] ?? 'USD',
+                'currency' => $orderData['currency'] ?? 'AZN',
                 'merchant_order_id' => $orderData['merchant_order_id'],
                 'description' => $orderData['description'] ?? 'Order payment',
                 'client' => $orderData['client'] ?? [],
                 'location' => $orderData['location'] ?? [],
-                'options' => [
-                    'return_url' => $orderData['return_url'],
-                    'language' => $orderData['language'] ?? 'en',
-                    'template' => $orderData['template'] ?? '1',
-                    'mobile' => $orderData['mobile'] ?? '1',
-                ]
+                'options' => $options
             ];
 
             $response = Http::withBasicAuth($this->apiKey, $this->apiSecret)

@@ -120,6 +120,7 @@
 /* Show Sets tab on desktop */
 .categoryItemSets {
   display: flex;
+  align-items: center;
 }
 
 /* Product Grid */
@@ -493,6 +494,7 @@
   /* Show Sets tab on mobile */
   .categoryItemSets {
     display: flex;
+    align-items: center;
   }
   
   .categoryIcon {

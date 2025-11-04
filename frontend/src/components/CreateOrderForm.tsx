@@ -7,6 +7,7 @@ import { CartItem } from "../types/unified";
 import { useAuthGuard, canCreateOrders } from "../utils/authConstants";
 import { Plus, Search, X, ShoppingCart } from 'lucide-react';
 import { useOrderForm } from "../hooks/useOrderForm";
+import MenuSlidePanel from "./MenuSlidePanel";
 import styles from './CreateOrderForm.module.css';
 
 
@@ -29,26 +30,16 @@ export default function CreateOrderForm() {
         handleSubmit,
     } = useOrderForm();
     const [showPreview, setShowPreview] = useState(false);
-    const [menuSearch, setMenuSearch] = useState('');
     const [showMenuModal, setShowMenuModal] = useState(false);
 
-    const hasAccess = useAuthGuard(isAuthenticated, authLoading, user || { user_type: '', staff_role: '' }, canCreateOrders, router);
+    const hasAccess = useAuthGuard(isAuthenticated, authLoading, user || { user_type: '', position: '', staff_role: '' }, canCreateOrders, router);
 
-    const filteredMenuItems = useMemo(() => {
-        if (!menuSearch) return menuItems;
-        return menuItems.filter(item =>
-            item.name.toLowerCase().includes(menuSearch.toLowerCase()) ||
-            (item.description && item.description.toLowerCase().includes(menuSearch.toLowerCase())) ||
-            (item.category && item.category.toLowerCase().includes(menuSearch.toLowerCase()))
-        );
-    }, [menuItems, menuSearch]);
-
+    // Отладочное логирование
     useEffect(() => {
-        if (hasAccess) {
-            // loadClients(); // Removed as per new_code
-            // loadMenuItems(); // Removed as per new_code
-        }
-    }, [hasAccess]); // Removed loadClients, loadMenuItems as they are now in useOrderForm
+        console.log('🔍 CreateOrderForm - menuItems:', menuItems.length);
+        console.log('🔍 CreateOrderForm - loading:', loading);
+        console.log('🔍 CreateOrderForm - user:', user);
+    }, [menuItems, loading, user]);
 
     useEffect(() => {
         if (fromApplicationId && hasAccess && clients.length > 0) {
@@ -300,14 +291,22 @@ export default function CreateOrderForm() {
                             {/* Товары заказа */}
                             <div className={styles.menuItemsSection}>
                                 <div className={styles.menuItemsHeader}>
-                                    <h3 className={styles.menuItemsTitle}>Товары заказа</h3>
+                                    <div>
+                                        <h3 className={styles.menuItemsTitle}>Товары заказа</h3>
+                                        {menuItems.length > 0 && (
+                                            <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                                                Доступно {menuItems.length} товаров в меню
+                                            </p>
+                                        )}
+                                    </div>
                                     <button
                                         type="button"
                                         onClick={() => setShowMenuModal(true)}
                                         className={styles.addMenuButton}
+                                        disabled={loading || menuItems.length === 0}
                                     >
                                         <Plus className={styles.addMenuIcon} />
-                                        Добавить из меню
+                                        {menuItems.length === 0 ? 'Меню загружается...' : 'Добавить из меню'}
                                     </button>
                                 </div>
 
@@ -587,77 +586,14 @@ export default function CreateOrderForm() {
                 </div>
             </div>
 
-            {/* Menu Modal */}
-            {showMenuModal && (
-                <div className={styles.modal}>
-                    <div className={styles.modalContent}>
-                        <div className={styles.modalHeader}>
-                            <h2 className={styles.modalTitle}>Выбор товаров из меню</h2>
-                            <button
-                                onClick={() => setShowMenuModal(false)}
-                                className={styles.modalCloseButton}
-                            >
-                                <X className={styles.modalCloseIcon} />
-                            </button>
-                        </div>
-
-                        {/* Поиск */}
-                        <div className={styles.searchContainer}>
-                            <div className="relative">
-                                <Search className={styles.searchIcon} />
-                                <input
-                                    type="text"
-                                    placeholder="Поиск по названию, описанию или категории..."
-                                    value={menuSearch}
-                                    onChange={(e) => setMenuSearch(e.target.value)}
-                                    className={styles.searchInput}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Список товаров */}
-                        <div className={styles.menuItemsGrid}>
-                            <div className={styles.menuItemsGridInner}>
-                                {filteredMenuItems.map((item) => (
-                                    <div key={item.id} className={styles.menuItemCard}>
-                                        <div className={styles.menuItemHeader}>
-                                            <h3 className={styles.menuItemName}>{item.name}</h3>
-                                            <span className={styles.menuItemPrice}>{item.price} ₼</span>
-                                        </div>
-                                        <p className={styles.menuItemDescription}>{item.description}</p>
-                                        <div className={styles.menuItemFooter}>
-                                            <span className={styles.menuItemCategory}>
-                                                {item.category}
-                                            </span>
-                                            <button
-                                                onClick={() => addMenuItem(item)}
-                                                className={styles.menuItemAddButton}
-                                            >
-                                                <Plus className={styles.menuItemAddIcon} />
-                                                Добавить
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            {filteredMenuItems.length === 0 && (
-                                <div className={styles.emptyState}>
-                                    <p>Товары не найдены</p>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="mt-4 flex justify-end">
-                            <button
-                                onClick={() => setShowMenuModal(false)}
-                                className={styles.previewCancelButton}
-                            >
-                                Закрыть
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Menu Slide Panel */}
+            <MenuSlidePanel
+                isOpen={showMenuModal}
+                onClose={() => setShowMenuModal(false)}
+                menuItems={menuItems}
+                onAddItem={addMenuItem}
+                loading={loading}
+            />
 
             {/* Preview Modal */}
             {showPreview && (

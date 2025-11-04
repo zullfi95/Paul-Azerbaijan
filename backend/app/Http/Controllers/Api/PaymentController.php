@@ -78,7 +78,7 @@ class PaymentController extends BaseApiController
 
             $orderData = [
                 'amount' => number_format($order->final_amount, 2, '.', ''),
-                'currency' => 'USD',
+                'currency' => 'AZN', // Азербайджанский манат
                 'merchant_order_id' => (string) $order->id,
                 'description' => "Заказ №{$order->id} - PAUL Catering",
                 'client' => [
@@ -87,12 +87,13 @@ class PaymentController extends BaseApiController
                     'phone' => $client->phone ?? '',
                 ],
                 'location' => [
-                    'ip' => $request->ip(),
+                    // Используем публичный IP для тестового окружения
+                    'ip' => $this->getPublicIp($request),
                 ],
                 'return_url' => $returnUrl,
                 'language' => 'ru',
                 'template' => '1',
-                'mobile' => '1',
+                // Не передаем mobile, так как уже есть template
             ];
 
             Log::info('Creating payment with Algoritma', [
@@ -315,5 +316,35 @@ class PaymentController extends BaseApiController
         } catch (\Exception $e) {
             return $this->handleException($e);
         }
+    }
+
+    /**
+     * Получить публичный IP адрес
+     * Для тестового окружения возвращает фиктивный публичный IP
+     */
+    private function getPublicIp(Request $request): string
+    {
+        $ip = $request->ip();
+        
+        // Проверяем, является ли IP приватным (локальным)
+        if ($this->isPrivateIp($ip)) {
+            // Для тестового окружения используем публичный IP Google DNS
+            return '8.8.8.8';
+        }
+        
+        return $ip;
+    }
+
+    /**
+     * Проверить, является ли IP адрес приватным
+     */
+    private function isPrivateIp(string $ip): bool
+    {
+        // Проверяем стандартные диапазоны приватных IP
+        return filter_var(
+            $ip,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+        ) === false;
     }
 }

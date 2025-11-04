@@ -13,7 +13,16 @@ class OrderPolicy
     public function viewAny(User $user): bool
     {
         // Координаторы могут видеть все заказы
-        return $user->isCoordinator();
+        if ($user->isCoordinator()) {
+            return true;
+        }
+        
+        // Клиенты могут видеть свои заказы
+        if ($user->isClient()) {
+            return true;
+        }
+        
+        return false;
     }
 
     /**
@@ -80,8 +89,17 @@ class OrderPolicy
      */
     public function createPayment(User $user, Order $order): bool
     {
-        // Только координаторы могут создавать платежи
-        return $user->isCoordinator();
+        // Координаторы могут создавать платежи для любых заказов
+        if ($user->isCoordinator()) {
+            return true;
+        }
+        
+        // Клиенты могут создавать платежи только для своих заказов
+        if ($user->isClient() && $order->client_id === $user->id) {
+            return true;
+        }
+        
+        return false;
     }
 
     /**

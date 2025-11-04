@@ -1,0 +1,9 @@
+# SSL Certificates (не коммитить в Git!)
+ssl/*.pem
+ssl/*.crt
+ssl/*.key
+
+# Но оставить README и .gitkeep
+!ssl/README.md
+!ssl/.gitkeep
+

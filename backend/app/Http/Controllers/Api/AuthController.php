@@ -25,6 +25,8 @@ class AuthController extends BaseApiController
 
             $user = User::create([
                 'name' => $validatedData['name'],
+                'last_name' => $validatedData['surname'] ?? $validatedData['last_name'] ?? null,
+                'phone' => $validatedData['phone'] ?? null,
                 'email' => $validatedData['email'],
                 'password' => Hash::make($validatedData['password']),
                 'user_type' => 'client',

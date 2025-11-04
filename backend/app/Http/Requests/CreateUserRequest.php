@@ -23,6 +23,9 @@ class CreateUserRequest extends BaseFormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'surname' => 'nullable|string|max:255', // Для совместимости с frontend
+            'last_name' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:50',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6',
             'user_type' => 'required|string|in:staff,client',

@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('password123'),
             'user_type' => 'staff',
+            'position' => 'coordinator',
             'status' => 'active',
         ]);
 
@@ -29,6 +30,7 @@ class UserSeeder extends Seeder
             'email' => 'observer@example.com',
             'password' => Hash::make('password123'),
             'user_type' => 'staff',
+            'position' => 'observer',
             'status' => 'active',
         ]);
 
@@ -50,14 +52,9 @@ class UserSeeder extends Seeder
             'name' => 'Али Алиев',
             'email' => 'coordinator2@example.com',
             'password' => Hash::make('password123'),
-            'staff_role' => 'coordinator',
+            'user_type' => 'staff',
+            'position' => 'coordinator',
             'status' => 'active',
-            'notification_settings' => json_encode([
-                'email' => true,
-                'sms' => true,
-                'new_applications' => true,
-                'order_updates' => true
-            ]),
         ]);
 
         // Создаем второго наблюдателя - ПЕРСОНАЛ
@@ -65,14 +62,9 @@ class UserSeeder extends Seeder
             'name' => 'Фарида Гасанова',
             'email' => 'observer2@example.com',
             'password' => Hash::make('password123'),
-            'staff_role' => 'observer',
+            'user_type' => 'staff',
+            'position' => 'observer',
             'status' => 'active',
-            'notification_settings' => json_encode([
-                'email' => true,
-                'sms' => false,
-                'new_applications' => true,
-                'order_updates' => false
-            ]),
         ]);
 
         // Создаем разового клиента - КЛИЕНТ

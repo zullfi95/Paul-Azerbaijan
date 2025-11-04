@@ -283,6 +283,7 @@ body {
   margin-bottom: var(--space-6);
 }
 
+
 /* Stats Grid without dashboard prefix for compatibility */
 .stats-grid {
   display: grid;

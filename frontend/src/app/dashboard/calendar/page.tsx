@@ -131,68 +131,56 @@ export default function CalendarPage() {
       {/* Main Content */}
       <div className="main-content">
         {/* Статистика */}
-        <div className="kpi-grid">
-          <div className="kpi-card">
-            <div className="kpi-content">
-              <div>
-                <div className="kpi-label">
-                  Всего заказов
-                </div>
-                <div className="kpi-value">
-                  {orders.length}
-                </div>
-              </div>
-              <div className="kpi-icon status-new">
-                📋
-              </div>
+        <div className="dashboard-kpi-grid">
+          <div className="dashboard-kpi-card">
+            <div className="dashboard-kpi-header">
+              <span className="dashboard-kpi-icon">📋</span>
+              <span className="dashboard-kpi-label">Всего заказов</span>
+            </div>
+            <div className="dashboard-kpi-value">
+              {orders.length}
+            </div>
+            <div className="dashboard-kpi-subtitle">
+              В календаре
             </div>
           </div>
 
-          <div className="kpi-card">
-            <div className="kpi-content">
-              <div>
-                <div className="kpi-label">
-                  В обработке
-                </div>
-                <div className="kpi-value status-processing">
-                  {(orders || []).filter(order => order.status === 'processing').length}
-                </div>
-              </div>
-              <div className="kpi-icon status-processing">
-                ⏳
-              </div>
+          <div className="dashboard-kpi-card">
+            <div className="dashboard-kpi-header">
+              <span className="dashboard-kpi-icon status-processing">⏳</span>
+              <span className="dashboard-kpi-label">В обработке</span>
+            </div>
+            <div className="dashboard-kpi-value status-processing">
+              {(orders || []).filter(order => order.status === 'processing').length}
+            </div>
+            <div className="dashboard-kpi-subtitle">
+              Требуют внимания
             </div>
           </div>
 
-          <div className="kpi-card">
-            <div className="kpi-content">
-              <div>
-                <div className="kpi-label">
-                  Завершенных
-                </div>
-                <div className="kpi-value status-approved">
-                  {(orders || []).filter(order => order.status === 'completed').length}
-                </div>
-              </div>
-              <div className="kpi-icon status-approved">
-                ✅
-              </div>
+          <div className="dashboard-kpi-card">
+            <div className="dashboard-kpi-header">
+              <span className="dashboard-kpi-icon status-approved">✅</span>
+              <span className="dashboard-kpi-label">Завершенных</span>
+            </div>
+            <div className="dashboard-kpi-value status-approved">
+              {(orders || []).filter(order => order.status === 'completed').length}
+            </div>
+            <div className="dashboard-kpi-subtitle">
+              Выполнено успешно
             </div>
           </div>
 
-          <div className="kpi-card">
-            <div className="kpi-content">
-              <div>
-                <div className="kpi-label">
-                  Общая сумма
-                </div>
-                <div className="kpi-value amount-value">
-                  {calculateTotalAmountSum(orders || []).toFixed(2)}₼
-                </div>
-              </div>
-              <div className="kpi-icon amount-value">
-                💰
-              </div>
+          <div className="dashboard-kpi-card">
+            <div className="dashboard-kpi-header">
+              <span className="dashboard-kpi-icon">💰</span>
+              <span className="dashboard-kpi-label">Общая сумма</span>
+            </div>
+            <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
+              {calculateTotalAmountSum(orders || []).toFixed(2)}₼
+            </div>
+            <div className="dashboard-kpi-subtitle">
+              Общий оборот
             </div>
           </div>
         </div>

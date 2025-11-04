@@ -350,29 +350,45 @@ export default function ApplicationsPage() {
       </div>
 
       {/* Stats Cards */}
-      <section className="stats-grid">
-        <div className="kpi-card">
-          <div className="kpi-content">
-            <div className="kpi-label">Всего заявок</div>
-            <div className="kpi-value">{applications.length}</div>
+      <section className="dashboard-kpi-grid">
+        <div className="dashboard-kpi-card">
+          <div className="dashboard-kpi-header">
+            <span className="dashboard-kpi-icon">📋</span>
+            <span className="dashboard-kpi-label">Всего заявок</span>
+          </div>
+          <div className="dashboard-kpi-value">{applications.length}</div>
+          <div className="dashboard-kpi-subtitle">
+            Всего в системе
           </div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-content">
-            <div className="kpi-label">Новые</div>
-            <div className="kpi-value status-new">{applications.filter(a => a.status === 'new').length}</div>
+        <div className="dashboard-kpi-card">
+          <div className="dashboard-kpi-header">
+            <span className="dashboard-kpi-icon status-new">🆕</span>
+            <span className="dashboard-kpi-label">Новые</span>
+          </div>
+          <div className="dashboard-kpi-value status-new">{applications.filter(a => a.status === 'new').length}</div>
+          <div className="dashboard-kpi-subtitle">
+            Требуют обработки
           </div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-content">
-            <div className="kpi-label">В обработке</div>
-            <div className="kpi-value status-processing">{applications.filter(a => a.status === 'processing').length}</div>
+        <div className="dashboard-kpi-card">
+          <div className="dashboard-kpi-header">
+            <span className="dashboard-kpi-icon status-processing">⏳</span>
+            <span className="dashboard-kpi-label">В обработке</span>
+          </div>
+          <div className="dashboard-kpi-value status-processing">{applications.filter(a => a.status === 'processing').length}</div>
+          <div className="dashboard-kpi-subtitle">
+            В работе
           </div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-content">
-            <div className="kpi-label">Одобренные</div>
-            <div className="kpi-value status-approved">{applications.filter(a => a.status === 'approved').length}</div>
+        <div className="dashboard-kpi-card">
+          <div className="dashboard-kpi-header">
+            <span className="dashboard-kpi-icon status-approved">✅</span>
+            <span className="dashboard-kpi-label">Одобренные</span>
+          </div>
+          <div className="dashboard-kpi-value status-approved">{applications.filter(a => a.status === 'approved').length}</div>
+          <div className="dashboard-kpi-subtitle">
+            Успешно обработаны
           </div>
         </div>
       </section>
@@ -756,3 +772,4 @@ export default function ApplicationsPage() {
     </DashboardLayout>
   );
 }
+

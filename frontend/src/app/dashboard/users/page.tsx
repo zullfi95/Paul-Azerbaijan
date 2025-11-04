@@ -325,29 +325,45 @@ export default function UsersPage() {
       </div>
 
       {/* Stats Cards */}
-      <section className="stats-grid">
-        <div className="kpi-card">
-          <div className="kpi-content">
-            <div className="kpi-label">Всего пользователей</div>
-            <div className="kpi-value">{users.length}</div>
+      <section className="dashboard-kpi-grid">
+        <div className="dashboard-kpi-card">
+          <div className="dashboard-kpi-header">
+            <span className="dashboard-kpi-icon">👥</span>
+            <span className="dashboard-kpi-label">Всего пользователей</span>
+          </div>
+          <div className="dashboard-kpi-value">{users.length}</div>
+          <div className="dashboard-kpi-subtitle">
+            В системе
           </div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-content">
-            <div className="kpi-label">Активные</div>
-            <div className="kpi-value status-approved">{users.filter(u => u.status === 'active').length}</div>
+        <div className="dashboard-kpi-card">
+          <div className="dashboard-kpi-header">
+            <span className="dashboard-kpi-icon status-approved">✅</span>
+            <span className="dashboard-kpi-label">Активные</span>
+          </div>
+          <div className="dashboard-kpi-value status-approved">{users.filter(u => u.status === 'active').length}</div>
+          <div className="dashboard-kpi-subtitle">
+            Активных пользователей
           </div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-content">
-            <div className="kpi-label">Клиенты</div>
-            <div className="kpi-value status-new">{users.filter(u => u.user_type === 'client').length}</div>
+        <div className="dashboard-kpi-card">
+          <div className="dashboard-kpi-header">
+            <span className="dashboard-kpi-icon status-new">🛍️</span>
+            <span className="dashboard-kpi-label">Клиенты</span>
+          </div>
+          <div className="dashboard-kpi-value status-new">{users.filter(u => u.user_type === 'client').length}</div>
+          <div className="dashboard-kpi-subtitle">
+            Зарегистрированных
           </div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-content">
-            <div className="kpi-label">Сотрудники</div>
-            <div className="kpi-value status-processing">{users.filter(u => u.user_type === 'staff').length}</div>
+        <div className="dashboard-kpi-card">
+          <div className="dashboard-kpi-header">
+            <span className="dashboard-kpi-icon status-processing">👔</span>
+            <span className="dashboard-kpi-label">Сотрудники</span>
+          </div>
+          <div className="dashboard-kpi-value status-processing">{users.filter(u => u.user_type === 'staff').length}</div>
+          <div className="dashboard-kpi-subtitle">
+            Координаторы и наблюдатели
           </div>
         </div>
       </section>
@@ -901,3 +917,4 @@ export default function UsersPage() {
     </DashboardLayout>
   );
 }
+

@@ -555,68 +555,56 @@ function OrdersPage() {
           </div>
 
           {/* Statistics Cards */}
-          <div className="kpi-grid">
-            <div className="kpi-card">
-              <div className="kpi-content">
-                <div>
-                  <div className="kpi-label">
-                    Всего заказов
-                  </div>
-                  <div className="kpi-value">
-                    {orderStats.total}
-                  </div>
-                </div>
-                <div className="kpi-icon status-new">
-                  📋
-                </div>
+          <div className="dashboard-kpi-grid">
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <span className="dashboard-kpi-icon">📋</span>
+                <span className="dashboard-kpi-label">Всего заказов</span>
+              </div>
+              <div className="dashboard-kpi-value">
+                {orderStats.total}
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                В системе
               </div>
             </div>
 
-            <div className="kpi-card">
-              <div className="kpi-content">
-                <div>
-                  <div className="kpi-label">
-                    В обработке
-                  </div>
-                  <div className="kpi-value status-processing">
-                    {orderStats.byStatus.processing}
-                  </div>
-                </div>
-                <div className="kpi-icon status-processing">
-                  ⏳
-                </div>
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <span className="dashboard-kpi-icon status-processing">⏳</span>
+                <span className="dashboard-kpi-label">В обработке</span>
+              </div>
+              <div className="dashboard-kpi-value status-processing">
+                {orderStats.byStatus.processing}
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                Требуют внимания
               </div>
             </div>
 
-            <div className="kpi-card">
-              <div className="kpi-content">
-                <div>
-                  <div className="kpi-label">
-                    Завершено
-                  </div>
-                  <div className="kpi-value status-approved">
-                    {orderStats.byStatus.completed}
-                  </div>
-                </div>
-                <div className="kpi-icon status-approved">
-                  ✅
-                </div>
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <span className="dashboard-kpi-icon status-approved">✅</span>
+                <span className="dashboard-kpi-label">Завершено</span>
+              </div>
+              <div className="dashboard-kpi-value status-approved">
+                {orderStats.byStatus.completed}
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                Выполненных заказов
               </div>
             </div>
 
-            <div className="kpi-card">
-              <div className="kpi-content">
-                <div>
-                  <div className="kpi-label">
-                    Общая сумма
-                  </div>
-                  <div className="kpi-value amount-value">
-                    {formatTotalAmount(orderStats.totalAmount)} ₼
-                  </div>
-                </div>
-                <div className="kpi-icon amount-value">
-                  💰
-                </div>
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <span className="dashboard-kpi-icon">💰</span>
+                <span className="dashboard-kpi-label">Общая сумма</span>
+              </div>
+              <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
+                {formatTotalAmount(orderStats.totalAmount)} ₼
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                Общий оборот
               </div>
             </div>
           </div>

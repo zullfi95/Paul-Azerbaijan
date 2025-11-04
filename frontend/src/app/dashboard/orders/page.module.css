@@ -11,11 +11,7 @@
   z-index: 1000;
   padding: 1rem;
 }
-.kpi-grid {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
+
 
 /* Calculator Modal */
 .calculatorCard {

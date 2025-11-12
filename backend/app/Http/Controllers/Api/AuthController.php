@@ -186,8 +186,8 @@ class AuthController extends BaseApiController
             $shippingAddress = [
                 'street' => $validatedData['street'],
                 'city' => $validatedData['city'],
-                'postal_code' => $validatedData['postal_code'],
-                'country' => $validatedData['country'],
+                'postal_code' => $validatedData['postal_code'] ?? null,
+                'country' => $validatedData['country'] ?? 'Азербайджан',
                 'updated_at' => now()
             ];
 
@@ -251,11 +251,28 @@ class AuthController extends BaseApiController
             ]);
             
             // Отправляем email с инструкциями
-            // TODO: Реализовать отправку email через NotificationService
+            $resetLink = config('app.frontend_url', config('app.url')) . '/auth/reset-password?token=' . $token . '&email=' . urlencode($user->email);
+            
+            try {
+                \Mail::raw("Здравствуйте, {$user->name}!\n\nВы запросили восстановление пароля для вашего аккаунта в PAUL Azerbaijan.\n\nПерейдите по ссылке для сброса пароля:\n{$resetLink}\n\nЕсли вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.\n\nСсылка действительна в течение 1 часа.\n\n---\nС уважением,\nКоманда PAUL Azerbaijan\nhttps://paul-azerbaijan.com", function ($message) use ($user) {
+                    $message->to($user->email)
+                            ->subject('Восстановление пароля - PAUL Azerbaijan');
+                });
+                
+                Log::info('Password reset email sent successfully', [
+                    'email' => $user->email,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Failed to send password reset email', [
+                    'email' => $user->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+            
             Log::info('Password reset requested', [
                 'email' => $user->email,
                 'token' => $token,
-                'reset_link' => config('app.frontend_url') . '/auth/reset-password?token=' . $token . '&email=' . urlencode($user->email)
+                'reset_link' => $resetLink
             ]);
             
             return $this->successResponse([

@@ -4,16 +4,18 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
-import { 
-  DashboardIcon, 
-  FileTextIcon, 
-  UsersIcon, 
-  ShoppingBagIcon, 
-  CalendarIcon, 
+import {
+  DashboardIcon,
+  FileTextIcon,
+  UsersIcon,
+  ShoppingBagIcon,
+  CalendarIcon,
   ChartBarIcon,
   MenuIcon,
-  XIcon
+  XIcon,
+  BookOpenIcon
 } from "./Icons";
+import { canManageMenu } from "../utils/authConstants";
 
 interface DashboardSidebarProps {
   isMobileMenuOpen: boolean;
@@ -37,14 +39,14 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
 
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="dashboard-mobile-overlay"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`dashboard-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}
       >
         <div className="dashboard-sidebar-header">
@@ -54,8 +56,8 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
 
         <nav className="dashboard-sidebar-nav">
           <div className="dashboard-nav-section">Основное</div>
-          <Link 
-            href="/dashboard" 
+          <Link
+            href="/dashboard"
             className={`dashboard-nav-link ${pathname === "/dashboard" ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
             aria-label="Обзор дашборда"
@@ -63,8 +65,8 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
             <DashboardIcon size={18} />
             <span>Обзор</span>
           </Link>
-          <Link 
-            href="/dashboard/applications" 
+          <Link
+            href="/dashboard/applications"
             className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/applications") ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
             aria-label="Управление заявками"
@@ -72,8 +74,8 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
             <FileTextIcon size={18} />
             <span>Заявки</span>
           </Link>
-          <Link 
-            href="/dashboard/orders" 
+          <Link
+            href="/dashboard/orders"
             className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/orders") ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
             aria-label="Управление заказами"
@@ -81,8 +83,8 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
             <ShoppingBagIcon size={18} />
             <span>Заказы</span>
           </Link>
-          <Link 
-            href="/dashboard/users" 
+          <Link
+            href="/dashboard/users"
             className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/users") ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
             aria-label="Управление пользователями"
@@ -90,8 +92,8 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
             <UsersIcon size={18} />
             <span>Пользователи</span>
           </Link>
-          <Link 
-            href="/dashboard/calendar" 
+          <Link
+            href="/dashboard/calendar"
             className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/calendar") ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
             aria-label="Календарь заказов"
@@ -99,8 +101,8 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
             <CalendarIcon size={18} />
             <span>Календарь</span>
           </Link>
-          <Link 
-            href="/dashboard/reports" 
+          <Link
+            href="/dashboard/reports"
             className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/reports") ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
             aria-label="Отчеты и аналитика"
@@ -108,6 +110,18 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
             <ChartBarIcon size={18} />
             <span>Отчеты</span>
           </Link>
+
+          {user && canManageMenu(user) && (
+            <Link
+              href="/dashboard/positions"
+              className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/positions") ? 'active' : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-label="Управление позициями меню"
+            >
+              <BookOpenIcon size={18} />
+              <span>Позиции</span>
+            </Link>
+          )}
         </nav>
 
         <div className="dashboard-sidebar-footer">

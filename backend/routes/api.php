@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\IikoController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\MenuItemController;
+use App\Http\Controllers\Api\MenuCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,4 +126,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/orders/{order}/success', [PaymentController::class, 'handleSuccess'])->middleware('throttle:10,1'); // Rate limiting
         Route::post('/orders/{order}/failure', [PaymentController::class, 'handleFailure'])->middleware('throttle:10,1'); // Rate limiting
     });
+});
+
+// Маршруты для управления меню (доступны только координаторам через Policy)
+Route::middleware(['auth:sanctum', 'coordinator'])->group(function () {
+    Route::apiResource('menu-items', MenuItemController::class);
+    Route::apiResource('menu-categories', MenuCategoryController::class)->only(['index', 'show']);
 });

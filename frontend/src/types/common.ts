@@ -60,8 +60,44 @@ export interface Application {
   client?: User;
 }
 
-// Menu Item Types - базовый интерфейс для всех элементов меню
+// Menu Item Types - полный интерфейс для управления элементами меню
 export interface MenuItem {
+  id: number; // ID элемента меню
+  iiko_id?: string; // ID из iiko, если есть интеграция
+  name: string;
+  description?: string;
+  price: number;
+  currency: string;
+  menu_category_id: number;
+  organization_id?: string; // ID организации, если есть интеграция
+  images?: string[]; // Массив URL изображений
+  allergens?: string[]; // Массив аллергенов
+  is_available: boolean; // В наличии ли товар
+  is_active: boolean; // Активен ли товар (отображается)
+  sort_order?: number; // Порядок сортировки
+  
+  // Связи
+  menuCategory?: MenuCategory; // Объект категории, если загружен с `with('menuCategory')`
+  
+  created_at: string;
+  updated_at: string;
+}
+
+// Menu Category Types
+export interface MenuCategory {
+  id: number;
+  iiko_id?: string;
+  name: string;
+  description?: string;
+  organization_id?: string;
+  sort_order?: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Cart Menu Item Types - базовый интерфейс для элементов меню в корзине
+export interface CartMenuItem {
   id: string;
   name: string;
   quantity?: number;
@@ -69,7 +105,7 @@ export interface MenuItem {
 }
 
 // Cart Item Types - расширенный интерфейс для корзины с дополнительными полями
-export interface CartItem extends MenuItem {
+export interface CartItem extends CartMenuItem {
   description: string;
   image: string;
   category: string;

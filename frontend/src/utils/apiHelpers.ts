@@ -8,6 +8,9 @@ import {
   RegisterRequest,
   ApplicationRequest,
   ApiResponse,
+  MenuItem,
+  MenuCategory,
+  PaginatedResponse,
 } from '../types/common';
 import { API_CONFIG } from '../config/api';
 import { getToken } from './tokenManager';
@@ -84,18 +87,22 @@ export async function makeApiRequest<T>(
   const { method = 'GET', body, token } = options;
 
   try {
-    // Получаем токен из tokenManager или из переданного параметра
     const authToken = token || getToken();
 
+    const headers: HeadersInit = {
+      'Accept': 'application/json',
+      ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
+    };
+
+    // Если тело запроса - не FormData, добавляем Content-Type: application/json
+    if (typeof body === 'string') {
+      headers['Content-Type'] = 'application/json';
+    }
 
     const response = await fetch(API_CONFIG.BASE_URL + endpoint, {
       method,
-      headers: {
-        'Accept': 'application/json',
-        ...(body ? { 'Content-Type': 'application/json' } : {}),
-        ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
-      },
-      credentials: 'include', // Оставляем для совместимости с CSRF, если нужно
+      headers: headers,
+      credentials: 'include',
       body: body,
     });
 
@@ -140,5 +147,55 @@ export function handleApiError(error: StandardApiResponse<unknown>, fallbackMess
   }
   
   return error.message || fallbackMessage;
+}
+
+/**
+ * API функции для управления меню
+ */
+
+export async function fetchMenuItems(
+  params?: { search?: string, category_id?: number | string, is_active?: boolean, is_available?: boolean, page?: number, per_page?: number }
+): Promise<StandardApiResponseOptional<PaginatedResponse<MenuItem>>> {
+  const query = new URLSearchParams();
+  if (params?.search) query.append('search', params.search);
+  if (params?.category_id) query.append('category_id', String(params.category_id));
+  if (params?.is_active !== undefined) query.append('is_active', String(params.is_active));
+  if (params?.is_available !== undefined) query.append('is_available', String(params.is_available));
+  if (params?.page) query.append('page', String(params.page));
+  if (params?.per_page) query.append('per_page', String(params.per_page));
+
+  const queryString = query.toString();
+  const endpoint = `/menu-items${queryString ? `?${queryString}` : ''}`;
+  return makeApiRequest<PaginatedResponse<MenuItem>>(endpoint);
+}
+
+export async function fetchMenuItem(id: number): Promise<StandardApiResponseOptional<MenuItem>> {
+  return makeApiRequest<MenuItem>(`/menu-items/${id}`);
+}
+
+export async function fetchMenuCategories(): Promise<StandardApiResponseOptional<MenuCategory[]>> {
+  return makeApiRequest<MenuCategory[]>(`/menu-categories`);
+}
+
+export async function createMenuItem(itemData: FormData): Promise<StandardApiResponseOptional<MenuItem>> {
+  return makeApiRequest<MenuItem>('/menu-items', {
+    method: 'POST',
+    body: itemData,
+  });
+}
+
+export async function updateMenuItem(id: number, itemData: FormData): Promise<StandardApiResponseOptional<MenuItem>> {
+  // Для отправки FormData с методом PUT/PATCH, Laravel ожидает _method=PUT/PATCH
+  itemData.append('_method', 'PUT');
+  return makeApiRequest<MenuItem>(`/menu-items/${id}`, {
+    method: 'POST', // Отправляем как POST, но с _method=PUT
+    body: itemData,
+  });
+}
+
+export async function deleteMenuItem(id: number): Promise<StandardApiResponseOptional<null>> {
+  return makeApiRequest<null>(`/menu-items/${id}`, {
+    method: 'DELETE',
+  });
 }
 

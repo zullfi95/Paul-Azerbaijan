@@ -225,6 +225,16 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ isOpen, onClose, isMobi
   return (
     <div className={`${styles.searchDropdown} ${isMobile ? styles.mobile : ''}`} ref={dropdownRef}>
       <div className={styles.searchContainer}>
+        {isMobile && (
+          <button
+            type="button"
+            onClick={onClose}
+            className={styles.closeButton}
+            aria-label="Close search"
+          >
+            <X size={24} />
+          </button>
+        )}
         <form onSubmit={handleSubmit} className={styles.searchForm}>
           <div className={styles.inputContainer}>
             <Search className={styles.searchIcon} size={18} />
@@ -290,7 +300,9 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ isOpen, onClose, isMobi
               </div>
             ) : (
               <div className={styles.noResults}>
-                <div className={styles.noResultsIcon}>🔍</div>
+                <div className={styles.noResultsIcon}>
+                  <Search size={48} strokeWidth={1.5} />
+                </div>
                 <div className={styles.noResultsText}>No products found</div>
                 <div className={styles.noResultsSubtext}>Try a different search term</div>
               </div>

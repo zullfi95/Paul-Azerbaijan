@@ -150,56 +150,59 @@ const Footer: React.FC = () => {
               {/* Горизонтальная линия */}
               <div className="footer-divider"></div>
 
-              {/* Social Media */}
-              <div className="social-media">
-                <a href="https://instagram.com/paulbakery" className="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                  <Image
-                    src="/images/3463469_instagram_social media_social_network_icon 1.svg"
-                    alt="Instagram"
-                    width={23}
-                    height={23}
-                  />
-                </a>
-                <a href="https://youtube.com/paulbakery" className="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-                  <Image
-                    src="/images/3463481_media_network_social_youtube_icon 1.svg"
-                    alt="YouTube"
-                    width={23}
-                    height={23}
-                  />
-                </a>
-                <a href="https://facebook.com/paulbakery" className="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-                  <Image
-                    src="/images/3463465_facebook_media_network_social_icon 1.svg"
-                    alt="Facebook"
-                    width={23}
-                    height={23}
-                  />
-                </a>
-              </div>
+              {/* Social Media and Payment Methods on same line */}
+              <div className="footer-mobile-bottom">
+                {/* Social Media */}
+                <div className="social-media">
+                  <a href="https://instagram.com/paulbakery" className="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                    <Image
+                      src="/images/3463469_instagram_social media_social_network_icon 1.svg"
+                      alt="Instagram"
+                      width={23}
+                      height={23}
+                    />
+                  </a>
+                  <a href="https://youtube.com/paulbakery" className="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+                    <Image
+                      src="/images/3463481_media_network_social_youtube_icon 1.svg"
+                      alt="YouTube"
+                      width={23}
+                      height={23}
+                    />
+                  </a>
+                  <a href="https://facebook.com/paulbakery" className="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                    <Image
+                      src="/images/3463465_facebook_media_network_social_icon 1.svg"
+                      alt="Facebook"
+                      width={23}
+                      height={23}
+                    />
+                  </a>
+                </div>
 
-              {/* Платежные методы */}
-              <div className="footer-payment">
-                <div className="payment-logos">
-                  <Image
-                    src="/images/visa.png"
-                    alt="Visa"
-                    width={100}
-                    height={44}
-                    style={{
-                      objectFit: 'contain',
-                      marginRight: '10px'
-                    }}
-                  />
-                  <Image
-                    src="/images/mastercart.svg"
-                    alt="Mastercard"
-                    width={40}
-                    height={25}
-                    style={{
-                      objectFit: 'contain'
-                    }}
-                  />
+                {/* Платежные методы */}
+                <div className="footer-payment">
+                  <div className="payment-logos">
+                    <Image
+                      src="/images/visa.png"
+                      alt="Visa"
+                      width={100}
+                      height={44}
+                      style={{
+                        objectFit: 'contain',
+                        marginRight: '10px'
+                      }}
+                    />
+                    <Image
+                      src="/images/mastercart.svg"
+                      alt="Mastercard"
+                      width={40}
+                      height={25}
+                      style={{
+                        objectFit: 'contain'
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

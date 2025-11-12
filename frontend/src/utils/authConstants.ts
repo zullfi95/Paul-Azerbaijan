@@ -75,6 +75,14 @@ export function canViewCalendar(user: { user_type?: string; position?: string; s
 }
 
 /**
+ * Проверка, может ли пользователь управлять меню
+ */
+export function canManageMenu(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
+  return isCoordinator(user) || 
+         (isStaff(user) && (user?.position === 'admin' || user?.staff_role === STAFF_ROLES.ADMIN));
+}
+
+/**
  * Хук для проверки доступа с редиректом
  */
 export function useAuthGuard(

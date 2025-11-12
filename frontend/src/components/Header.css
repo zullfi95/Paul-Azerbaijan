@@ -947,6 +947,11 @@ body.menu-open {
 }
 
 @media (max-width: 767px) {
+  /* Hide main navigation on mobile */
+  .main-nav {
+    display: none;
+  }
+  
   .header-container {
     padding: 0 14px;
   }

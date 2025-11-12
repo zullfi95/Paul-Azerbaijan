@@ -58,7 +58,7 @@ const Footer: React.FC = () => {
     {
       title: 'Explore PAUL',
       links: [
-        { label: 'In-Store Menu', href: '/menu.pdf', target: '_blank' },
+        { label: 'In-Store Menu', href: '/cakes', target: '_self' },
         { label: 'Find a PAUL', href: '/locations' },
       ],
     },
@@ -67,6 +67,7 @@ const Footer: React.FC = () => {
       links: [
         { label: 'Lunch Menu', href: '/catering#lunch' },
         { label: 'Brunch Menu', href: '/catering#brunch' },
+        { label: 'Coffee Breaks\n& Afternoon Teas', href: '/catering#coffee-breaks' },
         { label: 'Catering Menu', href: '/catering' },
       ],
     },
@@ -74,12 +75,12 @@ const Footer: React.FC = () => {
       title: 'Company',
       links: [
         { label: 'Our Story', href: '/our-story' },
-        { label: 'My Account', href: '/profile' },
       ],
     },
     {
       title: 'Customer',
       links: [
+        { label: 'My Account', href: '/profile' },
         { label: 'Contact info', href: '/contact' },
         { label: 'Delivery info', href: '/delivery' },
         { label: 'Terms & Conditions', href: '/terms' },
@@ -149,46 +150,59 @@ const Footer: React.FC = () => {
               {/* Горизонтальная линия */}
               <div className="footer-divider"></div>
 
-              {/* Social Media */}
-              <div className="social-media">
-                <a href="#" className="social-link" aria-label="Instagram">
-                  <Image
-                    src="/images/3463469_instagram_social media_social_network_icon 1.svg"
-                    alt="Instagram"
-                    width={23}
-                    height={23}
-                  />
-                </a>
-                <a href="#" className="social-link" aria-label="YouTube">
-                  <Image
-                    src="/images/3463481_media_network_social_youtube_icon 1.svg"
-                    alt="YouTube"
-                    width={23}
-                    height={23}
-                  />
-                </a>
-                <a href="#" className="social-link" aria-label="Facebook">
-                  <Image
-                    src="/images/3463465_facebook_media_network_social_icon 1.svg"
-                    alt="Facebook"
-                    width={23}
-                    height={23}
-                  />
-                </a>
-              </div>
+              {/* Social Media and Payment Methods on same line */}
+              <div className="footer-mobile-bottom">
+                {/* Social Media */}
+                <div className="social-media">
+                  <a href="https://instagram.com/paulbakery" className="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                    <Image
+                      src="/images/3463469_instagram_social media_social_network_icon 1.svg"
+                      alt="Instagram"
+                      width={23}
+                      height={23}
+                    />
+                  </a>
+                  <a href="https://youtube.com/paulbakery" className="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+                    <Image
+                      src="/images/3463481_media_network_social_youtube_icon 1.svg"
+                      alt="YouTube"
+                      width={23}
+                      height={23}
+                    />
+                  </a>
+                  <a href="https://facebook.com/paulbakery" className="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                    <Image
+                      src="/images/3463465_facebook_media_network_social_icon 1.svg"
+                      alt="Facebook"
+                      width={23}
+                      height={23}
+                    />
+                  </a>
+                </div>
 
-              {/* Платежные методы */}
-              <div className="footer-payment">
-                <div className="payment-logos">
-                  <Image
-                    src="/images/visamaster.png"
-                    alt="Visa and Mastercard"
-                    width={120}
-                    height={40}
-                    style={{
-                      objectFit: 'contain'
-                    }}
-                  />
+                {/* Платежные методы */}
+                <div className="footer-payment">
+                  <div className="payment-logos">
+                    <Image
+                      src="/images/visa.png"
+                      alt="Visa"
+                      width={100}
+                      height={44}
+                      style={{
+                        objectFit: 'contain',
+                        marginRight: '10px'
+                      }}
+                    />
+                    <Image
+                      src="/images/mastercart.svg"
+                      alt="Mastercard"
+                      width={40}
+                      height={25}
+                      style={{
+                        objectFit: 'contain'
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -222,10 +236,20 @@ const Footer: React.FC = () => {
                 <div className="footer-payment">
                   <div className="payment-logos">
                     <Image
-                      src="/images/visamaster.png"
-                      alt="Visa and Mastercard"
-                      width={120}
-                      height={40}
+                      src="/images/visa.png"
+                      alt="Visa"
+                      width={100}
+                      height={44}
+                      style={{
+                        objectFit: 'contain',
+                        marginRight: '10px'
+                      }}
+                    />
+                    <Image
+                      src="/images/mastercart.svg"
+                      alt="Mastercard"
+                      width={50}
+                      height={35}
                       style={{
                         objectFit: 'contain'
                       }}
@@ -264,7 +288,7 @@ const Footer: React.FC = () => {
 
                 {/* Social Media */}
                 <div className="social-media">
-                  <a href="#" className="social-link" aria-label="Instagram">
+                  <a href="https://instagram.com/paulbakery" className="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                     <Image
                       src="/images/3463469_instagram_social media_social_network_icon 1.svg"
                       alt="Instagram"
@@ -272,7 +296,7 @@ const Footer: React.FC = () => {
                       height={23}
                     />
                   </a>
-                  <a href="#" className="social-link" aria-label="YouTube">
+                  <a href="https://youtube.com/paulbakery" className="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
                     <Image
                       src="/images/3463481_media_network_social_youtube_icon 1.svg"
                       alt="YouTube"
@@ -280,7 +304,7 @@ const Footer: React.FC = () => {
                       height={23}
                     />
                   </a>
-                  <a href="#" className="social-link" aria-label="Facebook">
+                  <a href="https://facebook.com/paulbakery" className="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                     <Image
                       src="/images/3463465_facebook_media_network_social_icon 1.svg"
                       alt="Facebook"

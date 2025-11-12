@@ -48,12 +48,25 @@ RUN echo "APP_NAME=Laravel" > .env \
     && echo "APP_KEY=" >> .env \
     && echo "APP_DEBUG=false" >> .env \
     && echo "APP_URL=http://localhost" >> .env \
+    && echo "FRONTEND_URL=http://localhost" >> .env \
     && echo "DB_CONNECTION=mysql" >> .env \
     && echo "DB_HOST=mysql" >> .env \
     && echo "DB_PORT=3306" >> .env \
     && echo "DB_DATABASE=paul_azerbaijan" >> .env \
     && echo "DB_USERNAME=paul_user" >> .env \
-    && echo "DB_PASSWORD=paul_password" >> .env
+    && echo "DB_PASSWORD=paul_password" >> .env \
+    && echo "CACHE_DRIVER=file" >> .env \
+    && echo "SESSION_DRIVER=file" >> .env \
+    && echo "QUEUE_CONNECTION=database" >> .env \
+    && echo "REDIS_HOST=redis" >> .env \
+    && echo "REDIS_PORT=6379" >> .env \
+    && echo "IIKO_API_KEY=e443a1d8f6f941eba3d92fbed30bdefd" >> .env \
+    && echo "IIKO_BASE_URL=https://api-ru.iiko.services" >> .env \
+    && echo "ALGORITMA_API_KEY=Paul" >> .env \
+    && echo "ALGORITMA_API_SECRET=+WlGb0xWlywRJn/tYT" >> .env \
+    && echo "ALGORITMA_BASE_URL=https://api.testalgoritma.az" >> .env \
+    && echo "ALGORITMA_ENVIRONMENT=test" >> .env \
+    && echo "MAIL_MAILER=log" >> .env
 
 # Создаем базу данных SQLite если её нет
 RUN touch database/database.sqlite

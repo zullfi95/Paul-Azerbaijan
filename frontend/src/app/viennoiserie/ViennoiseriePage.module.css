@@ -2,14 +2,14 @@
 
 .viennoiseriePage {
   min-height: 100vh;
-  background: #FFFFFF;
+  background: #FFFCF8;
   font-family: 'Sabon Next LT Pro', serif;
 }
 
 /* Breadcrumbs */
 .breadcrumbsSection {
   padding: 1rem 0;
-  background-color: #FFFFFF;
+  background-color: #FFFCF8;
   border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
@@ -148,7 +148,7 @@
 }
 
 .productCard {
-  background: white;
+  background: #FFFCF8;
   overflow: hidden;
   transition: all 0.3s ease;
   position: relative;
@@ -183,7 +183,7 @@
   right: 10px;
   width: 35px;
   height: 35px;
-  background: white;
+  background: #FFFCF8;
   color: #000000;
   border: none;
   border-radius: 50%;
@@ -270,6 +270,148 @@
   transform: translateY(-2px);
 }
 
+/* Filter Menu */
+.filterContainer {
+  position: relative;
+}
+
+.filterMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #FFFCF8;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  min-width: 280px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+.filterSection {
+  margin-bottom: 1.5rem;
+}
+
+.filterSection:last-of-type {
+  margin-bottom: 1rem;
+}
+
+.filterSection h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+}
+
+.filterCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.filterCheckbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #000;
+  cursor: pointer;
+}
+
+.priceRange {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.priceRange input[type="range"] {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #ddd;
+  outline: none;
+  cursor: pointer;
+}
+
+.priceRange input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000;
+  cursor: pointer;
+  border: 2px solid #000;
+}
+
+.priceRange input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000;
+  cursor: pointer;
+  border: 2px solid #000;
+}
+
+.priceRange input[type="range"]::-webkit-slider-track {
+  background: #ddd;
+  height: 6px;
+  border-radius: 3px;
+}
+
+.priceRange input[type="range"]::-moz-range-track {
+  background: #ddd;
+  height: 6px;
+  border-radius: 3px;
+  border: none;
+}
+
+.priceRange span {
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+}
+
+.filterActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.clearButton, .applyButton {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  font-family: "Sabon Next LT Pro", serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clearButton {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.clearButton:hover {
+  background-color: #e5e5e5;
+}
+
+.applyButton {
+  background-color: #000;
+  color: #FEF4E6;
+}
+
+.applyButton:hover {
+  background-color: #333;
+}
+
 /* Feedback Button */
 .feedbackButton {
   position: fixed;
@@ -281,7 +423,7 @@
   text-orientation: mixed;
   padding: 1rem 0.5rem;
   background-color: #1A1A1A;
-  color: white;
+  color: #FFFCF8;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -311,7 +453,7 @@
 }
 
 .feedbackModalContent {
-  background-color: white;
+  background-color: #FFFCF8;
   padding: 2rem;
   border-radius: 12px;
   max-width: 500px;
@@ -358,7 +500,7 @@
   width: 100%;
   padding: 0.75rem;
   background-color: #1A1A1A;
-  color: white;
+  color: #FFFCF8;
   border: none;
   border-radius: 8px;
   cursor: pointer;

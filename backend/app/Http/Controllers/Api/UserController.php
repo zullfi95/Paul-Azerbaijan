@@ -2,39 +2,39 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class UserController extends BaseApiController
 {
     /**
      * Получение списка всех пользователей
      */
     public function index(Request $request)
     {
-        $query = User::query();
+        try {
+            $this->authorize('viewAny', User::class);
+            
+            $query = User::query();
 
-        // Все пользователи - только сотрудники
-
-        // Фильтрация по роли
-        if ($request->has('role')) {
-            if ($request->role === 'coordinator') {
-                $query->where('staff_role', 'coordinator');
-            } elseif ($request->role === 'observer') {
-                $query->where('staff_role', 'observer');
+            // Фильтрация по роли
+            if ($request->has('role')) {
+                if ($request->role === 'coordinator') {
+                    $query->where('user_type', 'staff');
+                } elseif ($request->role === 'observer') {
+                    $query->where('user_type', 'staff');
+                }
             }
+
+            $users = $query->orderBy('created_at', 'desc')->paginate(20);
+
+            return $this->paginatedResponse($users, 'Пользователи получены успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
-
-        $users = $query->orderBy('created_at', 'desc')->paginate(20);
-
-        return response()->json([
-            'success' => true,
-            'data' => $users
-        ]);
     }
 
     /**
@@ -42,87 +42,60 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return response()->json([
-            'success' => true,
-            'data' => [
+        try {
+            $this->authorize('view', $user);
+            
+            return $this->successResponse([
                 'user' => $user
-            ]
-        ]);
+            ], 'Пользователь получен успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
      * Создание нового пользователя
      */
-    public function store(Request $request)
+    public function store(CreateUserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'staff_role' => 'required|in:coordinator,observer',
-            'status' => 'in:active,inactive,suspended',
-        ]);
+        try {
+            $this->authorize('create', User::class);
+            
+            $validatedData = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+            $userData = $validatedData;
+            $userData['user_type'] = 'staff';
+            $userData['password'] = Hash::make($validatedData['password']);
+            $userData['status'] = $validatedData['status'] ?? 'active';
+            
+            $user = User::create($userData);
 
-        $userData = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'user_type' => 'staff',
-            'staff_role' => $request->staff_role,
-            'status' => $request->status ?? 'active',
-        ];
-
-        $user = User::create($userData);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Пользователь успешно создан',
-            'data' => [
+            return $this->createdResponse([
                 'user' => $user
-            ]
-        ], 201);
+            ], 'Пользователь успешно создан');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
      * Обновление пользователя
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
-            'staff_role' => 'sometimes|in:coordinator,observer',
-            'status' => 'sometimes|in:active,inactive,suspended',
-        ]);
+        try {
+            $this->authorize('update', $user);
+            
+            $validatedData = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+            $user->update($validatedData);
 
-        $updateData = $request->only(['name', 'email', 'staff_role', 'status']);
-        $updateData['user_type'] = 'staff';
-
-        $user->update($updateData);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Пользователь успешно обновлен',
-            'data' => [
+            return $this->updatedResponse([
                 'user' => $user->fresh()
-            ]
-        ]);
+            ], 'Пользователь успешно обновлен');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -130,55 +103,55 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // Нельзя удалить самого себя
-        if ($user->id === auth()->id()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Нельзя удалить свой аккаунт'
-            ], 400);
+        try {
+            $this->authorize('delete', $user);
+            
+            $user->delete();
+
+            return $this->deletedResponse('Пользователь успешно удален');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
-
-        $user->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Пользователь успешно удален'
-        ]);
     }
 
     /**
-     * Получение статистики по пользователям
+     * Получение статистики пользователей
      */
-    public function statistics()
+    public function statistics(Request $request)
     {
-        $stats = [
-            'total' => User::count(),
-            'coordinators' => User::where('staff_role', 'coordinator')->count(),
-            'observers' => User::where('staff_role', 'observer')->count(),
-            'active' => User::where('status', 'active')->count(),
-            'inactive' => User::where('status', 'inactive')->count(),
-            'suspended' => User::where('status', 'suspended')->count(),
-        ];
+        try {
+            $this->authorize('viewStatistics', User::class);
+            
+            $stats = [
+                'total' => User::count(),
+                'staff' => User::where('user_type', 'staff')->count(),
+                'clients' => User::where('user_type', 'client')->count(),
+                'coordinators' => User::where('user_type', 'staff')->count(),
+                'observers' => User::where('user_type', 'staff')->count(),
+                'active' => User::where('status', 'active')->count(),
+                'inactive' => User::where('status', 'inactive')->count(),
+            ];
 
-        return response()->json([
-            'success' => true,
-            'data' => $stats
-        ]);
+            return $this->successResponse($stats, 'Статистика пользователей получена успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
-     * Получение списка координаторов (публичный endpoint)
+     * Получение списка координаторов
      */
     public function getCoordinators()
     {
-        $coordinators = User::where('staff_role', 'coordinator')
-            ->where('status', 'active')
-            ->select('id', 'name', 'email')
-            ->get();
+        try {
+            $coordinators = User::where('user_type', 'staff')
+                ->where('status', 'active')
+                ->select('id', 'name', 'email', 'phone')
+                ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $coordinators
-        ]);
+            return $this->successResponse($coordinators, 'Координаторы получены успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 }

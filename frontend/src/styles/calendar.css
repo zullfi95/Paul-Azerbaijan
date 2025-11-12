@@ -1,6 +1,6 @@
 /* React Big Calendar Styles */
 .rbc-calendar {
-  background-color: white;
+  background-color: #FFFCF8;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -65,7 +65,7 @@
 
 .rbc-toolbar button.rbc-active {
   background: #1A1A1A;
-  color: white;
+  color: #FFFCF8;
   border-color: #1A1A1A;
 }
 
@@ -104,25 +104,25 @@
 /* Custom event colors based on status */
 .rbc-event.status-draft {
   background-color: #6B7280;
-  color: white;
+  color: #FFFCF8;
 }
 
 .rbc-event.status-submitted {
   background-color: #3B82F6;
-  color: white;
+  color: #FFFCF8;
 }
 
 .rbc-event.status-processing {
   background-color: #F59E0B;
-  color: white;
+  color: #FFFCF8;
 }
 
 .rbc-event.status-completed {
   background-color: #10B981;
-  color: white;
+  color: #FFFCF8;
 }
 
 .rbc-event.status-cancelled {
   background-color: #EF4444;
-  color: white;
+  color: #FFFCF8;
 }

@@ -47,7 +47,7 @@ export default function CheckoutPage() {
   // Проверка авторизации - обязательна для оформления заказа
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/auth/login');
+      router.push('/auth/login?next=/catering/order');
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -150,6 +150,13 @@ export default function CheckoutPage() {
     }
     if (!formData.deliveryDate) {
       newErrors.deliveryDate = 'Delivery date is required';
+    } else {
+      const selectedDate = new Date(formData.deliveryDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selectedDate < today) {
+        newErrors.deliveryDate = 'Delivery date must be today or later';
+      }
     }
     if (!formData.deliveryTime) {
       newErrors.deliveryTime = 'Delivery time is required';
@@ -210,15 +217,8 @@ export default function CheckoutPage() {
         setShowSuccessPopup(true);
         
         setTimeout(() => {
-          if (isAuthenticated && user) {
-            if (user.user_type === 'staff' || user.staff_role) {
-              router.push('/dashboard');
-            } else {
-              router.push('/profile');
-            }
-          } else {
-            router.push('/');
-          }
+          // Всегда перенаправляем на главную страницу после успешного оформления заказа
+          router.push('/');
         }, 3000);
       } else {
         let errorMessage = 'An error occurred. Please try again.';
@@ -396,15 +396,7 @@ export default function CheckoutPage() {
             <button
               onClick={() => {
                 setShowSuccessPopup(false); // Сначала скрыть окно
-                if (isAuthenticated && user) {
-                  if (user.user_type === 'staff' || user.staff_role) {
-                    router.push('/dashboard');
-                  } else {
-                    router.push('/profile');
-                  }
-                } else {
-                  router.push('/');
-                }
+                router.push('/'); // Всегда перенаправляем на главную страницу
               }}
               style={{
                 backgroundColor: 'white',
@@ -418,7 +410,7 @@ export default function CheckoutPage() {
                 transition: 'background-color 0.3s, color 0.3s',
               }}
             >
-              {isAuthenticated && user ? 'Go to Dashboard' : 'Return to Home'}
+              Return to Home
             </button>
           </div>
         </div>

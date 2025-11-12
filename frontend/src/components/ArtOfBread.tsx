@@ -11,7 +11,7 @@ const ArtOfBread: React.FC = () => {
   const isMobile = useIsMobile();
 
   const handleShopClick = () => {
-    router.push('/shop');
+    router.push('/bread');
   };
 
   return (

@@ -354,6 +354,57 @@
   animation: feedbackModalDisappear 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
+/* Mobile styles */
+@media (max-width: 767px) {
+  .feedbackButtonContainer {
+    right: 10px;
+  }
+
+  .feedbackButton {
+    padding: 0.75rem 0.4rem;
+    font-size: 0.75rem;
+  }
+
+  .feedbackModalContent {
+    width: 45%;
+    padding: 1.25rem;
+    max-width: none;
+  }
+
+  .feedbackModalContent.expanded {
+    width: 45%;
+    min-height: 250px;
+  }
+
+  .feedbackModalTitle {
+    font-size: 1rem;
+  }
+
+  .star {
+    font-size: 1.5rem;
+  }
+
+  .feedbackTextarea {
+    width: 90%;
+    height: 140px;
+  }
+
+  .feedbackButtons {
+    width: 90%;
+  }
+}
+
+/* Very small mobile screens */
+@media (max-width: 380px) {
+  .feedbackModalContent {
+    width: 45%;
+  }
+
+  .feedbackModalContent.expanded {
+    width: 45%;
+  }
+}
+
 /* Print styles */
 @media print {
   .feedbackButtonContainer {

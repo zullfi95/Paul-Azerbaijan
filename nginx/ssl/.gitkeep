@@ -1,0 +1,9 @@
+# SSL Certificates Directory
+
+Добавьте сюда SSL сертификаты для production:
+- cert.pem - SSL сертификат
+- key.pem - Приватный ключ
+
+Для получения бесплатных SSL сертификатов используйте Let's Encrypt:
+https://letsencrypt.org/
+

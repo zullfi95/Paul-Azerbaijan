@@ -11,6 +11,26 @@ use App\Models\Application;
 class Order extends Model
 {
     use HasFactory;
+    
+    // Константы статусов заказа
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_SUBMITTED = 'submitted';
+    public const STATUS_PENDING_PAYMENT = 'pending_payment';
+    public const STATUS_PAID = 'paid';
+    public const STATUS_PROCESSING = 'processing';
+    public const STATUS_COMPLETED = 'completed';
+    public const STATUS_CANCELLED = 'cancelled';
+    
+    // Константы статусов платежа
+    public const PAYMENT_STATUS_PENDING = 'pending';
+    public const PAYMENT_STATUS_AUTHORIZED = 'authorized';
+    public const PAYMENT_STATUS_CHARGED = 'charged';
+    public const PAYMENT_STATUS_FAILED = 'failed';
+    public const PAYMENT_STATUS_REFUNDED = 'refunded';
+    
+    // Максимальное количество попыток оплаты
+    public const MAX_PAYMENT_ATTEMPTS = 3;
+    
     protected $fillable = [
         'company_name',
         'client_type',
@@ -36,12 +56,7 @@ class Order extends Model
         'equipment_required',
         'staff_assigned',
         'special_instructions',
-        'beo_file_path',
-        'beo_generated_at',
-        'preparation_timeline',
         'is_urgent',
-        'order_deadline',
-        'modification_deadline',
         'application_id',
         // Поля для платежей
         'algoritma_order_id',
@@ -50,7 +65,6 @@ class Order extends Model
         'payment_attempts',
         'payment_created_at',
         'payment_completed_at',
-        'payment_details',
     ];
 
     protected $casts = [
@@ -60,12 +74,8 @@ class Order extends Model
         'recurring_schedule' => 'array',
         'equipment_required' => 'integer',
         'staff_assigned' => 'integer',
-        'preparation_timeline' => 'array',
         'delivery_date' => 'date',
         'delivery_time' => 'datetime',
-        'beo_generated_at' => 'datetime',
-        'order_deadline' => 'datetime',
-        'modification_deadline' => 'datetime',
         'total_amount' => 'float',
         'discount_fixed' => 'float',
         'discount_percent' => 'float',
@@ -78,7 +88,6 @@ class Order extends Model
         'payment_attempts' => 'integer',
         'payment_created_at' => 'datetime',
         'payment_completed_at' => 'datetime',
-        'payment_details' => 'array',
     ];
 
     /**
@@ -110,7 +119,7 @@ class Order extends Model
      */
     public function isDraft(): bool
     {
-        return $this->status === 'draft';
+        return $this->status === self::STATUS_DRAFT;
     }
 
     /**
@@ -118,7 +127,11 @@ class Order extends Model
      */
     public function isSubmitted(): bool
     {
-        return in_array($this->status, ['submitted', 'processing', 'completed']);
+        return in_array($this->status, [
+            self::STATUS_SUBMITTED, 
+            self::STATUS_PROCESSING, 
+            self::STATUS_COMPLETED
+        ]);
     }
 
     /**
@@ -137,7 +150,12 @@ class Order extends Model
      */
     public function isPendingPayment(): bool
     {
-        return $this->payment_status === 'pending' && $this->status === 'submitted';
+        // Разрешаем оплату для заказов в статусе pending_payment или submitted
+        // (submitted - когда заказ только создан и требует оплаты для one_time клиентов)
+        return in_array($this->status, [
+            self::STATUS_PENDING_PAYMENT, 
+            self::STATUS_SUBMITTED
+        ]);
     }
 
     /**
@@ -145,15 +163,37 @@ class Order extends Model
      */
     public function isPaid(): bool
     {
-        return in_array($this->payment_status, ['charged', 'authorized']);
+        return in_array($this->payment_status, [
+            self::PAYMENT_STATUS_CHARGED, 
+            self::PAYMENT_STATUS_AUTHORIZED
+        ]);
     }
 
     /**
      * Проверяет, можно ли попробовать оплатить снова
+     * 
+     * ИСПРАВЛЕНО: Теперь учитывает случай первой попытки (payment_status = null)
      */
     public function canRetryPayment(): bool
     {
-        return $this->payment_attempts < 3 && $this->payment_status === 'failed';
+        // Инициализируем payment_attempts значением по умолчанию, если null
+        $attempts = $this->payment_attempts ?? 0;
+        
+        // Разрешаем оплату если:
+        // 1. Количество попыток меньше максимального (3)
+        // 2. И статус платежа один из:
+        //    - null (первая попытка, платеж еще не создавался)
+        //    - pending (платеж создан, но не завершен)
+        //    - failed (предыдущая попытка неудачна)
+        
+        $isAttemptsAllowed = $attempts < self::MAX_PAYMENT_ATTEMPTS;
+        $isStatusAllowed = is_null($this->payment_status) || 
+                          in_array($this->payment_status, [
+                              self::PAYMENT_STATUS_PENDING, 
+                              self::PAYMENT_STATUS_FAILED
+                          ]);
+        
+        return $isAttemptsAllowed && $isStatusAllowed;
     }
 
     /**
@@ -161,25 +201,48 @@ class Order extends Model
      */
     public function incrementPaymentAttempts(): void
     {
+        // Инициализируем значение 0 если payment_attempts null
+        if (is_null($this->payment_attempts)) {
+            $this->payment_attempts = 0;
+        }
+        
         $this->increment('payment_attempts');
     }
 
     /**
      * Обновляет статус платежа
+     * 
+     * ИСПРАВЛЕНО: Использует константы и добавляет payment_completed_at
      */
-    public function updatePaymentStatus(string $status, array $details = []): void
+    public function updatePaymentStatus(string $status): void
     {
-        $this->update([
+        $updateData = [
             'payment_status' => $status,
-            'payment_details' => $details,
-            'payment_completed_at' => $status === 'charged' ? now() : null,
-        ]);
+        ];
+        
+        // Если платеж завершен (успешно или с ошибкой), записываем время завершения
+        if (in_array($status, [
+            self::PAYMENT_STATUS_CHARGED, 
+            self::PAYMENT_STATUS_FAILED, 
+            self::PAYMENT_STATUS_REFUNDED
+        ])) {
+            $updateData['payment_completed_at'] = now();
+        }
+        
+        $this->update($updateData);
 
         // Обновляем статус заказа в зависимости от статуса платежа
-        if ($status === 'charged') {
-            $this->update(['status' => 'paid']);
-        } elseif ($status === 'failed' && $this->payment_attempts >= 3) {
-            $this->update(['status' => 'cancelled']);
+        if ($status === self::PAYMENT_STATUS_CHARGED) {
+            // Платеж успешен - переводим заказ в статус "оплачен"
+            $this->update(['status' => self::STATUS_PAID]);
+        } elseif ($status === self::PAYMENT_STATUS_FAILED) {
+            // Платеж не прошел - проверяем количество попыток
+            $attempts = $this->payment_attempts ?? 0;
+            if ($attempts >= self::MAX_PAYMENT_ATTEMPTS) {
+                // Превышен лимит попыток - отменяем заказ
+                $this->update(['status' => self::STATUS_CANCELLED]);
+            }
+            // Иначе заказ остается в статусе pending_payment для повторной попытки
         }
     }
 }

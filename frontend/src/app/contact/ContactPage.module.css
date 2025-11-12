@@ -1,0 +1,353 @@
+/* Contact Page Styles */
+
+/* Main Container */
+.contactPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFCF8;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.navbarSpacing {
+  padding-top: 0;
+}
+
+/* Breadcrumbs */
+.breadcrumbsContainer {
+  padding: 1rem 0;
+  background-color: #FFFCF8;
+}
+
+.breadcrumbsWrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Page Title */
+.pageTitleContainer {
+  background-color: #FFFCF8;
+  text-align: center;
+}
+
+.pageTitleWrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.pageTitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro";
+  font-size: 44px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin-bottom: 0;
+}
+
+/* Main Content */
+.mainContent {
+  background-color: #FFFCF8;
+  padding: 1rem 0;
+}
+
+.contentWrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Two Column Layout */
+.twoColumnLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Left Column - Image */
+.leftColumn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.contactImage {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Right Column - Form */
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.formContainer {
+  background: #FFFCF8;
+}
+
+.formHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.formTitle {
+  font-family: "Sabon Next LT Pro";
+  font-size: 28px;
+  font-weight: 400;
+  color: #1A1A1A;
+  margin: 0 0 1rem 0;
+}
+
+.formSubtitle {
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #4A4A4A;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Form Styles */
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.formInput,
+.formSelect,
+.formTextarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background-color: #FFFCF8;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #1A1A1A;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+  outline: none;
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.formTextarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.formSubmitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 32px;
+  background-color: #000000;
+  color: #FEF4E6;
+  border: none;
+  border-radius: 8px;
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.formSubmitButton:hover:not(:disabled) {
+  background-color: #D4AF37;
+  color: #1A1A1A;
+  transform: translateY(-2px);
+}
+
+.formSubmitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.formSuccess {
+  background: #d4edda;
+  color: #155724;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-family: "Sabon Next LT Pro";
+  font-size: 14px;
+  border: 1px solid #c3e6cb;
+}
+
+.formError {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-family: "Sabon Next LT Pro";
+  font-size: 14px;
+  border: 1px solid #f5c6cb;
+}
+
+/* Responsive Design */
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) {
+  .pageTitle {
+    font-size: 36px;
+  }
+
+  .twoColumnLayout {
+    gap: 3rem;
+  }
+
+  .imageContainer {
+    height: 400px;
+  }
+
+  .formContainer {
+    padding: 2rem;
+  }
+
+  .formTitle {
+    font-size: 24px;
+  }
+}
+
+/* Mobile (768px and below) */
+@media (max-width: 768px) {
+  .breadcrumbsWrapper,
+  .pageTitleWrapper,
+  .contentWrapper {
+    padding: 0 16px;
+  }
+
+  .pageTitle {
+    font-size: 32px;
+  }
+
+  .twoColumnLayout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .imageContainer {
+    height: 300px;
+  }
+
+  .formContainer {
+    padding: 1.5rem;
+  }
+
+  .formTitle {
+    font-size: 22px;
+  }
+
+  .formSubtitle {
+    font-size: 14px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .formInput,
+  .formSelect,
+  .formTextarea {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .formTextarea {
+    min-height: 100px;
+  }
+
+  .formSubmitButton {
+    padding: 14px 24px;
+    font-size: 14px;
+  }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 28px;
+  }
+
+  .imageContainer {
+    height: 250px;
+  }
+
+  .formContainer {
+    padding: 1.25rem;
+  }
+
+  .formTitle {
+    font-size: 20px;
+  }
+
+  .formSubtitle {
+    font-size: 13px;
+  }
+
+  .formInput,
+  .formSelect,
+  .formTextarea {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .formSubmitButton {
+    padding: 12px 20px;
+    font-size: 13px;
+  }
+}

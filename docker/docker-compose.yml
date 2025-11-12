@@ -34,7 +34,7 @@ services:
   # Laravel Backend
   backend:
     build:
-      context: ./backend
+      context: ../backend
       dockerfile: Dockerfile
     container_name: paul_backend
     restart: unless-stopped
@@ -49,13 +49,13 @@ services:
       - DB_PASSWORD=paul_password
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - CACHE_DRIVER=file
+      - CACHE_DRIVER=redis
       - SESSION_DRIVER=file
-      - QUEUE_CONNECTION=sync
+      - QUEUE_CONNECTION=redis
     volumes:
-      - ./backend/storage:/var/www/html/storage
-      - ./backend/bootstrap/cache:/var/www/html/bootstrap/cache
-      - ./backend/public:/var/www/html/public
+      - ../backend/storage:/var/www/html/storage
+      - ../backend/bootstrap/cache:/var/www/html/bootstrap/cache
+      - ../backend/public:/var/www/html/public
     depends_on:
       - mysql
       - redis
@@ -65,7 +65,7 @@ services:
   # Next.js Frontend
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
       dockerfile: Dockerfile
     container_name: paul_frontend
     restart: unless-stopped
@@ -73,6 +73,14 @@ services:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=/api
       - NEXT_PUBLIC_APP_NAME=PAUL Azerbaijan
+    volumes:
+      - ../frontend/src:/app/src
+      - ../frontend/public:/app/public
+      - ../frontend/package.json:/app/package.json
+      - ../frontend/next.config.ts:/app/next.config.ts
+      - ../frontend/tsconfig.json:/app/tsconfig.json
+      - ../frontend/tailwind.config.ts:/app/tailwind.config.ts
+      - ../frontend/postcss.config.js:/app/postcss.config.js
     depends_on:
       - backend
     networks:
@@ -88,9 +96,9 @@ services:
       - "443:443"
       - "8080:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/ssl:/etc/nginx/ssl
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ../nginx/conf.d:/etc/nginx/conf.d
+      - ../nginx/ssl:/etc/nginx/ssl
     depends_on:
       - frontend
       - backend
@@ -100,7 +108,7 @@ services:
   # Worker для очередей Laravel
   queue:
     build:
-      context: ./backend
+      context: ../backend
       dockerfile: Dockerfile
     container_name: paul_queue
     restart: unless-stopped
@@ -116,11 +124,11 @@ services:
       - DB_PASSWORD=paul_password
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - CACHE_DRIVER=file
+      - CACHE_DRIVER=redis
       - SESSION_DRIVER=file
-      - QUEUE_CONNECTION=sync
+      - QUEUE_CONNECTION=redis
     volumes:
-      - ./backend/storage:/var/www/html/storage
+      - ../backend/storage:/var/www/html/storage
     depends_on:
       - mysql
       - redis

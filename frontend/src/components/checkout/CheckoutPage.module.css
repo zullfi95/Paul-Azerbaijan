@@ -184,7 +184,7 @@
 }
 
 .successPopupContent {
-  background-color: white;
+  background-color: #FFFCF8;
   border-radius: 1rem;
   padding: 3rem;
   text-align: center;
@@ -205,7 +205,7 @@
 
 .successIconSymbol {
   font-size: 3rem;
-  color: white;
+  color: #FFFCF8;
 }
 
 .successTitle {
@@ -219,7 +219,7 @@
 .successButton {
   padding: 1rem 2rem;
   background-color: #1A1A1A;
-  color: white;
+  color: #FFFCF8;
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;

@@ -34,7 +34,7 @@ const viennoiserie: Viennoiserie[] = [
     name: 'Classic Croissant',
     description: 'Buttery French croissant',
     price: 3.50,
-    image: '/images/Viennoiserie2.png',
+    image: '/images/Viennoiserie1.png',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -67,7 +67,7 @@ const viennoiserie: Viennoiserie[] = [
     name: 'Pain au Chocolat',
     description: 'Chocolate-filled pastry',
     price: 4.00,
-    image: '/images/Viennoiserie4.png',
+    image: '/images/Viennoiserie3.png',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -78,7 +78,7 @@ const viennoiserie: Viennoiserie[] = [
     name: 'Danish Pastry',
     description: 'Sweet layered pastry',
     price: 4.50,
-    image: '/images/Viennoiserie1.png',
+    image: '/images/Viennoiserie4.png',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -89,7 +89,7 @@ const viennoiserie: Viennoiserie[] = [
     name: 'Apple Danish',
     description: 'Danish with apple filling',
     price: 5.50,
-    image: '/images/Viennoiserie2.png',
+    image: '/images/Viennoiserie1.png',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -111,7 +111,7 @@ const viennoiserie: Viennoiserie[] = [
     name: 'Cinnamon Roll',
     description: 'Sweet cinnamon pastry',
     price: 4.50,
-    image: '/images/Viennoiserie4.png',
+    image: '/images/Viennoiserie3.png',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -122,7 +122,7 @@ const viennoiserie: Viennoiserie[] = [
     name: 'Brioche',
     description: 'Rich French bread',
     price: 3.50,
-    image: '/images/Viennoiserie1.png',
+    image: '/images/Viennoiserie4.png',
     category: 'Sweet French pastries',
 
     available: true,
@@ -145,7 +145,7 @@ const viennoiserie: Viennoiserie[] = [
     name: 'Raspberry Danish',
     description: 'Danish with raspberry filling',
     price: 5.50,
-    image: '/images/Viennoiserie1.png',
+    image: '/images/Viennoiserie2.png',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -156,7 +156,7 @@ const viennoiserie: Viennoiserie[] = [
     name: 'Pecan Roll',
     description: 'Sweet roll with pecans',
     price: 5.00,
-    image: '/images/Viennoiserie4.png',
+    image: '/images/Viennoiserie3.png',
     category: 'Sweet French pastries',
     available: true,
     isSet: false,
@@ -170,11 +170,19 @@ export default function ViennoiseriePage() {
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 10 });
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { showNotification } = useNotification();
 
-  const sortedViennoiserie = [...viennoiserie].sort((a, b) => {
+  // Filter and sort viennoiserie
+  const filteredViennoiserie = viennoiserie.filter(item => {
+    const priceMatch = item.price >= priceRange.min && item.price <= priceRange.max;
+    return priceMatch;
+  });
+
+  const sortedViennoiserie = [...filteredViennoiserie].sort((a, b) => {
     switch (sortBy) {
       case 'name':
         return a.name.localeCompare(b.name);
@@ -193,6 +201,16 @@ export default function ViennoiseriePage() {
   const loadMoreItems = () => {
     setVisibleItems(prev => Math.min(prev + 8, sortedViennoiserie.length));
   };
+
+  const clearFilters = () => {
+    setPriceRange({ min: 0, max: 10 });
+    setVisibleItems(8);
+  };
+
+  // Reset visible items when filters change
+  React.useEffect(() => {
+    setVisibleItems(8);
+  }, [priceRange]);
 
   const addToCart = (item: Viennoiserie) => {
     addItem({
@@ -215,16 +233,19 @@ export default function ViennoiseriePage() {
       if (!(event.target as Element).closest('[data-sort-menu]')) {
         setShowSortMenu(false);
       }
+      if (!(event.target as Element).closest('[data-filter-menu]')) {
+        setShowFilterMenu(false);
+      }
     };
 
-    if (showSortMenu) {
+    if (showSortMenu || showFilterMenu) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showSortMenu]);
+  }, [showSortMenu, showFilterMenu]);
 
   return (
     <div className={styles.viennoiseriePage}>
@@ -253,10 +274,43 @@ export default function ViennoiseriePage() {
               <h1 className={styles.pageTitle}>
                  Viennoiserie
               </h1>
-              <button className={styles.filterButton}>
-                Filter
-                <span className={styles.filterButtonIcon}>⋯</span>
-              </button>
+              
+              <div className={styles.filterContainer} data-filter-menu>
+                <button 
+                  className={styles.filterButton}
+                  onClick={() => setShowFilterMenu(!showFilterMenu)}
+                >
+                  Filter
+                  <span className={styles.filterButtonIcon}>⋯</span>
+                </button>
+                
+                {showFilterMenu && (
+                  <div className={styles.filterMenu}>
+                    <div className={styles.filterSection}>
+                      <h4>Price Range</h4>
+                      <div className={styles.priceRange}>
+                        <input
+                          type="range"
+                          min="0"
+                          max="10"
+                          value={priceRange.max}
+                          onChange={(e) => setPriceRange(prev => ({ ...prev, max: parseInt(e.target.value) }))}
+                        />
+                        <span>₼{priceRange.min} - ₼{priceRange.max}</span>
+                      </div>
+                    </div>
+                    
+                    <div className={styles.filterActions}>
+                      <button onClick={clearFilters} className={styles.clearButton}>
+                        Clear All
+                      </button>
+                      <button onClick={() => setShowFilterMenu(false)} className={styles.applyButton}>
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Product Grid */}

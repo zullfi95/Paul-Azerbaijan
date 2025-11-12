@@ -6,59 +6,6 @@
   background-color: #FFFCF8;
 }
 
-/* Product Categories Section (top section after header) */
-.productCategoriesSection {
-  background-color: #FFFCF8;
-  padding: 2rem 0;
-}
-
-.productCategoriesContainer {
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 3rem;
-  flex-wrap: wrap;
-}
-
-.productCategoryItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0.5rem;
-  border-radius: 8px;
-}
-
-.productCategoryItem:hover {
-  transform: translateY(-4px);
-}
-
-.productCategoryActive {
-  background-color: rgba(212, 175, 55, 0.1);
-}
-
-.productCategoryIcon {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.productCategoryName {
-  font-family: "Sabon Next LT Pro";
-  font-size: 14px;
-  font-weight: 500;
-  color: #1A1A1A;
-  text-align: center;
-  line-height: 1.3;
-  max-width: 140px;
-}
 
 .navbarSpacing {
   padding-top: 0;
@@ -76,7 +23,7 @@
 }
 
 .pageTitleContainer {
-  padding: 2rem 0 1rem 0;
+  padding: 0.5rem 0 1rem 0;
   background-color: #FFFCF8;
   text-align: center;
 }
@@ -92,7 +39,7 @@
   font-family: "Sabon Next LT Pro";
   font-size: 44px;
   font-style: normal;
-  font-weight: bold;
+  font-weight: 400;
   line-height: normal;
   margin-bottom: 0;
 }
@@ -170,9 +117,10 @@
   color: #000;
 }
 
-/* Hide Sets tab on desktop */
+/* Show Sets tab on desktop */
 .categoryItemSets {
-  display: none;
+  display: flex;
+  align-items: center;
 }
 
 /* Product Grid */
@@ -189,6 +137,38 @@
 
 .productGrid > div > div:first-child > button svg path {
   fill: #1A1A1A;
+}
+
+/* View More Button */
+.viewMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.viewMoreButton {
+  padding: 1rem 2.5rem;
+  background-color: #000000;
+  color: #FEF4E6;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: "Sabon Next LT Pro", serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.viewMoreButton:hover {
+  background-color: #333333;
+  transform: translateY(-2px);
+}
+
+.viewMoreButton:active {
+  transform: translateY(0);
 }
 
 /* Sort Button */
@@ -373,7 +353,6 @@
 }
 
 .viewMoreButton:hover {
-  background-color: #D4AF37;
   color: #1A1A1A;
   transform: translateY(-2px);
 }
@@ -393,10 +372,6 @@
     padding: 0 1rem;
   }
   
-  /* Product Categories - Hide on Mobile */
-  .productCategoriesSection {
-    display: none !important;
-  }
   
   .navbarSpacing {
     padding-top: 0 !important;
@@ -518,7 +493,8 @@
   
   /* Show Sets tab on mobile */
   .categoryItemSets {
-    display: flex !important;
+    display: flex;
+    align-items: center;
   }
   
   .categoryIcon {

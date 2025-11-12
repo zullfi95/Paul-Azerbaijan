@@ -5,6 +5,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { BEO } from '../../../types/enhanced';
 import { Order } from '../../../config/api';
 import BEOGenerator from '../../../components/beo/BEOGenerator';
+import DashboardLayout from '../../../components/DashboardLayout';
 import BEOViewer from '../../../components/beo/BEOViewer';
 import { Button } from '../../../components/ui/Button';
 import { makeApiRequest, extractApiData } from '../../../utils/apiHelpers';
@@ -210,6 +211,7 @@ export default function BEOPage() {
   }
 
   return (
+    <DashboardLayout>
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
@@ -314,5 +316,6 @@ export default function BEOPage() {
         )}
       </div>
     </div>
+    </DashboardLayout>
   );
 }

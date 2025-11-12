@@ -187,6 +187,214 @@ export default function ProductPage() {
         fat: 21.8
       }
     },
+    {
+      id: '10',
+      name: 'Lemon meringue pie',
+      description: '1 whole pie - Tangy lemon filling topped with fluffy meringue.',
+      price: 32,
+      image: '/images/cake4.png',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Lemon', 'Sugar', 'Eggs', 'Butter', 'Flour', 'Meringue'],
+      nutritionInfo: {
+        calories: 320,
+        protein: 5.2,
+        carbs: 45.8,
+        fat: 12.5
+      }
+    },
+    {
+      id: '11',
+      name: 'Opera cake',
+      description: '1 whole cake - Elegant French opera cake with layers of coffee and chocolate.',
+      price: 48,
+      image: '/images/cake5.jpg',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Flour', 'Coffee', 'Chocolate', 'Butter', 'Sugar', 'Eggs'],
+      nutritionInfo: {
+        calories: 480,
+        protein: 7.8,
+        carbs: 52.5,
+        fat: 28.2
+      }
+    },
+    {
+      id: '12',
+      name: 'Tiramisu',
+      description: '1 whole cake - Classic Italian tiramisu with coffee and mascarpone.',
+      price: 36,
+      image: '/images/cake6.jpg',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Mascarpone', 'Coffee', 'Cocoa', 'Ladyfingers', 'Eggs', 'Sugar'],
+      nutritionInfo: {
+        calories: 380,
+        protein: 8.5,
+        carbs: 42.1,
+        fat: 18.8
+      }
+    },
+    {
+      id: '13',
+      name: 'Carrot cake',
+      description: '1 whole cake - Moist carrot cake with cream cheese frosting.',
+      price: 34,
+      image: '/images/cake1.png',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Carrots', 'Flour', 'Sugar', 'Oil', 'Eggs', 'Cream Cheese'],
+      nutritionInfo: {
+        calories: 360,
+        protein: 6.2,
+        carbs: 48.5,
+        fat: 16.8
+      }
+    },
+    {
+      id: '14',
+      name: 'Chocolate fudge cake',
+      description: '1 whole cake - Rich chocolate fudge cake with chocolate ganache.',
+      price: 44,
+      image: '/images/cake2.png',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Chocolate', 'Flour', 'Sugar', 'Butter', 'Eggs', 'Cocoa'],
+      nutritionInfo: {
+        calories: 520,
+        protein: 8.8,
+        carbs: 58.2,
+        fat: 32.5
+      }
+    },
+    {
+      id: '15',
+      name: 'Strawberry shortcake',
+      description: '1 whole cake - Light sponge cake with fresh strawberries and cream.',
+      price: 39,
+      image: '/images/cake3.png',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Strawberries', 'Flour', 'Sugar', 'Butter', 'Eggs', 'Cream'],
+      nutritionInfo: {
+        calories: 340,
+        protein: 5.8,
+        carbs: 45.2,
+        fat: 15.8
+      }
+    },
+    {
+      id: '16',
+      name: 'Apple Pie',
+      description: 'Classic American apple pie with cinnamon and flaky crust.',
+      price: 28,
+      image: '/images/pies.jpg',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Apples', 'Cinnamon', 'Sugar', 'Flour', 'Butter', 'Lemon'],
+      nutritionInfo: {
+        calories: 320,
+        protein: 4.2,
+        carbs: 52.8,
+        fat: 12.5
+      }
+    },
+    {
+      id: '17',
+      name: 'Cherry Pie',
+      description: 'Sweet cherry pie with lattice crust and fresh cherries.',
+      price: 30,
+      image: '/images/pies2.png',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Cherries', 'Sugar', 'Flour', 'Butter', 'Cornstarch', 'Lemon'],
+      nutritionInfo: {
+        calories: 340,
+        protein: 4.5,
+        carbs: 55.2,
+        fat: 13.8
+      }
+    },
+    {
+      id: '18',
+      name: 'Pumpkin Pie',
+      description: 'Traditional pumpkin pie with whipped cream and spices.',
+      price: 32,
+      image: '/images/pies.jpg',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Pumpkin', 'Spices', 'Sugar', 'Eggs', 'Milk', 'Flour'],
+      nutritionInfo: {
+        calories: 300,
+        protein: 6.8,
+        carbs: 48.5,
+        fat: 10.2
+      }
+    },
+    {
+      id: '19',
+      name: 'Blueberry Pie',
+      description: 'Fresh blueberry pie with buttery crust and sweet filling.',
+      price: 29,
+      image: '/images/pies2.png',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Blueberries', 'Sugar', 'Flour', 'Butter', 'Lemon', 'Cornstarch'],
+      nutritionInfo: {
+        calories: 330,
+        protein: 4.8,
+        carbs: 54.2,
+        fat: 12.8
+      }
+    },
+    {
+      id: '20',
+      name: 'Pecan Pie',
+      description: 'Rich pecan pie with caramel filling and crunchy nuts.',
+      price: 35,
+      image: '/images/pies.jpg',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Pecans', 'Corn Syrup', 'Sugar', 'Butter', 'Eggs', 'Vanilla'],
+      nutritionInfo: {
+        calories: 480,
+        protein: 6.2,
+        carbs: 58.8,
+        fat: 28.5
+      }
+    },
+    {
+      id: '21',
+      name: 'Key Lime Pie',
+      description: 'Tangy key lime pie with graham cracker crust and whipped cream.',
+      price: 31,
+      image: '/images/pies2.png',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Key Limes', 'Graham Crackers', 'Sugar', 'Butter', 'Eggs', 'Cream'],
+      nutritionInfo: {
+        calories: 380,
+        protein: 5.8,
+        carbs: 45.2,
+        fat: 22.8
+      }
+    },
+    {
+      id: '22',
+      name: 'French Silk Pie',
+      description: 'Decadent chocolate silk pie with whipped cream and chocolate shavings.',
+      price: 33,
+      image: '/images/pies.jpg',
+      category: 'Cakes',
+      available: true,
+      ingredients: ['Chocolate', 'Butter', 'Sugar', 'Eggs', 'Vanilla', 'Cream'],
+      nutritionInfo: {
+        calories: 450,
+        protein: 6.8,
+        carbs: 42.5,
+        fat: 32.2
+      }
+    },
     // Bread
     {
       id: 'b1',

@@ -3,12 +3,15 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../contexts/AuthContext";
-import { Order } from "../../../config/api";
+import { Order } from "../../../types/common";
 import OrderCalendar from "../../../components/OrderCalendar";
 import { generateBEOFile } from "../../../utils/beoGenerator";
 import { calculateTotalAmountSum, formatTotalAmount } from "../../../utils/numberUtils";
 import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/apiHelpers";
 import { useAuthGuard, canViewCalendar } from "../../../utils/authConstants";
+import DashboardLayout from "../../../components/DashboardLayout";
+import "../../../styles/dashboard.css";
+import styles from './page.module.css';
 
 export default function CalendarPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -21,7 +24,7 @@ export default function CalendarPage() {
   const [createDate, setCreateDate] = useState<Date | null>(null);
 
   // Auth guard с улучшенной проверкой доступа
-  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, canViewCalendar, router);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', position: '', staff_role: '' }, canViewCalendar, router);
 
   // Загрузка заказов с оптимизацией
   const loadOrders = useCallback(async () => {
@@ -31,7 +34,7 @@ export default function CalendarPage() {
       if (result.success) {
         setOrders(extractApiData(result.data || []));
       } else {
-        console.error("Failed to load orders:", handleApiError(result));
+        console.error("Failed to load orders:", handleApiError(result as any));
       }
     } catch (e) {
       console.error("Failed to load orders", e);
@@ -69,13 +72,9 @@ export default function CalendarPage() {
 
   if (isLoading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh'
-      }}>
-        <div>Загрузка...</div>
+      <div className="loading-state">
+        <div className="loading-spinner"></div>
+        <div className="loading-title">Загрузка...</div>
       </div>
     );
   }
@@ -85,186 +84,109 @@ export default function CalendarPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#F9F9F6' }}>
+    <DashboardLayout>
       {/* Header */}
-      <div style={{
-        backgroundColor: 'white',
-        borderBottom: '1px solid #e5e7eb',
-        padding: '1rem 2rem'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          <div>
-            <h1 style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: '#1A1A1A',
-              fontFamily: 'Playfair Display, serif',
-              marginBottom: '0.5rem'
-            }}>
-              Календарь заказов
-            </h1>
-            <p style={{ color: '#4A4A4A', fontSize: '1rem' }}>
-              Управление заказами и планирование мероприятий
-            </p>
-          </div>
+      <div className="page-header">
+        <div className="page-header-content">
+          <div className="page-header-main">
+            <div className="page-header-left">
+              <button
+                onClick={() => router.push('/dashboard')}
+                className="back-button"
+              >
+                <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div>
+                <h1 className="page-title">
+                  Календарь заказов
+                </h1>
+                <p className="page-description">
+                  Управление заказами и планирование мероприятий
+                </p>
+              </div>
+            </div>
 
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            {/* Кнопка обновления */}
-            <button
-              onClick={loadOrders}
-              disabled={ordersLoading}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: ordersLoading ? '#6B7280' : '#1A1A1A',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.375rem',
-                cursor: ordersLoading ? 'not-allowed' : 'pointer',
-                fontSize: '0.875rem'
-              }}
-            >
-              {ordersLoading ? 'Обновление...' : 'Обновить'}
-            </button>
+            <div className="page-actions">
+              <button
+                onClick={loadOrders}
+                disabled={ordersLoading}
+                className={`action-button refresh-button ${ordersLoading ? 'disabled' : ''}`}
+              >
+                {ordersLoading ? 'Обновление...' : 'Обновить'}
+              </button>
 
-            {/* Кнопка создания заказа */}
-            <button
-              onClick={() => router.push('/dashboard/orders/create')}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: '#D4AF37',
-                color: '#1A1A1A',
-                border: 'none',
-                borderRadius: '0.375rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: '500'
-              }}
-            >
-              + Новый заказ
-            </button>
-
-            {/* Кнопка назад в dashboard */}
-            <button
-              onClick={() => router.push('/dashboard')}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: 'transparent',
-                color: '#1A1A1A',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.375rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem'
-              }}
-            >
-              ← Назад
-            </button>
+              <button
+                onClick={() => router.push('/dashboard/orders/create')}
+                className="action-button primary-button"
+              >
+                + Новый заказ
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '2rem'
-      }}>
+      <div className="main-content">
         {/* Статистика */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '1rem',
-          marginBottom: '2rem'
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '1.5rem',
-            borderRadius: '0.5rem',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-          }}>
-            <h3 style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: '#1A1A1A',
-              marginBottom: '0.5rem'
-            }}>
+        <div className="dashboard-kpi-grid">
+          <div className="dashboard-kpi-card">
+            <div className="dashboard-kpi-header">
+              <span className="dashboard-kpi-icon">📋</span>
+              <span className="dashboard-kpi-label">Всего заказов</span>
+            </div>
+            <div className="dashboard-kpi-value">
               {orders.length}
-            </h3>
-            <p style={{ color: '#4A4A4A', fontSize: '0.875rem' }}>
-              Всего заказов
-            </p>
+            </div>
+            <div className="dashboard-kpi-subtitle">
+              В календаре
+            </div>
           </div>
 
-          <div style={{
-            backgroundColor: 'white',
-            padding: '1.5rem',
-            borderRadius: '0.5rem',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-          }}>
-            <h3 style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: '#D4AF37',
-              marginBottom: '0.5rem'
-            }}>
+          <div className="dashboard-kpi-card">
+            <div className="dashboard-kpi-header">
+              <span className="dashboard-kpi-icon status-processing">⏳</span>
+              <span className="dashboard-kpi-label">В обработке</span>
+            </div>
+            <div className="dashboard-kpi-value status-processing">
               {(orders || []).filter(order => order.status === 'processing').length}
-            </h3>
-            <p style={{ color: '#4A4A4A', fontSize: '0.875rem' }}>
-              В обработке
-            </p>
+            </div>
+            <div className="dashboard-kpi-subtitle">
+              Требуют внимания
+            </div>
           </div>
 
-          <div style={{
-            backgroundColor: 'white',
-            padding: '1.5rem',
-            borderRadius: '0.5rem',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-          }}>
-            <h3 style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: '#10B981',
-              marginBottom: '0.5rem'
-            }}>
+          <div className="dashboard-kpi-card">
+            <div className="dashboard-kpi-header">
+              <span className="dashboard-kpi-icon status-approved">✅</span>
+              <span className="dashboard-kpi-label">Завершенных</span>
+            </div>
+            <div className="dashboard-kpi-value status-approved">
               {(orders || []).filter(order => order.status === 'completed').length}
-            </h3>
-            <p style={{ color: '#4A4A4A', fontSize: '0.875rem' }}>
-              Завершенных
-            </p>
+            </div>
+            <div className="dashboard-kpi-subtitle">
+              Выполнено успешно
+            </div>
           </div>
 
-          <div style={{
-            backgroundColor: 'white',
-            padding: '1.5rem',
-            borderRadius: '0.5rem',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-          }}>
-            <h3 style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: '#F59E0B',
-              marginBottom: '0.5rem'
-            }}>
+          <div className="dashboard-kpi-card">
+            <div className="dashboard-kpi-header">
+              <span className="dashboard-kpi-icon">💰</span>
+              <span className="dashboard-kpi-label">Общая сумма</span>
+            </div>
+            <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
               {calculateTotalAmountSum(orders || []).toFixed(2)}₼
-            </h3>
-            <p style={{ color: '#4A4A4A', fontSize: '0.875rem' }}>
-              Общая сумма
-            </p>
+            </div>
+            <div className="dashboard-kpi-subtitle">
+              Общий оборот
+            </div>
           </div>
         </div>
 
         {/* Календарь */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '0.5rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          overflow: 'hidden'
-        }}>
+        <div className={styles.calendarContainer}>
           <OrderCalendar
             orders={orders || []}
             onSelectOrder={handleSelectOrder}
@@ -276,65 +198,40 @@ export default function CalendarPage() {
 
       {/* Модальное окно создания заказа */}
       {showCreateModal && createDate && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '0.5rem',
-            padding: '2rem',
-            maxWidth: '400px',
-            width: '90%'
-          }}>
-            <h3 style={{
-              fontSize: '1.25rem',
-              fontWeight: 'bold',
-              color: '#1A1A1A',
-              marginBottom: '1rem'
-            }}>
-              Создать новый заказ
-            </h3>
-            <p style={{ color: '#4A4A4A', marginBottom: '1.5rem' }}>
-              Дата: {createDate.toLocaleDateString('ru-RU')}
-            </p>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>
+                Создать новый заказ
+              </h3>
               <button
                 onClick={() => setShowCreateModal(false)}
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#f3f4f6',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer'
-                }}
+                className={styles.modalClose}
               >
-                Отмена
+                ×
               </button>
-              <button
-                onClick={() => {
-                  const dateStr = createDate.toISOString().split('T')[0];
-                  router.push(`/dashboard/orders/create?date=${dateStr}`);
-                }}
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#D4AF37',
-                  color: '#1A1A1A',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Создать
-              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <p className={styles.dateInfo}>
+                Дата: {createDate.toLocaleDateString('ru-RU')}
+              </p>
+              <div className={styles.modalActions}>
+                <button
+                  onClick={() => setShowCreateModal(false)}
+                  className={styles.cancelButton}
+                >
+                  Отмена
+                </button>
+                <button
+                  onClick={() => {
+                    const dateStr = createDate.toISOString().split('T')[0];
+                    router.push(`/dashboard/orders/create?date=${dateStr}`);
+                  }}
+                  className={styles.createButton}
+                >
+                  Создать
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -342,104 +239,67 @@ export default function CalendarPage() {
 
       {/* Боковая панель с деталями заказа */}
       {selectedOrder && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          width: '400px',
-          height: '100vh',
-          backgroundColor: 'white',
-          boxShadow: '-2px 0 10px rgba(0, 0, 0, 0.1)',
-          zIndex: 999,
-          padding: '2rem',
-          overflowY: 'auto'
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '1.5rem'
-          }}>
-            <h3 style={{
-              fontSize: '1.25rem',
-              fontWeight: 'bold',
-              color: '#1A1A1A'
-            }}>
+        <div className={`${styles.sidebarPreview} ${selectedOrder ? 'open' : ''}`}>
+          <div className={styles.sidebarHeader}>
+            <h3 className={styles.sidebarTitle}>
               Заказ #{selectedOrder.id}
             </h3>
             <button
               onClick={() => setSelectedOrder(null)}
-              style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '1.5rem',
-                cursor: 'pointer',
-                color: '#6B7280'
-              }}
+              className={styles.sidebarClose}
             >
               ×
             </button>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div>
-              <strong>Компания:</strong> {selectedOrder.company_name}
-            </div>
-            <div>
-              <strong>Статус:</strong> {selectedOrder.status}
-            </div>
-            <div>
-              <strong>Дата доставки:</strong> {selectedOrder.delivery_date}
-            </div>
-            {selectedOrder.total_amount && (
-              <div>
-                <strong>Сумма:</strong> {formatTotalAmount(selectedOrder.total_amount)} ₼
+          <div className={styles.sidebarBody}>
+            <div className={styles.sidebarSection}>
+              <div className={styles.infoField}>
+                <div className={styles.infoLabel}>Компания:</div>
+                <div className={styles.infoValue}>{selectedOrder.company_name}</div>
               </div>
-            )}
-            {selectedOrder.comment && (
-              <div>
-                <strong>Комментарий:</strong> {selectedOrder.comment}
+              <div className={styles.infoField}>
+                <div className={styles.infoLabel}>Статус:</div>
+                <div className={styles.infoValue}>{selectedOrder.status}</div>
               </div>
-            )}
+              <div className={styles.infoField}>
+                <div className={styles.infoLabel}>Дата доставки:</div>
+                <div className={styles.infoValue}>{selectedOrder.delivery_date}</div>
+              </div>
+              {selectedOrder.total_amount && (
+                <div className={styles.infoField}>
+                  <div className={styles.infoLabel}>Сумма:</div>
+                  <div className={styles.infoValue}>
+                    {formatTotalAmount(selectedOrder.total_amount)} ₼
+                  </div>
+                </div>
+              )}
+              {selectedOrder.comment && (
+                <div className={styles.infoField}>
+                  <div className={styles.infoLabel}>Комментарий:</div>
+                  <div className={styles.infoValue}>{selectedOrder.comment}</div>
+                </div>
+              )}
 
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.5rem',
-              marginTop: '2rem'
-            }}>
-              <button
-                onClick={() => handleGenerateBEO(selectedOrder)}
-                style={{
-                  padding: '0.75rem',
-                  backgroundColor: '#D4AF37',
-                  color: '#1A1A1A',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                  fontWeight: '500'
-                }}
-              >
-                📄 Скачать BEO файл
-              </button>
-              
-              <button
-                onClick={() => router.push(`/dashboard/orders/${selectedOrder.id}`)}
-                style={{
-                  padding: '0.75rem',
-                  backgroundColor: '#1A1A1A',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Редактировать
-              </button>
+              <div className={styles.actionsList}>
+                <button
+                  onClick={() => handleGenerateBEO(selectedOrder)}
+                  className={styles.actionButton}
+                >
+                  📄 Скачать BEO файл
+                </button>
+                
+                <button
+                  onClick={() => router.push(`/dashboard/orders/${selectedOrder.id}/edit`)}
+                  className={styles.actionButton}
+                >
+                  ✏️ Редактировать
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </DashboardLayout>
   );
 }

@@ -155,29 +155,6 @@ const menuItems: CartItem[] = [
   }
 ];
 
-// Категории продуктов (показываются в верхней секции после хедера)
-const productCategories = [
-  { 
-    name: 'Savory filled pastries and quiche', 
-    icon: '/images/category4.png'
-  },
-  { 
-    name: 'Sav/Bread and savoury pastries', 
-    icon: '/images/category5.png'
-  },
-  { 
-    name: 'Sweet French pastries', 
-    icon: '/images/category3.png'
-  },
-  { 
-    name: 'Pies and cakes', 
-    icon: '/images/category2.png'
-  },
-  { 
-    name: 'Macaroons', 
-    icon: '/images/category1.png'
-  }
-];
 
 // Категории меню кейтеринга (вкладки)
 const categories = [
@@ -216,7 +193,6 @@ interface LunchSelection {
 export default function CateringPage() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('Sets');
-  const [selectedProductCategory, setSelectedProductCategory] = useState<string | null>(null);
   const [sortBy] = useState('name');
   const [isMobile, setIsMobile] = useState(false);
   
@@ -478,33 +454,6 @@ export default function CateringPage() {
     <div className={styles.container}>
       <Header />
       
-      {/* Product Categories Section */}
-      <div className={styles.productCategoriesSection}>
-        <div className={styles.productCategoriesContainer}>
-          {productCategories.map((category) => (
-            <div
-              key={category.name}
-              className={`${styles.productCategoryItem} ${selectedProductCategory === category.name ? styles.productCategoryActive : ''}`}
-              onClick={() => setSelectedProductCategory(
-                selectedProductCategory === category.name ? null : category.name
-              )}
-            >
-              <div className={styles.productCategoryIcon}>
-                <Image
-                  src={category.icon}
-                  alt={category.name}
-                  width={50}
-                  height={50}
-                  style={{ objectFit: 'contain' }}
-                />
-              </div>
-              <span className={styles.productCategoryName}>
-                {category.name}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
       
       <div className={styles.navbarSpacing}>
         {/* Breadcrumbs */}

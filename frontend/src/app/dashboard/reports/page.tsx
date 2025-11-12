@@ -3,10 +3,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../contexts/AuthContext";
-import { Order, Application } from "../../../config/api";
+import { Order, Application } from "../../../types/common";
 import { makeApiRequest, extractApiData } from "../../../utils/apiHelpers";
 import { useAuthGuard, canViewCalendar } from "../../../utils/authConstants";
 import { generateOrdersReport } from "../../../utils/beoGenerator";
+import DashboardLayout from "../../../components/DashboardLayout";
 import { formatTotalAmount } from "../../../utils/numberUtils";
 
 interface ReportFilters {
@@ -43,7 +44,7 @@ export default function ReportsPage() {
   });
 
   // Auth guard
-  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, canViewCalendar, router);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', position: '', staff_role: '' }, canViewCalendar, router);
 
   // Загрузка данных
   const loadData = useCallback(async () => {
@@ -173,6 +174,7 @@ export default function ReportsPage() {
   }
 
   return (
+    <DashboardLayout>
     <div style={{ minHeight: '100vh', backgroundColor: '#F9F9F6' }}>
       {/* Header */}
       <div style={{
@@ -560,5 +562,6 @@ export default function ReportsPage() {
         )}
       </div>
     </div>
+    </DashboardLayout>
   );
 }

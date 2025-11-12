@@ -12,16 +12,18 @@ import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
-  // const [next] = useState<string>('/'); // Не используется
+  const [next, setNext] = useState<string>('/');
+  
   useEffect(() => {
     try {
-      // const params = new URLSearchParams(window.location.search); // Не используется
-      // const n = params.get('next') || '/'; // Не используется
-      // setNext(n); // Не используется в компоненте
+      const params = new URLSearchParams(window.location.search);
+      const n = params.get('next') || '/';
+      setNext(n);
     } catch {
-      // setNext('/'); // Не используется в компоненте
+      setNext('/');
     }
   }, []);
+  
   const { login } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -30,6 +32,7 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleInputChange = (field: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
@@ -42,11 +45,16 @@ export default function LoginPage() {
     const { ok, user } = await login(formData.email, formData.password);
     setLoading(false);
     if (ok) {
-      // Если пользователь клиент - редирект на профиль, иначе на дашборд
-      if (user?.user_type === 'client') {
-        router.push('/profile');
+      // Редирект на указанную страницу или по умолчанию
+      if (next && next !== '/') {
+        router.push(next);
       } else {
-        router.push('/dashboard');
+        // Если пользователь клиент - редирект на профиль, иначе на дашборд
+        if (user?.user_type === 'client') {
+          router.push('/profile');
+        } else {
+          router.push('/dashboard');
+        }
       }
     } else {
       setError('Login failed. Check credentials.');
@@ -94,12 +102,26 @@ export default function LoginPage() {
 
             <div className={styles.formField}>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password*"
                 value={formData.password}
                 onChange={handleInputChange('password')}
                 required
               />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? '◉' : '○'}
+              </button>
+            </div>
+
+            <div className={styles.forgotPasswordSection}>
+              <Link href="/auth/forgot-password" className={styles.forgotPasswordLink}>
+                Forgot password?
+              </Link>
             </div>
 
             {error && (

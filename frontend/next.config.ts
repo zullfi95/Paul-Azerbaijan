@@ -34,6 +34,11 @@ const nextConfig: NextConfig = {
         hostname: '46.62.152.225',
         pathname: '/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/storage/**',
+      },
     ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
@@ -52,6 +57,10 @@ const nextConfig: NextConfig = {
       {
         source: '/sanctum/:path*',
         destination: `${apiBaseUrl}/sanctum/:path*`,
+      },
+      {
+        source: '/storage/:path*',
+        destination: `${apiBaseUrl}/storage/:path*`,
       },
     ];
   },

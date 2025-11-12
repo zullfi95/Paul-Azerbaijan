@@ -20,7 +20,7 @@ class CoordinatorMiddleware
         if (config('app.debug')) {
             \Log::info('CoordinatorMiddleware::handle', [
                 'user_id' => $user?->id,
-                'staff_role' => $user?->staff_role,
+                'user_type' => $user?->user_type,
                 'status' => $user?->status,
                 'route' => $request->route()?->getName(),
                 'url' => $request->url(),
@@ -37,10 +37,10 @@ class CoordinatorMiddleware
             ], 401);
         }
         
-        if ($user->staff_role !== 'coordinator') {
+        if ($user->user_type !== 'staff') {
             if (config('app.debug')) {
                 \Log::warning('CoordinatorMiddleware: User is not coordinator', [
-                    'staff_role' => $user->staff_role,
+                    'user_type' => $user->user_type,
                 ]);
             }
             return response()->json([

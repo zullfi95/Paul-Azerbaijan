@@ -31,6 +31,10 @@ class MenuItem extends Model
         'sort_order' => 'integer',
     ];
 
+    protected $appends = [
+        'category', // Добавляем имя категории в JSON
+    ];
+
     /**
      * Получить категорию меню
      */
@@ -81,5 +85,13 @@ class MenuItem extends Model
         }
         
         return is_array($this->images) ? $this->images[0] : null;
+    }
+
+    /**
+     * Получить имя категории для JSON
+     */
+    public function getCategoryAttribute(): ?string
+    {
+        return $this->menuCategory?->name;
     }
 }

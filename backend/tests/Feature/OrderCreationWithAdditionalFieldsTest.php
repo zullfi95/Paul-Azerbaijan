@@ -31,7 +31,7 @@ class OrderCreationWithAdditionalFieldsTest extends TestCase
         // Создаем координатора
         $coordinator = User::factory()->create([
             'user_type' => 'staff',
-            'staff_role' => 'coordinator',
+            'user_type' => 'staff',
             'status' => 'active',
             'email' => 'coordinator@test.com'
         ]);
@@ -115,7 +115,7 @@ class OrderCreationWithAdditionalFieldsTest extends TestCase
     {
         $coordinator = User::factory()->create([
             'user_type' => 'staff',
-            'staff_role' => 'coordinator',
+            'user_type' => 'staff',
             'status' => 'active',
         ]);
 
@@ -158,7 +158,7 @@ class OrderCreationWithAdditionalFieldsTest extends TestCase
     {
         $coordinator = User::factory()->create([
             'user_type' => 'staff',
-            'staff_role' => 'coordinator',
+            'user_type' => 'staff',
             'status' => 'active',
         ]);
 
@@ -201,7 +201,7 @@ class OrderCreationWithAdditionalFieldsTest extends TestCase
     {
         $coordinator = User::factory()->create([
             'user_type' => 'staff',
-            'staff_role' => 'coordinator',
+            'user_type' => 'staff',
             'status' => 'active',
         ]);
 

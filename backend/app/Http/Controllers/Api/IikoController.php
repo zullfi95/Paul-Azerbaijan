@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Services\IikoService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
-class IikoController extends Controller
+class IikoController extends BaseApiController
 {
     private IikoService $iikoService;
 
@@ -24,15 +23,9 @@ class IikoController extends Controller
         try {
             $organizations = $this->iikoService->getOrganizations();
             
-            return response()->json([
-                'success' => true,
-                'data' => $organizations
-            ]);
+            return $this->successResponse($organizations, 'Организации получены успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении организаций: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -48,15 +41,9 @@ class IikoController extends Controller
         try {
             $menu = $this->iikoService->getMenu($request->organization_id);
             
-            return response()->json([
-                'success' => true,
-                'data' => $menu
-            ]);
+            return $this->successResponse($menu, 'Меню получено успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении меню: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -76,15 +63,9 @@ class IikoController extends Controller
                 $request->price_category_id
             );
             
-            return response()->json([
-                'success' => true,
-                'data' => $menu
-            ]);
+            return $this->successResponse($menu, 'Внешнее меню получено успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении внешнего меню: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -100,15 +81,9 @@ class IikoController extends Controller
         try {
             $priceCategories = $this->iikoService->getPriceCategories($request->organization_id);
             
-            return response()->json([
-                'success' => true,
-                'data' => $priceCategories
-            ]);
+            return $this->successResponse($priceCategories, 'Категории цен получены успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении категорий цен: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -124,12 +99,9 @@ class IikoController extends Controller
         try {
             $result = $this->iikoService->syncMenu($request->organization_id);
             
-            return response()->json($result);
+            return $this->successResponse($result, 'Синхронизация меню выполнена успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при синхронизации меню: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -142,21 +114,12 @@ class IikoController extends Controller
             $token = $this->iikoService->getAccessToken();
             
             if ($token) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Подключение к iiko API успешно установлено'
-                ]);
+                return $this->successResponse(['token' => $token], 'Подключение к iiko API успешно установлено');
             } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Не удалось получить токен доступа'
-                ], 401);
+                return $this->unauthorizedResponse('Не удалось получить токен доступа');
             }
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка подключения к iiko API: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 }

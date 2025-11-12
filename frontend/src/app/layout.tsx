@@ -3,7 +3,17 @@ import './globals.css';
 
 export const metadata = {
   title: 'PAUL Azerbaijan',
-  description: 'PAUL Azerbaijan',
+  description: 'PAUL Azerbaijan - Французская пекарня с 1889 года',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png', sizes: '32x32' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

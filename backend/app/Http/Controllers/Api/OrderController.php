@@ -2,99 +2,38 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateOrderRequest;
+use App\Http\Requests\UpdateOrderStatusRequest;
+use App\Http\Controllers\Concerns\HandlesJsonData;
+use App\Http\Controllers\Concerns\HandlesOrderCalculations;
+use App\Http\Controllers\Concerns\HandlesValidation;
 use App\Models\Order;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 use App\Models\Application;
 use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
-class OrderController extends Controller
+class OrderController extends BaseApiController
 {
+    use HandlesJsonData, HandlesOrderCalculations, HandlesValidation;
+
     /**
      * Получение списка всех заказов
      */
     public function index(Request $request)
     {
-        $orders = Order::with('coordinator')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        try {
+            $this->authorize('viewAny', Order::class);
+            
+            $orders = Order::with(['coordinator', 'client'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(20);
 
-        return response()->json([
-            'success' => true,
-            'data' => $orders
-        ]);
-    }
-
-    /**
-     * Resolve menu items against server catalog (if available).
-     * Returns items with authoritative server_price when found, otherwise keeps client price.
-     *
-     * @param array $items
-     * @return array
-     */
-    protected function resolveMenuItems(array $items): array
-    {
-        // Try to detect a menu_items/products table with price column
-        $catalogTable = null;
-        if (Schema::hasTable('menu_items')) {
-            $catalogTable = 'menu_items';
-        } elseif (Schema::hasTable('products')) {
-            $catalogTable = 'products';
-        } elseif (Schema::hasTable('items')) {
-            $catalogTable = 'items';
+            return $this->paginatedResponse($orders, 'Заказы получены успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
-
-        if (!$catalogTable) {
-            // No catalog table found — return items but ensure numeric prices and rounding
-            return array_map(function ($it) {
-                $it['price'] = isset($it['price']) ? round((float) $it['price'], 2) : 0.0;
-                return $it;
-            }, $items);
-        }
-
-        // Collect ids
-        $ids = array_values(array_unique(array_filter(array_map(function ($it) {
-            return $it['id'] ?? null;
-        }, $items))));
-
-        if (empty($ids)) {
-            return array_map(function ($it) {
-                $it['price'] = isset($it['price']) ? round((float) $it['price'], 2) : 0.0;
-                return $it;
-            }, $items);
-        }
-
-        // Fetch prices from catalog
-        $rows = DB::table($catalogTable)
-            ->whereIn('id', $ids)
-            ->select('id', 'price')
-            ->get()
-            ->keyBy('id')
-            ->toArray();
-
-        // Map back
-        return array_map(function ($it) use ($rows) {
-            $id = $it['id'] ?? null;
-            $serverPrice = null;
-            if ($id && isset($rows[$id])) {
-                $serverPrice = (float) $rows[$id]->price;
-            }
-
-            $it['quantity'] = isset($it['quantity']) ? (int) $it['quantity'] : 1;
-            $it['price'] = isset($it['price']) ? round((float) $it['price'], 2) : 0.0;
-            if (!is_null($serverPrice)) {
-                $it['server_price'] = round($serverPrice, 2);
-                // optionally override price used for calculations — keep client price for reference
-            }
-
-            return $it;
-        }, $items);
     }
 
     /**
@@ -102,238 +41,86 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'order' => $order->load('coordinator')
-            ]
-        ]);
+        try {
+            $this->authorize('view', $order);
+            
+            return $this->successResponse([
+                'order' => $order->load(['coordinator', 'client'])
+            ], 'Заказ получен успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
-     * Создание заказа на основе заявки
+     * Создание заказа
      */
-    public function store(Request $request)
+    public function store(CreateOrderRequest $request)
     {
-        $data = $request->all();
-        Log::info('Initial request data', ['data' => $data]);
-        Log::info('Request content', ['content' => $request->getContent()]);
-        Log::info('Request isJson', ['is_json' => $request->isJson()]);
-        
-        // Handle cases where data is double-encoded JSON string
-        if ($request->isJson() && is_string($request->getContent())) {
-             $decoded = json_decode($request->getContent(), true);
-             Log::info('Direct JSON decode attempt', ['decoded' => $decoded, 'is_string' => is_string($decoded)]);
-             
-             // If first decode results in a string, try to decode it again (double-encoded JSON)
-             if (is_string($decoded)) {
-                 $doubleDecoded = json_decode($decoded, true);
-                 Log::info('Double JSON decode attempt', ['decoded' => $doubleDecoded, 'is_array' => is_array($doubleDecoded)]);
-                 if (is_array($doubleDecoded)) {
-                     $data = $doubleDecoded;
-                 }
-             } elseif (is_array($decoded)) {
-                $data = $decoded;
-             }
-        }
-        
-        // Handle cases where data comes wrapped in a 'data' array with JSON string
-        if (isset($data['data']) && is_array($data['data']) && count($data['data']) === 1 && is_string($data['data'][0])) {
-            Log::info('Attempting to decode JSON from data array', ['json_string' => $data['data'][0]]);
-            $decodedData = json_decode($data['data'][0], true);
-            if (is_array($decodedData)) {
-                Log::info('JSON decoded successfully', ['decoded_keys' => array_keys($decodedData)]);
-                $data = $decodedData;
-            } else {
-                Log::error('Failed to decode JSON', ['json_error' => json_last_error_msg()]);
-            }
-        } else {
-            Log::info('Data structure check', [
-                'has_data_key' => isset($data['data']),
-                'is_array' => isset($data['data']) ? is_array($data['data']) : false,
-                'count' => isset($data['data']) && is_array($data['data']) ? count($data['data']) : 0,
-                'first_is_string' => isset($data['data'][0]) ? is_string($data['data'][0]) : false
+        try {
+            $this->authorize('create', Order::class);
+            
+            Log::info('Order creation request received', ['data' => $request->validated()]);
+
+            // Получаем клиента
+            $client = $this->getClientForOrder($request, $request->validated()['client_id'] ?? null);
+            
+            Log::info('Client lookup result', [
+                'client_found' => $client->toArray(),
+                'client_id' => $client->id
             ]);
-        }
-        
-        Log::info('Order creation request received', ['data' => $data]);
-        Log::info('Order creation - parsed data keys', ['keys' => array_keys($data)]);
 
-        $validator = Validator::make($data, [
-            // Клиент - теперь необязательно, если не указан, используется текущий пользователь
-            'client_id' => 'nullable|exists:users,id',
-            'client_type' => 'nullable|in:corporate,one_time',
-            'application_id' => 'nullable|exists:applications,id',
+            // Подготавливаем данные заказа
+            $orderData = $this->prepareOrderData($request->validated(), $client);
             
-            // Товары
-            'menu_items' => 'required|array|min:1',
-            'menu_items.*.id' => 'required|string',
-            'menu_items.*.name' => 'required|string',
-            'menu_items.*.quantity' => 'required|integer|min:1',
-            'menu_items.*.price' => 'required|numeric|min:0',
-            
-            // Скидки
-            'discount_fixed' => 'nullable|numeric|min:0',
-            'discount_percent' => 'nullable|numeric|min:0|max:100',
-            
-            // Доставка
-            'delivery_date' => 'nullable|date',
-            'delivery_time' => 'nullable|date_format:H:i',
-            'delivery_type' => 'nullable|in:delivery,pickup,buffet',
-            'delivery_address' => 'nullable|string|max:500',
-            'delivery_cost' => 'nullable|numeric|min:0',
-            
-            // Расписание
-            'recurring_schedule' => 'nullable|array',
-            'recurring_schedule.enabled' => 'boolean',
-            'recurring_schedule.frequency' => 'nullable|in:weekly,monthly',
-            'recurring_schedule.days' => 'nullable|array',
-            'recurring_schedule.delivery_time' => 'nullable|date_format:H:i',
-            'recurring_schedule.notes' => 'nullable|string|max:500',
-            
-            // Дополнительные поля
-            'equipment_required' => 'nullable|integer|min:0',
-            'staff_assigned' => 'nullable|integer|min:0',
-            'special_instructions' => 'nullable|string',
-            
-            // Комментарий
-            'comment' => 'nullable|string',
-        ]);
+            Log::info('Calculated order amounts', [
+                'subtotal' => $orderData['total_amount'],
+                'finalAmount' => $orderData['final_amount'],
+                'client_company' => $client->company_name,
+                'client_category' => $client->client_category
+            ]);
 
-        if ($validator->fails()) {
-            Log::error('Order creation validation failed', ['errors' => $validator->errors()]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-        
-        Log::info('Order creation validation passed');
+            // Создаем заказ
+            $order = Order::create($orderData);
 
-        // Получаем клиента - если client_id не указан, используем текущего пользователя
-        $user = $request->user();
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Пользователь не авторизован'
-            ], 401);
-        }
-        
-        $clientId = $data['client_id'] ?? $user->id;
-        $client = User::where('id', $clientId)->first();
-        
-        Log::info('Client lookup result', ['client_found' => $client ? $client->toArray() : null, 'client_id' => $clientId]);
+            // Отправляем уведомления о новом заказе
+            $notificationService = new NotificationService();
+            $notificationService->sendNewOrderNotifications($order);
 
-        if (!$client) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Клиент не найден',
-                'errors' => ['client_id' => ['Клиент с указанным ID не существует']]
-            ], 422);
-        }
-
-        // Resolve menu items prices from catalog (if exists) and compute authoritative subtotal
-        $requestedItems = $data['menu_items'] ?? [];
-        $resolvedItems = $this->resolveMenuItems($requestedItems);
-
-        $subtotal = collect($resolvedItems)->sum(function ($item) {
-            // ensure rounding to 2 decimals and use server price
-            $price = isset($item['server_price']) ? (float) $item['server_price'] : (float) ($item['price'] ?? 0);
-            return round($item['quantity'] * $price, 2);
-        });
-
-        $discountFixed = (float) ($data['discount_fixed'] ?? 0);
-        $discountPercent = (float) ($data['discount_percent'] ?? 0);
-        $discountAmount = $discountFixed + ($subtotal * $discountPercent / 100);
-        $itemsTotal = max(0, $subtotal - $discountAmount);
-        $deliveryCost = (float) ($data['delivery_cost'] ?? 0);
-        $finalAmount = $itemsTotal + $deliveryCost;
-
-        Log::info('Calculated order amounts', [
-            'subtotal' => $subtotal,
-            'finalAmount' => $finalAmount,
-            'client_company' => $client->company_name,
-            'client_category' => $client->client_category
-        ]);
-
-        $order = Order::create([
-            'client_id' => $clientId,
-            'company_name' => $client->company_name ?? $client->name,
-            'client_type' => $client->client_category ?? 'one_time',
-            // store resolved menu items (authoritative prices included)
-            'menu_items' => $resolvedItems,
-            'comment' => $data['comment'],
-            'status' => 'submitted',
-            'coordinator_id' => $user->id,
-            'total_amount' => round($subtotal, 2),
-            'discount_fixed' => $discountFixed,
-            'discount_percent' => $discountPercent,
-            'discount_amount' => $discountAmount,
-            'items_total' => $itemsTotal,
-            'final_amount' => round($finalAmount, 2),
-            'delivery_date' => $data['delivery_date'] ?? null,
-            'delivery_time' => ($data['delivery_date'] && $data['delivery_time'])
-                ? $data['delivery_date'] . ' ' . $data['delivery_time'] 
-                : null,
-            'delivery_type' => $data['delivery_type'] ?? 'delivery',
-            'delivery_address' => $data['delivery_address'] ?? null,
-            'delivery_cost' => $deliveryCost,
-            'recurring_schedule' => $data['recurring_schedule'] ?? null,
-            'application_id' => $data['application_id'] ?? null, // Связь с заявкой, если есть
-            
-            // Дополнительные поля
-            'equipment_required' => $data['equipment_required'] ?? 0,
-            'staff_assigned' => $data['staff_assigned'] ?? 0,
-            'special_instructions' => $data['special_instructions'] ?? null,
-        ]);
-
-        // Отправляем уведомления о новом заказе
-        $notificationService = new NotificationService();
-        $notificationService->sendNewOrderNotifications($order);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Заказ успешно создан',
-            'data' => [
+            return $this->createdResponse([
                 'order' => $order->load('coordinator')
-            ]
-        ], 201);
+            ], 'Заказ успешно создан');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
      * Обновление статуса заказа
      */
-    public function updateStatus(Request $request, Order $order)
+    public function updateStatus(UpdateOrderStatusRequest $request, Order $order)
     {
-        $validator = Validator::make($request->all(), [
-            'status' => 'required|in:draft,submitted,processing,completed,cancelled',
-        ]);
+        try {
+            $this->authorize('updateStatus', $order);
+            
+            $previousStatus = $order->status;
+            $order->update([
+                'status' => $request->validated()['status'],
+                'coordinator_comment' => $request->validated()['coordinator_comment'] ?? null,
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+            // Отправляем уведомления об изменении статуса
+            if ($previousStatus !== $request->validated()['status']) {
+                $notificationService = new NotificationService();
+                $notificationService->sendOrderStatusChangedNotifications($order, $previousStatus);
+            }
 
-        $previousStatus = $order->status;
-        $order->update(['status' => $request->status]);
-
-        // Отправляем уведомления об изменении статуса
-        if ($previousStatus !== $request->status) {
-            $notificationService = new NotificationService();
-            $notificationService->sendOrderStatusChangedNotifications($order, $previousStatus);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Order status updated successfully',
-            'data' => [
+            return $this->updatedResponse([
                 'order' => $order->load('coordinator')
-            ]
-        ]);
+            ], 'Статус заказа обновлен успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -341,118 +128,66 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        $validator = Validator::make($request->all(), [
-            // Тип клиента
-            'client_type' => 'sometimes|in:corporate,one_time',
+        try {
+            $this->authorize('update', $order);
             
-            // Корпоративный клиент
-            'company_name' => 'sometimes|string|max:255',
-            'employees' => 'sometimes|array',
-            'employees.*.first_name' => 'required_with:employees|string|max:255',
-            'employees.*.last_name' => 'required_with:employees|string|max:255',
-            'employees.*.email' => 'nullable|email|max:255',
-            'employees.*.phone' => 'nullable|string|max:20',
-            
-            // Разовый клиент
-            'customer' => 'sometimes|array',
-            'customer.first_name' => 'required_with:customer|string|max:255',
-            'customer.last_name' => 'required_with:customer|string|max:255',
-            'customer.email' => 'nullable|email|max:255',
-            'customer.phone' => 'nullable|string|max:20',
-            
-            // Товары
-            'menu_items' => 'sometimes|array',
-            'menu_items.*.id' => 'required_with:menu_items|string',
-            'menu_items.*.name' => 'required_with:menu_items|string',
-            'menu_items.*.quantity' => 'required_with:menu_items|integer|min:1',
-            'menu_items.*.price' => 'required_with:menu_items|numeric|min:0',
-            
-            // Скидки
-            'discount_fixed' => 'nullable|numeric|min:0',
-            'discount_percent' => 'nullable|numeric|min:0|max:100',
-            
-            // Доставка
-            'delivery_date' => 'nullable|date',
-            'delivery_time' => 'nullable|date_format:H:i',
-            'delivery_type' => 'nullable|in:delivery,pickup,buffet',
-            'delivery_address' => 'nullable|string|max:500',
-            'delivery_cost' => 'nullable|numeric|min:0',
-            
-            // Расписание
-            'recurring_schedule' => 'nullable|array',
-            'recurring_schedule.enabled' => 'boolean',
-            'recurring_schedule.frequency' => 'nullable|in:weekly,monthly',
-            'recurring_schedule.days' => 'nullable|array',
-            'recurring_schedule.delivery_time' => 'nullable|date_format:H:i',
-            'recurring_schedule.notes' => 'nullable|string|max:500',
-            
-            // Дополнительные поля
-            'equipment_required' => 'nullable|integer|min:0',
-            'staff_assigned' => 'nullable|integer|min:0',
-            'special_instructions' => 'nullable|string',
-            
-            // Статус и комментарий
-            'status' => 'sometimes|in:draft,submitted,processing,completed,cancelled',
-            'comment' => 'nullable|string',
-        ]);
+            // Объединяем правила валидации
+            $rules = array_merge(
+                $this->getMenuItemsValidationRules(),
+                $this->getDeliveryValidationRules(),
+                $this->getDiscountValidationRules(),
+                $this->getRecurringScheduleValidationRules(),
+                $this->getAdditionalOrderFieldsValidationRules(),
+                [
+                    'client_type' => 'sometimes|in:corporate,one_time',
+                    'company_name' => 'sometimes|string|max:255',
+                    'status' => 'sometimes|in:draft,submitted,processing,completed,cancelled',
+                ]
+            );
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+            $validatedData = $this->validateRequest($request, $rules, $this->getCommonValidationMessages(), $this->getCommonValidationAttributes());
 
-        $updateData = $request->only([
-            'client_type', 'company_name', 'customer', 'employees',
-            'comment', 'status', 'delivery_date', 'delivery_type', 
-            'delivery_address', 'delivery_cost', 'recurring_schedule',
-            'equipment_required', 'staff_assigned', 'special_instructions'
-        ]);
-
-        // Пересчитываем суммы если изменились товары или скидки
-        if ($request->has('menu_items') || $request->has('discount_fixed') || 
-            $request->has('discount_percent') || $request->has('delivery_cost')) {
-            
-            $menuItems = $request->menu_items ?? $order->menu_items;
-            $subtotal = collect($menuItems)->sum(function ($item) {
-                return $item['quantity'] * $item['price'];
-            });
-
-            // По умолчанию при обновлении считаем скидку как отправлено в запросе,
-            // отсутствующие поля считаем равными 0, а не берём из заказа
-            $discountFixed = (float) ($request->discount_fixed ?? 0);
-            $discountPercent = (float) ($request->discount_percent ?? 0);
-            $discountAmount = $discountFixed + ($subtotal * $discountPercent / 100);
-            $itemsTotal = max(0, $subtotal - $discountAmount);
-            $deliveryCost = (float) ($request->delivery_cost ?? 0);
-            $finalAmount = $itemsTotal + $deliveryCost;
-
-            $updateData = array_merge($updateData, [
-                'menu_items' => $menuItems,
-                'total_amount' => $subtotal,
-                'discount_fixed' => $discountFixed,
-                'discount_percent' => $discountPercent,
-                'discount_amount' => $discountAmount,
-                'items_total' => $itemsTotal,
-                'final_amount' => $finalAmount,
+            $updateData = $request->only([
+                'client_type', 'company_name', 'comment', 'status', 
+                'delivery_date', 'delivery_type', 'delivery_address', 
+                'recurring_schedule', 'equipment_required', 'staff_assigned', 
+                'special_instructions'
             ]);
-        }
 
-        if ($request->delivery_date && $request->delivery_time) {
-            $updateData['delivery_time'] = $request->delivery_date . ' ' . $request->delivery_time;
-        }
+            // Пересчитываем суммы если изменились товары или скидки
+            if ($request->has('menu_items') || $request->has('discount_fixed') || 
+                $request->has('discount_percent') || $request->has('delivery_cost')) {
+                
+                $totals = $this->calculateOrderTotals(
+                    $request->menu_items ?? $order->menu_items,
+                    (float) ($request->discount_fixed ?? 0),
+                    (float) ($request->discount_percent ?? 0),
+                    (float) ($request->delivery_cost ?? 0)
+                );
 
-        $order->update($updateData);
+                $updateData = array_merge($updateData, [
+                    'menu_items' => $totals['resolved_items'],
+                    'total_amount' => $totals['subtotal'],
+                    'discount_fixed' => (float) ($request->discount_fixed ?? 0),
+                    'discount_percent' => (float) ($request->discount_percent ?? 0),
+                    'discount_amount' => $totals['discount_amount'],
+                    'items_total' => $totals['items_total'],
+                    'final_amount' => $totals['final_amount'],
+                ]);
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Заказ успешно обновлен',
-            'data' => [
+            if ($request->delivery_date && $request->delivery_time) {
+                $updateData['delivery_time'] = $request->delivery_date . ' ' . $request->delivery_time;
+            }
+
+            $order->update($updateData);
+
+            return $this->updatedResponse([
                 'order' => $order->fresh()->load('coordinator')
-            ]
-        ]);
+            ], 'Заказ успешно обновлен');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -460,12 +195,15 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        $order->delete();
+        try {
+            $this->authorize('delete', $order);
+            
+            $order->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Заказ успешно удален'
-        ]);
+            return $this->deletedResponse('Заказ успешно удален');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -473,139 +211,77 @@ class OrderController extends Controller
      */
     public function createFromApplication(Request $request, Application $application)
     {
-        $user = $request->user();
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Пользователь не авторизован'
-            ], 401);
-        }
-        
-        $validator = Validator::make($request->all(), [
-            'client_id' => 'nullable|exists:users,id,user_type,client', // Существующий клиент
-            'menu_items' => 'required|array|min:1',
-            'menu_items.*.id' => 'required|string',
-            'menu_items.*.name' => 'required|string',
-            'menu_items.*.quantity' => 'required|integer|min:1',
-            'menu_items.*.price' => 'required|numeric|min:0',
-            'comment' => 'nullable|string',
-            'delivery_date' => 'nullable|date',
-            'delivery_time' => 'nullable|date_format:H:i',
-            'delivery_type' => 'nullable|in:delivery,pickup,buffet',
-            'delivery_address' => 'nullable|string|max:500',
-            'delivery_cost' => 'nullable|numeric|min:0',
-            'discount_fixed' => 'nullable|numeric|min:0',
-            'discount_percent' => 'nullable|numeric|min:0|max:100',
-            'recurring_schedule' => 'nullable|array',
-            'recurring_schedule.enabled' => 'boolean',
-            'recurring_schedule.frequency' => 'nullable|in:weekly,monthly',
-            'recurring_schedule.days' => 'nullable|array',
-            'recurring_schedule.delivery_time' => 'nullable|date_format:H:i',
-            'recurring_schedule.notes' => 'nullable|string|max:500',
+        try {
+            $this->authorize('createOrderFromApplication', $application);
             
-            // Дополнительные поля
-            'equipment_required' => 'nullable|integer|min:0',
-            'staff_assigned' => 'nullable|integer|min:0',
-            'special_instructions' => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // Требуем обязательного указания client_id
-        if (!$request->client_id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Необходимо указать ID клиента',
-                'errors' => ['client_id' => ['Поле client_id обязательно для заполнения']]
-            ], 422);
-        }
-
-        // Ищем существующего клиента
-        $clientId = $request->client_id;
-        $client = User::where('id', $clientId)
-                    ->where('user_type', 'client')
-                    ->first();
-        
-        if (!$client) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Клиент не найден',
-                'errors' => ['client_id' => ['Клиент с указанным ID не существует']]
-            ], 422);
-        }
-
-        // Resolve menu items and compute authoritative subtotal
-        $requestedItems = $request->menu_items ?? [];
-        $resolvedItems = $this->resolveMenuItems($requestedItems);
-
-        $subtotal = collect($resolvedItems)->sum(function ($item) {
-            $price = isset($item['server_price']) ? (float) $item['server_price'] : (float) ($item['price'] ?? 0);
-            return round($item['quantity'] * $price, 2);
-        });
-
-        $discountFixed = (float) ($request->discount_fixed ?? 0);
-        $discountPercent = (float) ($request->discount_percent ?? 0);
-        $discountAmount = $discountFixed + ($subtotal * $discountPercent / 100);
-        $itemsTotal = max(0, $subtotal - $discountAmount);
-        $deliveryCost = (float) ($request->delivery_cost ?? 0);
-        $finalAmount = $itemsTotal + $deliveryCost;
-
-        $order = Order::create([
-            'client_id' => $clientId,
-            'company_name' => $client->company_name ?? $client->name,
-            'client_type' => $client->client_category ?? 'one_time',
-            'menu_items' => $resolvedItems,
-            'comment' => $request->comment,
-            'status' => 'submitted',
-            'coordinator_id' => $user->id,
-            'total_amount' => round($subtotal, 2),
-            'discount_fixed' => $discountFixed,
-            'discount_percent' => $discountPercent,
-            'discount_amount' => $discountAmount,
-            'items_total' => $itemsTotal,
-            'final_amount' => round($finalAmount, 2),
-            'delivery_date' => $request->delivery_date,
-            'delivery_time' => $request->delivery_date && $request->delivery_time
-                ? $request->delivery_date . ' ' . $request->delivery_time
-                : null,
-            'delivery_type' => $request->delivery_type ?? 'delivery',
-            'delivery_address' => $request->delivery_address,
-            'delivery_cost' => $deliveryCost,
-            'recurring_schedule' => $request->recurring_schedule,
-            'application_id' => $application->id, // Связываем заказ с заявкой
+            Log::info('=== CREATE FROM APPLICATION START ===');
+            Log::info('Request data:', $request->all());
+            Log::info('Application ID:', ['id' => $application->id]);
             
-            // Дополнительные поля
-            'equipment_required' => $request->equipment_required ?? 0,
-            'staff_assigned' => $request->staff_assigned ?? 0,
-            'special_instructions' => $request->special_instructions ?? null,
-        ]);
+            $user = $this->getAuthenticatedUser($request);
+            Log::info('User authenticated:', ['user_id' => $user->id, 'user_name' => $user->name]);
+            
+            // Парсим JSON данные
+            $data = $this->parseJsonDataForApplication($request);
+            
+            // Объединяем правила валидации
+            $rules = array_merge(
+                [
+                    'client_id' => 'nullable|exists:users,id,user_type,client',
+                ],
+                $this->getMenuItemsValidationRules(),
+                $this->getDeliveryValidationRules(),
+                $this->getDiscountValidationRules(),
+                $this->getRecurringScheduleValidationRules(),
+                $this->getAdditionalOrderFieldsValidationRules()
+            );
 
-        // Отправляем уведомления о новом заказе
-        $notificationService = new NotificationService();
-        $notificationService->sendNewOrderNotifications($order);
+            $validatedData = $this->validateData($data, $rules, $this->getCommonValidationMessages(), $this->getCommonValidationAttributes());
 
-        // Обновляем статус заявки на "approved" и привязываем клиента
-        $application->update([
-            'status' => 'approved',
-            'coordinator_id' => $user->id,
-            'client_id' => $clientId,
-            'processed_at' => now(),
-        ]);
+            // Требуем обязательного указания client_id
+            if (!isset($validatedData['client_id'])) {
+                return $this->validationErrorResponse([
+                    'client_id' => ['Поле client_id обязательно для заполнения']
+                ], 'Необходимо указать ID клиента');
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Заказ создан на основе заявки',
-            'data' => [
+            // Ищем существующего клиента
+            $client = User::where('id', $validatedData['client_id'])
+                        ->where('user_type', 'client')
+                        ->first();
+            
+            if (!$client) {
+                return $this->validationErrorResponse([
+                    'client_id' => ['Клиент с указанным ID не существует']
+                ], 'Клиент не найден');
+            }
+
+            // Подготавливаем данные заказа
+            $orderData = $this->prepareOrderData($validatedData, $client);
+            $orderData['application_id'] = $application->id; // Связываем заказ с заявкой
+
+            // Создаем заказ
+            $order = Order::create($orderData);
+
+            // Отправляем уведомления о новом заказе
+            $notificationService = new NotificationService();
+            $notificationService->sendNewOrderNotifications($order);
+
+            // Обновляем статус заявки на "approved" и привязываем клиента
+            $application->update([
+                'status' => 'approved',
+                'coordinator_id' => $user->id,
+                'client_id' => $validatedData['client_id'],
+                'processed_at' => now(),
+            ]);
+
+            return $this->createdResponse([
                 'order' => $order->load(['coordinator', 'client']),
                 'application' => $application->fresh()->load('client')
-            ]
-        ], 201);
+            ], 'Заказ создан на основе заявки');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -613,33 +289,29 @@ class OrderController extends Controller
      */
     public function getClientActiveOrders(Request $request)
     {
-        $user = $request->user();
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Пользователь не авторизован'
-            ], 401);
-        }
-        
-        $clientId = $user->id; // Предполагаем, что клиент авторизован
-        
-        // Активные заказы - это заказы со статусом "submitted" или "processing" 
-        // и датой доставки не раньше сегодняшнего дня
-        $activeOrders = Order::where('client_id', $clientId)
-            ->whereIn('status', ['submitted', 'processing'])
-            ->where(function($query) {
-                $query->whereNull('delivery_date')
-                      ->orWhere('delivery_date', '>=', now()->startOfDay());
-            })
-            ->with('coordinator')
-            ->orderBy('delivery_date', 'asc')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        try {
+            $this->authorize('viewAny', Order::class);
+            
+            $user = $this->getAuthenticatedUser($request);
+            $clientId = $user->id;
+            
+            // Активные заказы - это заказы со статусом "submitted" или "processing" 
+            // и датой доставки не раньше сегодняшнего дня
+            $activeOrders = Order::where('client_id', $clientId)
+                ->whereIn('status', ['submitted', 'processing'])
+                ->where(function($query) {
+                    $query->whereNull('delivery_date')
+                          ->orWhere('delivery_date', '>=', now()->startOfDay());
+                })
+                ->with('coordinator')
+                ->orderBy('delivery_date', 'asc')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $activeOrders
-        ]);
+            return $this->successResponse($activeOrders, 'Активные заказы получены успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -647,46 +319,124 @@ class OrderController extends Controller
      */
     public function getClientOrders(Request $request)
     {
-        $user = $request->user();
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Пользователь не авторизован'
-            ], 401);
-        }
-        
-        $clientId = $user->id;
-        
-        $orders = Order::where('client_id', $clientId)
-            ->with('coordinator')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        try {
+            $user = $this->getAuthenticatedUser($request);
+            
+            // Проверяем, что пользователь активен
+            if (!$user->isActive()) {
+                return $this->forbiddenResponse('Доступ запрещен. Аккаунт неактивен.');
+            }
+            
+            // Проверяем, что пользователь является клиентом
+            if (!$user->isClient()) {
+                return $this->forbiddenResponse('Доступ запрещен. Только клиенты могут просматривать свои заказы.');
+            }
+            
+            $clientId = $user->id;
+            
+            $orders = Order::where('client_id', $clientId)
+                ->with('coordinator')
+                ->orderBy('created_at', 'desc')
+                ->paginate(20);
 
-        return response()->json([
-            'success' => true,
-            'data' => $orders
-        ]);
+            return $this->paginatedResponse($orders, 'Заказы клиента получены успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
      * Получение статистики по заказам
      */
-    public function statistics()
+    /**
+     * Получить статистику заказов
+     * УЛУЧШЕНО: Добавлена подробная статистика по платежам, суммам и датам
+     */
+    public function statistics(Request $request)
     {
-        $stats = [
-            'total' => Order::count(),
-            'draft' => Order::where('status', 'draft')->count(),
-            'submitted' => Order::where('status', 'submitted')->count(),
-            'processing' => Order::where('status', 'processing')->count(),
-            'completed' => Order::where('status', 'completed')->count(),
-            'cancelled' => Order::where('status', 'cancelled')->count(),
-            'total_amount' => Order::where('status', '!=', 'cancelled')->sum('total_amount'),
-        ];
+        try {
+            $this->authorize('viewAny', Order::class);
+            
+            // Статистика по статусам заказов
+            $statusStats = [
+                'total' => Order::count(),
+                'draft' => Order::where('status', Order::STATUS_DRAFT)->count(),
+                'submitted' => Order::where('status', Order::STATUS_SUBMITTED)->count(),
+                'pending_payment' => Order::where('status', Order::STATUS_PENDING_PAYMENT)->count(),
+                'paid' => Order::where('status', Order::STATUS_PAID)->count(),
+                'processing' => Order::where('status', Order::STATUS_PROCESSING)->count(),
+                'completed' => Order::where('status', Order::STATUS_COMPLETED)->count(),
+                'cancelled' => Order::where('status', Order::STATUS_CANCELLED)->count(),
+            ];
+            
+            // Статистика по платежам
+            $paymentStats = [
+                'total_revenue' => Order::whereIn('status', [
+                    Order::STATUS_PAID,
+                    Order::STATUS_PROCESSING,
+                    Order::STATUS_COMPLETED
+                ])->sum('final_amount'),
+                'pending_payments' => Order::where('status', Order::STATUS_PENDING_PAYMENT)->sum('final_amount'),
+                'paid_count' => Order::whereIn('payment_status', [
+                    Order::PAYMENT_STATUS_CHARGED,
+                    Order::PAYMENT_STATUS_AUTHORIZED
+                ])->count(),
+                'failed_payments' => Order::where('payment_status', Order::PAYMENT_STATUS_FAILED)->count(),
+                'average_order_value' => Order::whereIn('status', [
+                    Order::STATUS_PAID,
+                    Order::STATUS_PROCESSING,
+                    Order::STATUS_COMPLETED
+                ])->avg('final_amount'),
+            ];
+            
+            // Статистика за текущий месяц
+            $currentMonth = now()->startOfMonth();
+            $monthStats = [
+                'orders_this_month' => Order::where('created_at', '>=', $currentMonth)->count(),
+                'revenue_this_month' => Order::where('created_at', '>=', $currentMonth)
+                    ->whereIn('status', [
+                        Order::STATUS_PAID,
+                        Order::STATUS_PROCESSING,
+                        Order::STATUS_COMPLETED
+                    ])->sum('final_amount'),
+                'completed_this_month' => Order::where('status', Order::STATUS_COMPLETED)
+                    ->where('updated_at', '>=', $currentMonth)->count(),
+            ];
+            
+            // Статистика по типам клиентов
+            $clientStats = [
+                'corporate_orders' => Order::where('client_type', 'corporate')->count(),
+                'one_time_orders' => Order::where('client_type', 'one_time')->count(),
+            ];
+            
+            // Статистика по типам доставки
+            $deliveryStats = [
+                'delivery' => Order::where('delivery_type', 'delivery')->count(),
+                'pickup' => Order::where('delivery_type', 'pickup')->count(),
+                'buffet' => Order::where('delivery_type', 'buffet')->count(),
+            ];
 
-        return response()->json([
-            'success' => true,
-            'data' => $stats
-        ]);
+            $stats = [
+                'status' => $statusStats,
+                'payment' => $paymentStats,
+                'current_month' => $monthStats,
+                'clients' => $clientStats,
+                'delivery' => $deliveryStats,
+                'overview' => [
+                    'total_orders' => $statusStats['total'],
+                    'active_orders' => $statusStats['submitted'] + $statusStats['pending_payment'] + 
+                                      $statusStats['paid'] + $statusStats['processing'],
+                    'total_revenue' => $paymentStats['total_revenue'],
+                    'completion_rate' => $statusStats['total'] > 0 
+                        ? round(($statusStats['completed'] / $statusStats['total']) * 100, 2) 
+                        : 0,
+                ],
+            ];
+
+            return $this->successResponse($stats, 'Статистика заказов получена успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -694,21 +444,14 @@ class OrderController extends Controller
      */
     public function showClientOrder(Request $request, Order $order)
     {
-        $user = $request->user();
-        
-        // Проверяем, что заказ принадлежит клиенту
-        if ($order->client_id !== $user->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Доступ запрещен. Заказ не принадлежит клиенту.'
-            ], 403);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => [
+        try {
+            $this->authorize('view', $order);
+            
+            return $this->successResponse([
                 'order' => $order->load('coordinator')
-            ]
-        ]);
+            ], 'Заказ клиента получен успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 }

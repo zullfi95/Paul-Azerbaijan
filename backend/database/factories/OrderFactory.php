@@ -30,10 +30,7 @@ class OrderFactory extends Factory
             ],
             'comment' => null,
             'status' => 'submitted',
-            'coordinator_id' => User::factory()->create([
-                'user_type' => 'staff',
-                'staff_role' => 'coordinator',
-            ])->id,
+            'coordinator_id' => User::factory()->staff()->create()->id,
             'client_id' => User::factory()->create([
                 'user_type' => 'client',
                 'client_category' => 'corporate',

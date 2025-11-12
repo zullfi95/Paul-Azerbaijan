@@ -60,13 +60,30 @@ const Header: React.FC = React.memo(function Header() {
     openCartModal();
   }, [openCartModal]);
 
-  const handleSubscribe = useCallback((e: React.FormEvent) => {
+  const handleSubscribe = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
-      // TODO: Implement newsletter subscription endpoint
-      // Temporary notification
-      alert('Newsletter subscription is coming soon! Thank you for your interest.');
-      setEmail('');
+      try {
+        const response = await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ email: email.trim() })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          alert(data.data?.message || 'Спасибо за подписку!');
+          setEmail('');
+        } else {
+          alert('Не удалось оформить подписку. Попробуйте позже.');
+        }
+      } catch (error) {
+        alert('Произошла ошибка. Попробуйте позже.');
+      }
       closeMobileMenu();
     }
   }, [email, closeMobileMenu]);
@@ -481,7 +498,7 @@ const Header: React.FC = React.memo(function Header() {
 
               {/* Social Media */}
               <div className="mobile-menu-social">
-                <a href="#" className="mobile-menu-social-link" aria-label="Instagram">
+                <a href="https://instagram.com/paulbakery" className="mobile-menu-social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                   <Image
                     src="/images/3463469_instagram_social media_social_network_icon 1.svg"
                     alt="Instagram"
@@ -489,7 +506,7 @@ const Header: React.FC = React.memo(function Header() {
                     height={26}
                   />
                 </a>
-                <a href="#" className="mobile-menu-social-link" aria-label="YouTube">
+                <a href="https://youtube.com/paulbakery" className="mobile-menu-social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
                   <Image
                     src="/images/3463481_media_network_social_youtube_icon 1.svg"
                     alt="YouTube"
@@ -497,7 +514,7 @@ const Header: React.FC = React.memo(function Header() {
                     height={26}
                   />
                 </a>
-                <a href="#" className="mobile-menu-social-link" aria-label="Facebook">
+                <a href="https://facebook.com/paulbakery" className="mobile-menu-social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                   <Image
                     src="/images/3463465_facebook_media_network_social_icon 1.svg"
                     alt="Facebook"

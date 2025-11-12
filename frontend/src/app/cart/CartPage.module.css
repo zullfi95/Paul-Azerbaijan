@@ -123,7 +123,7 @@
   font-family: 'Sabon Next LT Pro', serif;
   font-size: 17.6px; /* Как nav-link в Header */
   font-weight: 500;
-  color: #FFFFFF;
+  color: #FFFCF8;
 }
 
 .tableHeaderLabelRight {
@@ -153,7 +153,7 @@
   height: 36px;
   border: 1px solid #d1d5db;
   border-radius: 7px;
-  background: white;
+  background: #FFFCF8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -307,7 +307,7 @@
   width: 18px;
   height: 18px;
   background: var(--paul-black);
-  color: white;
+  color: #FFFCF8;
   border-radius: 50%;
   display: flex;
   align-items: center;

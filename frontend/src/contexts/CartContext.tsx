@@ -312,7 +312,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const addItem = useCallback((item: Omit<CartItem, 'quantity'>) => {
     setItems(prevItems => {
-      const existingItem = prevItems.find(cartItem => cartItem.id === item.id);
+      const existingItem = prevItems.find(cartItem => String(cartItem.id) === String(item.id));
       
       // Константы ограничений
       const MAX_ITEMS_IN_CART = 100; // Максимум разных товаров
@@ -321,7 +321,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (existingItem) {
         // Увеличиваем количество существующего товара
         return prevItems.map(cartItem =>
-          cartItem.id === item.id
+          String(cartItem.id) === String(item.id)
             ? { 
                 ...cartItem, 
                 quantity: Math.min(cartItem.quantity + 1, MAX_QUANTITY_PER_ITEM) 
@@ -341,7 +341,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const removeItem = useCallback((itemId: string) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== itemId));
+    setItems(prevItems => prevItems.filter(item => String(item.id) !== String(itemId)));
   }, []);
 
   const updateQuantity = useCallback((itemId: string, quantity: number) => {
@@ -354,7 +354,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     setItems(prevItems =>
       prevItems.map(item =>
-        item.id === itemId 
+        String(item.id) === String(itemId) 
           ? { ...item, quantity: Math.min(Math.max(1, quantity), MAX_QUANTITY_PER_ITEM) } 
           : item
       )
@@ -379,11 +379,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [items]);
 
   const isInCart = useCallback((itemId: string) => {
-    return items.some(item => item.id === itemId);
+    return items.some(item => String(item.id) === String(itemId));
   }, [items]);
 
   const getItemQuantity = useCallback((itemId: string) => {
-    const item = items.find(item => item.id === itemId);
+    const item = items.find(item => String(item.id) === String(itemId));
     return item ? item.quantity : 0;
   }, [items]);
 

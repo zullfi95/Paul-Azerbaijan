@@ -415,7 +415,7 @@ class NotificationService
         $emails = [];
         
         // Координаторы
-        $coordinators = User::where('staff_role', 'coordinator')
+        $coordinators = User::where('user_type', 'staff')
             ->where('status', 'active')
             ->get();
             
@@ -424,7 +424,7 @@ class NotificationService
         }
         
         // Наблюдатели (например, шефы, операционные менеджеры)
-        $observers = User::where('staff_role', 'observer')
+        $observers = User::where('user_type', 'staff')
             ->where('status', 'active')
             ->get();
             

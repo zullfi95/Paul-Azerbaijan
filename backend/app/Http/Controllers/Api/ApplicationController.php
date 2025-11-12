@@ -2,91 +2,58 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateApplicationRequest;
 use App\Models\Application;
-use App\Mail\ApplicationReceived;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Mail;
 
-class ApplicationController extends Controller
+class ApplicationController extends BaseApiController
 {
     /**
      * Создание новой заявки с сайта
      */
-    public function store(Request $request)
+    public function store(CreateApplicationRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'company_name' => 'nullable|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'message' => 'nullable|string|max:1000',
-            'event_address' => 'nullable|string|max:500',
-            'event_date' => 'nullable|date|after:today',
-            'event_time' => 'nullable|date_format:H:i',
-            'event_lat' => 'nullable|numeric|between:-90,90',
-            'event_lng' => 'nullable|numeric|between:-180,180',
-            'cart_items' => 'nullable|array',
-            'cart_items.*.id' => 'required_with:cart_items|string',
-            'cart_items.*.name' => 'required_with:cart_items|string',
-            'cart_items.*.quantity' => 'required_with:cart_items|integer|min:1',
-            'cart_items.*.price' => 'required_with:cart_items|numeric|min:0',
-            'coordinator_id' => 'nullable|exists:users,id,user_type,staff,staff_role,coordinator',
-            'client_id' => 'nullable|exists:users,id',
-        ]);
+        try {
+            $validatedData = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+            // Если пользователь авторизован и является клиентом, автоматически устанавливаем client_id
+            $clientId = $validatedData['client_id'] ?? null;
+            if (!$clientId && $request->user() && $request->user()->user_type === 'client') {
+                $clientId = $request->user()->id;
+            }
 
-        // Если пользователь авторизован и является клиентом, автоматически устанавливаем client_id
-        $clientId = $request->client_id;
-        if (!$clientId && $request->user() && $request->user()->user_type === 'client') {
-            $clientId = $request->user()->id;
-        }
+            $application = Application::create([
+                'first_name' => $validatedData['first_name'],
+                'last_name' => $validatedData['last_name'],
+                'company_name' => $validatedData['company_name'],
+                'phone' => $validatedData['phone'],
+                'email' => $validatedData['email'],
+                'message' => $validatedData['message'],
+                'event_address' => $validatedData['event_address'],
+                'event_date' => $validatedData['event_date'],
+                'event_time' => $validatedData['event_date'] && $validatedData['event_time'] ?
+                    $validatedData['event_date'] . ' ' . $validatedData['event_time'] : null,
+                'cart_items' => $validatedData['cart_items'],
+                'status' => 'new',
+                'client_id' => $clientId,
+            ]);
 
-        $application = Application::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'company_name' => $request->company_name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'message' => $request->message,
-            'event_address' => $request->event_address,
-            'event_date' => $request->event_date,
-            'event_time' => $request->event_date && $request->event_time ?
-                $request->event_date . ' ' . $request->event_time : null,
-            'event_lat' => $request->event_lat,
-            'event_lng' => $request->event_lng,
-            'cart_items' => $request->cart_items,
-            'status' => 'new',
-            'client_id' => $clientId,
-        ]);
+            // Отправляем уведомления (временно отключено для отладки)
+            \Log::info('Application created successfully', ['application_id' => $application->id]);
+            // try {
+            //     $notificationService = new NotificationService();
+            //     $notificationService->sendNewApplicationNotifications($application);
+            // } catch (\Exception $e) {
+            //     \Log::error('Notification error: ' . $e->getMessage());
+            // }
 
-        // Отправляем уведомления (временно отключено для отладки)
-        \Log::info('Application created successfully', ['application_id' => $application->id]);
-        // try {
-        //     $notificationService = new NotificationService();
-        //     $notificationService->sendNewApplicationNotifications($application);
-        // } catch (\Exception $e) {
-        //     \Log::error('Notification error: ' . $e->getMessage());
-        // }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Заявка успешно создана',
-            'data' => [
+            return $this->createdResponse([
                 'application' => $application
-            ]
-        ], 201);
+            ], 'Заявка успешно создана');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -94,31 +61,34 @@ class ApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        \Log::info('ApplicationController::index called', [
-            'user_id' => $request->user()?->id,
-            'user_type' => $request->user()?->user_type,
-            'staff_role' => $request->user()?->staff_role,
-        ]);
+        try {
+            $this->authorize('viewAny', Application::class);
+            
+            \Log::info('ApplicationController::index called', [
+                'user_id' => $request->user()?->id,
+                'user_type' => $request->user()?->user_type,
+                'staff_role' => $request->user()?->staff_role,
+            ]);
 
-        // Если пользователь клиент, показываем только его заявки
-        $query = Application::with(['coordinator', 'client']);
-        
-        if ($request->user()->isClient()) {
-            $query->where('client_id', $request->user()->id);
+            // Если пользователь клиент, показываем только его заявки
+            $query = Application::with(['coordinator', 'client']);
+            
+            if ($request->user()->isClient()) {
+                $query->where('client_id', $request->user()->id);
+            }
+            
+            $applications = $query->orderBy('created_at', 'desc')
+                                ->paginate(20);
+
+            \Log::info('ApplicationController::index - found applications', [
+                'count' => $applications->count(),
+                'total' => $applications->total(),
+            ]);
+
+            return $this->paginatedResponse($applications, 'Заявки получены успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
-        
-        $applications = $query->orderBy('created_at', 'desc')
-                            ->paginate(20);
-
-        \Log::info('ApplicationController::index - found applications', [
-            'count' => $applications->count(),
-            'total' => $applications->total(),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'data' => $applications
-        ]);
     }
 
     /**
@@ -126,10 +96,15 @@ class ApplicationController extends Controller
      */
     public function show(Application $application)
     {
-        return response()->json([
-            'success' => true,
-            'data' => $application->load('coordinator')
-        ]);
+        try {
+            $this->authorize('view', $application);
+            
+            return $this->successResponse([
+                'application' => $application->load('coordinator')
+            ], 'Заявка получена успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -137,40 +112,42 @@ class ApplicationController extends Controller
      */
     public function updateStatus(Request $request, Application $application)
     {
-        $validator = Validator::make($request->all(), [
-            'status' => 'required|in:processing,approved,rejected',
-            'coordinator_comment' => 'nullable|string',
-        ]);
+        try {
+            $this->authorize('updateStatus', $application);
+            
+            $rules = [
+                'status' => 'required|in:processing,approved,rejected',
+                'coordinator_comment' => 'nullable|string',
+            ];
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка валидации',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+            $validatedData = $this->validateRequest($request, $rules, [
+                'status.required' => 'Статус заявки обязателен для заполнения',
+                'status.in' => 'Неверный статус заявки',
+            ], [
+                'status' => 'статус заявки',
+                'coordinator_comment' => 'комментарий координатора',
+            ]);
 
-        // Сохраняем предыдущий статус для уведомлений
-        $previousStatus = $application->status;
+            // Сохраняем предыдущий статус для уведомлений
+            $previousStatus = $application->status;
 
-        $application->update([
-            'status' => $request->status,
-            'coordinator_comment' => $request->coordinator_comment,
-            'coordinator_id' => $request->user()->id,
-            'processed_at' => now(),
-        ]);
+            $application->update([
+                'status' => $validatedData['status'],
+                'coordinator_comment' => $validatedData['coordinator_comment'],
+                'coordinator_id' => $request->user()->id,
+                'processed_at' => now(),
+            ]);
 
-        // Отправляем уведомления об изменении статуса
-        $notificationService = new NotificationService();
-        $notificationService->sendApplicationStatusChangedNotifications($application, $previousStatus);
+            // Отправляем уведомления об изменении статуса
+            $notificationService = new NotificationService();
+            $notificationService->sendApplicationStatusChangedNotifications($application, $previousStatus);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Статус заявки обновлен',
-            'data' => [
+            return $this->updatedResponse([
                 'application' => $application->fresh()
-            ]
-        ]);
+            ], 'Статус заявки обновлен');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
@@ -178,58 +155,71 @@ class ApplicationController extends Controller
      */
     public function storeEventApplication(Request $request)
     {
-        \Log::info('Event application request received:', [
-            'method' => $request->method(),
-            'content_type' => $request->header('Content-Type'),
-            'raw_content' => $request->getContent(),
-            'all_data' => $request->all(),
-            'json_data' => $request->json()->all()
-        ]);
-        
-        // Получаем данные из JSON или из тела запроса
-        $data = $request->json()->all();
-        if (empty($data)) {
-            $data = json_decode($request->getContent(), true) ?: [];
-        }
-        
-        \Log::info('Parsed data:', $data);
-        
-        $validator = Validator::make($data, [
-            'eventDate' => 'required|date_format:Y-m-d|after_or_equal:today',
-            'location' => 'required|string|max:500',
-            'budget' => 'required|string|max:100',
-            'guestCount' => 'required|string|max:50',
-            'details' => 'nullable|string|max:1000',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'name' => 'nullable|string|max:255', // Имя контактного лица
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
-            \Log::info('Event application data received:', $data);
+            \Log::info('Event application request received:', [
+                'method' => $request->method(),
+                'content_type' => $request->header('Content-Type'),
+                'raw_content' => $request->getContent(),
+                'all_data' => $request->all(),
+                'json_data' => $request->json()->all()
+            ]);
+            
+            // Получаем данные из JSON или из тела запроса
+            $data = $request->json()->all();
+            if (empty($data)) {
+                $data = json_decode($request->getContent(), true) ?: [];
+            }
+            
+            \Log::info('Parsed data:', $data);
+            
+            $rules = [
+                'eventDate' => 'required|date_format:Y-m-d|after_or_equal:today',
+                'location' => 'required|string|max:500',
+                'budget' => 'required|string|max:100',
+                'guestCount' => 'required|string|max:50',
+                'details' => 'nullable|string|max:1000',
+                'email' => 'required|email|max:255',
+                'phone' => 'required|string|max:20',
+                'name' => 'nullable|string|max:255', // Имя контактного лица
+            ];
+
+            $validatedData = $this->validateData($data, $rules, [
+                'eventDate.required' => 'Дата мероприятия обязательна',
+                'eventDate.date_format' => 'Неверный формат даты',
+                'eventDate.after_or_equal' => 'Дата мероприятия должна быть сегодня или в будущем',
+                'location.required' => 'Место проведения обязательно',
+                'budget.required' => 'Бюджет обязателен',
+                'guestCount.required' => 'Количество гостей обязательно',
+                'email.required' => 'Email обязателен',
+                'email.email' => 'Неверный формат email',
+                'phone.required' => 'Телефон обязателен',
+            ], [
+                'eventDate' => 'дата мероприятия',
+                'location' => 'место проведения',
+                'budget' => 'бюджет',
+                'guestCount' => 'количество гостей',
+                'details' => 'дополнительные детали',
+                'email' => 'email',
+                'phone' => 'телефон',
+                'name' => 'имя контактного лица',
+            ]);
+
+            \Log::info('Event application data received:', $validatedData);
             
             // Создаем заявку на мероприятие
             $application = Application::create([
-                'first_name' => $data['name'] ?? 'Event',
+                'first_name' => $validatedData['name'] ?? 'Event',
                 'last_name' => 'Organizer',
-                'company_name' => $data['name'] ?? 'Event Planning Request',   
-                'contact_person' => $data['name'] ?? 'Event Organizer',        
-                'email' => $data['email'],
-                'phone' => $data['phone'],
+                'company_name' => $validatedData['name'] ?? 'Event Planning Request',   
+                'contact_person' => $validatedData['name'] ?? 'Event Organizer',        
+                'email' => $validatedData['email'],
+                'phone' => $validatedData['phone'],
                 'event_type' => 'Event Planning',
-                'event_date' => $data['eventDate'],
+                'event_date' => $validatedData['eventDate'],
                 'event_time' => '12:00:00', // Default time
-                'guest_count' => (int) $data['guestCount'],
-                'budget' => $data['budget'],
-                'special_requirements' => $data['details'] ?? null,
+                'guest_count' => (int) $validatedData['guestCount'],
+                'budget' => $validatedData['budget'],
+                'special_requirements' => $validatedData['details'] ?? null,
                 'status' => 'new',
                 'client_id' => null, // Публичная заявка
                 'coordinator_id' => null, // Будет назначен координатором       
@@ -249,21 +239,13 @@ class ApplicationController extends Controller
             //     \Log::error('Failed to send confirmation email: ' . $e->getMessage());
             // }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Event application submitted successfully! We will contact you soon.',
-                'data' => [
-                    'application_id' => $application->id
-                ]
-            ], 201);
-
+            return $this->createdResponse([
+                'application_id' => $application->id
+            ], 'Event application submitted successfully! We will contact you soon.');
         } catch (\Exception $e) {
             \Log::error('Event application creation failed: ' . $e->getMessage());
             
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to submit event application. Please try again.'
-            ], 500);
+            return $this->handleException($e);
         }
     }
 }

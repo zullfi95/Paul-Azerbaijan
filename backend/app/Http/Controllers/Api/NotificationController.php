@@ -2,89 +2,88 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
-class NotificationController extends Controller
+class NotificationController extends BaseApiController
 {
     /**
      * Получение уведомлений клиента
      */
-    public function getClientNotifications(Request $request)
+    public function getClientNotifications(Request $request): JsonResponse
     {
-        $clientId = $request->user()->id;
-        
-        $notifications = Notification::forClient($clientId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        try {
+            $clientId = $request->user()->id;
+            
+            $notifications = Notification::forClient($clientId)
+                ->orderBy('created_at', 'desc')
+                ->paginate(20);
 
-        return response()->json([
-            'success' => true,
-            'data' => $notifications
-        ]);
+            return $this->paginatedResponse($notifications, 'Уведомления получены успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
      * Получение непрочитанных уведомлений клиента
      */
-    public function getUnreadNotifications(Request $request)
+    public function getUnreadNotifications(Request $request): JsonResponse
     {
-        $clientId = $request->user()->id;
-        
-        $unreadCount = Notification::forClient($clientId)
-            ->unread()
-            ->count();
+        try {
+            $clientId = $request->user()->id;
+            
+            $unreadCount = Notification::forClient($clientId)
+                ->unread()
+                ->count();
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'unread_count' => $unreadCount
-            ]
-        ]);
+            return $this->successResponse(['unread_count' => $unreadCount], 'Количество непрочитанных уведомлений получено');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     /**
      * Отметить уведомление как прочитанное
      */
-    public function markAsRead(Request $request, Notification $notification)
+    public function markAsRead(Request $request, Notification $notification): JsonResponse
     {
-        // Проверяем, что уведомление принадлежит текущему клиенту
-        $clientId = $request->user()->id;
-        $notificationClientId = $notification->metadata['client_id'] ?? null;
-        
-        if ($notificationClientId != $clientId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 403);
+        try {
+            // Проверяем, что уведомление принадлежит текущему клиенту
+            $clientId = $request->user()->id;
+            $notificationClientId = $notification->metadata['client_id'] ?? null;
+            
+            if ($notificationClientId != $clientId) {
+                return $this->forbiddenResponse('Доступ запрещен');
+            }
+
+            $notification->markAsSent();
+
+            return $this->successResponse(null, 'Уведомление отмечено как прочитанное');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
-
-        $notification->markAsSent();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification marked as read'
-        ]);
     }
 
     /**
      * Отметить все уведомления как прочитанные
      */
-    public function markAllAsRead(Request $request)
+    public function markAllAsRead(Request $request): JsonResponse
     {
-        $clientId = $request->user()->id;
-        
-        Notification::forClient($clientId)
-            ->unread()
-            ->update([
-                'status' => 'sent',
-                'sent_at' => now(),
-            ]);
+        try {
+            $clientId = $request->user()->id;
+            
+            Notification::forClient($clientId)
+                ->unread()
+                ->update([
+                    'status' => 'sent',
+                    'sent_at' => now(),
+                ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'All notifications marked as read'
-        ]);
+            return $this->successResponse(null, 'Все уведомления отмечены как прочитанные');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
     }
 }

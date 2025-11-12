@@ -1,0 +1,735 @@
+/* Main Container */
+.termsPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFCF8;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.termsMain {
+  flex: 1;
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Hero Section */
+.heroSection {
+  padding: 0;
+  text-align: center;
+  position: relative;
+  margin-top: 30px;
+  padding-top: 0;
+  margin-bottom: 60px;
+}
+
+.mainTitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin-bottom: 10px;
+}
+
+.heroSubtitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.heroDivider {
+  width: 50%;
+  max-width: 1140px;
+  height: 1px;
+  background-color: #000000;
+  margin: 10px auto 10px;
+}
+
+.heroDividerSecondary {
+  width: 100%;
+  max-width: 1140px;
+  height: 1px;
+  background-color: #000000;
+  margin: 0 auto;
+}
+
+/* Last Updated Section */
+.lastUpdatedSection {
+  padding: 20px 0;
+  margin-bottom: 40px;
+}
+
+.lastUpdatedContainer {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.lastUpdatedCard {
+  background: #FEF4E6;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.lastUpdatedCard span {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* Content Sections */
+.termsContentSection {
+  padding: 40px 0 60px;
+  position: relative;
+  max-width: 1140px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.termsContentContainer {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.termsSection {
+  margin-bottom: 50px;
+  background: #FEF4E6;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.termsSectionTitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.termsSectionContent {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.termsSectionContent p {
+  margin-bottom: 15px;
+}
+
+.termsSectionContent ul {
+  margin: 15px 0;
+  padding-left: 30px;
+}
+
+.termsSectionContent li {
+  margin-bottom: 8px;
+}
+
+.termsSectionContent strong {
+  font-weight: 500;
+}
+
+/* Contact Section */
+.contactSection {
+  margin-top: 60px;
+  padding: 40px;
+  background: #FEF4E6;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.contactTitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.contactDescription {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.contactMethods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.contactMethod {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: #FFFCF8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.contactMethod h4 {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 5px 0;
+}
+
+.contactMethod p {
+  color: #000;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 0 5px 0;
+}
+
+.contactMethod span {
+  color: rgba(0, 0, 0, 0.6);
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.contactActions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.contactBtn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-family: "Sabon Next LT Pro", serif;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #000000;
+  color: #FEF4E6;
+}
+
+.contactBtn:hover {
+  background-color: #D4AF37;
+  color: #1A1A1A;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .termsMain {
+    padding: 0 16px;
+  }
+  
+  .mainTitle {
+    font-size: 36px;
+  }
+  
+  .heroSubtitle {
+    font-size: 14px;
+  }
+  
+  .termsSection {
+    padding: 20px;
+  }
+  
+  .termsSectionTitle {
+    font-size: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .contactMethods {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .contactMethod {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .contactActions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .contactBtn {
+    width: 100%;
+    max-width: 200px;
+    justify-content: center;
+  }
+  
+  .contactSection {
+    padding: 30px 20px;
+  }
+  
+  .contactTitle {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .termsMain {
+    padding: 0 12px;
+  }
+  
+  .mainTitle {
+    font-size: 28px;
+  }
+  
+  .heroSubtitle {
+    font-size: 13px;
+  }
+  
+  .termsSection {
+    padding: 16px;
+  }
+  
+  .termsSectionTitle {
+    font-size: 18px;
+  }
+  
+  .termsSectionContent {
+    font-size: 14px;
+  }
+  
+  .contactSection {
+    padding: 20px 16px;
+  }
+  
+  .contactTitle {
+    font-size: 20px;
+  }
+  
+  .contactMethod {
+    padding: 16px;
+  }
+  
+  .contactMethod h4 {
+    font-size: 16px;
+  }
+  
+  .contactMethod p {
+    font-size: 14px;
+  }
+  
+  .contactMethod span {
+    font-size: 12px;
+  }
+  
+  .contactBtn {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}
+
+/* Last Updated Section */
+.last-updated-section {
+  padding: 30px 0;
+}
+
+.last-updated-container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.last-updated-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FEF4E6;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 16px 24px;
+  font-family: "Sabon Next LT Pro";
+  font-size: 14px;
+  font-weight: 500;
+  color: #4A4A4A;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Terms Content Section */
+.terms-content-section {
+  padding: 40px 0 80px;
+}
+
+.terms-content-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.terms-section {
+  margin-bottom: 50px;
+  background: #FFFCF8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.terms-section:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.terms-section-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: "Sabon Next LT Pro";
+  font-size: 24px;
+  font-weight: 500;
+  color: #1A1A1A;
+  margin: 0 0 24px 0;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #D4AF37;
+}
+
+.terms-section-content {
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #4A4A4A;
+  line-height: 1.7;
+}
+
+.terms-section-content p {
+  margin: 0 0 20px 0;
+}
+
+.terms-section-content p:last-child {
+  margin-bottom: 0;
+}
+
+.terms-section-content ul {
+  margin: 20px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.terms-section-content li {
+  position: relative;
+  padding: 8px 0 8px 30px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.terms-section-content li:last-child {
+  border-bottom: none;
+}
+
+.terms-section-content li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #D4AF37;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Contact Section */
+.contact-section {
+  background: #FEF4E6;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 40px;
+  margin-top: 50px;
+  text-align: center;
+}
+
+.contact-title {
+  font-family: "Sabon Next LT Pro";
+  font-size: 24px;
+  font-weight: 500;
+  color: #1A1A1A;
+  margin: 0 0 16px 0;
+}
+
+.contact-description {
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #4A4A4A;
+  margin: 0 0 24px 0;
+}
+
+.contact-info {
+  font-family: "Sabon Next LT Pro";
+  font-size: 16px;
+  font-weight: 300;
+  color: #4A4A4A;
+  text-align: left;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.contact-info p {
+  margin: 0 0 12px 0;
+}
+
+.contact-info p:last-child {
+  margin-bottom: 0;
+}
+
+.contact-info strong {
+  color: #1A1A1A;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) {
+  .terms-page {
+    padding-top: 76px;
+  }
+
+  .terms-main {
+    padding: 0 30px;
+  }
+
+  .hero-section {
+    margin-top: 40px;
+    margin-bottom: 50px;
+  }
+
+  .main-title {
+    font-size: 42px;
+  }
+
+  .hero-subtitle {
+    font-size: 15px;
+  }
+
+  .terms-content-section {
+    padding: 30px 0 60px;
+  }
+
+  .terms-section {
+    margin-bottom: 40px;
+    padding: 30px;
+  }
+
+  .terms-section-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .terms-section-content {
+    font-size: 15px;
+  }
+
+  .contact-section {
+    padding: 30px;
+    margin-top: 40px;
+  }
+
+  .contact-title {
+    font-size: 20px;
+  }
+
+  .contact-description,
+  .contact-info {
+    font-size: 15px;
+  }
+}
+
+/* Mobile (768px and below) */
+@media (max-width: 768px) {
+  .terms-page {
+    padding-top: 68px;
+  }
+
+  .terms-main {
+    padding: 0 16px;
+  }
+
+  .hero-section {
+    margin-top: 30px;
+    margin-bottom: 40px;
+  }
+
+  .main-title {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .last-updated-section {
+    padding: 20px 0;
+  }
+
+  .last-updated-card {
+    padding: 12px 20px;
+    font-size: 13px;
+    max-width: 280px;
+  }
+
+  .terms-content-section {
+    padding: 20px 0 40px;
+  }
+
+  .terms-section {
+    margin-bottom: 30px;
+    padding: 24px;
+  }
+
+  .terms-section-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .terms-section-content {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .terms-section-content p {
+    margin-bottom: 16px;
+  }
+
+  .terms-section-content ul {
+    margin: 16px 0;
+  }
+
+  .terms-section-content li {
+    padding: 6px 0 6px 24px;
+  }
+
+  .contact-section {
+    padding: 24px;
+    margin-top: 30px;
+  }
+
+  .contact-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .contact-description {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .contact-info {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .contact-info p {
+    margin-bottom: 8px;
+  }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .terms-page {
+    padding-top: 56px;
+  }
+
+  .main-title {
+    font-size: 28px;
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+  }
+
+  .last-updated-card {
+    padding: 10px 16px;
+    font-size: 12px;
+    max-width: 260px;
+  }
+
+  .terms-section {
+    padding: 20px;
+  }
+
+  .terms-section-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+
+  .terms-section-content {
+    font-size: 13px;
+  }
+
+  .terms-section-content p {
+    margin-bottom: 12px;
+  }
+
+  .terms-section-content ul {
+    margin: 12px 0;
+  }
+
+  .terms-section-content li {
+    padding: 4px 0 4px 20px;
+  }
+
+  .contact-section {
+    padding: 20px;
+  }
+
+  .contact-title {
+    font-size: 16px;
+  }
+
+  .contact-description,
+  .contact-info {
+    font-size: 13px;
+  }
+}

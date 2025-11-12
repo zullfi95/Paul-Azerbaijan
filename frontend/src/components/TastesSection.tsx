@@ -11,7 +11,7 @@ const TastesSection: React.FC = () => {
   const isMobile = useIsMobile();
 
   const handleExploreClick = () => {
-    router.push('/seasonal-tastes');
+    router.push('/cakes');
   };
 
   return (

@@ -10,6 +10,9 @@ import { useAuthGuard, canManageOrders } from "../../../utils/authConstants";
 import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/apiHelpers";
 import { OrderCreateRequest } from "../../../types/api";
 import { Button, Card, CardHeader, CardTitle, CardContent, LoadingState } from "../../../components/ui";
+import DashboardLayout from "../../../components/DashboardLayout";
+import "../../../styles/dashboard.css";
+import styles from './page.module.css';
 
 // Types for pricing calculator
 interface PricingRules {
@@ -75,7 +78,7 @@ function OrdersPage() {
 
   // State for filters and search
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'submitted' | 'pending_payment' | 'processing' | 'completed' | 'cancelled'>('all');
   const [sortBy, setSortBy] = useState<'created_at' | 'company_name' | 'total_amount'>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [viewMode, setViewMode] = useState<'grid' | 'table' | 'kanban'>('grid');
@@ -116,7 +119,7 @@ function OrdersPage() {
         const ordersData = extractApiData(result.data || []) as Order[];
         setOrders(ordersData);
       } else {
-        console.error('Failed to load orders:', handleApiError(result));
+        console.error('Failed to load orders:', handleApiError(result as any));
       }
     } catch (error) {
         console.error('Error loading orders:', error);
@@ -126,7 +129,7 @@ function OrdersPage() {
   }, []);
 
   // Auth guard with access rights check
-  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, canManageOrders, router);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', position: '', staff_role: '' }, canManageOrders, router);
 
   useEffect(() => {
     if (hasAccess) {
@@ -136,8 +139,12 @@ function OrdersPage() {
 
 
 
+  const handleEditOrder = useCallback((order: Order) => {
+    router.push(`/dashboard/orders/${order.id}/edit`);
+  }, [router]);
+
   const handleDeleteOrder = async (orderId: number) => {
-    if (!confirm('Are you sure you want to delete this order?')) return;
+    if (!confirm('Вы уверены, что хотите удалить этот заказ?')) return;
 
     try {
       const result = await makeApiRequest(`/orders/${orderId}`, {
@@ -147,11 +154,11 @@ function OrdersPage() {
       if (result.success) {
         loadOrders();
       } else {
-        alert(handleApiError(result, 'Error deleting order'));
+        alert(handleApiError(result as any, 'Ошибка удаления заказа'));
       }
     } catch (error) {
       console.error('Error deleting order:', error);
-      alert('An error occurred while deleting the order');
+      alert('Произошла ошибка при удалении заказа');
     }
   };
 
@@ -282,7 +289,7 @@ function OrdersPage() {
         alert('Order successfully copied!');
         loadOrders();
       } else {
-        alert(handleApiError(result, 'Error copying order'));
+        alert(handleApiError(result as any, 'Error copying order'));
       }
     } catch (error) {
       console.error('Ошибка копирования заказа:', error);
@@ -302,7 +309,7 @@ function OrdersPage() {
         alert('Статус заказа успешно изменен!');
         loadOrders();
       } else {
-        alert(handleApiError(result, 'Ошибка изменения статуса'));
+        alert(handleApiError(result as any, 'Ошибка изменения статуса'));
       }
     } catch (error) {
       console.error('Ошибка изменения статуса:', error);
@@ -432,8 +439,8 @@ function OrdersPage() {
         if (!itemStats[item.name]) {
           itemStats[item.name] = { quantity: 0, revenue: 0 };
         }
-        itemStats[item.name].quantity += item.quantity;
-        itemStats[item.name].revenue += item.quantity * item.price;
+        itemStats[item.name].quantity += (item as any).quantity || 0;
+        itemStats[item.name].revenue += ((item as any).quantity || 0) * item.price;
       });
     });
 
@@ -485,73 +492,36 @@ function OrdersPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#F8FAFC', fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <DashboardLayout>
       {/* Modern Header */}
-      <div style={{
-        backgroundColor: paulColors.white,
-        borderBottom: `1px solid ${paulColors.border}`,
-        padding: '2rem',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div className="page-header">
+        <div className="page-header-content">
+          <div className="page-header-main">
+            <div className="page-header-left">
               <button
                 onClick={() => router.push('/dashboard')}
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  backgroundColor: 'white',
-                  border: `1px solid ${paulColors.border}`,
-                  borderRadius: '10px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  color: paulColors.gray
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = paulColors.beige;
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
+                className="back-button"
               >
-                <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
               <div>
-                <h1 style={{
-                  fontSize: '2rem',
-                  fontWeight: '800',
-                  color: paulColors.black,
-                  fontFamily: 'Playfair Display, serif',
-                  margin: 0,
-                  letterSpacing: '-0.02em'
-                }}>
+                <h1 className="page-title">
                   Управление заказами
                 </h1>
-                <p style={{
-                  fontSize: '0.875rem',
-                  color: paulColors.gray,
-                  margin: '0.25rem 0 0 0',
-                  fontWeight: '500'
-                }}>
+                <p className="page-description">
                   PAUL Catering Azerbaijan • {orderStats.total} заказов
                 </p>
               </div>
             </div>
             
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div className="page-actions">
               <Button 
                 variant="ghost" 
                 size="md"
                 onClick={() => setShowCalculator(true)}
-                style={{ background: '#EEF2FF', color: '#3B82F6' }}
+                className="action-button calculator-button"
               >
                 🧮 Калькулятор
               </Button>
@@ -559,7 +529,7 @@ function OrdersPage() {
                 variant="ghost" 
                 size="md"
                 onClick={() => setShowAnalytics(true)}
-                style={{ background: '#F0FDF4', color: '#16A34A' }}
+                className="action-button analytics-button"
               >
                 📊 Аналитика
               </Button>
@@ -568,7 +538,7 @@ function OrdersPage() {
                   variant="ghost" 
                   size="md"
                   onClick={handleMassCopy}
-                  style={{ background: '#FEF3C7', color: '#D97706' }}
+                  className="action-button copy-button"
                 >
                   📋 Копировать ({selectedOrdersForCopy.size})
                 </Button>
@@ -577,6 +547,7 @@ function OrdersPage() {
                 variant="secondary" 
                 size="md"
                 onClick={() => router.push('/dashboard/orders/create')}
+                className="action-button primary-button"
               >
                 + Новый заказ
               </Button>
@@ -584,347 +555,205 @@ function OrdersPage() {
           </div>
 
           {/* Statistics Cards */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '1rem',
-            marginBottom: '2rem'
-          }}>
-            <Card variant="default" padding="md">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: paulColors.gray, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>
-                    Всего заказов
-                  </div>
-                  <div style={{ fontSize: '2rem', fontWeight: '800', color: paulColors.black, fontFamily: 'Playfair Display, serif' }}>
-                    {orderStats.total}
-                  </div>
-                </div>
-                <div style={{ 
-                  width: '48px', 
-                  height: '48px', 
-                  backgroundColor: '#EEF2FF', 
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  📋
-                </div>
+          <div className="dashboard-kpi-grid">
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <span className="dashboard-kpi-icon">📋</span>
+                <span className="dashboard-kpi-label">Всего заказов</span>
               </div>
-            </Card>
+              <div className="dashboard-kpi-value">
+                {orderStats.total}
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                В системе
+              </div>
+            </div>
 
-            <Card variant="default" padding="md">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: paulColors.gray, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>
-                    В обработке
-                  </div>
-                  <div style={{ fontSize: '2rem', fontWeight: '800', color: '#F59E0B', fontFamily: 'Playfair Display, serif' }}>
-                    {orderStats.byStatus.processing}
-                  </div>
-                </div>
-                <div style={{ 
-                  width: '48px', 
-                  height: '48px', 
-                  backgroundColor: '#FEF3C7', 
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  ⏳
-                </div>
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <span className="dashboard-kpi-icon status-processing">⏳</span>
+                <span className="dashboard-kpi-label">В обработке</span>
               </div>
-            </Card>
+              <div className="dashboard-kpi-value status-processing">
+                {orderStats.byStatus.processing}
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                Требуют внимания
+              </div>
+            </div>
 
-            <Card variant="default" padding="md">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: paulColors.gray, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>
-                    Завершено
-                  </div>
-                  <div style={{ fontSize: '2rem', fontWeight: '800', color: '#10B981', fontFamily: 'Playfair Display, serif' }}>
-                    {orderStats.byStatus.completed}
-                  </div>
-                </div>
-                <div style={{ 
-                  width: '48px', 
-                  height: '48px', 
-                  backgroundColor: '#D1FAE5', 
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  ✅
-                </div>
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <span className="dashboard-kpi-icon status-approved">✅</span>
+                <span className="dashboard-kpi-label">Завершено</span>
               </div>
-            </Card>
+              <div className="dashboard-kpi-value status-approved">
+                {orderStats.byStatus.completed}
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                Выполненных заказов
+              </div>
+            </div>
 
-            <Card variant="default" padding="md">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: paulColors.gray, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>
-                    Общая сумма
-                  </div>
-                  <div style={{ fontSize: '2rem', fontWeight: '800', color: '#D4AF37', fontFamily: 'Playfair Display, serif' }}>
-                    {formatTotalAmount(orderStats.totalAmount)} ₼
-                  </div>
-                </div>
-                <div style={{ 
-                  width: '48px', 
-                  height: '48px', 
-                  backgroundColor: '#FEF3C7', 
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  💰
-                </div>
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <span className="dashboard-kpi-icon">💰</span>
+                <span className="dashboard-kpi-label">Общая сумма</span>
               </div>
-            </Card>
+              <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
+                {formatTotalAmount(orderStats.totalAmount)} ₼
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                Общий оборот
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
+      <div className="main-content">
         {/* Filters and Search Bar */}
-        <Card variant="default" padding="lg" style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {/* Search and View Toggle */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
-                <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-                  <input
-                    type="text"
-                    placeholder="Поиск по компании или блюдам..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem 1rem 0.75rem 2.5rem',
-                      border: `1px solid ${paulColors.border}`,
-                      borderRadius: '12px',
-                      outline: 'none',
-                      fontSize: '0.875rem',
-                      backgroundColor: paulColors.white,
-                      transition: 'all 0.2s ease'
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = '#D4AF37';
-                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = paulColors.border;
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  />
-                  <svg 
-                    style={{ 
-                      position: 'absolute', 
-                      left: '0.75rem', 
-                      top: '50%', 
-                      transform: 'translateY(-50%)', 
-                      width: '18px', 
-                      height: '18px',
-                      color: paulColors.gray
-                    }} 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <button
-                  onClick={() => setViewMode('grid')}
-                  style={{
-                    padding: '0.5rem',
-                    backgroundColor: viewMode === 'grid' ? paulColors.black : 'transparent',
-                    color: viewMode === 'grid' ? paulColors.white : paulColors.gray,
-                    border: `1px solid ${paulColors.border}`,
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                  title="Карточки"
-                >
-                  <svg style={{ width: '18px', height: '18px' }} fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h7v7h-7v-7z"/>
-                  </svg>
-                </button>
-                <button
-                  onClick={() => setViewMode('table')}
-                  style={{
-                    padding: '0.5rem',
-                    backgroundColor: viewMode === 'table' ? paulColors.black : 'transparent',
-                    color: viewMode === 'table' ? paulColors.white : paulColors.gray,
-                    border: `1px solid ${paulColors.border}`,
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                  title="Таблица"
-                >
-                  <svg style={{ width: '18px', height: '18px' }} fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
-                  </svg>
-                </button>
-                <button
-                  onClick={() => setViewMode('kanban')}
-                  style={{
-                    padding: '0.5rem',
-                    backgroundColor: viewMode === 'kanban' ? paulColors.black : 'transparent',
-                    color: viewMode === 'kanban' ? paulColors.white : paulColors.gray,
-                    border: `1px solid ${paulColors.border}`,
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                  title="Канбан"
-                >
-                  <svg style={{ width: '18px', height: '18px' }} fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M4 6h4v12H4V6zm6-2h4v16h-4V4zm6 4h4v8h-4V8z"/>
-                  </svg>
-                </button>
-              </div>
+        <div className="enhanced-filters">
+          <div className="search-row">
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder="Поиск по компании или блюдам..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+              <svg className="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </div>
 
-            {/* Filters Row */}
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <label style={{ fontSize: '0.875rem', fontWeight: '600', color: paulColors.gray }}>Статус:</label>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as 'all' | 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled')}
-                  style={{
-                    padding: '0.5rem 0.75rem',
-                    border: `1px solid ${paulColors.border}`,
-                    borderRadius: '8px',
-                    backgroundColor: paulColors.white,
-                    fontSize: '0.875rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <option value="all">Все статусы</option>
-                  <option value="draft">Черновик</option>
-                  <option value="submitted">Отправлен</option>
-                  <option value="processing">В обработке</option>
-                  <option value="completed">Завершен</option>
-                  <option value="cancelled">Отменен</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <label style={{ fontSize: '0.875rem', fontWeight: '600', color: paulColors.gray }}>Сортировка:</label>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'created_at' | 'company_name' | 'total_amount')}
-                  style={{
-                    padding: '0.5rem 0.75rem',
-                    border: `1px solid ${paulColors.border}`,
-                    borderRadius: '8px',
-                    backgroundColor: paulColors.white,
-                    fontSize: '0.875rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <option value="created_at">По дате</option>
-                  <option value="company_name">По компании</option>
-                  <option value="total_amount">По сумме</option>
-                </select>
-                <button
-                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                  style={{
-                    padding: '0.5rem',
-                    border: `1px solid ${paulColors.border}`,
-                    borderRadius: '8px',
-                    backgroundColor: paulColors.white,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <svg 
-                    style={{ 
-                      width: '16px', 
-                      height: '16px',
-                      transform: sortOrder === 'desc' ? 'rotate(180deg)' : 'none',
-                      transition: 'transform 0.2s ease'
-                    }} 
-                    fill="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M7 14l5-5 5 5z"/>
-                  </svg>
-                </button>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <label style={{ fontSize: '0.875rem', fontWeight: '600', color: paulColors.gray }}>Группировка:</label>
-                <select
-                  value={groupBy}
-                  onChange={(e) => setGroupBy(e.target.value as 'none' | 'status' | 'date' | 'company')}
-                  style={{
-                    padding: '0.5rem 0.75rem',
-                    border: `1px solid ${paulColors.border}`,
-                    borderRadius: '8px',
-                    backgroundColor: paulColors.white,
-                    fontSize: '0.875rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <option value="none">Без группировки</option>
-                  <option value="status">По статусу</option>
-                  <option value="client">По клиентам</option>
-                  <option value="date">По датам</option>
-                  <option value="amount">По сумме</option>
-                </select>
-              </div>
-
-              <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.875rem', color: paulColors.gray }}>
-                  Найдено: {filteredAndSortedOrders.length} из {orderStats.total}
-                </span>
-              </div>
+            <div className="view-toggle">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`view-button ${viewMode === 'grid' ? 'active' : ''}`}
+                title="Карточки"
+              >
+                <svg className="view-icon" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h7v7h-7v-7z"/>
+                </svg>
+              </button>
+              <button
+                onClick={() => setViewMode('table')}
+                className={`view-button ${viewMode === 'table' ? 'active' : ''}`}
+                title="Таблица"
+              >
+                <svg className="view-icon" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+                </svg>
+              </button>
+              <button
+                onClick={() => setViewMode('kanban')}
+                className={`view-button ${viewMode === 'kanban' ? 'active' : ''}`}
+                title="Канбан"
+              >
+                <svg className="view-icon" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4 6h4v12H4V6zm6-2h4v16h-4V4zm6 4h4v8h-4V8z"/>
+                </svg>
+              </button>
             </div>
           </div>
-        </Card>
+
+          {/* Filters Row */}
+          <div className="filter-row">
+            <div className="filter-group">
+              <label className="filter-label">Статус:</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+                className="filter-select"
+              >
+                <option value="all">Все статусы</option>
+                <option value="draft">Черновик</option>
+                <option value="submitted">Отправлен</option>
+                <option value="pending_payment">Ожидает оплаты</option>
+                <option value="processing">В обработке</option>
+                <option value="completed">Завершен</option>
+                <option value="cancelled">Отменен</option>
+              </select>
+            </div>
+
+            <div className="filter-group">
+              <label className="filter-label">Сортировка:</label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'created_at' | 'company_name' | 'total_amount')}
+                className="filter-select"
+              >
+                <option value="created_at">По дате</option>
+                <option value="company_name">По компании</option>
+                <option value="total_amount">По сумме</option>
+              </select>
+              <button
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                className="sort-button"
+              >
+                <svg 
+                  className={`sort-icon ${sortOrder === 'desc' ? 'desc' : 'asc'}`}
+                  fill="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M7 14l5-5 5 5z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div className="filter-group">
+              <label className="filter-label">Группировка:</label>
+              <select
+                value={groupBy}
+                onChange={(e) => setGroupBy(e.target.value as 'none' | 'status' | 'date' | 'company')}
+                className="filter-select"
+              >
+                <option value="none">Без группировки</option>
+                <option value="status">По статусу</option>
+                <option value="client">По клиентам</option>
+                <option value="date">По датам</option>
+                <option value="amount">По сумме</option>
+              </select>
+            </div>
+
+            <div className="filter-results">
+              <span className="results-text">
+                Найдено: {filteredAndSortedOrders.length} из {orderStats.total}
+              </span>
+            </div>
+          </div>
+        </div>
 
         {/* Orders Display */}
         <LoadingState isLoading={ordersLoading} loadingText="Загрузка заказов...">{null}
           {filteredAndSortedOrders.length === 0 ? (
-            <Card variant="default" padding="lg">
-              <div style={{ textAlign: 'center', padding: '3rem 2rem' }}>
-                <div style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.6 }}>📋</div>
-                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: paulColors.black, marginBottom: '0.5rem' }}>
-                  {searchTerm || statusFilter !== 'all' ? 'Заказы не найдены' : 'Пока нет заказов'}
-                </h3>
-                <p style={{ color: paulColors.gray, fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-                  {searchTerm || statusFilter !== 'all' 
-                    ? 'Попробуйте изменить параметры поиска или фильтры'
-                    : 'Создайте первый заказ для начала работы'
-                  }
-                </p>
-                {(!searchTerm && statusFilter === 'all') && (
-                  <Button variant="primary" onClick={() => router.push('/dashboard/orders/create')}>
-                    Создать первый заказ
-                  </Button>
-                )}
-              </div>
-            </Card>
+            <div className="empty-state">
+              <div className="empty-icon">📋</div>
+              <h3 className="empty-title">
+                {searchTerm || statusFilter !== 'all' ? 'Заказы не найдены' : 'Пока нет заказов'}
+              </h3>
+              <p className="empty-subtitle">
+                {searchTerm || statusFilter !== 'all' 
+                  ? 'Попробуйте изменить параметры поиска или фильтры'
+                  : 'Создайте первый заказ для начала работы'
+                }
+              </p>
+              {(!searchTerm && statusFilter === 'all') && (
+                <Button variant="primary" onClick={() => router.push('/dashboard/orders/create')}>
+                  Создать первый заказ
+                </Button>
+              )}
+            </div>
           ) : (
             <>
               {groupedOrders ? (
                 <GroupedOrdersDisplay
                   groups={groupedOrders}
                   viewMode={viewMode}
-                  onEdit={() => {}}
+                  onEdit={handleEditOrder}
                   onDelete={handleDeleteOrder}
                   onCopy={handleCopyOrder}
                   onQuickStatusChange={handleQuickStatusChange}
@@ -942,7 +771,7 @@ function OrdersPage() {
               ) : viewMode === 'kanban' ? (
                 <KanbanOrdersView
                   orders={filteredAndSortedOrders}
-                  onEdit={() => {}}
+                  onEdit={handleEditOrder}
                   onDelete={handleDeleteOrder}
                   onCopy={handleCopyOrder}
                   selectedOrders={selectedOrdersForCopy}
@@ -957,16 +786,12 @@ function OrdersPage() {
                   }}
                 />
               ) : viewMode === 'grid' ? (
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-                  gap: '1.5rem'
-                }}>
+                <div className="grid-view">
                   {filteredAndSortedOrders.map((order) => (
                     <OrderCard
                       key={order.id}
                       order={order}
-                      onEdit={() => {}}
+                      onEdit={handleEditOrder}
                       onDelete={handleDeleteOrder}
                       onCopy={handleCopyOrder}
                       onQuickStatusChange={handleQuickStatusChange}
@@ -986,7 +811,7 @@ function OrdersPage() {
               ) : (
                 <OrderTable 
                   orders={filteredAndSortedOrders} 
-                  onEdit={() => {}} 
+                  onEdit={handleEditOrder} 
                   onDelete={handleDeleteOrder}
                 />
               )}
@@ -1014,7 +839,7 @@ function OrdersPage() {
           />
         )}
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
 
@@ -1030,123 +855,49 @@ interface OrderCardProps {
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, onQuickStatusChange, isSelected, onToggleSelect }) => {
-  const paulColors = {
-    black: '#1A1A1A',
-    beige: '#EBDCC8',
-    border: '#EDEAE3',
-    gray: '#4A4A4A',
-    white: '#FFFCF8'
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'processing': return '#F59E0B';
-      case 'completed': return '#10B981';
-      case 'cancelled': return '#EF4444';
-      case 'submitted': return '#3B82F6';
-      default: return paulColors.gray;
-    }
-  };
-
-  const getStatusBg = (status: string) => {
-    switch (status) {
-      case 'processing': return '#FEF3C7';
-      case 'completed': return '#D1FAE5';
-      case 'cancelled': return '#FEE2E2';
-      case 'submitted': return '#DBEAFE';
-      default: return '#F3F4F6';
-    }
-  };
-
   return (
-    <div
-      style={{
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        cursor: 'pointer'
-      }}
-      onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
-      }}
-      onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-      }}
-    >
-      <Card 
-        variant="default" 
-        padding="lg"
-      >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div className="application-card">
+      <div className="card-content">
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', flex: 1 }}>
+        <div className="card-header">
+          <div className="card-header-left">
             {onToggleSelect && (
               <input
                 type="checkbox"
                 checked={isSelected || false}
                 onChange={onToggleSelect}
                 onClick={(e) => e.stopPropagation()}
-                style={{
-                  marginTop: '0.25rem',
-                  cursor: 'pointer',
-                  transform: 'scale(1.2)'
-                }}
+                className="card-checkbox"
               />
             )}
-            <div style={{ flex: 1 }}>
-              <h3 style={{ 
-                fontSize: '1.125rem', 
-                fontWeight: '700', 
-                color: paulColors.black,
-                margin: '0 0 0.25rem 0',
-                fontFamily: 'Inter, system-ui, sans-serif'
-              }}>
+            <div className="card-header-info">
+              <h3 className="card-name">
                 {order.company_name}
               </h3>
-              <p style={{ 
-                fontSize: '0.75rem', 
-                color: paulColors.gray,
-                margin: 0,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
+              <p className="card-email">
                 Заказ #{order.id}
               </p>
             </div>
           </div>
-          <div style={{
-            padding: '0.375rem 0.75rem',
-            backgroundColor: getStatusBg(order.status),
-            color: getStatusColor(order.status),
-            borderRadius: '20px',
-            fontSize: '0.75rem',
-            fontWeight: '600',
-            textTransform: 'capitalize'
-          }}>
+          <div className={`card-status status-${order.status}`}>
             {getStatusLabel(order.status)}
           </div>
         </div>
 
         {/* Menu Items Preview */}
-        <div>
-          <div style={{ fontSize: '0.875rem', fontWeight: '600', color: paulColors.black, marginBottom: '0.5rem' }}>
+        <div className="card-field">
+          <div className="field-label">
             Блюда ({order.menu_items.length})
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+          <div className="field-value">
             {order.menu_items.slice(0, 3).map((item, index) => (
-              <div key={index} style={{ 
-                fontSize: '0.75rem', 
-                color: paulColors.gray,
-                display: 'flex',
-                justifyContent: 'space-between'
-              }}>
+              <div key={index} className="field-subvalue">
                 <span>{item.name}</span>
-                <span>{item.quantity}x {item.price}₼</span>
+                <span>{(item as any).quantity || 0}x {item.price}₼</span>
               </div>
             ))}
             {order.menu_items.length > 3 && (
-              <div style={{ fontSize: '0.75rem', color: paulColors.gray, fontStyle: 'italic' }}>
+              <div className="field-subvalue">
                 +{order.menu_items.length - 3} еще...
               </div>
             )}
@@ -1154,48 +905,26 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
         </div>
 
         {/* Total Amount */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          paddingTop: '1rem',
-          borderTop: `1px solid ${paulColors.border}`
-        }}>
-          <span style={{ fontSize: '0.875rem', color: paulColors.gray }}>Общая сумма:</span>
-          <span style={{ 
-            fontSize: '1.25rem', 
-            fontWeight: '800', 
-            color: '#D4AF37',
-            fontFamily: 'Playfair Display, serif'
-          }}>
+        <div className="card-footer">
+          <span className="field-label">Общая сумма:</span>
+          <span className="card-amount">
             {formatTotalAmount(order.total_amount)} ₼
           </span>
         </div>
 
         {/* Date */}
-        <div style={{ fontSize: '0.75rem', color: paulColors.gray }}>
+        <div className="card-date">
           Создан: {new Date(order.created_at).toLocaleDateString('ru-RU')}
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+        <div className="card-actions">
           {/* Быстрые действия со статусом */}
-          <div style={{ display: 'flex', gap: '0.25rem' }}>
+          <div className="quick-actions">
             {order.status === 'submitted' && (
               <button
                 onClick={() => onQuickStatusChange(order.id, 'processing')}
-                style={{
-                  flex: 1,
-                  padding: '0.375rem 0.5rem',
-                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.625rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
+                className="quick-action-button approve"
                 title="Начать обработку"
               >
                 ▶️ В обработку
@@ -1204,18 +933,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
             {order.status === 'processing' && (
               <button
                 onClick={() => onQuickStatusChange(order.id, 'completed')}
-                style={{
-                  flex: 1,
-                  padding: '0.375rem 0.5rem',
-                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.625rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
+                className="quick-action-button approve"
                 title="Завершить заказ"
               >
                 ✅ Завершить
@@ -1224,18 +942,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
             {order.status !== 'cancelled' && order.status !== 'completed' && (
               <button
                 onClick={() => onQuickStatusChange(order.id, 'cancelled')}
-                style={{
-                  flex: 1,
-                  padding: '0.375rem 0.5rem',
-                  background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.625rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
+                className="quick-action-button reject"
                 title="Отменить заказ"
               >
                 ❌ Отменить
@@ -1244,30 +951,24 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
           </div>
 
           {/* Основные действия */}
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <Button variant="secondary" size="sm" onClick={() => onEdit(order)} style={{ flex: 1 }}>
+          <div className="main-actions">
+            <Button variant="secondary" size="sm" onClick={() => onEdit(order)} className="action-button">
               ✏️ Редактировать
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => onCopy && onCopy(order.id)}
-              style={{
-                flex: 1,
-                background: '#FEF3C7',
-                color: '#D97706',
-                border: '1px solid #FCD34D'
-              }}
+              className="action-button copy"
             >
               📋 Копировать
             </Button>
-            <Button variant="danger" size="sm" onClick={() => onDelete(order.id)} style={{ flex: 1 }}>
+            <Button variant="danger" size="sm" onClick={() => onDelete(order.id)} className="action-button">
               🗑️ Удалить
             </Button>
           </div>
         </div>
       </div>
-      </Card>
     </div>
   );
 };
@@ -1280,156 +981,81 @@ interface OrderTableProps {
 }
 
 const OrderTable: React.FC<OrderTableProps> = ({ orders, onEdit, onDelete }) => {
-  const paulColors = {
-    black: '#1A1A1A',
-    beige: '#EBDCC8',
-    border: '#EDEAE3',
-    gray: '#4A4A4A',
-    white: '#FFFCF8'
-  };
-
   return (
-    <Card variant="default" padding="sm">
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ borderBottom: `2px solid ${paulColors.border}` }}>
-              <th style={{ 
-                padding: '1rem', 
-                textAlign: 'left', 
-                fontSize: '0.75rem', 
-                fontWeight: '700', 
-                color: paulColors.gray,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
-                Компания
-              </th>
-              <th style={{ 
-                padding: '1rem', 
-                textAlign: 'left', 
-                fontSize: '0.75rem', 
-                fontWeight: '700', 
-                color: paulColors.gray,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
-                Блюда
-              </th>
-              <th style={{ 
-                padding: '1rem', 
-                textAlign: 'left', 
-                fontSize: '0.75rem', 
-                fontWeight: '700', 
-                color: paulColors.gray,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
-                Сумма
-              </th>
-              <th style={{ 
-                padding: '1rem', 
-                textAlign: 'left', 
-                fontSize: '0.75rem', 
-                fontWeight: '700', 
-                color: paulColors.gray,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
-                Статус
-              </th>
-              <th style={{ 
-                padding: '1rem', 
-                textAlign: 'left', 
-                fontSize: '0.75rem', 
-                fontWeight: '700', 
-                color: paulColors.gray,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
-                Дата
-              </th>
-              <th style={{ 
-                padding: '1rem', 
-                textAlign: 'right', 
-                fontSize: '0.75rem', 
-                fontWeight: '700', 
-                color: paulColors.gray,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
-                Действия
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr 
-                key={order.id} 
-                style={{ 
-                  borderBottom: `1px solid ${paulColors.border}`,
-                  transition: 'background-color 0.2s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F8FAFC'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-              >
-                <td style={{ padding: '1rem' }}>
-                  <div style={{ fontWeight: '600', color: paulColors.black, marginBottom: '0.25rem' }}>
-                    {order.company_name}
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: paulColors.gray }}>
-                    #{order.id}
-                  </div>
-                </td>
-                <td style={{ padding: '1rem' }}>
-                  <div style={{ fontSize: '0.875rem', color: paulColors.black }}>
-                    {order.menu_items.length} позиций
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: paulColors.gray }}>
-                    {order.menu_items.slice(0, 2).map(item => item.name).join(', ')}
-                    {order.menu_items.length > 2 && '...'}
-                  </div>
-                </td>
-                <td style={{ padding: '1rem' }}>
-                  <div style={{ 
-                    fontSize: '1rem', 
-                    fontWeight: '700', 
-                    color: '#D4AF37'
-                  }}>
-                    {formatTotalAmount(order.total_amount)} ₼
-                  </div>
-                </td>
-                <td style={{ padding: '1rem' }}>
-                  <span style={{
-                    padding: '0.375rem 0.75rem',
-                    borderRadius: '20px',
-                    fontSize: '0.75rem',
-                    fontWeight: '600',
-                    backgroundColor: getStatusBgColor(order.status),
-                    color: '#374151'
-                  }}>
-                    {getStatusLabel(order.status)}
-                  </span>
-                </td>
-                <td style={{ padding: '1rem', fontSize: '0.875rem', color: paulColors.gray }}>
+    <div className="table-responsive">
+      <table className="applications-table">
+        <thead>
+          <tr className="table-header">
+            <th className="table-header-cell">
+              Компания
+            </th>
+            <th className="table-header-cell">
+              Блюда
+            </th>
+            <th className="table-header-cell">
+              Сумма
+            </th>
+            <th className="table-header-cell">
+              Статус
+            </th>
+            <th className="table-header-cell">
+              Дата
+            </th>
+            <th className="table-header-cell">
+              Действия
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order) => (
+            <tr key={order.id} className="table-row">
+              <td className="table-cell">
+                <div className="applicant-name">
+                  {order.company_name}
+                </div>
+                <div className="contact-phone">
+                  #{order.id}
+                </div>
+              </td>
+              <td className="table-cell">
+                <div className="contact-email">
+                  {order.menu_items.length} позиций
+                </div>
+                <div className="contact-phone">
+                  {order.menu_items.slice(0, 2).map(item => item.name).join(', ')}
+                  {order.menu_items.length > 2 && '...'}
+                </div>
+              </td>
+              <td className="table-cell">
+                <div className="amount-value">
+                  {formatTotalAmount(order.total_amount)} ₼
+                </div>
+              </td>
+              <td className="table-cell">
+                <span className={`status-badge status-${order.status}`}>
+                  {getStatusLabel(order.status)}
+                </span>
+              </td>
+              <td className="table-cell">
+                <div className="event-date">
                   {new Date(order.created_at).toLocaleDateString('ru-RU')}
-                </td>
-                <td style={{ padding: '1rem', textAlign: 'right' }}>
-                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                    <Button variant="ghost" size="sm" onClick={() => onEdit(order)}>
-                      Изменить
-                    </Button>
-                    <Button variant="danger" size="sm" onClick={() => onDelete(order.id)}>
-                      Удалить
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </Card>
+                </div>
+              </td>
+              <td className="table-cell">
+                <div className="action-buttons">
+                  <Button variant="ghost" size="sm" onClick={() => onEdit(order)} className="preview-button">
+                    Изменить
+                  </Button>
+                  <Button variant="danger" size="sm" onClick={() => onDelete(order.id)} className="edit-button">
+                    Удалить
+                  </Button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
@@ -1462,49 +1088,34 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      padding: '1rem'
-    }}>
-      <Card variant="elevated" padding="lg" style={{ maxWidth: '600px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}>
+    <div className={styles.modalOverlay}>
+      <Card variant="elevated" padding="lg" className={styles.calculatorCard}>
         <CardHeader>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className={styles.calculatorHeader}>
             <CardTitle size="lg">🧮 Калькулятор стоимости</CardTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
           </div>
         </CardHeader>
         <CardContent>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div className={styles.calculatorContent}>
             {/* Базовая стоимость */}
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>
                 Базовая стоимость (₼)
               </label>
               <input
                 type="number"
                 value={basePrice}
                 onChange={(e) => setBasePrice(parseFloat(e.target.value) || 0)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #E2E8F0',
-                  borderRadius: '8px',
-                  fontSize: '1rem'
-                }}
+                className={styles.inputField}
               />
             </div>
 
             {/* Опции */}
-            <div>
-              <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Дополнительные параметры</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div className={styles.optionsSection}>
+              <h3 className={styles.optionsTitle}>Дополнительные параметры</h3>
+              <div className={styles.optionsGroup}>
+                <label className={styles.checkboxLabel}>
                   <input
                     type="checkbox"
                     checked={options.isCorporate}
@@ -1513,7 +1124,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
                   Корпоративный клиент (скидка {Math.abs(pricingRules.markups.corporate_discount * 100)}%)
                 </label>
                 
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <label className={styles.checkboxLabel}>
                   <input
                     type="checkbox"
                     checked={options.isExpress}
@@ -1522,7 +1133,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
                   Срочная доставка (+{pricingRules.markups.express_delivery_markup * 100}%)
                 </label>
                 
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <label className={styles.checkboxLabel}>
                   <input
                     type="checkbox"
                     checked={options.needsCatering}
@@ -1534,116 +1145,81 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
             </div>
 
             {/* Дата и время */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+            <div className={styles.dateTimeGrid}>
+              <div className={styles.inputGroup}>
+                <label className={styles.inputLabel}>
                   Дата доставки
                 </label>
                 <input
                   type="date"
                   value={options.deliveryDate}
                   onChange={(e) => setOptions({...options, deliveryDate: e.target.value})}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #E2E8F0',
-                    borderRadius: '8px'
-                  }}
+                  className={styles.inputField}
                 />
               </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+              <div className={styles.inputGroup}>
+                <label className={styles.inputLabel}>
                   Время доставки
                 </label>
                 <input
                   type="time"
                   value={options.deliveryTime}
                   onChange={(e) => setOptions({...options, deliveryTime: e.target.value})}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #E2E8F0',
-                    borderRadius: '8px'
-                  }}
+                  className={styles.inputField}
                 />
               </div>
             </div>
 
             {/* Расстояние */}
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>
                 Расстояние доставки (км)
               </label>
               <input
                 type="number"
                 value={options.distance}
                 onChange={(e) => setOptions({...options, distance: parseFloat(e.target.value) || 0})}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #E2E8F0',
-                  borderRadius: '8px'
-                }}
+                className={styles.inputField}
               />
             </div>
 
             {/* Результат расчета */}
-            <div style={{
-              padding: '1.5rem',
-              backgroundColor: '#F8FAFC',
-              borderRadius: '12px',
-              border: '1px solid #E2E8F0'
-            }}>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '700', marginBottom: '1rem' }}>
+            <div className={styles.calculationResult}>
+              <h3 className={styles.resultTitle}>
                 📊 Результат расчета
               </h3>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div className={styles.resultRows}>
+                <div className={styles.resultRow}>
                   <span>Базовая стоимость:</span>
-                  <span style={{ fontWeight: '600' }}>{calculation.basePrice.toFixed(2)} ₼</span>
+                  <span className={styles.resultValue}>{calculation.basePrice.toFixed(2)} ₼</span>
                 </div>
 
                 {calculation.appliedMarkups.map((markup: { name: string; amount: number }, index: number) => (
-                  <div key={index} style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between',
-                    color: markup.amount > 0 ? '#EF4444' : '#10B981'
-                  }}>
+                  <div key={index} className={`${styles.markupRow} ${markup.amount > 0 ? styles.markupPositive : styles.markupNegative}`}>
                     <span>{markup.name}:</span>
-                    <span style={{ fontWeight: '600' }}>
+                    <span className={styles.resultValue}>
                       {markup.amount > 0 ? '+' : ''}{markup.amount.toFixed(2)} ₼
                     </span>
                   </div>
                 ))}
 
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className={styles.resultRow}>
                   <span>Доставка:</span>
-                  <span style={{ fontWeight: '600' }}>{calculation.deliveryFee.toFixed(2)} ₼</span>
+                  <span className={styles.resultValue}>{calculation.deliveryFee.toFixed(2)} ₼</span>
                 </div>
 
-                <hr style={{ margin: '0.5rem 0', border: 'none', borderTop: '1px solid #E2E8F0' }} />
+                <hr className={styles.resultDivider} />
                 
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between',
-                  fontSize: '1.125rem',
-                  fontWeight: '700',
-                  color: '#D4AF37'
-                }}>
+                <div className={styles.totalRow}>
                   <span>Итоговая стоимость:</span>
                   <span>{calculation.totalPrice.toFixed(2)} ₼</span>
                 </div>
 
                 {calculation.savings > 0 && (
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between',
-                    color: '#10B981',
-                    fontSize: '0.875rem'
-                  }}>
+                  <div className={styles.savingsRow}>
                     <span>Экономия:</span>
-                    <span style={{ fontWeight: '600' }}>{calculation.savings.toFixed(2)} ₼</span>
+                    <span className={styles.resultValue}>{calculation.savings.toFixed(2)} ₼</span>
                   </div>
                 )}
               </div>
@@ -1670,88 +1246,58 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      padding: '1rem'
-    }}>
-      <Card variant="elevated" padding="lg" style={{ maxWidth: '800px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}>
+    <div className={styles.modalOverlay}>
+      <Card variant="elevated" padding="lg" className={styles.analyticsCard}>
         <CardHeader>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className={styles.analyticsHeader}>
             <CardTitle size="lg">📊 Аналитика заказов</CardTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
           </div>
         </CardHeader>
         <CardContent>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div className={styles.analyticsContent}>
             {/* Общая статистика */}
-            <div>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '700', marginBottom: '1rem' }}>
+            <div className={styles.analyticsSection}>
+              <h3 className={styles.sectionTitle}>
                 💰 Общие показатели
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                <div style={{ 
-                  padding: '1rem', 
-                  backgroundColor: '#F0FDF4', 
-                  borderRadius: '8px',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '2rem', fontWeight: '700', color: '#16A34A' }}>
+              <div className={styles.statsGrid}>
+                <div className={`${styles.statCard} ${styles.statCardGreen}`}>
+                  <div className={`${styles.statValue} ${styles.statValueGreen}`}>
                     {analytics.totalRevenue.toFixed(0)} ₼
                   </div>
-                  <div style={{ fontSize: '0.875rem', color: '#15803D' }}>Общий доход</div>
+                  <div className={`${styles.statLabel} ${styles.statLabelGreen}`}>Общий доход</div>
                 </div>
-                <div style={{ 
-                  padding: '1rem', 
-                  backgroundColor: '#EFF6FF', 
-                  borderRadius: '8px',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '2rem', fontWeight: '700', color: '#2563EB' }}>
+                <div className={`${styles.statCard} ${styles.statCardBlue}`}>
+                  <div className={`${styles.statValue} ${styles.statValueBlue}`}>
                     {analytics.totalOrders}
                   </div>
-                  <div style={{ fontSize: '0.875rem', color: '#1D4ED8' }}>Всего заказов</div>
+                  <div className={`${styles.statLabel} ${styles.statLabelBlue}`}>Всего заказов</div>
                 </div>
-                <div style={{ 
-                  padding: '1rem', 
-                  backgroundColor: '#FEF3C7', 
-                  borderRadius: '8px',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '2rem', fontWeight: '700', color: '#D97706' }}>
+                <div className={`${styles.statCard} ${styles.statCardYellow}`}>
+                  <div className={`${styles.statValue} ${styles.statValueYellow}`}>
                     {analytics.averageOrderValue.toFixed(0)} ₼
                   </div>
-                  <div style={{ fontSize: '0.875rem', color: '#B45309' }}>Средний чек</div>
+                  <div className={`${styles.statLabel} ${styles.statLabelYellow}`}>Средний чек</div>
                 </div>
               </div>
             </div>
 
             {/* Топ клиенты */}
-            <div>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '700', marginBottom: '1rem' }}>
+            <div className={styles.analyticsSection}>
+              <h3 className={styles.sectionTitle}>
                 👥 Топ клиенты
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div className={styles.clientsList}>
                 {analytics.topClients.map((client, index) => (
-                  <div key={index} style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    padding: '0.75rem',
-                    backgroundColor: '#F8FAFC',
-                    borderRadius: '8px'
-                  }}>
-                    <div>
-                      <div style={{ fontWeight: '600' }}>{client.name}</div>
-                      <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
+                  <div key={index} className={styles.clientCard}>
+                    <div className={styles.clientInfo}>
+                      <div className={styles.clientName}>{client.name}</div>
+                      <div className={styles.clientOrders}>
                         {client.orderCount} заказов
                       </div>
                     </div>
-                    <div style={{ fontWeight: '700', color: '#D4AF37' }}>
+                    <div className={styles.clientAmount}>
                       {client.totalAmount.toFixed(0)} ₼
                     </div>
                   </div>
@@ -1760,23 +1306,18 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = ({
             </div>
 
             {/* Популярные блюда */}
-            <div>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '700', marginBottom: '1rem' }}>
+            <div className={styles.analyticsSection}>
+              <h3 className={styles.sectionTitle}>
                 🍽️ Популярные блюда
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.75rem' }}>
+              <div className={styles.itemsGrid}>
                 {analytics.popularItems.slice(0, 6).map((item, index) => (
-                  <div key={index} style={{
-                    padding: '0.75rem',
-                    backgroundColor: '#F8FAFC',
-                    borderRadius: '8px',
-                    border: '1px solid #E2E8F0'
-                  }}>
-                    <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{item.name}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
-                      Заказано: {item.quantity} раз
+                  <div key={index} className={styles.itemCard}>
+                    <div className={styles.itemName}>{item.name}</div>
+                    <div className={styles.itemQuantity}>
+                      Заказано: {item.quantity || 0} раз
                     </div>
-                    <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#16A34A' }}>
+                    <div className={styles.itemRevenue}>
                       Доход: {item.revenue.toFixed(0)} ₼
                     </div>
                   </div>
@@ -1786,23 +1327,17 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = ({
 
             {/* Доходы по месяцам */}
             {analytics.revenueByMonth.length > 0 && (
-              <div>
-                <h3 style={{ fontSize: '1.125rem', fontWeight: '700', marginBottom: '1rem' }}>
+              <div className={styles.analyticsSection}>
+                <h3 className={styles.sectionTitle}>
                   📈 Доходы по месяцам
                 </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div className={styles.monthsList}>
                   {analytics.revenueByMonth.slice(-6).map((month, index) => (
-                    <div key={index} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      padding: '0.75rem',
-                      backgroundColor: '#F8FAFC',
-                      borderRadius: '8px'
-                    }}>
-                      <div style={{ fontWeight: '600' }}>{month.month}</div>
-                      <div style={{ display: 'flex', gap: '1rem' }}>
-                        <span style={{ color: '#64748B' }}>{month.orders} заказов</span>
-                        <span style={{ fontWeight: '700', color: '#16A34A' }}>
+                    <div key={index} className={styles.monthCard}>
+                      <div className={styles.monthName}>{month.month}</div>
+                      <div className={styles.monthStats}>
+                        <span className={styles.monthOrders}>{month.orders} заказов</span>
+                        <span className={styles.monthRevenue}>
                           {month.revenue.toFixed(0)} ₼
                         </span>
                       </div>
@@ -1841,38 +1376,20 @@ const GroupedOrdersDisplay: React.FC<GroupedOrdersDisplayProps> = ({
   onToggleSelect
 }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div className={styles.groupedContainer}>
       {groups.map(group => (
         <Card key={group.key} variant="default" padding="lg">
-          <div style={{ marginBottom: '1rem' }}>
-            <h3 style={{ 
-              fontSize: '1.25rem', 
-              fontWeight: '700', 
-              marginBottom: '0.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem'
-            }}>
+          <div className={styles.groupHeader}>
+            <h3 className={styles.groupTitle}>
               {group.label}
-              <span style={{
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                padding: '0.25rem 0.75rem',
-                backgroundColor: '#F3F4F6',
-                borderRadius: '12px',
-                color: '#374151'
-              }}>
+              <span className={styles.groupBadge}>
                 {group.count} заказов • {formatTotalAmount(group.totalAmount)} ₼
               </span>
             </h3>
           </div>
           
           {viewMode === 'grid' ? (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-              gap: '1.5rem'
-            }}>
+            <div className={styles.groupGrid}>
               {group.orders.map(order => (
                 <OrderCard
                   key={order.id}
@@ -1931,104 +1448,44 @@ const KanbanOrdersView: React.FC<KanbanOrdersViewProps> = ({
   }));
 
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      gap: '1.5rem',
-      alignItems: 'start'
-    }}>
+    <div className={styles.kanbanGrid}>
       {groupedByStatus.map(column => (
-        <Card key={column.key} variant="default" padding="md">
-          <div style={{
-            padding: '1rem',
-            borderBottom: `3px solid ${column.color}`,
-            marginBottom: '1rem'
-          }}>
-            <h3 style={{
-              fontSize: '1rem',
-              fontWeight: '700',
-              color: column.color,
-              margin: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}>
+        <Card key={column.key} variant="default" padding="md" className={styles.kanbanColumn}>
+          <div className={styles.kanbanHeader} style={{ borderBottom: `3px solid ${column.color}` }}>
+            <h3 className={styles.kanbanTitle} style={{ color: column.color }}>
               {column.label}
-              <span style={{
-                fontSize: '0.75rem',
-                fontWeight: '600',
-                padding: '0.25rem 0.5rem',
-                backgroundColor: `${column.color}20`,
-                borderRadius: '8px'
-              }}>
+              <span className={styles.kanbanBadge} style={{ backgroundColor: `${column.color}20` }}>
                 {column.orders.length}
               </span>
             </h3>
           </div>
           
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.75rem',
-            minHeight: '400px'
-          }}>
+          <div className={styles.kanbanList}>
             {column.orders.map(order => (
-              <div
-                key={order.id}
-                style={{
-                  padding: '1rem',
-                  backgroundColor: '#F8FAFC',
-                  borderRadius: '8px',
-                  border: '1px solid #E2E8F0',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = 'none';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem' }}>
+              <div key={order.id} className={styles.kanbanCard}>
+                <div className={styles.kanbanCardHeader}>
                   <input
                     type="checkbox"
                     checked={selectedOrders.has(order.id)}
                     onChange={() => onToggleSelect(order.id)}
                     onClick={(e) => e.stopPropagation()}
-                    style={{ cursor: 'pointer' }}
+                    className={styles.kanbanCardCheckbox}
                   />
-                  <div style={{ flex: 1 }}>
-                    <h4 style={{
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      margin: '0 0 0.25rem 0',
-                      color: '#1F2937'
-                    }}>
+                  <div className={styles.kanbanCardInfo}>
+                    <h4 className={styles.kanbanCardTitle}>
                       {order.company_name}
                     </h4>
-                    <p style={{
-                      fontSize: '0.75rem',
-                      color: '#6B7280',
-                      margin: 0
-                    }}>
+                    <p className={styles.kanbanCardSubtitle}>
                       Заказ #{order.id} • {order.menu_items.length} позиций
                     </p>
                   </div>
                 </div>
                 
-                <div style={{
-                  fontSize: '1rem',
-                  fontWeight: '700',
-                  color: '#D4AF37',
-                  marginBottom: '0.75rem'
-                }}>
+                <div className={styles.kanbanCardPrice}>
                   {formatTotalAmount(order.total_amount)} ₼
                 </div>
                 
-                <div style={{ display: 'flex', gap: '0.25rem' }}>
+                <div className={styles.kanbanCardActions}>
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -2036,7 +1493,7 @@ const KanbanOrdersView: React.FC<KanbanOrdersViewProps> = ({
                       e.stopPropagation();
                       onEdit(order);
                     }}
-                    style={{ flex: 1, padding: '0.25rem', fontSize: '0.75rem' }}
+                    className={styles.kanbanActionButton}
                   >
                     ✏️
                   </Button>
@@ -2047,13 +1504,7 @@ const KanbanOrdersView: React.FC<KanbanOrdersViewProps> = ({
                       e.stopPropagation();
                       onCopy(order.id);
                     }}
-                    style={{ 
-                      flex: 1, 
-                      padding: '0.25rem', 
-                      fontSize: '0.75rem',
-                      background: '#FEF3C7',
-                      color: '#D97706'
-                    }}
+                    className={`${styles.kanbanActionButton} ${styles.kanbanCopyButton}`}
                   >
                     📋
                   </Button>
@@ -2064,7 +1515,7 @@ const KanbanOrdersView: React.FC<KanbanOrdersViewProps> = ({
                       e.stopPropagation();
                       onDelete(order.id);
                     }}
-                    style={{ flex: 1, padding: '0.25rem', fontSize: '0.75rem' }}
+                    className={styles.kanbanActionButton}
                   >
                     🗑️
                   </Button>

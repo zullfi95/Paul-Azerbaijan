@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\MenuCategory;
 use App\Models\MenuItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
-class MenuController extends Controller
+class MenuController extends BaseApiController
 {
     /**
      * Получить все категории меню для организации
@@ -16,24 +15,23 @@ class MenuController extends Controller
     public function getCategories(Request $request): JsonResponse
     {
         $request->validate([
-            'organization_id' => 'required|string'
+            'organization_id' => 'nullable|string'
         ]);
 
         try {
-            $categories = MenuCategory::active()
-                ->forOrganization($request->organization_id)
-                ->orderBy('sort_order')
-                ->get();
+            $query = MenuCategory::active()
+                ->orderBy('sort_order');
 
-            return response()->json([
-                'success' => true,
-                'data' => $categories
-            ]);
+            // Фильтруем по организации только если указан organization_id
+            if ($request->organization_id) {
+                $query->forOrganization($request->organization_id);
+            }
+
+            $categories = $query->get();
+
+            return $this->successResponse($categories, 'Категории меню получены успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении категорий: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -43,16 +41,20 @@ class MenuController extends Controller
     public function getMenuItems(Request $request): JsonResponse
     {
         $request->validate([
-            'organization_id' => 'required|string',
+            'organization_id' => 'nullable|string',
             'category_id' => 'nullable|integer'
         ]);
 
         try {
             $query = MenuItem::active()
                 ->available()
-                ->forOrganization($request->organization_id)
                 ->with('menuCategory')
                 ->orderBy('sort_order');
+
+            // Фильтруем по организации только если указан organization_id
+            if ($request->organization_id) {
+                $query->forOrganization($request->organization_id);
+            }
 
             if ($request->category_id) {
                 $query->where('menu_category_id', $request->category_id);
@@ -60,15 +62,9 @@ class MenuController extends Controller
 
             $items = $query->get();
 
-            return response()->json([
-                'success' => true,
-                'data' => $items
-            ]);
+            return $this->successResponse($items, 'Элементы меню получены успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении элементов меню: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -78,27 +74,26 @@ class MenuController extends Controller
     public function getFullMenu(Request $request): JsonResponse
     {
         $request->validate([
-            'organization_id' => 'required|string'
+            'organization_id' => 'nullable|string'
         ]);
 
         try {
-            $categories = MenuCategory::active()
-                ->forOrganization($request->organization_id)
+            $query = MenuCategory::active()
                 ->with(['activeMenuItems' => function ($query) {
                     $query->available()->orderBy('sort_order');
                 }])
-                ->orderBy('sort_order')
-                ->get();
+                ->orderBy('sort_order');
 
-            return response()->json([
-                'success' => true,
-                'data' => $categories
-            ]);
+            // Фильтруем по организации только если указан organization_id
+            if ($request->organization_id) {
+                $query->forOrganization($request->organization_id);
+            }
+
+            $categories = $query->get();
+
+            return $this->successResponse($categories, 'Полное меню получено успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении меню: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -113,21 +108,12 @@ class MenuController extends Controller
                 ->find($id);
 
             if (!$item) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Элемент меню не найден'
-                ], 404);
+                return $this->notFoundResponse('Элемент меню не найден');
             }
 
-            return response()->json([
-                'success' => true,
-                'data' => $item
-            ]);
+            return $this->successResponse($item, 'Элемент меню получен успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении элемента меню: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -137,31 +123,31 @@ class MenuController extends Controller
     public function searchMenu(Request $request): JsonResponse
     {
         $request->validate([
-            'organization_id' => 'required|string',
+            'organization_id' => 'nullable|string',
             'query' => 'required|string|min:2'
         ]);
 
         try {
-            $items = MenuItem::active()
+            $searchQuery = $request->input('query');
+            $query = MenuItem::active()
                 ->available()
-                ->forOrganization($request->organization_id)
                 ->with('menuCategory')
-                ->where(function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->query . '%')
-                          ->orWhere('description', 'like', '%' . $request->query . '%');
+                ->where(function ($q) use ($searchQuery) {
+                    $q->where('name', 'like', '%' . $searchQuery . '%')
+                      ->orWhere('description', 'like', '%' . $searchQuery . '%');
                 })
-                ->orderBy('sort_order')
-                ->get();
+                ->orderBy('sort_order');
 
-            return response()->json([
-                'success' => true,
-                'data' => $items
-            ]);
+            // Фильтруем по организации только если указан organization_id
+            if ($request->organization_id) {
+                $query->forOrganization($request->organization_id);
+            }
+
+            $items = $query->get();
+
+            return $this->successResponse($items, 'Результаты поиска получены успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при поиске: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 
@@ -171,33 +157,30 @@ class MenuController extends Controller
     public function getMenuStats(Request $request): JsonResponse
     {
         $request->validate([
-            'organization_id' => 'required|string'
+            'organization_id' => 'nullable|string'
         ]);
 
         try {
+            $categoryQuery = MenuCategory::active();
+            $itemQuery = MenuItem::active()->available();
+            $categoriesWithItemsQuery = MenuCategory::active()->whereHas('activeMenuItems');
+
+            // Фильтруем по организации только если указан organization_id
+            if ($request->organization_id) {
+                $categoryQuery->forOrganization($request->organization_id);
+                $itemQuery->forOrganization($request->organization_id);
+                $categoriesWithItemsQuery->forOrganization($request->organization_id);
+            }
+
             $stats = [
-                'total_categories' => MenuCategory::active()
-                    ->forOrganization($request->organization_id)
-                    ->count(),
-                'total_items' => MenuItem::active()
-                    ->available()
-                    ->forOrganization($request->organization_id)
-                    ->count(),
-                'categories_with_items' => MenuCategory::active()
-                    ->forOrganization($request->organization_id)
-                    ->whereHas('activeMenuItems')
-                    ->count(),
+                'total_categories' => $categoryQuery->count(),
+                'total_items' => $itemQuery->count(),
+                'categories_with_items' => $categoriesWithItemsQuery->count(),
             ];
 
-            return response()->json([
-                'success' => true,
-                'data' => $stats
-            ]);
+            return $this->successResponse($stats, 'Статистика меню получена успешно');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ошибка при получении статистики: ' . $e->getMessage()
-            ], 500);
+            return $this->handleException($e);
         }
     }
 }

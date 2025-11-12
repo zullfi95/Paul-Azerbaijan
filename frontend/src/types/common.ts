@@ -20,12 +20,13 @@ export interface User {
   email: string;
   phone?: string;
   address?: string;
+  shipping_address?: string;
   company_name?: string;
   position?: string;
+  staff_role?: string; // Для обратной совместимости
   contact_person?: string;
   email_verified_at?: string;
   user_type: 'client' | 'staff';
-  staff_role?: 'coordinator' | 'observer';
   client_category?: 'corporate' | 'one_time';
   status: 'active' | 'inactive' | 'suspended';
   created_at: string;
@@ -36,16 +37,18 @@ export interface User {
 export interface Application {
   id: number;
   first_name: string;
-  last_name: string;
-  phone: string;
+  last_name?: string;
+  company_name?: string;
+  contact_person?: string;
   email: string;
+  phone: string;
   message?: string;
   event_address?: string;
   event_date?: string;
   event_time?: string;
   event_lat?: number;
   event_lng?: number;
-  cart_items: CartItem[] | null;
+  cart_items?: CartItem[] | null;
   status: 'new' | 'processing' | 'approved' | 'rejected';
   coordinator_comment?: string;
   coordinator_id?: number;
@@ -57,16 +60,52 @@ export interface Application {
   client?: User;
 }
 
-// Menu Item Types - базовый интерфейс для всех элементов меню
+// Menu Item Types - полный интерфейс для управления элементами меню
 export interface MenuItem {
+  id: number; // ID элемента меню
+  iiko_id?: string; // ID из iiko, если есть интеграция
+  name: string;
+  description?: string;
+  price: number;
+  currency: string;
+  menu_category_id: number;
+  organization_id?: string; // ID организации, если есть интеграция
+  images?: string[]; // Массив URL изображений
+  allergens?: string[]; // Массив аллергенов
+  is_available: boolean; // В наличии ли товар
+  is_active: boolean; // Активен ли товар (отображается)
+  sort_order?: number; // Порядок сортировки
+  
+  // Связи
+  menuCategory?: MenuCategory; // Объект категории, если загружен с `with('menuCategory')`
+  
+  created_at: string;
+  updated_at: string;
+}
+
+// Menu Category Types
+export interface MenuCategory {
+  id: number;
+  iiko_id?: string;
+  name: string;
+  description?: string;
+  organization_id?: string;
+  sort_order?: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Cart Menu Item Types - базовый интерфейс для элементов меню в корзине
+export interface CartMenuItem {
   id: string;
   name: string;
-  quantity: number;
+  quantity?: number;
   price: number;
 }
 
 // Cart Item Types - расширенный интерфейс для корзины с дополнительными полями
-export interface CartItem extends MenuItem {
+export interface CartItem extends CartMenuItem {
   description: string;
   image: string;
   category: string;
@@ -93,20 +132,23 @@ export interface Order {
   company_name: string;
   client_type?: 'corporate' | 'one_time';
   customer?: {
-    name?: string;
+    first_name?: string;
+    last_name?: string;
     email?: string;
     phone?: string;
     company?: string;
     position?: string;
   };
-  employees?: {
-    count?: number;
-    roles?: string[];
-    dietary_requirements?: string[];
-  };
+  employees?: Array<{
+    first_name: string;
+    last_name: string;
+    email?: string;
+    phone?: string;
+  }>;
   menu_items: MenuItem[];
   comment?: string;
-  status: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled';
+  status: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled' | 'paid';
+  payment_status?: 'pending' | 'authorized' | 'charged' | 'failed' | 'refunded' | 'credited';
   coordinator_id?: number;
   client_id?: number;
   total_amount: number;
@@ -122,37 +164,20 @@ export interface Order {
   delivery_cost?: number;
   recurring_schedule?: {
     enabled: boolean;
-    frequency: 'weekly' | 'monthly';
-    days: string[];
-    delivery_time: string;
-    notes: string;
+    frequency?: 'weekly' | 'monthly';
+    days?: string[];
+    delivery_time?: string;
+    notes?: string;
   };
-  // Новые поля
+  // Новые поля для совместимости с бекендом
   equipment_required?: number;
   staff_assigned?: number;
   special_instructions?: string;
-  beo_file_path?: string;
-  beo_generated_at?: string;
-  preparation_timeline?: {
-    start_time?: string;
-    end_time?: string;
-    stages?: Array<{
-      name: string;
-      duration: number;
-      responsible?: string;
-    }>;
-  };
   is_urgent?: boolean;
-  order_deadline?: string;
-  modification_deadline?: string;
   application_id?: number;
-  // Поля для платежей
   algoritma_order_id?: string;
-  payment_status?: 'pending' | 'authorized' | 'charged' | 'failed' | 'refunded' | 'credited';
   payment_url?: string;
   payment_attempts?: number;
-  payment_created_at?: string;
-  payment_completed_at?: string;
   payment_details?: {
     method?: string;
     transaction_id?: string;
@@ -222,12 +247,20 @@ export interface RegisterRequest {
 
 export interface ApplicationRequest {
   first_name: string;
-  last_name: string | null;
+  last_name?: string;
+  company_name?: string;
+  contact_person?: string;
   phone: string;
   email: string;
-  message?: string | null;
+  message?: string;
+  event_address?: string;
+  event_date?: string;
+  event_time?: string;
+  event_lat?: number;
+  event_lng?: number;
   cart_items?: CartItem[];
   coordinator_id?: number;
+  client_id?: number;
 }
 
 // Error Types

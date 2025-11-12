@@ -35,5 +35,7 @@
 .textActive {
   color: #1A1A1A;
   font-weight: bold;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 

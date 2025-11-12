@@ -1,0 +1,182 @@
+/* Main Container */
+.deliveryPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFCF8;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.navbarSpacing {
+  padding-top: 0; /* This is to counteract the global navbar-spacing if it exists */
+}
+
+.breadcrumbsContainer {
+  padding: 1rem 0;
+  background-color: #FFFCF8;
+}
+
+.breadcrumbsWrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.pageTitleContainer {
+  background-color: #FFFCF8;
+  text-align: center;
+}
+
+.pageTitleWrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.pageTitle {
+  color: #000;
+  font-family: "Sabon Next LT Pro";
+  font-size: 44px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 0;
+}
+
+/* Main Content Section */
+.mainContent {
+  background-color: #FFFCF8;
+  padding: 2rem 0;
+}
+
+.mainContentWrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+
+.mainText {
+  font-family: "Sabon Next LT Pro";
+  font-size: 15px;
+  font-weight: 300;
+  color: #1A1A1A;
+  line-height: 1.8;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+
+.mapWrapper {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mapWrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
+
+/* Responsive Design */
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) {
+  .deliveryPage {
+    padding-top: 76px; /* Adjusted for tablet header height */
+  }
+
+  .mainContentWrapper {
+    gap: 2.5rem;
+  }
+
+  .textBlock {
+    padding: 2rem;
+  }
+
+  .mainText {
+    font-size: 16px;
+  }
+
+  .mapContainer {
+    padding: 1.5rem;
+  }
+
+  .mapWrapper {
+    height: 350px;
+  }
+
+  .pageTitle {
+    font-size: 38px;
+  }
+}
+
+/* Mobile (768px and below) */
+@media (max-width: 768px) {
+  .deliveryPage {
+    padding-top: 68px; /* Adjusted for mobile header height */
+  }
+
+  .mainContentWrapper {
+    padding: 0 16px;
+    gap: 2rem;
+  }
+
+  .pageTitle {
+    font-size: 32px;
+  }
+
+  .textBlock {
+    padding: 1.5rem;
+  }
+
+  .mainText {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .mapContainer {
+    padding: 1rem;
+  }
+
+  .mapWrapper {
+    height: 300px;
+  }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .deliveryPage {
+    padding-top: 56px; /* Adjusted for small mobile header height */
+  }
+
+  .pageTitle {
+    font-size: 28px;
+  }
+
+  .textBlock {
+    padding: 1.25rem;
+  }
+
+  .mainText {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .mapContainer {
+    padding: 0.75rem;
+  }
+
+  .mapWrapper {
+    height: 250px;
+  }
+}

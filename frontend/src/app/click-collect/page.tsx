@@ -119,10 +119,11 @@ export default function ClickCollectPage() {
             marginBottom: '0'
           }}>
             <Image
-              src="/images/Click_and_Collect.png"
+              src="/images/click_and_colect.png"
               alt="Click & Collect"
               fill
               style={{ objectFit: 'cover' }}
+              unoptimized
               priority
             />
           </div>

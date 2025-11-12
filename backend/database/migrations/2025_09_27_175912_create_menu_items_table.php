@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
-            $table->string('iiko_id')->unique(); // ID из iiko API
+            $table->string('iiko_id')->nullable()->unique(); // ID из iiko API
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->string('currency', 3)->default('AZN');
-            $table->foreignId('menu_category_id')->constrained()->onDelete('cascade');
-            $table->string('organization_id'); // ID организации из iiko
+            $table->foreignId('menu_category_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('organization_id')->nullable(); // ID организации из iiko
             $table->json('images')->nullable(); // Массив URL изображений
             $table->json('allergens')->nullable(); // Массив аллергенов
             $table->boolean('is_available')->default(true);

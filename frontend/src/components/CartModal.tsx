@@ -26,7 +26,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   const { showNotification } = useNotification();
 
   const removeFromCart = (itemId: string) => {
-    const currentQuantity = cartItems.find(item => item.id === itemId)?.quantity || 0;
+    const currentQuantity = cartItems.find(item => String(item.id) === String(itemId))?.quantity || 0;
     if (currentQuantity > 1) {
       updateQuantity(itemId, currentQuantity - 1);
       showNotification('Item quantity decreased');
@@ -37,7 +37,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   };
 
   const addToCart = (itemId: string) => {
-    const item = cartItems.find(item => item.id === itemId);
+    const item = cartItems.find(item => String(item.id) === String(itemId));
     if (item) {
       updateQuantity(itemId, item.quantity + 1);
       showNotification('Item quantity increased');

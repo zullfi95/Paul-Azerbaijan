@@ -22,10 +22,10 @@ export type StaffRole = typeof STAFF_ROLES[keyof typeof STAFF_ROLES];
 /**
  * Проверка, является ли пользователь координатором
  */
-export function isCoordinator(user: { user_type?: string; staff_role?: string }): boolean {
+export function isCoordinator(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
 
   const result = user?.user_type === 'staff' &&
-         user?.staff_role === STAFF_ROLES.COORDINATOR;
+         (user?.position === 'coordinator' || user?.staff_role === STAFF_ROLES.COORDINATOR);
 
   return result;
 }
@@ -47,9 +47,9 @@ export function isClient(user: { user_type?: string }): boolean {
 /**
  * Проверка, имеет ли пользователь доступ к управлению заказами
  */
-export function canManageOrders(user: { user_type?: string; staff_role?: string }): boolean {
+export function canManageOrders(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
   return isCoordinator(user) || 
-         (isStaff(user) && (user?.staff_role === STAFF_ROLES.ADMIN || user?.staff_role === STAFF_ROLES.MANAGER));
+         (isStaff(user) && (user?.position === 'admin' || user?.position === 'manager' || user?.staff_role === STAFF_ROLES.ADMIN || user?.staff_role === STAFF_ROLES.MANAGER));
 }
 
 /**
@@ -62,16 +62,24 @@ export function canCreateOrders(user: { user_type?: string }): boolean {
 /**
  * Проверка, может ли пользователь управлять пользователями
  */
-export function canManageUsers(user: { user_type?: string; staff_role?: string }): boolean {
+export function canManageUsers(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
   return isCoordinator(user) || 
-         (isStaff(user) && user?.staff_role === STAFF_ROLES.ADMIN);
+         (isStaff(user) && (user?.position === 'admin' || user?.staff_role === STAFF_ROLES.ADMIN));
 }
 
 /**
  * Проверка, может ли пользователь видеть календарь
  */
-export function canViewCalendar(user: { user_type?: string; staff_role?: string }): boolean {
+export function canViewCalendar(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
   return canManageOrders(user);
+}
+
+/**
+ * Проверка, может ли пользователь управлять меню
+ */
+export function canManageMenu(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
+  return isCoordinator(user) || 
+         (isStaff(user) && (user?.position === 'admin' || user?.staff_role === STAFF_ROLES.ADMIN));
 }
 
 /**
@@ -80,8 +88,8 @@ export function canViewCalendar(user: { user_type?: string; staff_role?: string 
 export function useAuthGuard(
   isAuthenticated: boolean,
   isLoading: boolean,
-  user: { user_type?: string; staff_role?: string },
-  requiredPermission: (user: { user_type?: string; staff_role?: string }) => boolean,
+  user: { user_type?: string; position?: string; staff_role?: string },
+  requiredPermission: (user: { user_type?: string; position?: string; staff_role?: string }) => boolean,
   router: { push: (path: string) => void; replace: (path: string) => void },
   redirectTo = '/auth/login'
 ): boolean {

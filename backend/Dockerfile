@@ -65,8 +65,7 @@ RUN echo "APP_NAME=Laravel" > .env \
     && echo "ALGORITMA_API_KEY=Paul" >> .env \
     && echo "ALGORITMA_API_SECRET=+WlGb0xWlywRJn/tYT" >> .env \
     && echo "ALGORITMA_BASE_URL=https://api.testalgoritma.az" >> .env \
-    && echo "ALGORITMA_ENVIRONMENT=test" >> .env \
-    && echo "MAIL_MAILER=log" >> .env
+    && echo "ALGORITMA_ENVIRONMENT=test" >> .env
 
 # Создаем базу данных SQLite если её нет
 RUN touch database/database.sqlite

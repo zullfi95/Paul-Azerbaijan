@@ -131,18 +131,85 @@ class ClientController extends BaseApiController
     /**
      * Получение статистики клиентов
      */
+    /**
+     * Получить статистику клиентов
+     * УЛУЧШЕНО: Добавлена статистика по заказам клиентов и активности
+     */
     public function statistics(Request $request)
     {
         try {
             $this->authorize('viewStatistics', User::class);
             
-            $stats = [
+            // Базовая статистика клиентов
+            $clientStats = [
                 'total' => User::where('user_type', 'client')->count(),
                 'corporate' => User::where('user_type', 'client')->where('client_category', 'corporate')->count(),
                 'one_time' => User::where('user_type', 'client')->where('client_category', 'one_time')->count(),
                 'active' => User::where('user_type', 'client')->where('status', 'active')->count(),
                 'inactive' => User::where('user_type', 'client')->where('status', 'inactive')->count(),
                 'suspended' => User::where('user_type', 'client')->where('status', 'suspended')->count(),
+            ];
+            
+            // Статистика заказов клиентов
+            $orderStats = [
+                'clients_with_orders' => Order::distinct('client_id')->count('client_id'),
+                'average_orders_per_client' => $clientStats['total'] > 0 
+                    ? round(Order::count() / $clientStats['total'], 2) 
+                    : 0,
+                'top_clients' => User::where('user_type', 'client')
+                    ->withCount('orders')
+                    ->orderBy('orders_count', 'desc')
+                    ->limit(5)
+                    ->get(['id', 'name', 'email', 'company_name'])
+                    ->map(function ($client) {
+                        return [
+                            'id' => $client->id,
+                            'name' => $client->name,
+                            'email' => $client->email,
+                            'company' => $client->company_name,
+                            'orders_count' => $client->orders_count,
+                        ];
+                    }),
+            ];
+            
+            // Статистика за текущий месяц
+            $currentMonth = now()->startOfMonth();
+            $monthStats = [
+                'new_clients_this_month' => User::where('user_type', 'client')
+                    ->where('created_at', '>=', $currentMonth)->count(),
+                'active_clients_this_month' => Order::where('created_at', '>=', $currentMonth)
+                    ->distinct('client_id')->count('client_id'),
+            ];
+            
+            // Статистика по выручке клиентов
+            $revenueStats = [
+                'total_revenue_from_clients' => Order::whereIn('status', [
+                    Order::STATUS_PAID,
+                    Order::STATUS_PROCESSING,
+                    Order::STATUS_COMPLETED
+                ])->sum('final_amount'),
+                'average_revenue_per_client' => $clientStats['total'] > 0 
+                    ? round(Order::whereIn('status', [
+                        Order::STATUS_PAID,
+                        Order::STATUS_PROCESSING,
+                        Order::STATUS_COMPLETED
+                    ])->sum('final_amount') / $clientStats['total'], 2)
+                    : 0,
+            ];
+
+            $stats = [
+                'clients' => $clientStats,
+                'orders' => $orderStats,
+                'current_month' => $monthStats,
+                'revenue' => $revenueStats,
+                'overview' => [
+                    'total_clients' => $clientStats['total'],
+                    'active_clients' => $clientStats['active'],
+                    'clients_with_orders' => $orderStats['clients_with_orders'],
+                    'conversion_rate' => $clientStats['total'] > 0 
+                        ? round(($orderStats['clients_with_orders'] / $clientStats['total']) * 100, 2)
+                        : 0,
+                ],
             ];
 
             return $this->successResponse($stats, 'Статистика клиентов получена успешно');

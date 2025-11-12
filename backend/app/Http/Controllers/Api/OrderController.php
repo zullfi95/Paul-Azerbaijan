@@ -348,19 +348,89 @@ class OrderController extends BaseApiController
     /**
      * Получение статистики по заказам
      */
+    /**
+     * Получить статистику заказов
+     * УЛУЧШЕНО: Добавлена подробная статистика по платежам, суммам и датам
+     */
     public function statistics(Request $request)
     {
         try {
             $this->authorize('viewAny', Order::class);
             
-            $stats = [
+            // Статистика по статусам заказов
+            $statusStats = [
                 'total' => Order::count(),
-                'draft' => Order::where('status', 'draft')->count(),
-                'submitted' => Order::where('status', 'submitted')->count(),
-                'processing' => Order::where('status', 'processing')->count(),
-                'completed' => Order::where('status', 'completed')->count(),
-                'cancelled' => Order::where('status', 'cancelled')->count(),
-                'total_amount' => Order::where('status', '!=', 'cancelled')->sum('total_amount'),
+                'draft' => Order::where('status', Order::STATUS_DRAFT)->count(),
+                'submitted' => Order::where('status', Order::STATUS_SUBMITTED)->count(),
+                'pending_payment' => Order::where('status', Order::STATUS_PENDING_PAYMENT)->count(),
+                'paid' => Order::where('status', Order::STATUS_PAID)->count(),
+                'processing' => Order::where('status', Order::STATUS_PROCESSING)->count(),
+                'completed' => Order::where('status', Order::STATUS_COMPLETED)->count(),
+                'cancelled' => Order::where('status', Order::STATUS_CANCELLED)->count(),
+            ];
+            
+            // Статистика по платежам
+            $paymentStats = [
+                'total_revenue' => Order::whereIn('status', [
+                    Order::STATUS_PAID,
+                    Order::STATUS_PROCESSING,
+                    Order::STATUS_COMPLETED
+                ])->sum('final_amount'),
+                'pending_payments' => Order::where('status', Order::STATUS_PENDING_PAYMENT)->sum('final_amount'),
+                'paid_count' => Order::whereIn('payment_status', [
+                    Order::PAYMENT_STATUS_CHARGED,
+                    Order::PAYMENT_STATUS_AUTHORIZED
+                ])->count(),
+                'failed_payments' => Order::where('payment_status', Order::PAYMENT_STATUS_FAILED)->count(),
+                'average_order_value' => Order::whereIn('status', [
+                    Order::STATUS_PAID,
+                    Order::STATUS_PROCESSING,
+                    Order::STATUS_COMPLETED
+                ])->avg('final_amount'),
+            ];
+            
+            // Статистика за текущий месяц
+            $currentMonth = now()->startOfMonth();
+            $monthStats = [
+                'orders_this_month' => Order::where('created_at', '>=', $currentMonth)->count(),
+                'revenue_this_month' => Order::where('created_at', '>=', $currentMonth)
+                    ->whereIn('status', [
+                        Order::STATUS_PAID,
+                        Order::STATUS_PROCESSING,
+                        Order::STATUS_COMPLETED
+                    ])->sum('final_amount'),
+                'completed_this_month' => Order::where('status', Order::STATUS_COMPLETED)
+                    ->where('updated_at', '>=', $currentMonth)->count(),
+            ];
+            
+            // Статистика по типам клиентов
+            $clientStats = [
+                'corporate_orders' => Order::where('client_type', 'corporate')->count(),
+                'one_time_orders' => Order::where('client_type', 'one_time')->count(),
+            ];
+            
+            // Статистика по типам доставки
+            $deliveryStats = [
+                'delivery' => Order::where('delivery_type', 'delivery')->count(),
+                'pickup' => Order::where('delivery_type', 'pickup')->count(),
+                'buffet' => Order::where('delivery_type', 'buffet')->count(),
+            ];
+
+            $stats = [
+                'status' => $statusStats,
+                'payment' => $paymentStats,
+                'current_month' => $monthStats,
+                'clients' => $clientStats,
+                'delivery' => $deliveryStats,
+                'overview' => [
+                    'total_orders' => $statusStats['total'],
+                    'active_orders' => $statusStats['submitted'] + $statusStats['pending_payment'] + 
+                                      $statusStats['paid'] + $statusStats['processing'],
+                    'total_revenue' => $paymentStats['total_revenue'],
+                    'completion_rate' => $statusStats['total'] > 0 
+                        ? round(($statusStats['completed'] / $statusStats['total']) * 100, 2) 
+                        : 0,
+                ],
             ];
 
             return $this->successResponse($stats, 'Статистика заказов получена успешно');

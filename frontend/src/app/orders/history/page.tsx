@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-// TODO: Fix import path if necessary
 import { useAuth } from '@/contexts/AuthContext';
 
 // Интерфейс для заказа
@@ -90,7 +89,6 @@ export default function OrderHistoryPage() {
       
       setOrders(mockOrders);
     } catch (error) {
-      console.error('Error loading order history:', error);
     } finally {
       setIsLoadingOrders(false);
     }

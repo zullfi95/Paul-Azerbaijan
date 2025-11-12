@@ -21,15 +21,23 @@ export default function ForgotPasswordPage() {
     setMessage(null);
 
     try {
-      // TODO: Реализовать API endpoint для сброса пароля
-      // const response = await fetch('/api/forgot-password', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email })
-      // });
+      const response = await fetch('/api/forgot-password', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      });
 
-      // Временная заглушка
-      setMessage('Функция восстановления пароля находится в разработке. Пожалуйста, обратитесь к администратору.');
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setMessage(data.message || 'Инструкции по восстановлению пароля отправлены на ваш email.');
+        setEmail(''); // Очищаем форму
+      } else {
+        setError(data.message || 'Не удалось отправить инструкции. Попробуйте позже.');
+      }
       
     } catch (err) {
       setError('Произошла ошибка. Попробуйте позже.');

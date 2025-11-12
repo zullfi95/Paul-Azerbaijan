@@ -28,6 +28,9 @@ use App\Http\Controllers\Api\MenuCategoryController;
 // Открытые маршруты (не требуют аутентификации)
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1'); // Rate limiting
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1'); // Rate limiting
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:3,1'); // Rate limiting
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:3,1'); // Rate limiting
+Route::post('/newsletter/subscribe', [AuthController::class, 'subscribeNewsletter'])->middleware('throttle:5,1'); // Rate limiting
 
 // Публичный endpoint для получения координаторов (для создания заявок)
 Route::get('/coordinators', [UserController::class, 'getCoordinators']);

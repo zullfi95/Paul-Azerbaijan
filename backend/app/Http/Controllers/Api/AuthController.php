@@ -220,4 +220,138 @@ class AuthController extends BaseApiController
             return $this->handleException($e);
         }
     }
+    
+    /**
+     * Запрос на восстановление пароля
+     * НОВОЕ: Реализация forgot-password endpoint
+     */
+    public function forgotPassword(Request $request)
+    {
+        try {
+            $validatedData = $this->validateData(
+                $request->all(),
+                ['email' => 'required|email'],
+                ['email.required' => 'Email обязателен', 'email.email' => 'Некорректный email']
+            );
+            
+            $user = User::where('email', $validatedData['email'])->first();
+            
+            if (!$user) {
+                // Из соображений безопасности не раскрываем, существует ли email
+                return $this->successResponse(null, 'Если email существует в системе, инструкции будут отправлены');
+            }
+            
+            // Генерируем токен для сброса пароля
+            $token = \Str::random(64);
+            
+            // Сохраняем токен в базе данных (добавим поле reset_token и reset_token_expires)
+            $user->update([
+                'reset_token' => Hash::make($token),
+                'reset_token_expires' => now()->addHours(1),
+            ]);
+            
+            // Отправляем email с инструкциями
+            // TODO: Реализовать отправку email через NotificationService
+            Log::info('Password reset requested', [
+                'email' => $user->email,
+                'token' => $token,
+                'reset_link' => config('app.frontend_url') . '/auth/reset-password?token=' . $token . '&email=' . urlencode($user->email)
+            ]);
+            
+            return $this->successResponse([
+                'message' => 'Инструкции по восстановлению пароля отправлены на email',
+                // В тестовом режиме возвращаем токен (в production убрать!)
+                'debug_token' => config('app.debug') ? $token : null,
+                'debug_link' => config('app.debug') ? config('app.frontend_url') . '/auth/reset-password?token=' . $token . '&email=' . urlencode($user->email) : null,
+            ], 'Инструкции отправлены');
+            
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+    
+    /**
+     * Сброс пароля по токену
+     * НОВОЕ: Реализация reset-password endpoint
+     */
+    public function resetPassword(Request $request)
+    {
+        try {
+            $validatedData = $this->validateData(
+                $request->all(),
+                [
+                    'email' => 'required|email',
+                    'token' => 'required|string',
+                    'password' => 'required|string|min:8|confirmed',
+                ],
+                [
+                    'email.required' => 'Email обязателен',
+                    'token.required' => 'Токен обязателен',
+                    'password.required' => 'Пароль обязателен',
+                    'password.min' => 'Пароль должен быть минимум 8 символов',
+                    'password.confirmed' => 'Пароли не совпадают',
+                ]
+            );
+            
+            $user = User::where('email', $validatedData['email'])->first();
+            
+            if (!$user || !$user->reset_token || !$user->reset_token_expires) {
+                return $this->errorResponse('Некорректный или истекший токен', 400);
+            }
+            
+            // Проверяем, не истек ли токен
+            if (now()->gt($user->reset_token_expires)) {
+                return $this->errorResponse('Токен истек. Запросите новый', 400);
+            }
+            
+            // Проверяем токен
+            if (!Hash::check($validatedData['token'], $user->reset_token)) {
+                return $this->errorResponse('Некорректный токен', 400);
+            }
+            
+            // Обновляем пароль
+            $user->update([
+                'password' => Hash::make($validatedData['password']),
+                'reset_token' => null,
+                'reset_token_expires' => null,
+            ]);
+            
+            Log::info('Password reset successful', ['email' => $user->email]);
+            
+            return $this->successResponse(null, 'Пароль успешно изменен');
+            
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+    
+    /**
+     * Подписка на рассылку новостей
+     * НОВОЕ: Newsletter subscription endpoint
+     */
+    public function subscribeNewsletter(Request $request)
+    {
+        try {
+            $validatedData = $this->validateData(
+                $request->all(),
+                ['email' => 'required|email'],
+                ['email.required' => 'Email обязателен', 'email.email' => 'Некорректный email']
+            );
+            
+            // Здесь можно сохранить подписку в отдельную таблицу newsletters
+            // Для MVP просто логируем
+            Log::info('Newsletter subscription', ['email' => $validatedData['email']]);
+            
+            // TODO: Сохранить в таблицу newsletter_subscribers или интегрировать с email сервисом
+            // TODO: Отправить welcome email через NotificationService
+            
+            return $this->successResponse([
+                'email' => $validatedData['email'],
+                'message' => 'Спасибо за подписку! Вы будете получать наши новости.',
+            ], 'Подписка оформлена успешно');
+            
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
 }

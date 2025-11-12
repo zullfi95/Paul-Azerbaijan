@@ -33,6 +33,8 @@ class User extends Authenticatable
         'status',
         'user_type', // 'staff' or 'client'
         'client_category', // 'corporate' | 'one_time'
+        'reset_token', // Токен для сброса пароля
+        'reset_token_expires', // Срок действия токена
     ];
 
     /**
@@ -42,7 +44,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
@@ -56,6 +57,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'shipping_address' => 'array',
+            'reset_token_expires' => 'datetime',
         ];
     }
 
@@ -72,7 +74,15 @@ class User extends Authenticatable
      */
     public function isCoordinator(): bool
     {
-        return $this->isStaff();
+        return $this->user_type === 'staff' && $this->staff_role === 'coordinator';
+    }
+
+    /**
+     * Проверяет, является ли пользователь наблюдателем (observer)
+     */
+    public function isObserver(): bool
+    {
+        return $this->user_type === 'staff' && $this->staff_role === 'observer';
     }
 
     /**
@@ -165,11 +175,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class, 'client_id');
     }
+    
+    /**
+     * Алиас для clientOrders() для упрощения использования withCount('orders')
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'client_id');
+    }
 
     /**
      * Заявки клиента (если пользователь - клиент)
      */
     public function clientApplications(): HasMany
+    {
+        return $this->hasMany(Application::class, 'client_id');
+    }
+    
+    /**
+     * Алиас для clientApplications() для упрощения использования withCount('applications')
+     */
+    public function applications(): HasMany
     {
         return $this->hasMany(Application::class, 'client_id');
     }

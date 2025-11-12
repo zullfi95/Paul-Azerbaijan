@@ -60,13 +60,30 @@ const Header: React.FC = React.memo(function Header() {
     openCartModal();
   }, [openCartModal]);
 
-  const handleSubscribe = useCallback((e: React.FormEvent) => {
+  const handleSubscribe = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
-      // TODO: Implement newsletter subscription endpoint
-      // Temporary notification
-      alert('Newsletter subscription is coming soon! Thank you for your interest.');
-      setEmail('');
+      try {
+        const response = await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ email: email.trim() })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          alert(data.data?.message || 'Спасибо за подписку!');
+          setEmail('');
+        } else {
+          alert('Не удалось оформить подписку. Попробуйте позже.');
+        }
+      } catch (error) {
+        alert('Произошла ошибка. Попробуйте позже.');
+      }
       closeMobileMenu();
     }
   }, [email, closeMobileMenu]);

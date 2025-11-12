@@ -49,23 +49,30 @@ class PaymentController extends BaseApiController
                 return $this->errorResponse('Превышен лимит попыток оплаты (3 попытки)', 400);
             }
 
-            // Разрешены оплаты только для одноразовых клиентов
+            // Проверяем наличие клиента
             $order->loadMissing('client');
             $client = $order->client ?: User::find($order->client_id);
             
-            Log::info('Checking client category for payment', [
+            Log::info('Checking client for payment', [
                 'client_exists' => !!$client,
                 'client_category' => $client ? $client->client_category : null,
                 'order_client_id' => $order->client_id,
             ]);
             
-            if (!$client || $client->client_category !== 'one_time') {
-                Log::warning('Payment denied - client category check failed', [
-                    'client_exists' => !!$client,
-                    'client_category' => $client ? $client->client_category : null,
-                    'required_category' => 'one_time',
+            if (!$client) {
+                Log::warning('Payment denied - client not found', [
+                    'order_client_id' => $order->client_id,
                 ]);
-                return $this->errorResponse('Оплата разрешена только для разовых клиентов', 400);
+                return $this->errorResponse('Клиент не найден', 400);
+            }
+            
+            // Корпоративные клиенты оплачивают по счету, для них онлайн-оплата недоступна
+            if ($client->client_category === 'corporate') {
+                Log::warning('Payment denied - corporate client', [
+                    'client_id' => $client->id,
+                    'client_category' => $client->client_category,
+                ]);
+                return $this->errorResponse('Корпоративные клиенты оплачивают по счету. Онлайн-оплата недоступна.', 400);
             }
 
             // Увеличиваем счетчик попыток

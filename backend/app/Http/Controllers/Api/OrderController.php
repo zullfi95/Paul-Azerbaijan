@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class OrderController extends BaseApiController
 {
@@ -216,13 +217,31 @@ class OrderController extends BaseApiController
             
             Log::info('=== CREATE FROM APPLICATION START ===');
             Log::info('Request data:', $request->all());
-            Log::info('Application ID:', ['id' => $application->id]);
+            Log::info('Application data:', $application->toArray());
             
             $user = $this->getAuthenticatedUser($request);
             Log::info('User authenticated:', ['user_id' => $user->id, 'user_name' => $user->name]);
             
-            // Парсим JSON данные
+            // Парсим JSON данные из request
             $data = $this->parseJsonDataForApplication($request);
+            
+            // Подставляем данные из заявки, если они не указаны в request
+            if (!isset($data['delivery_date']) && $application->event_date) {
+                $data['delivery_date'] = $application->event_date->format('Y-m-d');
+            }
+            
+            if (!isset($data['delivery_time']) && $application->event_time) {
+                $data['delivery_time'] = $application->event_time->format('H:i');
+            }
+            
+            if (!isset($data['delivery_address']) && $application->event_address) {
+                $data['delivery_address'] = $application->event_address;
+            }
+            
+            // Подставляем позиции меню из заявки, если не указаны
+            if (!isset($data['menu_items']) && $application->cart_items) {
+                $data['menu_items'] = $application->cart_items;
+            }
             
             // Объединяем правила валидации
             $rules = array_merge(
@@ -238,14 +257,37 @@ class OrderController extends BaseApiController
 
             $validatedData = $this->validateData($data, $rules, $this->getCommonValidationMessages(), $this->getCommonValidationAttributes());
 
-            // Требуем обязательного указания client_id
+            // Если client_id не указан, используем client_id из заявки или ищем/создаем клиента
             if (!isset($validatedData['client_id'])) {
-                return $this->validationErrorResponse([
-                    'client_id' => ['Поле client_id обязательно для заполнения']
-                ], 'Необходимо указать ID клиента');
+                if ($application->client_id) {
+                    // Используем существующего клиента из заявки
+                    $validatedData['client_id'] = $application->client_id;
+                } else {
+                    // Создаем нового клиента на основе данных заявки
+                    $client = User::where('email', $application->email)->where('user_type', 'client')->first();
+                    
+                    if (!$client) {
+                        $client = User::create([
+                            'name' => $application->first_name,
+                            'last_name' => $application->last_name,
+                            'email' => $application->email,
+                            'phone' => $application->phone,
+                            'company_name' => $application->company_name,
+                            'contact_person' => $application->contact_person,
+                            'user_type' => 'client',
+                            'client_category' => 'one_time',
+                            'password' => bcrypt(Str::random(16)), // Временный пароль
+                            'status' => 'active',
+                        ]);
+                        
+                        Log::info('Created new client from application', ['client_id' => $client->id]);
+                    }
+                    
+                    $validatedData['client_id'] = $client->id;
+                }
             }
 
-            // Ищем существующего клиента
+            // Ищем клиента
             $client = User::where('id', $validatedData['client_id'])
                         ->where('user_type', 'client')
                         ->first();
@@ -271,7 +313,7 @@ class OrderController extends BaseApiController
             $application->update([
                 'status' => 'approved',
                 'coordinator_id' => $user->id,
-                'client_id' => $validatedData['client_id'],
+                'client_id' => $client->id,
                 'processed_at' => now(),
             ]);
 

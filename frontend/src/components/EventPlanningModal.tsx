@@ -14,6 +14,7 @@ interface EventPlanningModalProps {
 
 interface EventFormData {
   eventDate: string;
+  eventTime?: string;
   location: string;
   budget: string;
   guestCount: string;
@@ -29,6 +30,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
   
   const [formData, setFormData] = useState<EventFormData>({
     eventDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+    eventTime: '',
     location: '',
     budget: '',
     guestCount: '',
@@ -76,6 +78,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
         // Reset form
         setFormData({
           eventDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+          eventTime: '',
           location: '',
           budget: '',
           guestCount: '',
@@ -142,7 +145,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
         {/* Form */}
         <div className={styles.formContainer}>
           <form onSubmit={handleSubmit} className={styles.form}>
-            {/* First row - Date and Location (2 fields side by side) */}
+            {/* First row - Date and Time (2 fields side by side) */}
             <div className={styles.gridRow}>
               {/* Event date */}
               <input
@@ -150,23 +153,33 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 name="eventDate"
                 value={formData.eventDate}
                 onChange={handleInputChange}
+                min={new Date().toISOString().split('T')[0]}
                 required
                 className={styles.input}
               />
 
-              {/* Location */}
+              {/* Event time */}
               <input
-                type="text"
-                name="location"
-                value={formData.location}
+                type="time"
+                name="eventTime"
+                value={formData.eventTime || ''}
                 onChange={handleInputChange}
-                placeholder={t('location')}
-                required
                 className={styles.input}
               />
             </div>
 
-            {/* Second row - Budget (1 field full width) */}
+            {/* Second row - Location (1 field full width) */}
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleInputChange}
+              placeholder={t('location')}
+              required
+              className={styles.inputLarge}
+            />
+
+            {/* Third row - Budget (1 field full width) */}
             <input
               type="number"
               name="budget"
@@ -179,7 +192,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               className={styles.inputLarge}
             />
 
-            {/* Third row - Number of guests (1 field full width) */}
+            {/* Fourth row - Number of guests (1 field full width) */}
             <input
               type="number"
               name="guestCount"
@@ -191,7 +204,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               className={styles.inputLarge}
             />
 
-            {/* Fourth row - Request details (1 field full width) */}
+            {/* Fifth row - Request details (1 field full width) */}
             <textarea
               name="details"
               value={formData.details}
@@ -202,7 +215,17 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               className={styles.textarea}
             />
 
-            {/* Fifth row - Email and Phone (2 fields side by side) */}
+            {/* Sixth row - Contact Name (1 field full width) */}
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder={t('name')}
+              className={styles.inputLarge}
+            />
+
+            {/* Seventh row - Email and Phone (2 fields side by side) */}
             <div className={styles.gridRow}>
               {/* Email */}
               <input

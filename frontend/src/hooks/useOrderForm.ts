@@ -217,7 +217,18 @@ export const useOrderForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
+
+        // Валидация меню
+        if (!formData.menu_items || formData.menu_items.length === 0) {
+            alert('Необходимо выбрать хотя бы один товар из меню');
+            return;
+        }
+
+        // Валидация клиента
+        if (!formData.selected_client_id) {
+            alert('Необходимо выбрать клиента для заказа');
+            return;
+        }
 
         // Валидация даты доставки
         if (formData.delivery_date) {
@@ -226,24 +237,23 @@ export const useOrderForm = () => {
             today.setHours(0, 0, 0, 0);
             if (selectedDate < today) {
                 alert('Дата доставки должна быть сегодня или позже');
-                setLoading(false);
                 return;
             }
         }
 
-        const selectedClient = clients.find(c => c.id === formData.selected_client_id);
+        setLoading(true);
+
+        // Подготовка payload без лишних полей
+        const { selected_client_id, ...restFormData } = formData;
         const payload = {
-            ...formData,
-            client_id: formData.selected_client_id,
-            // Бэкенд использует client_category из базы данных, а не client_type из фронтенда
+            ...restFormData,
+            client_id: selected_client_id,
             // Преобразуем ID в строки для совместимости с бэкендом
             menu_items: formData.menu_items.map(item => ({
                 ...item,
                 id: item.id.toString()
             }))
         };
-        // @ts-expect-error - selected_client_id is intentionally removed
-        delete payload.selected_client_id;
 
         try {
             let result;

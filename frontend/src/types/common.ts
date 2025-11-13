@@ -147,7 +147,7 @@ export interface Order {
   }>;
   menu_items: MenuItem[];
   comment?: string;
-  status: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled' | 'paid';
+  status: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled' | 'paid' | 'pending_payment';
   payment_status?: 'pending' | 'authorized' | 'charged' | 'failed' | 'refunded' | 'credited';
   coordinator_id?: number;
   client_id?: number;
@@ -241,7 +241,6 @@ export interface RegisterRequest {
   email: string;
   password: string;
   password_confirmation: string;
-  user_group?: 'client' | 'staff';
   staff_role?: 'coordinator' | 'observer';
 }
 

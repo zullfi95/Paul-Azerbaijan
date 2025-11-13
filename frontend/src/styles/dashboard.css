@@ -1573,7 +1573,7 @@ body {
 
 .amount-value {
   font-weight: 600;
-  color: #D4AF37;
+  color: var(--paul-black);
 }
 
 .action-buttons {
@@ -1707,7 +1707,7 @@ body {
 }
 
 .card-amount {
-  color: #D4AF37;
+  color: var(--paul-black);
   font-size: 12px;
   font-weight: 600;
 }
@@ -1848,7 +1848,7 @@ body {
 }
 
 .kanban-amount {
-  color: #D4AF37;
+  color: var(--paul-black);
   font-weight: 600;
 }
 

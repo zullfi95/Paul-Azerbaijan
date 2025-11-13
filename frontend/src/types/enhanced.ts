@@ -73,8 +73,9 @@ export interface MenuCategory {
 
 // Расширенный интерфейс пользователя
 export interface User extends BaseUser {
-  user_group: UserGroup;
-  user_role?: UserRole;
+  user_type: UserType;
+  staff_role?: StaffRole;
+  client_category?: ClientCategory;
   status: UserStatus;
 }
 
@@ -116,9 +117,9 @@ export interface OrderFilters {
 
 export interface UserFilters {
   search?: string;
-  group?: UserGroup;
+  user_type?: UserType;
   status?: UserStatus;
-  role?: UserRole;
+  staff_role?: StaffRole;
 }
 
 export interface ApplicationFilters {
@@ -195,8 +196,7 @@ export interface UserFormData {
   name: string;
   email: string;
   phone?: string;
-  user_group: UserGroup;
-  user_role?: UserRole;
+  user_type: UserType;
   staff_role?: StaffRole;
   client_category?: ClientCategory;
   status: UserStatus;

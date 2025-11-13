@@ -12,8 +12,8 @@ export const USER_GROUPS = {
 export const STAFF_ROLES = {
   COORDINATOR: 'coordinator',
   OBSERVER: 'observer',
-  ADMIN: 'admin',
-  MANAGER: 'manager'
+  CHEF: 'chef',
+  OPERATIONS_MANAGER: 'operations_manager'
 } as const;
 
 export type UserGroup = typeof USER_GROUPS[keyof typeof USER_GROUPS];
@@ -22,12 +22,8 @@ export type StaffRole = typeof STAFF_ROLES[keyof typeof STAFF_ROLES];
 /**
  * Проверка, является ли пользователь координатором
  */
-export function isCoordinator(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
-
-  const result = user?.user_type === 'staff' &&
-         (user?.position === 'coordinator' || user?.staff_role === STAFF_ROLES.COORDINATOR);
-
-  return result;
+export function isCoordinator(user: { user_type?: string; staff_role?: string }): boolean {
+  return user?.user_type === 'staff' && user?.staff_role === STAFF_ROLES.COORDINATOR;
 }
 
 /**
@@ -47,39 +43,36 @@ export function isClient(user: { user_type?: string }): boolean {
 /**
  * Проверка, имеет ли пользователь доступ к управлению заказами
  */
-export function canManageOrders(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
-  return isCoordinator(user) || 
-         (isStaff(user) && (user?.position === 'admin' || user?.position === 'manager' || user?.staff_role === STAFF_ROLES.ADMIN || user?.staff_role === STAFF_ROLES.MANAGER));
+export function canManageOrders(user: { user_type?: string; staff_role?: string }): boolean {
+  return isCoordinator(user);
 }
 
 /**
  * Проверка, может ли пользователь создавать заказы
  */
-export function canCreateOrders(user: { user_type?: string }): boolean {
+export function canCreateOrders(user: { user_type?: string; staff_role?: string }): boolean {
   return isCoordinator(user) || isClient(user);
 }
 
 /**
  * Проверка, может ли пользователь управлять пользователями
  */
-export function canManageUsers(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
-  return isCoordinator(user) || 
-         (isStaff(user) && (user?.position === 'admin' || user?.staff_role === STAFF_ROLES.ADMIN));
+export function canManageUsers(user: { user_type?: string; staff_role?: string }): boolean {
+  return isCoordinator(user);
 }
 
 /**
  * Проверка, может ли пользователь видеть календарь
  */
-export function canViewCalendar(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
-  return canManageOrders(user);
+export function canViewCalendar(user: { user_type?: string; staff_role?: string }): boolean {
+  return isStaff(user);
 }
 
 /**
  * Проверка, может ли пользователь управлять меню
  */
-export function canManageMenu(user: { user_type?: string; position?: string; staff_role?: string }): boolean {
-  return isCoordinator(user) || 
-         (isStaff(user) && (user?.position === 'admin' || user?.staff_role === STAFF_ROLES.ADMIN));
+export function canManageMenu(user: { user_type?: string; staff_role?: string }): boolean {
+  return isCoordinator(user);
 }
 
 /**
@@ -88,13 +81,13 @@ export function canManageMenu(user: { user_type?: string; position?: string; sta
 export function useAuthGuard(
   isAuthenticated: boolean,
   isLoading: boolean,
-  user: { user_type?: string; position?: string; staff_role?: string },
-  requiredPermission: (user: { user_type?: string; position?: string; staff_role?: string }) => boolean,
+  user: { user_type?: string; staff_role?: string } | null,
+  requiredPermission: (user: { user_type?: string; staff_role?: string }) => boolean,
   router: { push: (path: string) => void; replace: (path: string) => void },
   redirectTo = '/auth/login'
 ): boolean {
   const shouldGoLogin = !isLoading && !isAuthenticated;
-  const shouldGoHome = !isLoading && isAuthenticated && !requiredPermission(user);
+  const shouldGoHome = !isLoading && isAuthenticated && !requiredPermission(user || { user_type: '', staff_role: '' });
 
 
   useEffect(() => {

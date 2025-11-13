@@ -16,6 +16,7 @@ import {
   BookOpenIcon
 } from "./Icons";
 import { canManageMenu } from "../utils/authConstants";
+import { getShortRoleLabel } from "../utils/userHelpers";
 
 interface DashboardSidebarProps {
   isMobileMenuOpen: boolean;
@@ -131,7 +132,7 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
             </div>
             <div className="dashboard-user-details">
               <h4>{user?.name}</h4>
-              <p>{user?.position || user?.staff_role}</p>
+              <p>{getShortRoleLabel(user)}</p>
             </div>
           </div>
           <button onClick={logout} className="dashboard-logout-btn">

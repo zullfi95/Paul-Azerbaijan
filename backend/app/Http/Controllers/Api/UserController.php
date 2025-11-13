@@ -22,10 +22,9 @@ class UserController extends BaseApiController
 
             // Фильтрация по роли
             if ($request->has('role')) {
-                if ($request->role === 'coordinator') {
-                    $query->where('user_type', 'staff');
-                } elseif ($request->role === 'observer') {
-                    $query->where('user_type', 'staff');
+                $role = $request->role;
+                if (in_array($role, ['coordinator', 'observer', 'chef', 'operations_manager'])) {
+                    $query->where('user_type', 'staff')->where('staff_role', $role);
                 }
             }
 
@@ -64,9 +63,17 @@ class UserController extends BaseApiController
             $validatedData = $request->validated();
 
             $userData = $validatedData;
-            $userData['user_type'] = 'staff';
             $userData['password'] = Hash::make($validatedData['password']);
             $userData['status'] = $validatedData['status'] ?? 'active';
+
+            // Устанавливаем user_type и staff_role
+            if (($validatedData['user_type'] ?? 'client') === 'staff') {
+                $userData['user_type'] = 'staff';
+                $userData['staff_role'] = $validatedData['staff_role'] ?? 'observer'; // По умолчанию 'observer'
+            } else {
+                $userData['user_type'] = 'client';
+                $userData['client_category'] = $validatedData['client_category'] ?? 'one_time';
+            }
             
             $user = User::create($userData);
 
@@ -126,8 +133,8 @@ class UserController extends BaseApiController
                 'total' => User::count(),
                 'staff' => User::where('user_type', 'staff')->count(),
                 'clients' => User::where('user_type', 'client')->count(),
-                'coordinators' => User::where('user_type', 'staff')->count(),
-                'observers' => User::where('user_type', 'staff')->count(),
+                'coordinators' => User::where('user_type', 'staff')->where('staff_role', 'coordinator')->count(),
+                'observers' => User::where('user_type', 'staff')->where('staff_role', 'observer')->count(),
                 'active' => User::where('status', 'active')->count(),
                 'inactive' => User::where('status', 'inactive')->count(),
             ];
@@ -145,6 +152,7 @@ class UserController extends BaseApiController
     {
         try {
             $coordinators = User::where('user_type', 'staff')
+                ->where('staff_role', 'coordinator')
                 ->where('status', 'active')
                 ->select('id', 'name', 'email', 'phone')
                 ->get();

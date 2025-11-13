@@ -13,7 +13,7 @@ export default function ResetPasswordPage() {
   const [showForm, setShowForm] = useState(false);
 
   // Проверяем, что пользователь является координатором
-  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', position: '', staff_role: '' }, isCoordinator, router);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, isCoordinator, router);
 
   if (!hasAccess) {
     return (

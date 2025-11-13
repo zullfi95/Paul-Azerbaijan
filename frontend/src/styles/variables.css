@@ -24,9 +24,9 @@
   --color-beige-secondary: #FEF4E6;   /* Secondary Beige */
   
   /* Акцентные цвета */
-  --color-accent: #D4AF37;            /* Gold */
-  --color-accent-dark: #B8941F;       /* Gold Dark */
-  --color-accent-light: #F4D03F;      /* Gold Light */
+  --color-accent: #1A1A1A;            /* Neutralized (was Gold) */
+  --color-accent-dark: #2D2D2D;       /* Neutralized */
+  --color-accent-light: #4A4A4A;      /* Neutralized */
   
   /* Серые оттенки */
   --color-gray: #4A4A4A;              /* Paul Gray */

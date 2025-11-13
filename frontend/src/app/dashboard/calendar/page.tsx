@@ -35,7 +35,7 @@ export default function CalendarPage() {
   const [createDate, setCreateDate] = useState<Date | null>(null);
 
   // Auth guard с улучшенной проверкой доступа
-  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', position: '', staff_role: '' }, canViewCalendar, router);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, canViewCalendar, router);
 
   // Загрузка заказов с оптимизацией
   const loadOrders = useCallback(async () => {
@@ -63,10 +63,15 @@ export default function CalendarPage() {
   // Обработчик выбора заказа
   const handleSelectOrder = (order: Order) => {
     setSelectedOrder(order);
+    // Если открыто окно создания, закрываем его
+    setShowCreateModal(false);
+    setCreateDate(null);
   };
 
   // Обработчик создания нового заказа
   const handleCreateOrder = (date: Date) => {
+    // Закрываем просмотр заказа, если открыт
+    setSelectedOrder(null);
     setCreateDate(date);
     setShowCreateModal(true);
   };
@@ -182,10 +187,10 @@ export default function CalendarPage() {
           tabIndex={0}
         >
           <div className="dashboard-kpi-header">
-            <ShoppingBagIcon size={16} className="dashboard-kpi-icon" style={{ color: '#D4AF37' }} />
+            <ShoppingBagIcon size={16} className="dashboard-kpi-icon" style={{ color: 'var(--paul-black)' }} />
             <span className="dashboard-kpi-label">{t('orders.totalAmount')}</span>
           </div>
-          <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
+          <div className="dashboard-kpi-value" style={{ color: 'var(--paul-black)' }}>
             {calculateTotalAmountSum(orders || []).toFixed(2)}₼
           </div>
           <div className="dashboard-kpi-subtitle">
@@ -217,7 +222,7 @@ export default function CalendarPage() {
       </div>
 
       {/* Create Order Modal */}
-      {showCreateModal && createDate && (
+      {showCreateModal && createDate && !selectedOrder && (
         <div className="dashboard-modal-overlay">
           <div className="dashboard-modal" style={{ maxWidth: '500px' }}>
             <div className="dashboard-modal-header">
@@ -315,7 +320,7 @@ export default function CalendarPage() {
                 {selectedOrder.total_amount && (
                   <div className="dashboard-info-item">
                     <div className="dashboard-info-label">{t('common.amount')}</div>
-                    <div className="dashboard-info-value" style={{ color: '#D4AF37', fontWeight: 600 }}>
+                    <div className="dashboard-info-value" style={{ color: 'var(--paul-black)', fontWeight: 600 }}>
                       {formatTotalAmount(selectedOrder.total_amount)} ₼
                     </div>
                   </div>

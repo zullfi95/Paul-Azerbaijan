@@ -135,12 +135,12 @@ trait HandlesOrderCalculations
 
         return [
             'client_id' => $client->id,
-            'company_name' => $client->company_name ?? $client->name,
-            'client_type' => $client->client_category ?? 'one_time',
+            'company_name' => $data['company_name'] ?? $client->company_name ?? $client->name,
+            'client_type' => $data['client_type'] ?? $client->client_category ?? 'one_time',
             'menu_items' => $totals['resolved_items'],
             'comment' => $data['comment'] ?? null,
             'status' => 'submitted',
-            'coordinator_id' => auth()->id(),
+            'coordinator_id' => auth()->user()->isCoordinator() ? auth()->id() : null,
             'total_amount' => $totals['subtotal'],
             'discount_fixed' => (float) ($data['discount_fixed'] ?? 0),
             'discount_percent' => (float) ($data['discount_percent'] ?? 0),

@@ -246,7 +246,12 @@ export default function DashboardPage() {
                   Завершено: {orders.filter(o => o.status === "completed").length}
                 </div>
                 <div className="dashboard-kpi-subtitle" style={{ marginTop: '4px', fontSize: '9px' }}>
+                  Оплачено: {orders.filter(o => o.status === "paid").length} | 
+                  Ожидают оплаты: {orders.filter(o => o.status === "pending_payment").length}
+                </div>
+                <div className="dashboard-kpi-subtitle" style={{ marginTop: '2px', fontSize: '9px' }}>
                   Отправлено: {orders.filter(o => o.status === "submitted").length} | 
+                  Черновики: {orders.filter(o => o.status === "draft").length} | 
                   Отменено: {orders.filter(o => o.status === "cancelled").length}
                 </div>
               </div>
@@ -656,16 +661,22 @@ function MiniCalendar({ orders }: { orders: Order[] }) {
   const getCalendarCellColor = (dayOrders: Order[]) => {
     if (dayOrders.length === 0) return "transparent";
     
-    // Приоритет статусов для определения цвета ячейки
+    // Приоритет статусов для определения цвета ячейки (от наиболее критичных к менее)
     const hasCompleted = dayOrders.some(o => o.status === "completed");
+    const hasPaid = dayOrders.some(o => o.status === "paid");
     const hasProcessing = dayOrders.some(o => o.status === "processing");
+    const hasPendingPayment = dayOrders.some(o => o.status === "pending_payment");
     const hasCancelled = dayOrders.some(o => o.status === "cancelled");
     const hasSubmitted = dayOrders.some(o => o.status === "submitted");
+    const hasDraft = dayOrders.some(o => o.status === "draft");
     
     if (hasCompleted) return "#dcfce7"; // зеленый для завершенных
+    if (hasPaid) return "#d1fae5"; // светло-зеленый для оплаченных
     if (hasProcessing) return "#fef3c7"; // желтый для в работе
+    if (hasPendingPayment) return "#fed7aa"; // оранжевый для ожидающих оплату
     if (hasCancelled) return "#fee2e2"; // красный для отмененных
     if (hasSubmitted) return "#dbeafe"; // синий для отправленных
+    if (hasDraft) return "#f3f4f6"; // серый для черновиков
     
     return "#f0f9ff"; // голубой по умолчанию
   };
@@ -789,11 +800,18 @@ function MiniCalendar({ orders }: { orders: Order[] }) {
               }}
               onMouseEnter={(e) => {
                 if (day && !isToday) {
+                  // Darker shades for hover
+                  const hoverColors: Record<string, string> = {
+                    "#dcfce7": "#bbf7d0", // completed
+                    "#d1fae5": "#a7f3d0", // paid
+                    "#fef3c7": "#fde68a", // processing
+                    "#fed7aa": "#fdba74", // pending_payment
+                    "#fee2e2": "#fecaca", // cancelled
+                    "#dbeafe": "#bfdbfe", // submitted
+                    "#f3f4f6": "#e5e7eb"  // draft
+                  };
                   e.currentTarget.style.backgroundColor = hasOrders ? 
-                    (cellColor === "#dcfce7" ? "#bbf7d0" : 
-                     cellColor === "#fef3c7" ? "#fde68a" :
-                     cellColor === "#fee2e2" ? "#fecaca" :
-                     cellColor === "#dbeafe" ? "#bfdbfe" : "#e0f2fe") : "#f3f4f6";
+                    (hoverColors[cellColor] || "#e0f2fe") : "#f3f4f6";
                 }
               }}
               onMouseLeave={(e) => {

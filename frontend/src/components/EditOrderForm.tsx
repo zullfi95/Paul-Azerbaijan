@@ -42,7 +42,7 @@ export default function EditOrderForm({ orderId }: EditOrderFormProps) {
     special_instructions: '',
   });
 
-  const hasAccess = useAuthGuard(isAuthenticated, authLoading, user || { user_type: '', position: '', staff_role: '' }, canCreateOrders, router);
+  const hasAccess = useAuthGuard(isAuthenticated, authLoading, user || { user_type: '', staff_role: '' }, canCreateOrders, router);
 
   // Загрузка заказа
   useEffect(() => {

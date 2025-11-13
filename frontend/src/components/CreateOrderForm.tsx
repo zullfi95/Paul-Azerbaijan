@@ -34,7 +34,7 @@ export default function CreateOrderForm() {
     const [showPreview, setShowPreview] = useState(false);
     const [showMenuModal, setShowMenuModal] = useState(false);
 
-    const hasAccess = useAuthGuard(isAuthenticated, authLoading, user || { user_type: '', position: '', staff_role: '' }, canCreateOrders, router);
+    const hasAccess = useAuthGuard(isAuthenticated, authLoading, user || { user_type: '', staff_role: '' }, canCreateOrders, router);
 
     // Отладочное логирование
     useEffect(() => {

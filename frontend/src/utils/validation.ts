@@ -204,7 +204,7 @@ export const validateUser = (user: Record<string, unknown>): ValidationResult =>
     name: { required: true, minLength: 2, maxLength: 50 },
     email: { required: true, email: true },
     phone: { phone: true },
-    user_group: { required: true },
+    user_type: { required: true },
     status: { required: true }
   };
   

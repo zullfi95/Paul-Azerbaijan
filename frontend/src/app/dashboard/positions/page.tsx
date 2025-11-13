@@ -122,7 +122,7 @@ export default function PositionsPage() {
   const stats = useMemo(() => {
     const items = menuItems?.data || [];
     return {
-      total: items.length,
+      total: menuItems?.total ?? items.length,
       active: items.filter(i => i.is_active).length,
       available: items.filter(i => i.is_available).length,
       categories: categories.length
@@ -139,33 +139,6 @@ export default function PositionsPage() {
 
   return (
     <DashboardLayout>
-      {/* Quick Actions */}
-      <section className="dashboard-quick-actions" style={{ marginBottom: 'var(--space-4)' }}>
-        <div className="dashboard-quick-actions-grid">
-          <button
-            onClick={() => router.push("/dashboard/positions/create")}
-            className="dashboard-quick-action-link"
-            style={{
-              background: 'var(--paul-black)',
-              color: 'var(--paul-white)'
-            }}
-          >
-            + Создать позицию
-          </button>
-          <button
-            onClick={() => {
-              setSearchTerm("");
-              setSelectedCategory("all");
-              setCurrentPage(1);
-              loadMenuItems();
-            }}
-            className="dashboard-quick-action-link"
-          >
-            Обновить список
-          </button>
-        </div>
-      </section>
-
       {/* Statistics Cards */}
       <section className="dashboard-kpi-grid" style={{ marginBottom: 'var(--space-6)' }}>
         <div 
@@ -249,18 +222,6 @@ export default function PositionsPage() {
               Управление товарами в меню
             </p>
           </div>
-          <button
-            onClick={() => router.push("/dashboard/positions/create")}
-            className="dashboard-action-btn"
-            style={{
-              background: 'var(--paul-black)',
-              color: 'var(--paul-white)'
-            }}
-            aria-label="Создать новую позицию"
-          >
-            <PlusIcon size={14} />
-            <span>Создать</span>
-          </button>
         </div>
 
           <div className="dashboard-filters" style={{ padding: 'var(--space-4)'}}>
@@ -309,7 +270,7 @@ export default function PositionsPage() {
           </div>
 
           <div className="responsive-table" style={{ overflowX: 'hidden' }}>
-            <table className="dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+            <table className="dashboard-table" style={{ tableLayout: 'fixed', width: '100%', textAlign: 'center' }}>
               <colgroup>
                 <col style={{ width: '56px' }} />
                 <col style={{ width: '28%' }} />
@@ -375,7 +336,7 @@ export default function PositionsPage() {
                       <td>{item.is_available ? "Да" : "Нет"}</td>
                       <td>{item.is_active ? "Да" : "Нет"}</td>
                       <td>
-                        <div style={{ display: "flex", gap: "6px", flexWrap: 'wrap' }}>
+                        <div style={{ display: "flex", gap: "6px", flexWrap: 'wrap', justifyContent: 'center' }}>
                           <button
                             onClick={() => setDetailsItem(item)}
                             className="dashboard-action-btn"
@@ -409,17 +370,53 @@ export default function PositionsPage() {
 
           {/* Pagination */}
           {menuItems && menuItems.last_page > 1 && (
-            <div className="dashboard-pagination" style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-4)', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-              {Array.from({ length: menuItems.last_page }, (_, i) => i + 1).map(page => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`dashboard-action-btn ${currentPage === page ? 'active' : ''}`}
-                  style={currentPage === page ? { background: 'var(--paul-black)', color: 'var(--paul-white)' } : {}}
-                >
-                  {page}
-                </button>
-              ))}
+            <div className="dashboard-pagination" style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-4)', gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+              {/* Prev */}
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                className="dashboard-action-btn"
+                disabled={currentPage === 1}
+                aria-label="Предыдущая страница"
+              >
+                «
+              </button>
+              {(() => {
+                const pages: (number | 'ellipsis')[] = [];
+                const total = menuItems.last_page || 1;
+                const windowSize = 2; // по 2 страницы слева/справа
+                const add = (p: number | 'ellipsis') => pages.push(p);
+
+                add(1);
+                const start = Math.max(2, currentPage - windowSize);
+                const end = Math.min(total - 1, currentPage + windowSize);
+
+                if (start > 2) add('ellipsis');
+                for (let p = start; p <= end; p++) add(p);
+                if (end < total - 1) add('ellipsis');
+                if (total > 1) add(total);
+
+                return pages.map((p, idx) => p === 'ellipsis' ? (
+                  <span key={`e-${idx}`} style={{ padding: '0 6px', color: 'var(--paul-gray)' }}>…</span>
+                ) : (
+                  <button
+                    key={p}
+                    onClick={() => setCurrentPage(p as number)}
+                    className={`dashboard-action-btn ${currentPage === p ? 'active' : ''}`}
+                    style={currentPage === p ? { background: 'var(--paul-black)', color: 'var(--paul-white)' } : {}}
+                  >
+                    {p}
+                  </button>
+                ));
+              })()}
+              {/* Next */}
+              <button
+                onClick={() => setCurrentPage(Math.min(menuItems.last_page, currentPage + 1))}
+                className="dashboard-action-btn"
+                disabled={currentPage === menuItems.last_page}
+                aria-label="Следующая страница"
+              >
+                »
+              </button>
             </div>
           )}
         </section>

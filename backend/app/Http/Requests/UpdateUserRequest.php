@@ -26,6 +26,8 @@ class UpdateUserRequest extends BaseFormRequest
             'email' => 'sometimes|string|email|max:255',
             'phone' => 'sometimes|nullable|string|max:20',
             'user_type' => 'sometimes|string|in:staff,client',
+            'staff_role' => 'sometimes|nullable|in:coordinator,observer,chef,operations_manager',
+            'client_category' => 'sometimes|nullable|in:corporate,one_time',
             'status' => 'sometimes|string|in:active,inactive',
         ];
     }
@@ -45,6 +47,8 @@ class UpdateUserRequest extends BaseFormRequest
             'phone.string' => 'Телефон должен быть строкой',
             'phone.max' => 'Телефон не может превышать 20 символов',
             'user_type.in' => 'Неверный тип пользователя',
+            'staff_role.in' => 'Выбрана неверная роль для сотрудника',
+            'client_category.in' => 'Выбрана неверная категория для клиента',
             'status.in' => 'Неверный статус пользователя',
         ];
     }
@@ -61,6 +65,8 @@ class UpdateUserRequest extends BaseFormRequest
             'email' => 'email',
             'phone' => 'телефон',
             'user_type' => 'тип пользователя',
+            'staff_role' => 'роль сотрудника',
+            'client_category' => 'категория клиента',
             'status' => 'статус',
         ];
     }

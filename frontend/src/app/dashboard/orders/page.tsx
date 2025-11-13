@@ -141,7 +141,7 @@ function OrdersPage() {
   }, []);
 
   // Auth guard with access rights check
-  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', position: '', staff_role: '' }, canManageOrders, router);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, canManageOrders, router);
 
   useEffect(() => {
     if (hasAccess) {
@@ -607,10 +607,10 @@ function OrdersPage() {
           tabIndex={0}
         >
           <div className="dashboard-kpi-header">
-            <ShoppingBagIcon size={16} className="dashboard-kpi-icon" style={{ color: '#D4AF37' }} />
+            <ShoppingBagIcon size={16} className="dashboard-kpi-icon" style={{ color: 'var(--paul-black)' }} />
             <span className="dashboard-kpi-label">{t('orders.totalAmount')}</span>
           </div>
-          <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
+          <div className="dashboard-kpi-value" style={{ color: 'var(--paul-black)' }}>
             {formatTotalAmount(orderStats.totalAmount)} ₼
           </div>
           <div className="dashboard-kpi-subtitle">

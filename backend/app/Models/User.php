@@ -32,6 +32,7 @@ class User extends Authenticatable
         'contact_person',
         'status',
         'user_type', // 'staff' or 'client'
+        'staff_role', // 'coordinator', 'observer', etc.
         'client_category', // 'corporate' | 'one_time'
         'reset_token', // Токен для сброса пароля
         'reset_token_expires', // Срок действия токена

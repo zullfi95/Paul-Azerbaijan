@@ -65,6 +65,7 @@ class Order extends Model
         'payment_attempts',
         'payment_created_at',
         'payment_completed_at',
+        'payment_details',
     ];
 
     protected $casts = [
@@ -88,6 +89,7 @@ class Order extends Model
         'payment_attempts' => 'integer',
         'payment_created_at' => 'datetime',
         'payment_completed_at' => 'datetime',
+        'payment_details' => 'array',
     ];
 
     /**

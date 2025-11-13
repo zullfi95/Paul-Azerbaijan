@@ -174,6 +174,7 @@ class ApplicationController extends BaseApiController
             
             $rules = [
                 'eventDate' => 'required|date_format:Y-m-d|after_or_equal:today',
+                'eventTime' => 'nullable|date_format:H:i',
                 'location' => 'required|string|max:500',
                 'budget' => 'required|string|max:100',
                 'guestCount' => 'required|string|max:50',
@@ -187,6 +188,7 @@ class ApplicationController extends BaseApiController
                 'eventDate.required' => 'Дата мероприятия обязательна',
                 'eventDate.date_format' => 'Неверный формат даты',
                 'eventDate.after_or_equal' => 'Дата мероприятия должна быть сегодня или в будущем',
+                'eventTime.date_format' => 'Неверный формат времени',
                 'location.required' => 'Место проведения обязательно',
                 'budget.required' => 'Бюджет обязателен',
                 'guestCount.required' => 'Количество гостей обязательно',
@@ -195,6 +197,7 @@ class ApplicationController extends BaseApiController
                 'phone.required' => 'Телефон обязателен',
             ], [
                 'eventDate' => 'дата мероприятия',
+                'eventTime' => 'время мероприятия',
                 'location' => 'место проведения',
                 'budget' => 'бюджет',
                 'guestCount' => 'количество гостей',
@@ -208,15 +211,18 @@ class ApplicationController extends BaseApiController
             
             // Создаем заявку на мероприятие
             $application = Application::create([
-                'first_name' => $validatedData['name'] ?? 'Event',
-                'last_name' => 'Organizer',
-                'company_name' => $validatedData['name'] ?? 'Event Planning Request',   
-                'contact_person' => $validatedData['name'] ?? 'Event Organizer',        
+                'first_name' => $validatedData['name'] ?? 'Event Organizer',
+                'last_name' => null,
+                'company_name' => null,
+                'contact_person' => $validatedData['name'] ?? null,
                 'email' => $validatedData['email'],
                 'phone' => $validatedData['phone'],
                 'event_type' => 'Event Planning',
+                'event_address' => $validatedData['location'],
                 'event_date' => $validatedData['eventDate'],
-                'event_time' => '12:00:00', // Default time
+                'event_time' => isset($validatedData['eventTime']) 
+                    ? $validatedData['eventDate'] . ' ' . $validatedData['eventTime']
+                    : null,
                 'guest_count' => (int) $validatedData['guestCount'],
                 'budget' => $validatedData['budget'],
                 'special_requirements' => $validatedData['details'] ?? null,

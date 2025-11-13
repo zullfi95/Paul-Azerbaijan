@@ -52,7 +52,7 @@ export default function ReportsPage() {
   });
 
   // Auth guard
-  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', position: '', staff_role: '' }, canViewCalendar, router);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, canViewCalendar, router);
 
   // Загрузка данных
   const loadData = useCallback(async () => {

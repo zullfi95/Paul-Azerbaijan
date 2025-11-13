@@ -29,6 +29,8 @@ class CreateUserRequest extends BaseFormRequest
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6',
             'user_type' => 'required|string|in:staff,client',
+            'staff_role' => 'nullable|required_if:user_type,staff|in:coordinator,observer,chef,operations_manager',
+            'client_category' => 'nullable|required_if:user_type,client|in:corporate,one_time',
             'status' => 'sometimes|string|in:active,inactive',
         ];
     }
@@ -48,6 +50,10 @@ class CreateUserRequest extends BaseFormRequest
             'password.required' => 'Пароль обязателен для заполнения',
             'password.min' => 'Пароль должен содержать минимум 6 символов',
             'user_type.in' => 'Неверный тип пользователя',
+            'staff_role.required_if' => 'Роль обязательна для сотрудников',
+            'staff_role.in' => 'Выбрана неверная роль для сотрудника',
+            'client_category.required_if' => 'Категория обязательна для клиентов',
+            'client_category.in' => 'Выбрана неверная категория для клиента',
             'status.in' => 'Неверный статус пользователя',
         ];
     }
@@ -64,6 +70,8 @@ class CreateUserRequest extends BaseFormRequest
             'email' => 'email',
             'password' => 'пароль',
             'user_type' => 'тип пользователя',
+            'staff_role' => 'роль сотрудника',
+            'client_category' => 'категория клиента',
             'status' => 'статус',
         ];
     }

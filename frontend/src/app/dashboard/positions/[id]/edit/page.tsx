@@ -20,7 +20,7 @@ export default function EditMenuItemPage() {
   const [loadingItem, setLoadingItem] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, (user: { user_type?: string; position?: string; staff_role?: string; name?: string; email?: string; id?: number } | null) => {
+  useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, (user: { user_type?: string; staff_role?: string } | null) => {
     return canManageMenu(user || { user_type: '', staff_role: '' });
   }, router);
 

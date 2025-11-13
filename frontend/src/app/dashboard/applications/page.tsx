@@ -86,19 +86,7 @@ export default function ApplicationsPage() {
   const [massAction, setMassAction] = useState<MassAction | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingUser, setEditingUser] = useState<Application | null>(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    user_group: 'client' as 'client' | 'staff',
-    staff_role: 'observer' as 'coordinator' | 'observer',
-    client_category: 'corporate' as 'corporate' | 'one_time',
-    company_name: '',
-    position: '',
-    phone: '',
-    address: '',
-    status: 'active' as 'active' | 'inactive' | 'suspended'
-  });
+  // Form data removed - not needed in applications page
 
   // Quick filters
   const quickFilters: QuickFilter[] = [
@@ -129,13 +117,13 @@ export default function ApplicationsPage() {
   ];
 
   // Auth guard
-  useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', position: '', staff_role: '' }, isCoordinator, router);
+  useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, isCoordinator, router);
 
   // Load applications
   const loadApplications = useCallback(async () => {
     setApplicationsLoading(true);
     try {
-      const result = await makeApiRequest<Application[]>('applications');
+      const result = await makeApiRequest<Application[]>('/applications');
       if (result.success) {
         setApplications(extractApiData(result.data || []));
       } else {
@@ -259,7 +247,7 @@ export default function ApplicationsPage() {
       if (massAction.type === 'status_change' && massAction.status) {
         // Update status for selected applications
         for (const id of applicationIds) {
-          await makeApiRequest(`applications/${id}/status`, {
+          await makeApiRequest(`/applications/${id}/status`, {
             method: 'PUT',
             body: JSON.stringify({ status: massAction.status })
           });
@@ -279,7 +267,7 @@ export default function ApplicationsPage() {
   // Handle application status change
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      const result = await makeApiRequest(`applications/${id}/status`, {
+      const result = await makeApiRequest(`/applications/${id}/status`, {
         method: 'PUT',
         body: JSON.stringify({ status: newStatus })
       });
@@ -299,7 +287,7 @@ export default function ApplicationsPage() {
     if (!confirm('Вы уверены, что хотите удалить эту заявку?')) return;
 
     try {
-      const result = await makeApiRequest(`applications/${id}`, {
+      const result = await makeApiRequest(`/applications/${id}`, {
         method: 'DELETE'
       });
 
@@ -316,7 +304,7 @@ export default function ApplicationsPage() {
   // Handle export
   const handleExport = async () => {
     try {
-      const result = await makeApiRequest('applications/export', {
+      const result = await makeApiRequest('/applications/export', {
         method: 'POST',
         body: JSON.stringify({ 
           ids: Array.from(selectedApplications),
@@ -746,7 +734,7 @@ export default function ApplicationsPage() {
                       </span>
                     </td>
                     <td>
-                      <div style={{ fontWeight: 600, color: '#D4AF37' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--paul-black)' }}>
                         {calculateTotalAmount(app.cart_items) ? `₼${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
                       </div>
                     </td>

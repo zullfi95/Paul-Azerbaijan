@@ -105,8 +105,8 @@ export interface UserCreateRequest {
   name: string;
   email: string;
   password: string;
-  user_group: 'client' | 'staff';
-  staff_role?: 'coordinator' | 'observer' | 'admin' | 'manager';
+  user_type: 'client' | 'staff';
+  staff_role?: 'coordinator' | 'observer' | 'chef' | 'operations_manager';
   client_category?: 'corporate' | 'one_time';
   company_name?: string;
   position?: string;

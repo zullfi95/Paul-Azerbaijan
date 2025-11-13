@@ -27,7 +27,7 @@ interface UserFormData {
   name: string;
   email: string;
   password: string;
-  user_group: 'client' | 'staff';
+  user_type: 'client' | 'staff';
   staff_role: 'coordinator' | 'observer';
   client_category: 'corporate' | 'one_time';
   company_name: string;
@@ -65,7 +65,7 @@ export default function UsersPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive" | "suspended">("all");
-  const [userGroupFilter, setUserGroupFilter] = useState<"all" | "client" | "staff">("all");
+  const [userTypeFilter, setUserTypeFilter] = useState<"all" | "client" | "staff">("all");
   const [viewMode, setViewMode] = useState<"table" | "grid" | "cards">("table");
   const [sortBy, setSortBy] = useState<"name" | "email" | "created_at" | "status">("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -75,7 +75,7 @@ export default function UsersPage() {
     name: '',
     email: '',
     password: '',
-    user_group: 'client',
+    user_type: 'client',
     staff_role: 'observer',
     client_category: 'corporate',
     company_name: '',
@@ -92,7 +92,7 @@ export default function UsersPage() {
   const loadUsers = useCallback(async () => {
     setUsersLoading(true);
     try {
-      const result = await makeApiRequest<User[]>('users');
+      const result = await makeApiRequest<User[]>('/users');
       if (result.success) {
         setUsers(extractApiData(result.data || []));
       } else {
@@ -132,8 +132,8 @@ export default function UsersPage() {
     }
 
     // User group filter
-    if (userGroupFilter !== 'all') {
-      filtered = filtered.filter(u => u.user_type === userGroupFilter);
+    if (userTypeFilter !== "all") {
+      filtered = filtered.filter(u => u.user_type === userTypeFilter);
     }
 
     // Sort
@@ -168,7 +168,7 @@ export default function UsersPage() {
     });
 
     return filtered;
-  }, [users, searchTerm, statusFilter, userGroupFilter, sortBy, sortOrder]);
+  }, [users, searchTerm, statusFilter, userTypeFilter, sortBy, sortOrder]);
 
   // Handle user selection
   const handleUserSelect = (id: number) => {
@@ -203,7 +203,7 @@ export default function UsersPage() {
       name: user.name || '',
       email: user.email || '',
       password: '',
-      user_group: (user.user_type as 'client' | 'staff') || 'client',
+      user_type: user.user_type || 'client',
       staff_role: (user.staff_role as 'coordinator' | 'observer') || 'observer',
       client_category: user.client_category || 'corporate',
       company_name: user.company_name || '',
@@ -222,7 +222,7 @@ export default function UsersPage() {
     try {
       if (editingUser) {
         // Update user
-        const result = await makeApiRequest(`users/${editingUser.id}`, {
+        const result = await makeApiRequest(`/users/${editingUser.id}`, {
           method: 'PUT',
           body: JSON.stringify(formData)
         });
@@ -235,7 +235,7 @@ export default function UsersPage() {
             name: '',
             email: '',
             password: '',
-            user_group: 'client',
+            user_type: 'client',
             staff_role: 'observer',
             client_category: 'corporate',
             company_name: '',
@@ -249,7 +249,7 @@ export default function UsersPage() {
         }
       } else {
         // Create user
-        const result = await makeApiRequest('users', {
+        const result = await makeApiRequest('/users', {
           method: 'POST',
           body: JSON.stringify(formData)
         });
@@ -261,7 +261,7 @@ export default function UsersPage() {
             name: '',
             email: '',
             password: '',
-            user_group: 'client',
+            user_type: 'client',
             staff_role: 'observer',
             client_category: 'corporate',
             company_name: '',
@@ -284,7 +284,7 @@ export default function UsersPage() {
     if (!confirm('Вы уверены, что хотите удалить этого пользователя?')) return;
 
     try {
-      const result = await makeApiRequest(`users/${id}`, {
+      const result = await makeApiRequest(`/users/${id}`, {
         method: 'DELETE'
       });
 
@@ -301,7 +301,7 @@ export default function UsersPage() {
   // Handle status change
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      const result = await makeApiRequest(`users/${id}/status`, {
+      const result = await makeApiRequest(`/users/${id}/status`, {
         method: 'PUT',
         body: JSON.stringify({ status: newStatus })
       });
@@ -362,7 +362,7 @@ export default function UsersPage() {
           className="dashboard-kpi-card"
           role="button"
           tabIndex={0}
-          onClick={() => setUserGroupFilter('client')}
+          onClick={() => setUserTypeFilter('client')}
         >
           <div className="dashboard-kpi-header">
             <UsersIcon size={16} className="dashboard-kpi-icon" style={{ color: '#3B82F6' }} />
@@ -377,7 +377,7 @@ export default function UsersPage() {
           className="dashboard-kpi-card"
           role="button"
           tabIndex={0}
-          onClick={() => setUserGroupFilter('staff')}
+          onClick={() => setUserTypeFilter('staff')}
         >
           <div className="dashboard-kpi-header">
             <UsersIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
@@ -422,8 +422,8 @@ export default function UsersPage() {
         <div className="dashboard-filter-container">
           <FilterIcon size={16} className="dashboard-filter-icon" />
           <select
-            value={userGroupFilter}
-            onChange={(e) => setUserGroupFilter(e.target.value as any)}
+            value={userTypeFilter}
+            onChange={(e) => setUserTypeFilter(e.target.value as any)}
             className="dashboard-filter-select"
             aria-label="Фильтр по группе"
           >
@@ -560,7 +560,7 @@ export default function UsersPage() {
               <div className="empty-icon">👥</div>
               <div className="empty-title">Пользователи не найдены</div>
               <div className="empty-subtitle">
-                {searchTerm || statusFilter !== 'all' || userGroupFilter !== 'all'
+                {searchTerm || statusFilter !== 'all' || userTypeFilter !== 'all'
                   ? 'Попробуйте изменить фильтры поиска' 
                   : 'Пользователи появятся здесь после создания'
                 }
@@ -805,7 +805,7 @@ export default function UsersPage() {
                     name: '',
                     email: '',
                     password: '',
-                    user_group: 'client',
+                    user_type: 'client',
                     staff_role: 'observer',
                     client_category: 'corporate',
                     company_name: '',
@@ -857,8 +857,8 @@ export default function UsersPage() {
                 <div className="form-group">
                   <label className="form-label">Группа *</label>
                   <select
-                    value={formData.user_group}
-                    onChange={(e) => setFormData({ ...formData, user_group: e.target.value as 'client' | 'staff' })}
+                    value={formData.user_type}
+                    onChange={(e) => setFormData({ ...formData, user_type: e.target.value as 'client' | 'staff' })}
                     className="form-select"
                     required
                   >
@@ -867,10 +867,10 @@ export default function UsersPage() {
                   </select>
                 </div>
               </div>
-              {formData.user_group === 'staff' && (
+              {formData.user_type === 'staff' && (
                 <div className="form-row">
                   <div className="form-group">
-                    <label className="form-label">Роль сотрудника *</label>
+                    <label className="form-label">Роль *</label>
                     <select
                       value={formData.staff_role}
                       onChange={(e) => setFormData({ ...formData, staff_role: e.target.value as 'coordinator' | 'observer' })}
@@ -883,7 +883,7 @@ export default function UsersPage() {
                   </div>
                 </div>
               )}
-              {formData.user_group === 'client' && (
+              {formData.user_type === 'client' && (
                 <div className="form-row">
                   <div className="form-group">
                     <label className="form-label">Категория клиента *</label>
@@ -962,7 +962,7 @@ export default function UsersPage() {
                       name: '',
                       email: '',
                       password: '',
-                      user_group: 'client',
+                      user_type: 'client',
                       staff_role: 'observer',
                       client_category: 'corporate',
                       company_name: '',
@@ -986,6 +986,106 @@ export default function UsersPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Slide-over User Preview */}
+      {isSidebarOpen && selectedUser && (
+        <>
+          <div
+            onClick={() => setIsSidebarOpen(false)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', zIndex: 60 }}
+          />
+          <aside
+            role="dialog"
+            aria-label="Просмотр пользователя"
+            style={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              height: '100vh',
+              width: '420px',
+              maxWidth: '90vw',
+              background: '#FFFCF8',
+              boxShadow: '-8px 0 24px rgba(0,0,0,0.12)',
+              zIndex: 61,
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', borderBottom: '1px solid var(--paul-border)' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--paul-black)' }}>{selectedUser.name}</h3>
+              <button onClick={() => setIsSidebarOpen(false)} className="dashboard-action-btn" aria-label="Закрыть">
+                ×
+              </button>
+            </div>
+
+            <div style={{ padding: '16px', overflowY: 'auto' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', rowGap: 8 }}>
+                <div>
+                  <div className="field-label">Email</div>
+                  <div className="field-value">{selectedUser.email}</div>
+                </div>
+                {selectedUser.phone && (
+                  <div>
+                    <div className="field-label">Телефон</div>
+                    <div className="field-value">{selectedUser.phone}</div>
+                  </div>
+                )}
+                {selectedUser.company_name && (
+                  <div>
+                    <div className="field-label">Компания</div>
+                    <div className="field-value">{selectedUser.company_name}</div>
+                  </div>
+                )}
+                {selectedUser.position && (
+                  <div>
+                    <div className="field-label">Должность</div>
+                    <div className="field-value">{selectedUser.position}</div>
+                  </div>
+                )}
+                <div>
+                  <div className="field-label">Группа</div>
+                  <div className="field-value">{selectedUser.user_type === 'staff' ? 'Сотрудник' : 'Клиент'}</div>
+                </div>
+                {selectedUser.user_type === 'staff' && selectedUser.staff_role && (
+                  <div>
+                    <div className="field-label">Роль</div>
+                    <div className="field-value">{staffRoleLabels[selectedUser.staff_role] || selectedUser.staff_role}</div>
+                  </div>
+                )}
+                <div>
+                  <div className="field-label">Статус</div>
+                  <div className="field-value">{statusLabels[selectedUser.status] || selectedUser.status}</div>
+                </div>
+                {selectedUser.address && (
+                  <div>
+                    <div className="field-label">Адрес</div>
+                    <div className="field-value">{selectedUser.address}</div>
+                  </div>
+                )}
+                <div>
+                  <div className="field-label">Создан</div>
+                  <div className="field-value">{selectedUser.created_at ? new Date(selectedUser.created_at).toLocaleDateString('ru-RU') : '—'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 'auto', padding: '12px 16px', borderTop: '1px solid var(--paul-border)', display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => { setIsSidebarOpen(false); handleUserEdit(selectedUser); }}
+                className="dashboard-action-btn"
+              >
+                Редактировать
+              </button>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="dashboard-action-btn"
+              >
+                Закрыть
+              </button>
+            </div>
+          </aside>
+        </>
       )}
     </DashboardLayout>
   );

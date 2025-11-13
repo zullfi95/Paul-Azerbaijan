@@ -179,12 +179,24 @@ export const useOrderForm = () => {
 
                     console.log('👤 Найден клиент:', selectedClient);
                     
+                    // Парсим event_time для извлечения только времени
+                    let deliveryTime = '';
+                    if (app.event_time) {
+                        // event_time может быть в формате "2025-11-20 14:30:00" или "14:30:00"
+                        const timePart = app.event_time.includes(' ') 
+                            ? app.event_time.split(' ')[1]  // Берем вторую часть "14:30:00"
+                            : app.event_time;
+                        // Берем только HH:mm (убираем секунды)
+                        deliveryTime = timePart.substring(0, 5); // "14:30"
+                        console.log('⏰ Извлечено время:', { original: app.event_time, parsed: deliveryTime });
+                    }
+                    
                     // Подставляем ВСЕ поля из заявки
                     const newFormData = {
                         selected_client_id: selectedClient?.id || app.client_id || null,
                         comment: app.message || '',
                         delivery_date: app.event_date || '',
-                        delivery_time: app.event_time || '',
+                        delivery_time: deliveryTime,
                         delivery_address: app.event_address || '',
                         delivery_type: 'delivery' as 'delivery' | 'pickup' | 'buffet',
                         menu_items: app.cart_items || [],

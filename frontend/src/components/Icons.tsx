@@ -305,3 +305,20 @@ export const CalendarIcon: React.FC<IconProps> = ({ size = 20, color = 'currentC
     <line x1="3" y1="10" x2="21" y2="10"></line>
   </svg>
 );
+
+export const CheckIcon: React.FC<IconProps> = ({ size = 20, color = 'currentColor', className = '', style = {} }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke={color} 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className={className}
+    style={style}
+  >
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+);

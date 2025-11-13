@@ -92,16 +92,16 @@ export default function CreateOrderForm() {
                         {/* Application Info */}
                         {application && (
                             <div className={styles.applicationInfo}>
-                                <h3 className={styles.applicationTitle}>Информация о заявке</h3>
+                                <h3 className={styles.applicationTitle}>{t('form.applicationInformation')}</h3>
                                 <div className={styles.applicationContent}>
-                                    <p><strong>Статус:</strong> {application?.status}</p>
-                                    <p><strong>Клиент:</strong> {application?.first_name} {application?.last_name}</p>
-                                    <p><strong>Email:</strong> {application?.email}</p>
-                                    <p><strong>Телефон:</strong> {application?.phone}</p>
-                                    {application?.event_address && <p><strong>Адрес:</strong> {application?.event_address}</p>}
-                                    {application?.event_date && <p><strong>Дата:</strong> {new Date(application?.event_date || '').toLocaleDateString()}</p>}
-                                    {application?.event_time && <p><strong>Время:</strong> {new Date(application?.event_time || '').toLocaleTimeString()}</p>}
-                                    {application?.message && <p><strong>Сообщение:</strong> {application?.message}</p>}
+                                    <p><strong>{t('common.status')}:</strong> {application?.status}</p>
+                                    <p><strong>{t('form.client')}:</strong> {application?.first_name} {application?.last_name}</p>
+                                    <p><strong>{t('checkout.email')}:</strong> {application?.email}</p>
+                                    <p><strong>{t('checkout.phone')}:</strong> {application?.phone}</p>
+                                    {application?.event_address && <p><strong>{t('checkout.eventAddress')}:</strong> {application?.event_address}</p>}
+                                    {application?.event_date && <p><strong>{t('common.date')}:</strong> {new Date(application?.event_date || '').toLocaleDateString()}</p>}
+                                    {application?.event_time && <p><strong>{t('common.time')}:</strong> {new Date(application?.event_time || '').toLocaleTimeString()}</p>}
+                                    {application?.message && <p><strong>{t('checkout.message')}:</strong> {application?.message}</p>}
                                     {application?.cart_items && application?.cart_items?.length && (application?.cart_items?.length ?? 0) > 0 && (
                                     <div>
                                             <p><strong>Запрошенные товары:</strong></p>
@@ -406,20 +406,20 @@ export default function CreateOrderForm() {
                                 <div className={styles.recurringForm}>
                                     <div className={styles.recurringGrid}>
                                         <div>
-                                            <label htmlFor="frequency" className={styles.recurringLabel}>Частота</label>
+                                            <label htmlFor="frequency" className={styles.recurringLabel}>{t('form.recurringFrequency')}</label>
                                             <select
                                                 id="frequency"
                                                 value={formData.recurring_schedule.frequency}
                                                 onChange={(e) => handleRecurringChange('frequency', e.target.value as 'weekly' | 'monthly')}
                                                 className={styles.recurringSelect}
                                             >
-                                                <option value="weekly">Еженедельно</option>
-                                                <option value="monthly">Ежемесячно</option>
+                                                <option value="weekly">{t('form.weekly')}</option>
+                                                <option value="monthly">{t('form.monthly')}</option>
                                             </select>
                                         </div>
 
                                         <div>
-                                            <label htmlFor="recurring_time" className={styles.recurringLabel}>Время регулярной доставки</label>
+                                            <label htmlFor="recurring_time" className={styles.recurringLabel}>{t('form.recurringTime')}</label>
                                             <input
                                                 id="recurring_time"
                                                 type="time"
@@ -430,9 +430,9 @@ export default function CreateOrderForm() {
                                         </div>
                                     </div>
 
-                                    {/* Выбор дней недели */}
+                                    {/* Weekday Selection */}
                                     <div>
-                                        <label className={styles.recurringLabel}>Дни недели</label>
+                                        <label className={styles.recurringLabel}>{t('form.weekdays')}</label>
                                         <div className={styles.daysGrid}>
                                             {[
                                                 { value: 'monday', label: 'Пн' },
@@ -468,13 +468,13 @@ export default function CreateOrderForm() {
                                     </div>
 
                                     <div>
-                                        <label htmlFor="recurring_notes" className={styles.recurringLabel}>Заметки для регулярных заказов</label>
+                                        <label htmlFor="recurring_notes" className={styles.recurringLabel}>{t('form.recurringNotes')}</label>
                                         <textarea
                                             id="recurring_notes"
                                             value={formData.recurring_schedule.notes}
                                             onChange={(e) => handleRecurringChange('notes', e.target.value)}
                                             className={styles.recurringTextarea}
-                                            placeholder="Заметки для регулярных заказов"
+                                            placeholder={t('form.recurringNotesPlaceholder')}
                                             rows={2}
                                         />
                                     </div>
@@ -482,31 +482,31 @@ export default function CreateOrderForm() {
                             )}
                         </div>
 
-                        {/* Дополнительные поля */}
+                        {/* Additional Fields */}
                         <div className={styles.additionalSection}>
-                            <h3 className={styles.additionalTitle}>Дополнительные детали</h3>
+                            <h3 className={styles.additionalTitle}>{t('form.additionalDetails')}</h3>
                             
-                            {/* Особые инструкции */}
+                            {/* Special Instructions */}
                             <div className={styles.formSection}>
                                 <label htmlFor="special_instructions" className={styles.label}>
-                                    Особые инструкции
+                                    {t('form.specialInstructions')}
                                 </label>
                                 <textarea
                                     id="special_instructions"
                                     value={formData.special_instructions}
                                     onChange={(e) => handleInputChange('special_instructions', e.target.value)}
                                     className={styles.textarea}
-                                    placeholder="Любые особые инструкции для этого заказа..."
+                                    placeholder={t('form.specialInstructionsPlaceholder')}
                                     rows={3}
                                 />
                             </div>
 
-                            {/* Ресурсы */}
+                            {/* Resources */}
                             <div className={styles.resourceGrid}>
-                                {/* Необходимое оборудование */}
+                                {/* Equipment */}
                                 <div className={styles.resourceSection}>
                                     <label className={styles.resourceLabel}>
-                                        Оборудование (кол-во)
+                                        {t('form.equipment')}
                                     </label>
                                     <div className={styles.resourceControls}>
                                         <button
@@ -533,10 +533,10 @@ export default function CreateOrderForm() {
                                     </div>
                                 </div>
 
-                                {/* Назначенный персонал */}
+                                {/* Staff */}
                                 <div className={styles.resourceSection}>
                                     <label className={styles.resourceLabel}>
-                                        Персонал (кол-во)
+                                        {t('form.staff')}
                                     </label>
                                     <div className={styles.resourceControls}>
                                         <button
@@ -572,7 +572,7 @@ export default function CreateOrderForm() {
                                 onClick={() => router.back()}
                                 className={styles.backButton}
                             >
-                                Назад
+                                {t('common.back')}
                             </button>
                             <button
                                 type="submit"
@@ -600,7 +600,7 @@ export default function CreateOrderForm() {
                 <div className={styles.previewModal}>
                     <div className={styles.previewModalContent}>
                         <div className={styles.modalHeader}>
-                            <h2 className={styles.modalTitle}>Предварительный просмотр заказа</h2>
+                            <h2 className={styles.modalTitle}>{t('form.previewOrder')}</h2>
                             <button
                                 onClick={() => setShowPreview(false)}
                                 className={styles.modalCloseButton}
@@ -610,31 +610,31 @@ export default function CreateOrderForm() {
                         </div>
 
                         <div className="p-6 space-y-4">
-                            {/* Информация о клиенте */}
+                            {/* Customer Information */}
                             <div className={styles.previewSection}>
-                                <h3 className={styles.previewSectionTitle}>Клиент</h3>
+                                <h3 className={styles.previewSectionTitle}>{t('form.client')}</h3>
                                 <div className={styles.previewSectionContent}>
-                                    <p><strong>{clients.find(c => c.id === formData.selected_client_id)?.name || 'Не выбран'}</strong></p>
-                                    <p>{clients.find(c => c.id === formData.selected_client_id)?.email || 'Не указан'}</p>
-                                    <p>{clients.find(c => c.id === formData.selected_client_id)?.client_category === 'corporate' ? 'Корпоративный' : 'Разовый'}</p>
+                                    <p><strong>{clients.find(c => c.id === formData.selected_client_id)?.name || t('form.notSelected')}</strong></p>
+                                    <p>{clients.find(c => c.id === formData.selected_client_id)?.email || t('form.notSpecified')}</p>
+                                    <p>{clients.find(c => c.id === formData.selected_client_id)?.client_category === 'corporate' ? t('form.corporate') : t('form.onetime')}</p>
                                 </div>
                             </div>
 
-                            {/* Информация о доставке */}
+                            {/* Delivery Information */}
                             <div className={styles.previewSection}>
-                                <h3 className={styles.previewSectionTitle}>Доставка</h3>
+                                <h3 className={styles.previewSectionTitle}>{t('form.deliveryType')}</h3>
                                 <div className={styles.previewSectionContent}>
-                                    <p>Тип: {formData.delivery_type}</p>
-                                    {formData.delivery_date && <p>Дата: {formData.delivery_date}</p>}
-                                    {formData.delivery_time && <p>Время: {formData.delivery_time}</p>}
-                                    {formData.delivery_address && <p>Адрес: {formData.delivery_address}</p>}
+                                    <p>{t('common.status')}: {formData.delivery_type}</p>
+                                    {formData.delivery_date && <p>{t('form.deliveryDate')}: {formData.delivery_date}</p>}
+                                    {formData.delivery_time && <p>{t('form.deliveryTime')}: {formData.delivery_time}</p>}
+                                    {formData.delivery_address && <p>{t('form.deliveryAddress')}: {formData.delivery_address}</p>}
                                 </div>
                             </div>
 
-                            {/* Товары */}
+                            {/* Items */}
                             {formData.menu_items.length > 0 && (
                                 <div className={styles.previewSection}>
-                                    <h3 className={styles.previewSectionTitle}>Товары</h3>
+                                    <h3 className={styles.previewSectionTitle}>{t('form.orderItems')}</h3>
                                     <div className="space-y-2">
                                         {formData.menu_items.map((item) => (
                                             <div key={item.id} className="flex justify-between text-sm">
@@ -646,22 +646,22 @@ export default function CreateOrderForm() {
                                 </div>
                             )}
 
-                            {/* Итоговая сумма */}
+                            {/* Total Summary */}
                             <div className={styles.previewTotalSection}>
-                                <h3 className={styles.previewTotalTitle}>Итоговая сумма</h3>
+                                <h3 className={styles.previewTotalTitle}>{t('checkout.orderSummary')}</h3>
                                 <div className={styles.previewTotalContent}>
                                     <div className={styles.previewTotalRow}>
-                                        <span>Товары:</span>
+                                        <span>{t('form.itemsTotal')}</span>
                                         <span>{formData.menu_items.reduce((sum, item) => sum + (item.quantity * item.price), 0).toFixed(2)} ₼</span>
                                     </div>
                                     {formData.delivery_cost > 0 && (
                                         <div className={styles.previewTotalRow}>
-                                            <span>Доставка:</span>
+                                            <span>{t('form.deliveryCostLabel')}</span>
                                             <span>{formData.delivery_cost.toFixed(2)} ₼</span>
                                         </div>
                                     )}
                                     <div className={`${styles.previewTotalRow} ${styles.total}`}>
-                                        <span>Итого:</span>
+                                        <span>{t('form.total')}</span>
                                         <span>
                                             {(() => {
                                                 const subtotal = formData.menu_items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
@@ -679,13 +679,13 @@ export default function CreateOrderForm() {
                                 onClick={() => setShowPreview(false)}
                                 className={styles.previewCancelButton}
                             >
-                                Отмена
+                                {t('common.cancel')}
                             </button>
                             <button
                                 onClick={handleSubmit}
                                 className={styles.previewConfirmButton}
                             >
-                                Подтвердить заказ
+                                {t('form.confirmOrder')}
                             </button>
                         </div>
                     </div>

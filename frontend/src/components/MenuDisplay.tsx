@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { getApiUrl } from '@/config/api';
 import styles from './MenuDisplay.module.css';
 
@@ -40,6 +41,7 @@ interface MenuDisplayProps {
 
 export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
   const router = useRouter();
+  const t = useTranslations();
   const [menu, setMenu] = useState<MenuCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -137,7 +139,7 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
       {/* Statistics */}
       {menu.length > 0 && (
         <div className={styles.stats}>
-          <strong>Menu Statistics:</strong> {menu.length} categories, {menu.reduce((sum: number, cat: MenuCategory) => sum + (cat.activeMenuItems?.length || 0), 0)} total items
+          <strong>{t('product.menuStatistics')}:</strong> {menu.length} {t('product.categories')}, {menu.reduce((sum: number, cat: MenuCategory) => sum + (cat.activeMenuItems?.length || 0), 0)} {t('product.totalItems')}
         </div>
       )}
 
@@ -146,7 +148,7 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
         <div className={styles.searchInput}>
           <input
             type="text"
-            placeholder="Search menu items..."
+            placeholder={t('product.searchMenu')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -157,7 +159,7 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
             onClick={() => setSelectedCategory(null)}
             className={`${styles.filterButton} ${selectedCategory === null ? styles.active : ''}`}
           >
-            All Categories
+            {t('product.allCategories')}
           </button>
           {menu.filter((cat: MenuCategory) => (cat.activeMenuItems || []).length > 0).map((category: MenuCategory) => (
             <button
@@ -345,7 +347,7 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
                           }
                         }}
                       >
-                        {item.is_available ? 'Add to Cart' : 'Unavailable'}
+                        {item.is_available ? t('product.addToCart') : t('product.outOfStock')}
                       </button>
                     </div>
                     
@@ -358,7 +360,7 @@ export default function MenuDisplay({ organizationId }: MenuDisplayProps) {
                         fontSize: '12px',
                         color: '#92400e'
                       }}>
-                        <strong>Allergens:</strong> {item.allergens.join(', ')}
+                        <strong>{t('product.allergens')}:</strong> {item.allergens.join(', ')}
                       </div>
                     )}
                   </div>

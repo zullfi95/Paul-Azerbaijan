@@ -10,6 +10,13 @@ import { calculateTotalAmountSum, formatTotalAmount } from "../../../utils/numbe
 import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/apiHelpers";
 import { useAuthGuard, canViewCalendar } from "../../../utils/authConstants";
 import DashboardLayout from "../../../components/DashboardLayout";
+import { 
+  RefreshIcon,
+  CalendarIcon,
+  ShoppingBagIcon,
+  FileTextIcon,
+  CheckIcon 
+} from "../../../components/Icons";
 import "../../../styles/dashboard.css";
 import styles from './page.module.css';
 
@@ -65,8 +72,8 @@ export default function CalendarPage() {
     try {
       generateBEOFile(order);
     } catch (error) {
-      console.error('Ошибка при генерации BEO файла:', error);
-      alert('Ошибка при создании BEO файла');
+      console.error('Error generating BEO file:', error);
+      alert(t('calendar.errorCreatingBEO'));
     }
   };
 
@@ -74,7 +81,7 @@ export default function CalendarPage() {
     return (
       <div className="loading-state">
         <div className="loading-spinner"></div>
-        <div className="loading-title">Загрузка...</div>
+        <div className="loading-title">{t('common.loading')}</div>
       </div>
     );
   }
@@ -85,108 +92,117 @@ export default function CalendarPage() {
 
   return (
     <DashboardLayout>
-      {/* Header */}
-      <div className="page-header">
-        <div className="page-header-content">
-          <div className="page-header-main">
-            <div className="page-header-left">
-              <button
-                onClick={() => router.push('/dashboard')}
-                className="back-button"
-              >
-                <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div>
-                <h1 className="page-title">
-                  Календарь заказов
-                </h1>
-                <p className="page-description">
-                  Управление заказами и планирование мероприятий
-                </p>
-              </div>
-            </div>
-
-            <div className="page-actions">
-              <button
-                onClick={loadOrders}
-                disabled={ordersLoading}
-                className={`action-button refresh-button ${ordersLoading ? 'disabled' : ''}`}
-              >
-                {ordersLoading ? 'Обновление...' : 'Обновить'}
-              </button>
-
-              <button
-                onClick={() => router.push('/dashboard/orders/create')}
-                className="action-button primary-button"
-              >
-                + Новый заказ
-              </button>
-            </div>
-          </div>
+      {/* Quick Actions */}
+      <section className="dashboard-quick-actions" style={{ marginBottom: 'var(--space-4)' }}>
+        <div className="dashboard-quick-actions-grid">
+          <button
+            onClick={loadOrders}
+            disabled={ordersLoading}
+            className="dashboard-quick-action-link"
+            style={{
+              opacity: ordersLoading ? 0.6 : 1,
+              cursor: ordersLoading ? 'not-allowed' : 'pointer'
+            }}
+          >
+            {ordersLoading ? t('calendar.refreshing') : t('calendar.refresh')}
+          </button>
+          <button
+            onClick={() => router.push('/dashboard/orders/create')}
+            className="dashboard-quick-action-link"
+            style={{
+              background: 'var(--paul-black)',
+              color: 'var(--paul-white)'
+            }}
+          >
+            + {t('calendar.newOrder')}
+          </button>
         </div>
-      </div>
+      </section>
 
-      {/* Main Content */}
-      <div className="main-content">
-        {/* Статистика */}
-        <div className="dashboard-kpi-grid">
-          <div className="dashboard-kpi-card">
-            <div className="dashboard-kpi-header">
-              <span className="dashboard-kpi-icon">📋</span>
-              <span className="dashboard-kpi-label">Всего заказов</span>
-            </div>
-            <div className="dashboard-kpi-value">
-              {orders.length}
-            </div>
-            <div className="dashboard-kpi-subtitle">
-              В календаре
-            </div>
+      {/* Statistics Cards */}
+      <section className="dashboard-kpi-grid" style={{ marginBottom: 'var(--space-6)' }}>
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <CalendarIcon size={16} className="dashboard-kpi-icon" />
+            <span className="dashboard-kpi-label">{t('calendar.totalOrders')}</span>
           </div>
-
-          <div className="dashboard-kpi-card">
-            <div className="dashboard-kpi-header">
-              <span className="dashboard-kpi-icon status-processing">⏳</span>
-              <span className="dashboard-kpi-label">В обработке</span>
-            </div>
-            <div className="dashboard-kpi-value status-processing">
-              {(orders || []).filter(order => order.status === 'processing').length}
-            </div>
-            <div className="dashboard-kpi-subtitle">
-              Требуют внимания
-            </div>
+          <div className="dashboard-kpi-value">
+            {orders.length}
           </div>
-
-          <div className="dashboard-kpi-card">
-            <div className="dashboard-kpi-header">
-              <span className="dashboard-kpi-icon status-approved">✅</span>
-              <span className="dashboard-kpi-label">Завершенных</span>
-            </div>
-            <div className="dashboard-kpi-value status-approved">
-              {(orders || []).filter(order => order.status === 'completed').length}
-            </div>
-            <div className="dashboard-kpi-subtitle">
-              Выполнено успешно
-            </div>
-          </div>
-
-          <div className="dashboard-kpi-card">
-            <div className="dashboard-kpi-header">
-              <span className="dashboard-kpi-icon">💰</span>
-              <span className="dashboard-kpi-label">Общая сумма</span>
-            </div>
-            <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
-              {calculateTotalAmountSum(orders || []).toFixed(2)}₼
-            </div>
-            <div className="dashboard-kpi-subtitle">
-              Общий оборот
-            </div>
+          <div className="dashboard-kpi-subtitle">
+            {t('calendar.inCalendar')}
           </div>
         </div>
 
-        {/* Календарь */}
-        <div className={styles.calendarContainer}>
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <FileTextIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
+            <span className="dashboard-kpi-label">{t('orders.status.processing')}</span>
+          </div>
+          <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>
+            {(orders || []).filter(order => order.status === 'processing').length}
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            {t('calendar.requireAttention')}
+          </div>
+        </div>
+
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <CheckIcon size={16} className="dashboard-kpi-icon" style={{ color: '#10B981' }} />
+            <span className="dashboard-kpi-label">{t('dashboard.completedOrders')}</span>
+          </div>
+          <div className="dashboard-kpi-value" style={{ color: '#10B981' }}>
+            {(orders || []).filter(order => order.status === 'completed').length}
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            {t('calendar.completedSuccessfully')}
+          </div>
+        </div>
+
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <ShoppingBagIcon size={16} className="dashboard-kpi-icon" style={{ color: '#D4AF37' }} />
+            <span className="dashboard-kpi-label">{t('orders.totalAmount')}</span>
+          </div>
+          <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
+            {calculateTotalAmountSum(orders || []).toFixed(2)}₼
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            {t('calendar.totalRevenue')}
+          </div>
+        </div>
+      </section>
+
+      {/* Календарь */}
+      <div className="dashboard-table-container">
+        <div className="dashboard-table-header">
+          <h2 className="dashboard-table-title">{t('calendar.title')}</h2>
+          <p style={{ 
+            fontSize: 'var(--text-sm)', 
+            color: 'var(--paul-gray)', 
+            marginTop: 'var(--space-1)' 
+          }}>
+            {t('calendar.description')}
+          </p>
+        </div>
+        <div style={{ padding: 'var(--space-4)' }}>
           <OrderCalendar
             orders={orders || []}
             onSelectOrder={handleSelectOrder}
@@ -196,40 +212,58 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {/* Модальное окно создания заказа */}
+      {/* Create Order Modal */}
       {showCreateModal && createDate && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>
-                Создать новый заказ
-              </h3>
+        <div className="dashboard-modal-overlay">
+          <div className="dashboard-modal" style={{ maxWidth: '500px' }}>
+            <div className="dashboard-modal-header">
+              <h2 className="dashboard-modal-title">
+                {t('calendar.createNew')}
+              </h2>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className={styles.modalClose}
+                className="dashboard-modal-close"
               >
-                ×
+                {t('common.close')}
               </button>
             </div>
-            <div className={styles.modalBody}>
-              <p className={styles.dateInfo}>
-                Дата: {createDate.toLocaleDateString('ru-RU')}
-              </p>
-              <div className={styles.modalActions}>
+            <div className="dashboard-modal-content">
+              <div className="dashboard-info-item" style={{ marginBottom: 'var(--space-4)' }}>
+                <div className="dashboard-info-label">{t('common.date')}</div>
+                <div className="dashboard-info-value">
+                  {createDate.toLocaleDateString('ru-RU', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </div>
+              </div>
+              <div style={{ 
+                display: 'flex', 
+                gap: 'var(--space-3)', 
+                justifyContent: 'flex-end',
+                borderTop: '1px solid var(--paul-border)',
+                paddingTop: 'var(--space-4)'
+              }}>
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className={styles.cancelButton}
+                  className="dashboard-action-btn"
                 >
-                  Отмена
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={() => {
                     const dateStr = createDate.toISOString().split('T')[0];
                     router.push(`/dashboard/orders/create?date=${dateStr}`);
                   }}
-                  className={styles.createButton}
+                  className="dashboard-action-btn"
+                  style={{
+                    background: 'var(--paul-black)',
+                    color: 'var(--paul-white)'
+                  }}
                 >
-                  Создать
+                  {t('common.create')}
                 </button>
               </div>
             </div>
@@ -237,63 +271,92 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* Боковая панель с деталями заказа */}
+      {/* Order Details Sidebar */}
       {selectedOrder && (
-        <div className={`${styles.sidebarPreview} ${selectedOrder ? 'open' : ''}`}>
-          <div className={styles.sidebarHeader}>
-            <h3 className={styles.sidebarTitle}>
-              Заказ #{selectedOrder.id}
-            </h3>
-            <button
-              onClick={() => setSelectedOrder(null)}
-              className={styles.sidebarClose}
-            >
-              ×
-            </button>
-          </div>
+        <div className="dashboard-modal-overlay">
+          <div className="dashboard-modal" style={{ maxWidth: '600px' }}>
+            <div className="dashboard-modal-header">
+              <h2 className="dashboard-modal-title">
+                {t('orders.orderNumber')}{selectedOrder.id}
+              </h2>
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="dashboard-modal-close"
+              >
+                {t('common.close')}
+              </button>
+            </div>
 
-          <div className={styles.sidebarBody}>
-            <div className={styles.sidebarSection}>
-              <div className={styles.infoField}>
-                <div className={styles.infoLabel}>Компания:</div>
-                <div className={styles.infoValue}>{selectedOrder.company_name}</div>
+            <div className="dashboard-modal-content">
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(2, 1fr)', 
+                gap: 'var(--space-3)',
+                marginBottom: 'var(--space-4)'
+              }}>
+                <div className="dashboard-info-item">
+                  <div className="dashboard-info-label">{t('calendar.company')}</div>
+                  <div className="dashboard-info-value">{selectedOrder.company_name}</div>
+                </div>
+                <div className="dashboard-info-item">
+                  <div className="dashboard-info-label">{t('common.status')}</div>
+                  <div className="dashboard-info-value">
+                    <span className="dashboard-status-badge">{selectedOrder.status}</span>
+                  </div>
+                </div>
+                <div className="dashboard-info-item">
+                  <div className="dashboard-info-label">{t('orders.deliveryDate')}</div>
+                  <div className="dashboard-info-value">{selectedOrder.delivery_date}</div>
+                </div>
+                {selectedOrder.total_amount && (
+                  <div className="dashboard-info-item">
+                    <div className="dashboard-info-label">{t('common.amount')}</div>
+                    <div className="dashboard-info-value" style={{ color: '#D4AF37', fontWeight: 600 }}>
+                      {formatTotalAmount(selectedOrder.total_amount)} ₼
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className={styles.infoField}>
-                <div className={styles.infoLabel}>Статус:</div>
-                <div className={styles.infoValue}>{selectedOrder.status}</div>
-              </div>
-              <div className={styles.infoField}>
-                <div className={styles.infoLabel}>Дата доставки:</div>
-                <div className={styles.infoValue}>{selectedOrder.delivery_date}</div>
-              </div>
-              {selectedOrder.total_amount && (
-                <div className={styles.infoField}>
-                  <div className={styles.infoLabel}>Сумма:</div>
-                  <div className={styles.infoValue}>
-                    {formatTotalAmount(selectedOrder.total_amount)} ₼
+
+              {selectedOrder.comment && (
+                <div className="dashboard-section-divider">
+                  <h3 className="dashboard-section-title">{t('calendar.comment')}</h3>
+                  <div style={{ 
+                    padding: 'var(--space-3)', 
+                    background: '#F9F9F6', 
+                    borderRadius: 'var(--radius-md)', 
+                    border: '1px solid var(--paul-border)',
+                    color: 'var(--paul-black)',
+                    fontSize: 'var(--text-sm)'
+                  }}>
+                    {selectedOrder.comment}
                   </div>
                 </div>
               )}
-              {selectedOrder.comment && (
-                <div className={styles.infoField}>
-                  <div className={styles.infoLabel}>Комментарий:</div>
-                  <div className={styles.infoValue}>{selectedOrder.comment}</div>
-                </div>
-              )}
 
-              <div className={styles.actionsList}>
+              <div style={{ 
+                display: 'flex', 
+                gap: 'var(--space-2)', 
+                justifyContent: 'flex-end',
+                borderTop: '1px solid var(--paul-border)',
+                paddingTop: 'var(--space-4)',
+                marginTop: 'var(--space-4)'
+              }}>
                 <button
                   onClick={() => handleGenerateBEO(selectedOrder)}
-                  className={styles.actionButton}
+                  className="dashboard-action-btn"
                 >
-                  📄 Скачать BEO файл
+                  {t('calendar.createBEO')}
                 </button>
-                
                 <button
                   onClick={() => router.push(`/dashboard/orders/${selectedOrder.id}/edit`)}
-                  className={styles.actionButton}
+                  className="dashboard-action-btn"
+                  style={{
+                    background: 'var(--paul-black)',
+                    color: 'var(--paul-white)'
+                  }}
                 >
-                  ✏️ Редактировать
+                  {t('common.edit')}
                 </button>
               </div>
             </div>

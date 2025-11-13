@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FeaturesSection from '@/components/FeaturesSection';
@@ -10,6 +11,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function ClickCollectPage() {
   const isMobile = useIsMobile();
+  const t = useTranslations();
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FFFCF8' }}>
@@ -29,7 +31,7 @@ export default function ClickCollectPage() {
               fontFamily: 'serif',
               letterSpacing: '-0.5px'
             }}>
-              Click & Collect
+              {t('pages.clickCollect.title')}
             </h1>
             <p style={{
               fontSize: isMobile ? '16px' : '18px',
@@ -37,7 +39,7 @@ export default function ClickCollectPage() {
               marginBottom: isMobile ? '12px' : '16px',
               fontWeight: '500'
             }}>
-              Order Online for Delivery
+              {t('pages.clickCollect.subtitle')}
             </p>
             <p style={{
               fontSize: isMobile ? '14px' : '16px',
@@ -47,65 +49,7 @@ export default function ClickCollectPage() {
               margin: '0 auto',
               fontWeight: '500'
             }}>
-              {isMobile ? (
-                <>
-                  With Click & Collect services, you can place your order on<br />
-                  our website and pick it up at the nearest PAUL location. Be<br />
-                  sure to place your order in advance.<br />
-                  You can find all the PAUL restaurants in Baku<br />
-                  on the{' '}
-                  <a 
-                    href="/locations" 
-                    style={{ 
-                      color: '#000', 
-                      textDecoration: 'underline',
-                      fontWeight: '500'
-                    }}
-                  >
-                    Find a PAUL
-                  </a>{' '}
-                  page.<br />
-                  If you have any questions, feel free to{' '}
-                  <a 
-                    href="/contact" 
-                    style={{ 
-                      color: '#000', 
-                      textDecoration: 'underline',
-                      fontWeight: '500'
-                    }}
-                  >
-                    contact us
-                  </a>.
-                </>
-              ) : (
-                <>
-                  With Click & Collect services, you can place your order on our website and<br />
-                  pick it up at the nearest PAUL location. Be sure to place your order in advance.<br />
-                  You can find all the PAUL restaurants in Baku on the{' '}
-                  <a 
-                    href="/locations" 
-                    style={{ 
-                      color: '#000', 
-                      textDecoration: 'underline',
-                      fontWeight: '500'
-                    }}
-                  >
-                    &apos;Find a PAUL&apos;
-                  </a>{' '}
-                  page.<br />
-                  If you have any questions, feel free to{' '}
-                  <a 
-                    href="/contact" 
-                    style={{ 
-                      color: '#000', 
-                      textDecoration: 'underline',
-                      fontWeight: '500'
-                    }}
-                  >
-                    contact us
-                  </a>.
-                </>
-              )}
+              {t('pages.clickCollect.description')}
             </p>
           </div>
 

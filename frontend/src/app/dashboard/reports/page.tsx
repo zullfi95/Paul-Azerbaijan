@@ -9,6 +9,14 @@ import { useAuthGuard, canViewCalendar } from "../../../utils/authConstants";
 import { generateOrdersReport } from "../../../utils/beoGenerator";
 import DashboardLayout from "../../../components/DashboardLayout";
 import { formatTotalAmount } from "../../../utils/numberUtils";
+import { 
+  ChartBarIcon,
+  FileTextIcon,
+  ShoppingBagIcon,
+  CheckIcon,
+  FilterIcon 
+} from "../../../components/Icons";
+import "../../../styles/dashboard.css";
 
 interface ReportFilters {
   startDate: string;
@@ -175,144 +183,78 @@ export default function ReportsPage() {
 
   return (
     <DashboardLayout>
-    <div style={{ minHeight: '100vh', backgroundColor: '#F9F9F6' }}>
-      {/* Header */}
-      <div style={{
-        backgroundColor: 'white',
-        borderBottom: '1px solid #e5e7eb',
-        padding: '1rem 2rem'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          <div>
-            <h1 style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: '#1A1A1A',
-              fontFamily: 'Playfair Display, serif',
-              marginBottom: '0.5rem'
-            }}>
-              Отчеты и аналитика
-            </h1>
-            <p style={{ color: '#4A4A4A', fontSize: '1rem' }}>
-              Анализ заказов, заявок и финансовых показателей
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <button
-              onClick={handleExportPDF}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: '#D4AF37',
-                color: '#1A1A1A',
-                border: 'none',
-                borderRadius: '0.375rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: '500'
-              }}
-            >
-              📊 Экспорт PDF
-            </button>
-
-            <button
-              onClick={() => router.push('/dashboard')}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: 'transparent',
-                color: '#1A1A1A',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.375rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem'
-              }}
-            >
-              ← Назад
-            </button>
-          </div>
+      {/* Quick Actions */}
+      <section className="dashboard-quick-actions" style={{ marginBottom: 'var(--space-4)' }}>
+        <div className="dashboard-quick-actions-grid">
+          <button
+            onClick={handleExportPDF}
+            className="dashboard-quick-action-link"
+            style={{
+              background: '#D4AF37',
+              borderColor: '#D4AF37',
+              color: 'var(--paul-white)'
+            }}
+          >
+            Экспорт PDF
+          </button>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="dashboard-quick-action-link"
+          >
+            ← Назад к дашборду
+          </button>
         </div>
-      </div>
+      </section>
 
       {/* Filters */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '2rem 2rem 1rem'
-      }}>
-        <div style={{
-          backgroundColor: 'white',
-          padding: '1.5rem',
-          borderRadius: '0.5rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          marginBottom: '2rem'
-        }}>
-          <h3 style={{
-            fontSize: '1.25rem',
-            fontWeight: 'bold',
-            color: '#1A1A1A',
-            marginBottom: '1rem'
-          }}>
-            Фильтры отчета
-          </h3>
-          
+      <section className="dashboard-table-container" style={{ marginBottom: 'var(--space-6)' }}>
+        <div className="dashboard-table-header">
+          <div>
+            <h2 className="dashboard-table-title">Фильтры отчета</h2>
+            <p style={{ 
+              fontSize: 'var(--text-sm)', 
+              color: 'var(--paul-gray)', 
+              marginTop: 'var(--space-1)' 
+            }}>
+              Настройте параметры для генерации отчета
+            </p>
+          </div>
+        </div>
+        <div style={{ padding: 'var(--space-4)' }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '1rem'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 'var(--space-4)'
           }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-                Дата начала
-              </label>
+            <div className="dashboard-info-item">
+              <label className="dashboard-info-label">Дата начала</label>
               <input
                 type="date"
                 value={filters.startDate}
                 onChange={(e) => setFilters(prev => ({ ...prev, startDate: e.target.value }))}
-                style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.375rem'
-                }}
+                className="dashboard-search-input"
+                style={{ minHeight: '40px' }}
               />
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-                Дата окончания
-              </label>
+            <div className="dashboard-info-item">
+              <label className="dashboard-info-label">Дата окончания</label>
               <input
                 type="date"
                 value={filters.endDate}
                 onChange={(e) => setFilters(prev => ({ ...prev, endDate: e.target.value }))}
-                style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.375rem'
-                }}
+                className="dashboard-search-input"
+                style={{ minHeight: '40px' }}
               />
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-                Статус заказа
-              </label>
+            <div className="dashboard-info-item">
+              <label className="dashboard-info-label">Статус заказа</label>
               <select
                 value={filters.status}
                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.375rem'
-                }}
+                className="dashboard-filter-select"
+                style={{ minHeight: '40px' }}
               >
                 <option value="all">Все статусы</option>
                 <option value="draft">Черновик</option>
@@ -323,19 +265,13 @@ export default function ReportsPage() {
               </select>
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-                Тип клиента
-              </label>
+            <div className="dashboard-info-item">
+              <label className="dashboard-info-label">Тип клиента</label>
               <select
                 value={filters.clientType}
                 onChange={(e) => setFilters(prev => ({ ...prev, clientType: e.target.value }))}
-                style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.375rem'
-                }}
+                className="dashboard-filter-select"
+                style={{ minHeight: '40px' }}
               >
                 <option value="all">Все типы</option>
                 <option value="corporate">Корпоративные</option>
@@ -344,224 +280,232 @@ export default function ReportsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Report Content */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '0 2rem 2rem'
-      }}>
-        {loading ? (
+      {loading ? (
+        <div style={{ 
+          padding: '60px', 
+          textAlign: 'center',
+          color: 'var(--paul-gray)'
+        }}>
           <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '400px'
+            width: '60px',
+            height: '60px',
+            border: '4px solid #f1f5f9',
+            borderTop: '4px solid var(--paul-black)',
+            borderRadius: '50%',
+            margin: '0 auto 24px',
+            animation: 'spin 1.2s linear infinite'
+          }}></div>
+          <div style={{ 
+            fontSize: '16px', 
+            fontWeight: 600, 
+            color: 'var(--paul-black)',
+            marginBottom: '8px'
           }}>
-            <div>Загрузка данных...</div>
+            Загрузка данных...
           </div>
-        ) : reportData ? (
-          <>
-            {/* Основные показатели */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1rem',
-              marginBottom: '2rem'
-            }}>
-              <div style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.5rem',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-              }}>
-                <h3 style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#1A1A1A',
-                  marginBottom: '0.5rem'
-                }}>
-                  {reportData.totalOrders}
-                </h3>
-                <p style={{ color: '#4A4A4A', fontSize: '0.875rem' }}>
-                  Всего заказов
-                </p>
+        </div>
+      ) : reportData ? (
+        <>
+          {/* Основные показатели */}
+          <section className="dashboard-kpi-grid" style={{ marginBottom: 'var(--space-6)' }}>
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <ShoppingBagIcon size={16} className="dashboard-kpi-icon" />
+                <span className="dashboard-kpi-label">Всего заказов</span>
               </div>
-
-              <div style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.5rem',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-              }}>
-                <h3 style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#10B981',
-                  marginBottom: '0.5rem'
-                }}>
-                  {reportData.completedOrders}
-                </h3>
-                <p style={{ color: '#4A4A4A', fontSize: '0.875rem' }}>
-                  Завершенных заказов
-                </p>
+              <div className="dashboard-kpi-value">
+                {reportData.totalOrders}
               </div>
-
-              <div style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.5rem',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-              }}>
-                <h3 style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#D4AF37',
-                  marginBottom: '0.5rem'
-                }}>
-                  {formatTotalAmount(reportData.totalRevenue)} ₼
-                </h3>
-                <p style={{ color: '#4A4A4A', fontSize: '0.875rem' }}>
-                  Общая выручка
-                </p>
-              </div>
-
-              <div style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.5rem',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-              }}>
-                <h3 style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: '#F59E0B',
-                  marginBottom: '0.5rem'
-                }}>
-                  {formatTotalAmount(reportData.averageOrderValue)} ₼
-                </h3>
-                <p style={{ color: '#4A4A4A', fontSize: '0.875rem' }}>
-                  Средний чек
-                </p>
+              <div className="dashboard-kpi-subtitle">
+                За выбранный период
               </div>
             </div>
 
-            {/* Детальная аналитика */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '1rem'
-            }}>
-              {/* Заказы по статусам */}
-              <div style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.5rem',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-              }}>
-                <h3 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: 'bold',
-                  color: '#1A1A1A',
-                  marginBottom: '1rem'
-                }}>
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <CheckIcon size={16} className="dashboard-kpi-icon" style={{ color: '#10B981' }} />
+                <span className="dashboard-kpi-label">Завершено</span>
+              </div>
+              <div className="dashboard-kpi-value" style={{ color: '#10B981' }}>
+                {reportData.completedOrders}
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                Успешно выполнено
+              </div>
+            </div>
+
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <ChartBarIcon size={16} className="dashboard-kpi-icon" style={{ color: '#D4AF37' }} />
+                <span className="dashboard-kpi-label">Общая выручка</span>
+              </div>
+              <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
+                {formatTotalAmount(reportData.totalRevenue)} ₼
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                Доход за период
+              </div>
+            </div>
+
+            <div className="dashboard-kpi-card">
+              <div className="dashboard-kpi-header">
+                <FileTextIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
+                <span className="dashboard-kpi-label">Средний чек</span>
+              </div>
+              <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>
+                {formatTotalAmount(reportData.averageOrderValue)} ₼
+              </div>
+              <div className="dashboard-kpi-subtitle">
+                В среднем на заказ
+              </div>
+            </div>
+          </section>
+
+          {/* Детальная аналитика */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: 'var(--space-4)'
+          }}>
+            {/* Заказы по статусам */}
+            <div className="dashboard-table-container">
+              <div className="dashboard-table-header">
+                <h3 className="dashboard-table-title" style={{ fontSize: 'var(--text-lg)' }}>
                   Заказы по статусам
                 </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              </div>
+              <div style={{ padding: 'var(--space-4)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                   {Object.entries(reportData.ordersByStatus).map(([status, count]) => (
                     <div key={status} style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      padding: '0.5rem',
-                      backgroundColor: '#F9F9F6',
-                      borderRadius: '0.25rem'
+                      alignItems: 'center',
+                      padding: 'var(--space-3)',
+                      background: 'linear-gradient(90deg, var(--paul-subtle-beige) 0%, var(--paul-white) 100%)',
+                      borderRadius: 'var(--radius-md)',
+                      border: '1px solid var(--paul-border)'
                     }}>
-                      <span style={{ textTransform: 'capitalize' }}>{status}</span>
-                      <span style={{ fontWeight: 'bold' }}>{count}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Заказы по типам клиентов */}
-              <div style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.5rem',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-              }}>
-                <h3 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: 'bold',
-                  color: '#1A1A1A',
-                  marginBottom: '1rem'
-                }}>
-                  Заказы по типам клиентов
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {Object.entries(reportData.ordersByClientType).map(([type, count]) => (
-                    <div key={type} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      padding: '0.5rem',
-                      backgroundColor: '#F9F9F6',
-                      borderRadius: '0.25rem'
-                    }}>
-                      <span style={{ textTransform: 'capitalize' }}>
-                        {type === 'corporate' ? 'Корпоративные' : 
-                         type === 'one_time' ? 'Разовые' : type}
-                      </span>
-                      <span style={{ fontWeight: 'bold' }}>{count}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Заказы по месяцам */}
-              <div style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.5rem',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-              }}>
-                <h3 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: 'bold',
-                  color: '#1A1A1A',
-                  marginBottom: '1rem'
-                }}>
-                  Заказы по месяцам
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {Object.entries(reportData.ordersByMonth).map(([month, count]) => (
-                    <div key={month} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      padding: '0.5rem',
-                      backgroundColor: '#F9F9F6',
-                      borderRadius: '0.25rem'
-                    }}>
-                      <span>{month}</span>
-                      <span style={{ fontWeight: 'bold' }}>{count}</span>
+                      <span style={{ 
+                        textTransform: 'capitalize',
+                        color: 'var(--paul-black)',
+                        fontSize: 'var(--text-sm)',
+                        fontWeight: 500
+                      }}>{status}</span>
+                      <span style={{ 
+                        fontWeight: 700,
+                        color: 'var(--paul-black)',
+                        fontSize: 'var(--text-lg)'
+                      }}>{count}</span>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
-          </>
-        ) : (
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '400px'
-          }}>
-            <div>Нет данных для отображения</div>
+
+            {/* Заказы по типам клиентов */}
+            <div className="dashboard-table-container">
+              <div className="dashboard-table-header">
+                <h3 className="dashboard-table-title" style={{ fontSize: 'var(--text-lg)' }}>
+                  Заказы по типам клиентов
+                </h3>
+              </div>
+              <div style={{ padding: 'var(--space-4)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                  {Object.entries(reportData.ordersByClientType).map(([type, count]) => (
+                    <div key={type} style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: 'var(--space-3)',
+                      background: 'linear-gradient(90deg, var(--paul-subtle-beige) 0%, var(--paul-white) 100%)',
+                      borderRadius: 'var(--radius-md)',
+                      border: '1px solid var(--paul-border)'
+                    }}>
+                      <span style={{ 
+                        color: 'var(--paul-black)',
+                        fontSize: 'var(--text-sm)',
+                        fontWeight: 500
+                      }}>
+                        {type === 'corporate' ? 'Корпоративные' : 
+                         type === 'one_time' ? 'Разовые' : type}
+                      </span>
+                      <span style={{ 
+                        fontWeight: 700,
+                        color: 'var(--paul-black)',
+                        fontSize: 'var(--text-lg)'
+                      }}>{count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Заказы по месяцам */}
+            <div className="dashboard-table-container">
+              <div className="dashboard-table-header">
+                <h3 className="dashboard-table-title" style={{ fontSize: 'var(--text-lg)' }}>
+                  Заказы по месяцам
+                </h3>
+              </div>
+              <div style={{ padding: 'var(--space-4)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                  {Object.entries(reportData.ordersByMonth).map(([month, count]) => (
+                    <div key={month} style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: 'var(--space-3)',
+                      background: 'linear-gradient(90deg, var(--paul-subtle-beige) 0%, var(--paul-white) 100%)',
+                      borderRadius: 'var(--radius-md)',
+                      border: '1px solid var(--paul-border)'
+                    }}>
+                      <span style={{ 
+                        color: 'var(--paul-black)',
+                        fontSize: 'var(--text-sm)',
+                        fontWeight: 500
+                      }}>{month}</span>
+                      <span style={{ 
+                        fontWeight: 700,
+                        color: 'var(--paul-black)',
+                        fontSize: 'var(--text-lg)'
+                      }}>{count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-    </div>
+        </>
+      ) : (
+        <div style={{ 
+          padding: '60px', 
+          textAlign: 'center',
+          color: 'var(--paul-gray)'
+        }}>
+          <div style={{ 
+            fontSize: '64px', 
+            marginBottom: '20px', 
+            opacity: 0.6 
+          }}>
+            📊
+          </div>
+          <div style={{ 
+            fontSize: '18px', 
+            fontWeight: 600, 
+            color: 'var(--paul-black)',
+            marginBottom: '8px'
+          }}>
+            Нет данных для отображения
+          </div>
+          <div style={{ fontSize: '14px', color: 'var(--paul-gray)' }}>
+            Измените параметры фильтров для получения отчета
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

@@ -18,6 +18,8 @@ import {
   PlusIcon,
   XIcon,
   BookOpenIcon,
+  CheckIcon,
+  ShoppingBagIcon,
   ChartBarIcon
 } from "@/components/Icons";
 import "@/styles/dashboard.css";
@@ -109,6 +111,16 @@ export default function PositionsPage() {
     }
   };
 
+  const stats = useMemo(() => {
+    const items = menuItems?.data || [];
+    return {
+      total: items.length,
+      active: items.filter(i => i.is_active).length,
+      available: items.filter(i => i.is_available).length,
+      categories: categories.length
+    };
+  }, [menuItems, categories]);
+
   if (isLoading || !isAuthenticated || !user || !canManageMenu(user)) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#fafafa" }}>
@@ -119,19 +131,129 @@ export default function PositionsPage() {
 
   return (
     <DashboardLayout>
-      <div className="dashboard-content-grid">
-        <section className="dashboard-table-container">
-          <div className="dashboard-table-header">
-            <h1 className="dashboard-table-title">Управление позициями меню</h1>
-            <button
-              onClick={() => router.push("/dashboard/positions/create")}
-              className="dashboard-action-btn"
-              aria-label="Создать новую позицию"
-            >
-              <PlusIcon size={18} />
-              <span>Создать новую позицию</span>
-            </button>
+      {/* Quick Actions */}
+      <section className="dashboard-quick-actions" style={{ marginBottom: 'var(--space-4)' }}>
+        <div className="dashboard-quick-actions-grid">
+          <button
+            onClick={() => router.push("/dashboard/positions/create")}
+            className="dashboard-quick-action-link"
+            style={{
+              background: 'var(--paul-black)',
+              color: 'var(--paul-white)'
+            }}
+          >
+            + Создать позицию
+          </button>
+          <button
+            onClick={() => {
+              setSearchTerm("");
+              setSelectedCategory("all");
+              setCurrentPage(1);
+              loadMenuItems();
+            }}
+            className="dashboard-quick-action-link"
+          >
+            Обновить список
+          </button>
+        </div>
+      </section>
+
+      {/* Statistics Cards */}
+      <section className="dashboard-kpi-grid" style={{ marginBottom: 'var(--space-6)' }}>
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <BookOpenIcon size={16} className="dashboard-kpi-icon" />
+            <span className="dashboard-kpi-label">Всего позиций</span>
           </div>
+          <div className="dashboard-kpi-value">
+            {stats.total}
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            В меню
+          </div>
+        </div>
+
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <CheckIcon size={16} className="dashboard-kpi-icon" style={{ color: '#10B981' }} />
+            <span className="dashboard-kpi-label">Активные</span>
+          </div>
+          <div className="dashboard-kpi-value" style={{ color: '#10B981' }}>
+            {stats.active}
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            Опубликованные
+          </div>
+        </div>
+
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <ShoppingBagIcon size={16} className="dashboard-kpi-icon" style={{ color: '#3B82F6' }} />
+            <span className="dashboard-kpi-label">Доступные</span>
+          </div>
+          <div className="dashboard-kpi-value" style={{ color: '#3B82F6' }}>
+            {stats.available}
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            В наличии
+          </div>
+        </div>
+
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <ChartBarIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
+            <span className="dashboard-kpi-label">Категории</span>
+          </div>
+          <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>
+            {stats.categories}
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            Групп меню
+          </div>
+        </div>
+      </section>
+
+      <section className="dashboard-table-container">
+        <div className="dashboard-table-header">
+          <div>
+            <h2 className="dashboard-table-title">Позиции меню</h2>
+            <p style={{ 
+              fontSize: 'var(--text-sm)', 
+              color: 'var(--paul-gray)', 
+              marginTop: 'var(--space-1)' 
+            }}>
+              Управление товарами в меню
+            </p>
+          </div>
+          <button
+            onClick={() => router.push("/dashboard/positions/create")}
+            className="dashboard-action-btn"
+            style={{
+              background: 'var(--paul-black)',
+              color: 'var(--paul-white)'
+            }}
+            aria-label="Создать новую позицию"
+          >
+            <PlusIcon size={14} />
+            <span>Создать</span>
+          </button>
+        </div>
 
           <div className="dashboard-filters" style={{ padding: 'var(--space-4)'}}>
             <div className="dashboard-search-container">
@@ -194,7 +316,11 @@ export default function PositionsPage() {
               <tbody>
                 {loading ? (
                   Array.from({ length: 5 }).map((_, index) => (
-                    <SkeletonTableRow key={`skeleton-${index}`} cols={7} />
+                    <tr key={`skeleton-${index}`}>
+                      <td colSpan={7}>
+                        <SkeletonTableRow />
+                      </td>
+                    </tr>
                   ))
                 ) : error ? (
                   <tr>
@@ -273,7 +399,7 @@ export default function PositionsPage() {
             </div>
           )}
         </section>
-      </div>
+
       <SkeletonStyles />
     </DashboardLayout>
   );

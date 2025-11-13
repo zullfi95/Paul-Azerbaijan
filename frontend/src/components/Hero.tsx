@@ -3,64 +3,54 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
 import './Hero.css';
 
-interface Slide {
-  id: number;
-  title: string;
-  titleBold: string;
-  titleNormal: string;
-  description: string;
-  image: string;
-  imageAlt: string;
-  buttonText: string;
-  buttonLink: string;
-}
-
-const slides: Slide[] = [
-  {
-    id: 1,
-    title: "PAUL Catering",
-    titleBold: "PAUL",
-    titleNormal: "Catering",
-    description: "Discover the delightful world of our bakery, where every bite is a taste of happiness!",
-    image: "/images/hero-bread.jpg",
-    imageAlt: "Fresh artisan bread",
-    buttonText: "Catering",
-    buttonLink: "/catering"
-  },
-  {
-    id: 2,
-    title: "PAUL Bakery",
-    titleBold: "PAUL",
-    titleNormal: "Bakery",
-    description: "Experience the art of traditional French baking with our premium selection of pastries and breads.",
-    image: "/images/cakeHero.jpg",
-    imageAlt: "Delicious French pastries",
-    buttonText: "Menu",
-    buttonLink: "/cakes"
-  },
-  {
-    id: 3,
-    title: "PAUL Stores",
-    titleBold: "PAUL",
-    titleNormal: "Stores",
-    description: "Visit our charming locations and immerse yourself in the authentic French bakery experience.",
-    image: "/images/cakes.jpg",
-    imageAlt: "PAUL bakery store interior",
-    buttonText: "Find Store",
-    buttonLink: "/locations"
-  }
-];
-
 const Hero: React.FC = () => {
   const router = useRouter();
+  const t = useTranslations('hero');
   const isMobile = useIsMobile();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const slides = [
+    {
+      id: 1,
+      title: t('catering.title'),
+      titleBold: "PAUL",
+      titleNormal: t('catering.title').replace('PAUL ', ''),
+      description: t('catering.description'),
+      image: "/images/hero-bread.jpg",
+      imageAlt: "Fresh artisan bread",
+      buttonText: t('catering.button'),
+      buttonLink: "/catering"
+    },
+    {
+      id: 2,
+      title: t('bakery.title'),
+      titleBold: "PAUL",
+      titleNormal: t('bakery.title').replace('PAUL ', ''),
+      description: t('bakery.description'),
+      image: "/images/cakeHero.jpg",
+      imageAlt: "Delicious French pastries",
+      buttonText: t('bakery.button'),
+      buttonLink: "/cakes"
+    },
+    {
+      id: 3,
+      title: t('stores.title'),
+      titleBold: "PAUL",
+      titleNormal: t('stores.title').replace('PAUL ', ''),
+      description: t('stores.description'),
+      image: "/images/cakes.jpg",
+      imageAlt: "PAUL bakery store interior",
+      buttonText: t('stores.button'),
+      buttonLink: "/locations"
+    }
+  ];
 
   const currentSlideData = slides[currentSlide];
 

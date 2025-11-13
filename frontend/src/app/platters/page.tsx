@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
@@ -226,9 +227,10 @@ const platters: Platter[] = [
 
 export default function PlattersPage() {
   const router = useRouter();
+  const t = useTranslations();
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
-  const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
+  const [visibleItems, setVisibleItems] = useState(8);
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { showNotification } = useNotification();
@@ -265,7 +267,7 @@ export default function PlattersPage() {
       isSet: item.isSet,
       persons: item.persons
     });
-    showNotification(`${item.name} səbətə əlavə edildi`);
+    showNotification(t('cart.itemAdded'));
     openCartModal();
   };
 
@@ -296,7 +298,7 @@ export default function PlattersPage() {
             <Breadcrumbs 
               items={[
                 { label: 'Home', href: '/' },
-                { label: 'Platters', isActive: true }
+                { label: t('pages.platters.breadcrumb'), isActive: true }
               ]}
             />
           </div>
@@ -310,11 +312,11 @@ export default function PlattersPage() {
           <div className="container-paul">
             <div className={styles.pageHeaderContent}>
               <h1 className={styles.pageTitle}>
-                 Platters
-              </h1>
+                 {t('pages.platters.title')}
+                </h1>
               <button className={styles.filterButton}
 >
-                Filter
+                {t('common.filter')}
                 <span className={styles.filterButtonIcon}>⋯</span>
                       </button>
             </div>
@@ -375,7 +377,7 @@ export default function PlattersPage() {
                   className={styles.viewMoreButton}
                   onClick={loadMoreItems}
                 >
-                  View More
+                  {t('pages.cakes.viewMore')}
                 </button>
               </div>
             )}

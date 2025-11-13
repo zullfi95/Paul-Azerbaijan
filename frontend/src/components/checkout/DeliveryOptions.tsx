@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { getMinOrderDate } from '../../utils/timeValidations';
 import styles from './DeliveryOptions.module.css';
 
@@ -19,7 +20,7 @@ interface DeliveryOptionsProps {
 }
 
 export default function DeliveryOptions({ formData, errors, onInputChange }: DeliveryOptionsProps) {
-  // const [showCalendar] = useState(true); // Не используется
+  const t = useTranslations('checkout');
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(
     formData.deliveryDate ? new Date(formData.deliveryDate) : null

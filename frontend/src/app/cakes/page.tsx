@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
@@ -276,9 +277,10 @@ const cakes: Cake[] = [
 
 export default function CakesPage() {
   const router = useRouter();
+  const t = useTranslations();
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
-  const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
+  const [visibleItems, setVisibleItems] = useState(8);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 100 });
   const { addItem } = useCart();
@@ -333,7 +335,7 @@ export default function CakesPage() {
       isSet: cake.isSet,
       persons: cake.persons
     });
-    showNotification(`${cake.name} səbətə əlavə edildi`);
+    showNotification(t('cart.itemAdded'));
     openCartModal();
   };
 
@@ -367,7 +369,7 @@ export default function CakesPage() {
             <Breadcrumbs 
               items={[
                 { label: 'Home', href: '/' },
-                { label: 'Cakes', isActive: true }
+                { label: t('pages.cakes.breadcrumb'), isActive: true }
               ]}
             />
           </div>
@@ -380,21 +382,21 @@ export default function CakesPage() {
         <div className={styles.pageHeader}>
           <div className="container-paul">
             <div className={styles.pageHeaderContent}>
-              <h1 className={styles.pageTitle}>Cakes & Pies</h1>
+              <h1 className={styles.pageTitle}>{t('pages.cakes.title')}</h1>
               
               <div className={styles.filterContainer} data-filter-menu>
                 <button 
                   className={styles.filterButton}
                   onClick={() => setShowFilterMenu(!showFilterMenu)}
                 >
-                  Filter
+                  {t('common.filter')}
                   <span className={styles.filterButtonIcon}>⋯</span>
                 </button>
                 
                 {showFilterMenu && (
                   <div className={styles.filterMenu}>
                     <div className={styles.filterSection}>
-                      <h4>Price Range</h4>
+                      <h4>{t('pages.cakes.priceRange')}</h4>
                       <div className={styles.priceRange}>
                         <input
                           type="range"
@@ -409,10 +411,10 @@ export default function CakesPage() {
                     
                     <div className={styles.filterActions}>
                       <button onClick={clearFilters} className={styles.clearButton}>
-                        Clear All
+                        {t('pages.cakes.clearAll')}
                       </button>
                       <button onClick={() => setShowFilterMenu(false)} className={styles.applyButton}>
-                        Apply
+                        {t('pages.cakes.apply')}
                       </button>
                     </div>
                   </div>
@@ -475,7 +477,7 @@ export default function CakesPage() {
                   className={styles.viewMoreButton}
                   onClick={loadMoreItems}
                 >
-                  View More
+                  {t('pages.cakes.viewMore')}
                 </button>
               </div>
             )}

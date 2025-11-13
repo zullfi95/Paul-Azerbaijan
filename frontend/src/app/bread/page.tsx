@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
@@ -166,9 +167,10 @@ const bread: Bread[] = [
 
 export default function BreadPage() {
   const router = useRouter();
+  const t = useTranslations();
   const [sortBy] = useState('name');
   const [showSortMenu, setShowSortMenu] = useState(false);
-  const [visibleItems, setVisibleItems] = useState(8); // Показываем первые 8 элементов
+  const [visibleItems, setVisibleItems] = useState(8);
   const { addItem } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { showNotification } = useNotification();
@@ -205,7 +207,7 @@ export default function BreadPage() {
       isSet: item.isSet,
       persons: item.persons
     });
-    showNotification(`${item.name} səbətə əlavə edildi`);
+    showNotification(t('cart.itemAdded'));
     openCartModal();
   };
 
@@ -236,7 +238,7 @@ export default function BreadPage() {
             <Breadcrumbs 
               items={[
                 { label: 'Home', href: '/' },
-                { label: 'Bread', isActive: true }
+                { label: t('pages.bread.breadcrumb'), isActive: true }
               ]}
             />
           </div>
@@ -249,11 +251,11 @@ export default function BreadPage() {
           <div className="container-paul">
             <div className={styles.pageHeaderContent}>
               <h1 className={styles.pageTitle}>
-                Breads
+                {t('pages.bread.title')}
               </h1>
               <button className={styles.filterButton}
 >
-                Filter
+                {t('common.filter')}
                 <span className={styles.filterButtonIcon}>⋯</span>
                       </button>
             </div>
@@ -314,7 +316,7 @@ export default function BreadPage() {
                   className={styles.viewMoreButton}
                   onClick={loadMoreItems}
                 >
-                  View More
+                  {t('pages.cakes.viewMore')}
                 </button>
               </div>
             )}

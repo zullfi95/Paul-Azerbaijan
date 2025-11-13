@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Search, MapPin, ShoppingBag, FileText, Menu, X, Globe } from 'lucide-react';
 import CartModal from './CartModal';
 import EventPlanningModal from './EventPlanningModal';
@@ -12,11 +13,14 @@ import SearchDropdown from './SearchDropdown';
 import { useCart } from '@/contexts/CartContext';
 import { useCartModal } from '@/contexts/CartModalContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useIsMobile } from '@/hooks/use-mobile';
 import './Header.css';
 
 const Header: React.FC = React.memo(function Header() {
   const router = useRouter();
+  const t = useTranslations();
+  const { locale, setLocale, availableLocales } = useLanguage();
   const { getTotalItems } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
   const { isAuthenticated } = useAuth();
@@ -29,7 +33,6 @@ const Header: React.FC = React.memo(function Header() {
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMenuClosing, setIsMenuClosing] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('en');
 
   const closeMobileMenu = useCallback(() => {
     setIsMenuClosing(true);
@@ -76,13 +79,13 @@ const Header: React.FC = React.memo(function Header() {
         const data = await response.json();
 
         if (response.ok && data.success) {
-          alert(data.data?.message || 'Спасибо за подписку!');
+          alert(data.data?.message || t('footer.newsletter.success'));
           setEmail('');
         } else {
-          alert('Не удалось оформить подписку. Попробуйте позже.');
+          alert(t('footer.newsletter.error'));
         }
       } catch (error) {
-        alert('Произошла ошибка. Попробуйте позже.');
+        alert(t('footer.newsletter.generalError'));
       }
       closeMobileMenu();
     }
@@ -140,8 +143,11 @@ const Header: React.FC = React.memo(function Header() {
   }, [router]);
 
   const handleLanguageToggle = useCallback(() => {
-    setCurrentLanguage(prev => prev === 'en' ? 'az' : 'en');
-  }, []);
+    const currentIndex = availableLocales.indexOf(locale);
+    const nextIndex = (currentIndex + 1) % availableLocales.length;
+    const nextLocale = availableLocales[nextIndex];
+    setLocale(nextLocale);
+  }, [locale, availableLocales, setLocale]);
 
   // Add/remove menu-open class to body when mobile menu is opened
   React.useEffect(() => {
@@ -202,7 +208,7 @@ const Header: React.FC = React.memo(function Header() {
                 <form onSubmit={handleSearch} suppressHydrationWarning>
                   <input
                     type="text"
-                    placeholder="search for product"
+                    placeholder={t('header.searchPlaceholder')}
                     className="search-input"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -259,9 +265,9 @@ const Header: React.FC = React.memo(function Header() {
             {!isMobile && (
               <button
                 className="icon-button"
-                aria-label={`Switch to ${currentLanguage === 'en' ? 'Azerbaijani' : 'English'}`}
+                aria-label={t('header.switchLanguage')}
                 onClick={handleLanguageToggle}
-                title={`Current: ${currentLanguage === 'en' ? 'English' : 'Azərbaycan'}`}
+                title={t('header.switchLanguage')}
               >
                 <Globe className="icon" size={20} />
               </button>
@@ -299,7 +305,7 @@ const Header: React.FC = React.memo(function Header() {
             onClick={() => handleActionClick('Find a PAUL')}
           >
             <MapPin className="action-button-icon" size={12} />
-            <span>Find a PAUL</span>
+            <span>{t('header.findAPaul')}</span>
           </button>
 
           {/* Click & Collect */}
@@ -308,7 +314,7 @@ const Header: React.FC = React.memo(function Header() {
             onClick={() => handleActionClick('Click & Collect')}
           >
             <ShoppingBag className="action-button-icon" size={12} />
-            <span>Click & Collect</span>
+            <span>{t('header.clickCollect')}</span>
           </button>
 
           {/* Catering Menu */}
@@ -317,7 +323,7 @@ const Header: React.FC = React.memo(function Header() {
             onClick={() => handleActionClick('Catering Menu')}
           >
             <FileText className="action-button-icon" size={12} />
-            <span>Catering Menu</span>
+            <span>{t('header.cateringMenu')}</span>
           </button>
 
           {/* Plan an Event */}
@@ -326,11 +332,11 @@ const Header: React.FC = React.memo(function Header() {
               className="action-button plan-event" 
               onClick={() => handleActionClick('Plan an Event')}
             >
-              <span>Plan an Event</span>
+              <span>{t('header.planEvent')}</span>
               <span className="plan-event-badge">i</span>
             </button>
             <div className="plan-event-tooltip">
-              Planning an event is a great option for those who want to host but aren't sure what to order that fits their budget. Click here, and we'll assist you.
+              {t('header.planEventTooltip')}
             </div>
           </div>
       </div>
@@ -443,7 +449,7 @@ const Header: React.FC = React.memo(function Header() {
                 onTouchStart={() => {}} // iOS Safari touch fix
                 type="button"
               >
-                My Account
+                {t('header.myAccount')}
               </button>
 
               {/* Contact Us */}
@@ -456,7 +462,7 @@ const Header: React.FC = React.memo(function Header() {
                 onTouchStart={() => {}} // iOS Safari touch fix
                 type="button"
               >
-                Contact Us
+                {t('header.contactUs')}
               </button>
 
               {/* Log in */}
@@ -466,21 +472,21 @@ const Header: React.FC = React.memo(function Header() {
                 onTouchStart={() => {}} // iOS Safari touch fix
                 type="button"
               >
-                {isAuthenticated ? 'Profile' : 'Login'}
+                {isAuthenticated ? t('header.profile') : t('header.login')}
               </button>
               </div>
 
               <div>
               {/* Newsletter */}
               <div className="mobile-menu-newsletter">
-                <h3 className="mobile-menu-newsletter-title">Join our Newsletter</h3>
+                <h3 className="mobile-menu-newsletter-title">{t('footer.newsletter.title')}</h3>
                 <p className="mobile-menu-newsletter-description">
-                  Be the first to know our latest news
+                  {t('footer.newsletter.description')}
                 </p>
                 <form className="mobile-menu-newsletter-form" onSubmit={handleSubscribe}>
                   <input
                     type="email"
-                    placeholder="Enter your email here"
+                    placeholder={t('footer.newsletter.placeholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="mobile-menu-newsletter-input"
@@ -491,7 +497,7 @@ const Header: React.FC = React.memo(function Header() {
                     className="mobile-menu-newsletter-button"
                     onTouchStart={() => {}} // iOS Safari touch fix
                   >
-                    Subscribe
+                    {t('footer.newsletter.button')}
                   </button>
                 </form>
               </div>

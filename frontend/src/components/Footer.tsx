@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { Mail, ChevronDown } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
@@ -45,6 +46,7 @@ FooterAccordionTrigger.displayName = "FooterAccordionTrigger";
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
+  const t = useTranslations('footer');
   const isMobile = useIsMobile();
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -56,25 +58,25 @@ const Footer: React.FC = () => {
 
   const footerSections: FooterSection[] = [
     {
-      title: 'Explore PAUL',
+      title: t('explorePaul'),
       links: [
-        { label: 'In-Store Menu', href: '/cakes', target: '_self' },
-        { label: 'Find a PAUL', href: '/locations' },
+        { label: t('inStoreMenu'), href: '/cakes', target: '_self' },
+        { label: t('findAPaul'), href: '/locations' },
       ],
     },
     {
-      title: 'Menu',
+      title: t('menu'),
       links: [
-        { label: 'Lunch Menu', href: '/catering#lunch' },
-        { label: 'Brunch Menu', href: '/catering#brunch' },
-        { label: 'Coffee Breaks\n& Afternoon Teas', href: '/catering#coffee-breaks' },
-        { label: 'Catering Menu', href: '/catering' },
+        { label: t('lunchMenu'), href: '/catering#lunch' },
+        { label: t('brunchMenu'), href: '/catering#brunch' },
+        { label: t('coffeeBreaks'), href: '/catering#coffee-breaks' },
+        { label: t('cateringMenu'), href: '/catering' },
       ],
     },
     {
-      title: 'Company',
+      title: t('company'),
       links: [
-        { label: 'Our Story', href: '/our-story' },
+        { label: t('ourStory'), href: '/our-story' },
       ],
     },
     {
@@ -83,8 +85,8 @@ const Footer: React.FC = () => {
         { label: 'My Account', href: '/profile' },
         { label: 'Contact info', href: '/contact' },
         { label: 'Delivery info', href: '/delivery' },
-        { label: 'Terms & Conditions', href: '/terms' },
-        { label: 'Privacy policy', href: '/privacy' },
+        { label: t('termsConditions'), href: '/terms' },
+        { label: t('privacyPolicy'), href: '/privacy' },
         { label: 'Cookie policy', href: '/cookies' },
         { label: 'FAQ', href: '/faq' },
       ],
@@ -128,21 +130,21 @@ const Footer: React.FC = () => {
               {/* Newsletter */}
               <div className="newsletter-section">
                 <div className="newsletter-header">
-                  <h3 className="newsletter-title">Join our Newsletter</h3>
+                  <h3 className="newsletter-title">{t('newsletter.title')}</h3>
                 </div>
-                <p className="newsletter-description">Be the first to know our latest news</p>
+                <p className="newsletter-description">{t('newsletter.description')}</p>
                 
                 <form className="newsletter-form" onSubmit={handleSubscribe}>
                   <input
                     type="email"
-                    placeholder="Enter your email here"
+                    placeholder={t('newsletter.placeholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="newsletter-input"
                     required
                   />
                   <button type="submit" className="newsletter-button">
-                    Subscribe
+                    {t('newsletter.button')}
                   </button>
                 </form>
               </div>
@@ -266,22 +268,22 @@ const Footer: React.FC = () => {
                 {/* Newsletter */}
                 <div className="newsletter-section">
                   <div className="newsletter-header">
-                    <h3 className="newsletter-title">Join our Newsletter</h3>
+                    <h3 className="newsletter-title">{t('newsletter.title')}</h3>
                     <Mail className="newsletter-icon" size={18} />
                   </div>
-                  <p className="newsletter-description">Be the first to know our latest news</p>
+                  <p className="newsletter-description">{t('newsletter.description')}</p>
                   
                   <form className="newsletter-form" onSubmit={handleSubscribe}>
                     <input
                       type="email"
-                      placeholder="Enter your email here"
+                      placeholder={t('newsletter.placeholder')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="newsletter-input"
                       required
                     />
                     <button type="submit" className="newsletter-button">
-                      Subscribe
+                      {t('newsletter.button')}
                     </button>
                   </form>
                 </div>

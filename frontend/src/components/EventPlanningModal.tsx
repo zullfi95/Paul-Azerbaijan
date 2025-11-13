@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useNotification } from '../contexts/NotificationContext';
 import styles from './EventPlanningModal.module.css';
 
@@ -23,7 +24,7 @@ interface EventFormData {
 }
 
 const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  // const { t } = useLanguage(); // Not used
+  const t = useTranslations('event');
   const { showNotification } = useNotification();
   
   const [formData, setFormData] = useState<EventFormData>({
@@ -84,11 +85,11 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
           name: ''
         });
       } else {
-        showNotification(result.message || 'Error sending request. Please try again.');
+        showNotification(result.message || t('error'));
       }
     } catch (error) {
       console.error('Event application error:', error);
-      showNotification('Error sending request. Please try again.');
+      showNotification(t('error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -133,7 +134,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
           
           <div className={styles.headerContent}>
             <h2 className={styles.title}>
-              Share the details of your event with us, and we&apos;ll do our best to assist you!
+              {t('subtitle')}
             </h2>
           </div>
         </div>
@@ -159,7 +160,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 name="location"
                 value={formData.location}
                 onChange={handleInputChange}
-                placeholder="Location of the event*"
+                placeholder={t('location')}
                 required
                 className={styles.input}
               />
@@ -171,7 +172,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               name="budget"
               value={formData.budget}
               onChange={handleInputChange}
-              placeholder="Estimated budget*"
+              placeholder={t('budget')}
               required
               min="0"
               step="0.01"
@@ -184,7 +185,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               name="guestCount"
               value={formData.guestCount}
               onChange={handleInputChange}
-              placeholder="Number of guests* (approximate)"
+              placeholder={t('guestCount')}
               required
               min="1"
               className={styles.inputLarge}
@@ -195,7 +196,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
               name="details"
               value={formData.details}
               onChange={handleInputChange}
-              placeholder="Details of request*"
+              placeholder={t('details')}
               required
               rows={3}
               className={styles.textarea}
@@ -209,7 +210,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                placeholder="Email*"
+                placeholder={t('email')}
                 required
                 className={styles.input}
               />
@@ -220,7 +221,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                placeholder="Phone number*"
+                placeholder={t('phone')}
                 required
                 className={styles.input}
               />
@@ -234,7 +235,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
                 className={styles.submitButton}
                 onTouchStart={() => {}} // iOS Safari touch fix
               >
-                {isSubmitting ? 'Sending...' : 'Send a request'}
+                {isSubmitting ? t('submitting') : t('submit')}
               </button>
             </div>
 

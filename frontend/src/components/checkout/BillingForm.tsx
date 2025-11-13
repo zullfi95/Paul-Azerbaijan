@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslations } from 'next-intl';
 import styles from './BillingForm.module.css';
 
 interface BillingFormProps {
@@ -24,18 +25,19 @@ interface BillingFormProps {
 
 export default function BillingForm({ formData, errors, onInputChange }: BillingFormProps) {
   const { isAuthenticated } = useAuth();
+  const t = useTranslations('checkout');
 
   return (
     <div className={styles.billingForm}>
       <div className={styles.sectionHeader}>
-        Billing information
+        {t('billing')}
       </div>
 
       {/* Login prompt */}
       {!isAuthenticated && (
         <div className={styles.loginPrompt}>
           <p>
-            Have you shopped with us before? <a href="/auth/login">Click here to log in</a>
+            {t('haveAccount')} <a href="/auth/login">{t('clickToLogin')}</a>
           </p>
         </div>
       )}
@@ -44,20 +46,20 @@ export default function BillingForm({ formData, errors, onInputChange }: Billing
       {isAuthenticated && (formData.firstName || formData.lastName || formData.email) && (
         <div className={styles.autoFillIndicator}>
           <p>
-            ✓ Your information has been automatically filled from your account
+            ✓ {t('autoFilled')}
           </p>
         </div>
       )}
 
       <p className={styles.requiredText}>
-        All lines marked with <span>*</span> are required to be filled out.
+        {t('requiredFieldsNote')}
       </p>
 
       <div className={styles.fieldsGrid}>
         <div className={styles.fieldGroup}>
           <input
             type="text"
-            placeholder="Name *"
+            placeholder={t('firstName') + ' *'}
             value={formData.firstName}
             onChange={(e) => onInputChange('firstName', e.target.value)}
             className={styles.inputField}
@@ -68,7 +70,7 @@ export default function BillingForm({ formData, errors, onInputChange }: Billing
         <div className={styles.fieldGroup}>
           <input
             type="text"
-            placeholder="Surname *"
+            placeholder={t('lastName') + ' *'}
             value={formData.lastName}
             onChange={(e) => onInputChange('lastName', e.target.value)}
             className={styles.inputField}
@@ -80,7 +82,7 @@ export default function BillingForm({ formData, errors, onInputChange }: Billing
       <div className={styles.fullWidthField}>
         <input
           type="text"
-          placeholder="Street name, descriptive and orientation number *"
+          placeholder={t('streetAddress') + ' *'}
           value={formData.streetAddress}
           onChange={(e) => onInputChange('streetAddress', e.target.value)}
           className={styles.inputField}
@@ -92,7 +94,7 @@ export default function BillingForm({ formData, errors, onInputChange }: Billing
         <div className={styles.fieldGroup}>
           <input
             type="tel"
-            placeholder="Phone number *"
+            placeholder={t('phone') + ' *'}
             value={formData.phone}
             onChange={(e) => onInputChange('phone', e.target.value)}
             className={styles.inputField}
@@ -103,7 +105,7 @@ export default function BillingForm({ formData, errors, onInputChange }: Billing
         <div className={styles.fieldGroup}>
           <input
             type="email"
-            placeholder="E-mail address *"
+            placeholder={t('email') + ' *'}
             value={formData.email}
             onChange={(e) => onInputChange('email', e.target.value)}
             className={styles.inputField}
@@ -115,7 +117,7 @@ export default function BillingForm({ formData, errors, onInputChange }: Billing
       <div className={styles.fullWidthField}>
         <input
           type="text"
-          placeholder="Company name"
+          placeholder={t('companyName')}
           value={formData.companyName}
           onChange={(e) => onInputChange('companyName', e.target.value)}
           className={styles.inputField}

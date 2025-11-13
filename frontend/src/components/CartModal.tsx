@@ -99,7 +99,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                 onClick={goToMenu}
                 className={styles.emptyCartButton}
               >
-                Browse Menu
+                {t('browseMenu')}
               </button>
             </div>
           ) : (
@@ -172,7 +172,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
         {cartItems.length > 0 && (
           <div className={styles.modalFooter}>
             <div className={styles.totalSection}>
-              <span className={styles.totalLabel}>Order Summary:</span>
+              <span className={styles.totalLabel}>{t('subtotal')}:</span>
               <span className={styles.totalAmount}>
                 ₼{getTotalPrice().toFixed(2)}
               </span>
@@ -183,13 +183,13 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                 onClick={goToMenu}
                 className={styles.buttonSecondary}
               >
-                Continue Shopping
+                {t('browseMenu')}
               </button>
               <button
                 onClick={goToCartPage}
                 className={styles.buttonPrimary}
               >
-                Order Now
+                {t('checkout')}
               </button>
             </div>
           </div>

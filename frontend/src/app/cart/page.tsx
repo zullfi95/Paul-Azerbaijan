@@ -3,6 +3,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
@@ -48,6 +49,7 @@ const QuantitySelector = ({ quantity, onUpdate }: { quantity: number; onUpdate: 
 
 export default function CartPage() {
   const router = useRouter();
+  const t = useTranslations();
   const { 
     items: cartData, 
     removeItem, 
@@ -102,8 +104,8 @@ export default function CartPage() {
             <Breadcrumbs 
               items={[
                 { label: 'Home', href: '/' },
-                { label: 'Catering Menu', href: '/catering' },
-                { label: 'Shopping Cart', isActive: true }
+                { label: t('header.cateringMenu'), href: '/catering' },
+                { label: t('cart.title'), isActive: true }
               ]}
             />
           </div>
@@ -111,24 +113,24 @@ export default function CartPage() {
           {/* Заголовок страницы */}
           <div className={styles.pageHeader}>
             <h1 className={styles.pageTitle}>
-              Shopping cart
+              {t('cart.title')}
             </h1>
           </div>
 
           {validatedCartData.length === 0 ? (
-            /* Пустая корзина */
+            /* Пустая корзина */}
             <div className={styles.emptyCart}>
               <h2 className={styles.emptyCartTitle}>
-                Your cart is empty
+                {t('cart.empty')}
               </h2>
               <p className={styles.emptyCartText}>
-                Add products to your cart by browsing our catering menu
+                {t('cart.emptyDescription')}
               </p>
               <button
                 onClick={goToCatering}
                 className={styles.emptyCartButton}
               >
-                Go to Menu
+                {t('cart.browseMenu')}
               </button>
             </div>
           ) : (
@@ -137,13 +139,13 @@ export default function CartPage() {
               {/* Table Header */}
               <div className={styles.tableHeader}>
                 <span className={styles.tableHeaderLabel}>
-                  Product
+                  {t('product.details')}
                 </span>
                 <span className={styles.tableHeaderLabel}>
-                  {/* Пустая колонка для количества */}
+                  {/* Empty column for quantity */}
                 </span>
                 <span className={`${styles.tableHeaderLabel} ${styles.tableHeaderLabelRight}`}>
-                  Total price
+                  {t('common.total')}
                 </span>
               </div>
                     
@@ -222,14 +224,14 @@ export default function CartPage() {
                 ))}
               </div>
 
-              {/* Информационные заметки */}
+              {/* Info notes */}
               <div className={styles.infoSection}>
                 <div className={styles.infoBlock}>
                   <div className={styles.infoIcon}>
                     i
                   </div>
                   <p className={styles.infoText}>
-                    Products purchased from us are intended for direct consumption without storage, except for products that have a shelf life stated on the packaging or on the receipt.
+                    {t('cart.infoStorage')}
                   </p>
                 </div>
                 
@@ -238,34 +240,34 @@ export default function CartPage() {
                     i
                   </div>
                   <p className={styles.infoText}>
-                    In addition to the allergens listed in the composition, all of our products are processed and shipped from facilities where trace amounts of the following allergens may be present: Gluten (all types), eggs, fish (salmon, tuna, anchovies), soy, milk, nuts (almonds, walnuts, pistachios, cashews), celery, mustard, sesame, sulfur dioxide and sulfites.
+                    {t('cart.infoAllergens')}
                   </p>
                 </div>
               </div>
 
-              {/* Итоговая информация */}
+              {/* Total section */}
               <div className={styles.totalSection}>
                 <h2 className={styles.totalLabel}>
-                  Total to be paid
+                  {t('cart.totalToPay')}
                 </h2>
                 <div className={styles.totalAmount}>
                   {totalAmount.toFixed(2)} ₼
                 </div>
                 
-                {/* Кнопки действий */}
+                {/* Action buttons */}
                 <div className={styles.actionButtons}>
                   <button
                     onClick={goToCatering}
                     className={styles.buttonBack}
                   >
-                    Go back to menu
+                    {t('cart.goBackToMenu')}
                   </button>
                   
                   <button
                     onClick={goToCheckout}
                     className={styles.buttonCheckout}
                   >
-                    Go to checkout
+                    {t('cart.checkout')}
                   </button>
                 </div>
               </div>

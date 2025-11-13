@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "../../../contexts/AuthContext";
+import { useTranslations } from 'next-intl';
 import { Order as ApiOrder, MenuItem, CartItem } from "../../../config/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, useMemo } from "react";
@@ -11,6 +12,16 @@ import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/a
 import { OrderCreateRequest } from "../../../types/api";
 import { Button, Card, CardHeader, CardTitle, CardContent, LoadingState } from "../../../components/ui";
 import DashboardLayout from "../../../components/DashboardLayout";
+import { 
+  SearchIcon, 
+  FilterIcon, 
+  RefreshIcon, 
+  EyeIcon,
+  FileTextIcon,
+  ShoppingBagIcon,
+  CheckIcon,
+  XIcon 
+} from "../../../components/Icons";
 import "../../../styles/dashboard.css";
 import styles from './page.module.css';
 
@@ -73,6 +84,7 @@ type OrderFormData = OrderCreateRequest;
 function OrdersPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const t = useTranslations();
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
 
@@ -144,7 +156,7 @@ function OrdersPage() {
   }, [router]);
 
   const handleDeleteOrder = async (orderId: number) => {
-    if (!confirm('Вы уверены, что хотите удалить этот заказ?')) return;
+    if (!confirm(t('orders.confirmDelete'))) return;
 
     try {
       const result = await makeApiRequest(`/orders/${orderId}`, {
@@ -154,11 +166,11 @@ function OrdersPage() {
       if (result.success) {
         loadOrders();
       } else {
-        alert(handleApiError(result as any, 'Ошибка удаления заказа'));
+        alert(handleApiError(result as any, t('orders.deleteError')));
       }
     } catch (error) {
       console.error('Error deleting order:', error);
-      alert('Произошла ошибка при удалении заказа');
+      alert(t('orders.deleteError'));
     }
   };
 
@@ -286,16 +298,16 @@ function OrdersPage() {
       });
 
       if (result.success) {
-        alert('Order successfully copied!');
+        alert(t('orders.createSuccess'));
         loadOrders();
       } else {
-        alert(handleApiError(result as any, 'Error copying order'));
+        alert(handleApiError(result as any, t('orders.createError')));
       }
     } catch (error) {
-      console.error('Ошибка копирования заказа:', error);
-      alert('Произошла ошибка при копировании заказа');
+      console.error('Error copying order:', error);
+      alert(t('orders.createError'));
     }
-  }, [loadOrders]);
+  }, [loadOrders, t]);
 
   // Функция для быстрого изменения статуса заказа
   const handleQuickStatusChange = useCallback(async (orderId: number, newStatus: string) => {
@@ -306,16 +318,16 @@ function OrdersPage() {
       });
 
       if (result.success) {
-        alert('Статус заказа успешно изменен!');
+        alert(t('orders.updateSuccess'));
         loadOrders();
       } else {
-        alert(handleApiError(result as any, 'Ошибка изменения статуса'));
+        alert(handleApiError(result as any, t('orders.updateError')));
       }
     } catch (error) {
-      console.error('Ошибка изменения статуса:', error);
-      alert('Произошла ошибка при изменении статуса');
+      console.error('Error changing status:', error);
+      alert(t('orders.updateError'));
     }
-  }, [loadOrders]);
+  }, [loadOrders, t]);
 
   // Функция массового копирования
   const handleMassCopy = useCallback(async () => {
@@ -329,14 +341,14 @@ function OrdersPage() {
       const results = await Promise.all(promises);
       const successful = results.filter(r => r.success).length;
       
-      alert(`Успешно скопировано заказов: ${successful} из ${selectedOrdersForCopy.size}`);
+      alert(`${t('common.success')}: ${successful} / ${selectedOrdersForCopy.size}`);
       setSelectedOrdersForCopy(new Set());
       loadOrders();
     } catch (error) {
-      console.error('Ошибка массового копирования:', error);
-      alert('Произошла ошибка при копировании заказов');
+      console.error('Error bulk copying:', error);
+      alert(t('common.error'));
     }
-  }, [selectedOrdersForCopy, loadOrders]);
+  }, [selectedOrdersForCopy, loadOrders, t]);
 
   // Группировка заказов
   const groupedOrders = useMemo(() => {
@@ -475,7 +487,7 @@ function OrdersPage() {
 
 
   if (isLoading) {
-    return <LoadingState isLoading={true} loadingText="Загрузка заказов...">{null}</LoadingState>;
+    return <LoadingState isLoading={true} loadingText={t('orders.loadingOrders')}>{null}</LoadingState>;
   }
 
   if (!hasAccess) {
@@ -493,257 +505,288 @@ function OrdersPage() {
 
   return (
     <DashboardLayout>
-      {/* Modern Header */}
-      <div className="page-header">
-        <div className="page-header-content">
-          <div className="page-header-main">
-            <div className="page-header-left">
-              <button
-                onClick={() => router.push('/dashboard')}
-                className="back-button"
-              >
-                <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div>
-                <h1 className="page-title">
-                  Управление заказами
-                </h1>
-                <p className="page-description">
-                  PAUL Catering Azerbaijan • {orderStats.total} заказов
-                </p>
-              </div>
-            </div>
-            
-            <div className="page-actions">
-              <Button 
-                variant="ghost" 
-                size="md"
-                onClick={() => setShowCalculator(true)}
-                className="action-button calculator-button"
-              >
-                🧮 Калькулятор
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="md"
-                onClick={() => setShowAnalytics(true)}
-                className="action-button analytics-button"
-              >
-                📊 Аналитика
-              </Button>
-              {selectedOrdersForCopy.size > 0 && (
-                <Button 
-                  variant="ghost" 
-                  size="md"
-                  onClick={handleMassCopy}
-                  className="action-button copy-button"
-                >
-                  📋 Копировать ({selectedOrdersForCopy.size})
-                </Button>
-              )}
-              <Button 
-                variant="secondary" 
-                size="md"
-                onClick={() => router.push('/dashboard/orders/create')}
-                className="action-button primary-button"
-              >
-                + Новый заказ
-              </Button>
-            </div>
+      {/* Quick Actions */}
+      <section className="dashboard-quick-actions" style={{ marginBottom: 'var(--space-4)' }}>
+        <div className="dashboard-quick-actions-grid">
+          <button
+            onClick={() => setShowCalculator(true)}
+            className="dashboard-quick-action-link"
+          >
+            {t('dashboard.calculator')}
+          </button>
+          <button
+            onClick={() => setShowAnalytics(true)}
+            className="dashboard-quick-action-link"
+          >
+            {t('dashboard.analytics')}
+          </button>
+          {selectedOrdersForCopy.size > 0 && (
+            <button
+              onClick={handleMassCopy}
+              className="dashboard-quick-action-link"
+              style={{
+                background: '#FEF3C7',
+                borderColor: '#D97706',
+                color: '#D97706'
+              }}
+            >
+              {t('common.copy')} ({selectedOrdersForCopy.size})
+            </button>
+          )}
+          <button
+            onClick={() => router.push('/dashboard/orders/create')}
+            className="dashboard-quick-action-link"
+            style={{
+              background: 'var(--paul-black)',
+              color: 'var(--paul-white)'
+            }}
+          >
+            + {t('orders.createOrder')}
+          </button>
+        </div>
+      </section>
+
+      {/* Statistics Cards */}
+      <section className="dashboard-kpi-grid" style={{ marginBottom: 'var(--space-6)' }}>
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <ShoppingBagIcon size={16} className="dashboard-kpi-icon" />
+            <span className="dashboard-kpi-label">{t('dashboard.totalOrders')}</span>
           </div>
-
-          {/* Statistics Cards */}
-          <div className="dashboard-kpi-grid">
-            <div className="dashboard-kpi-card">
-              <div className="dashboard-kpi-header">
-                <span className="dashboard-kpi-icon">📋</span>
-                <span className="dashboard-kpi-label">Всего заказов</span>
-              </div>
-              <div className="dashboard-kpi-value">
-                {orderStats.total}
-              </div>
-              <div className="dashboard-kpi-subtitle">
-                В системе
-              </div>
-            </div>
-
-            <div className="dashboard-kpi-card">
-              <div className="dashboard-kpi-header">
-                <span className="dashboard-kpi-icon status-processing">⏳</span>
-                <span className="dashboard-kpi-label">В обработке</span>
-              </div>
-              <div className="dashboard-kpi-value status-processing">
-                {orderStats.byStatus.processing}
-              </div>
-              <div className="dashboard-kpi-subtitle">
-                Требуют внимания
-              </div>
-            </div>
-
-            <div className="dashboard-kpi-card">
-              <div className="dashboard-kpi-header">
-                <span className="dashboard-kpi-icon status-approved">✅</span>
-                <span className="dashboard-kpi-label">Завершено</span>
-              </div>
-              <div className="dashboard-kpi-value status-approved">
-                {orderStats.byStatus.completed}
-              </div>
-              <div className="dashboard-kpi-subtitle">
-                Выполненных заказов
-              </div>
-            </div>
-
-            <div className="dashboard-kpi-card">
-              <div className="dashboard-kpi-header">
-                <span className="dashboard-kpi-icon">💰</span>
-                <span className="dashboard-kpi-label">Общая сумма</span>
-              </div>
-              <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
-                {formatTotalAmount(orderStats.totalAmount)} ₼
-              </div>
-              <div className="dashboard-kpi-subtitle">
-                Общий оборот
-              </div>
-            </div>
+          <div className="dashboard-kpi-value">
+            {orderStats.total}
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            {t('dashboard.inSystem')}
           </div>
         </div>
-      </div>
+
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => setStatusFilter('processing')}
+        >
+          <div className="dashboard-kpi-header">
+            <FileTextIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
+            <span className="dashboard-kpi-label">В обработке</span>
+          </div>
+          <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>
+            {orderStats.byStatus.processing}
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            Требуют внимания
+          </div>
+        </div>
+
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => setStatusFilter('completed')}
+        >
+          <div className="dashboard-kpi-header">
+            <CheckIcon size={16} className="dashboard-kpi-icon" style={{ color: '#10B981' }} />
+            <span className="dashboard-kpi-label">{t('dashboard.completedOrders')}</span>
+          </div>
+          <div className="dashboard-kpi-value" style={{ color: '#10B981' }}>
+            {orderStats.byStatus.completed}
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            {t('dashboard.completedOrders')}
+          </div>
+        </div>
+
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dashboard-kpi-header">
+            <ShoppingBagIcon size={16} className="dashboard-kpi-icon" style={{ color: '#D4AF37' }} />
+            <span className="dashboard-kpi-label">{t('orders.totalAmount')}</span>
+          </div>
+          <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
+            {formatTotalAmount(orderStats.totalAmount)} ₼
+          </div>
+          <div className="dashboard-kpi-subtitle">
+            {t('dashboard.totalRevenue')}
+          </div>
+        </div>
+      </section>
+
+      {/* Filters */}
+      <section className="dashboard-filters" style={{ marginBottom: 'var(--space-6)' }}>
+        <div className="dashboard-search-container">
+          <SearchIcon size={16} className="dashboard-search-icon" />
+          <input
+            type="text"
+            placeholder={t('dashboard.searchPlaceholder')}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="dashboard-search-input"
+            aria-label={t('dashboard.searchPlaceholder')}
+          />
+        </div>
+        
+        <div className="dashboard-filter-container">
+          <FilterIcon size={16} className="dashboard-filter-icon" />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+            className="dashboard-filter-select"
+            aria-label="Фильтр по статусу"
+          >
+            <option value="all">Все статусы</option>
+            <option value="draft">Черновик</option>
+            <option value="submitted">Отправлен</option>
+            <option value="pending_payment">Ожидает оплаты</option>
+            <option value="processing">В обработке</option>
+            <option value="completed">Завершен</option>
+            <option value="cancelled">Отменен</option>
+          </select>
+        </div>
+
+        <div className="dashboard-filter-container">
+          <FilterIcon size={16} className="dashboard-filter-icon" />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'created_at' | 'company_name' | 'total_amount')}
+            className="dashboard-filter-select"
+            aria-label="Сортировка"
+          >
+            <option value="created_at">По дате</option>
+            <option value="company_name">По компании</option>
+            <option value="total_amount">По сумме</option>
+          </select>
+        </div>
+
+        <button
+          onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+          className="dashboard-action-btn"
+          aria-label={`Сортировка ${sortOrder === 'asc' ? 'по возрастанию' : 'по убыванию'}`}
+          style={{ minWidth: '48px' }}
+        >
+          {sortOrder === 'asc' ? '↑' : '↓'}
+        </button>
+
+        <div className="dashboard-filter-container">
+          <FilterIcon size={16} className="dashboard-filter-icon" />
+          <select
+            value={groupBy}
+            onChange={(e) => setGroupBy(e.target.value as 'none' | 'status' | 'date' | 'company')}
+            className="dashboard-filter-select"
+            aria-label="Группировка"
+          >
+            <option value="none">Без группировки</option>
+            <option value="status">По статусу</option>
+            <option value="client">По клиентам</option>
+            <option value="date">По датам</option>
+            <option value="amount">По сумме</option>
+          </select>
+        </div>
+
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 'var(--space-2)',
+          marginLeft: 'auto',
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            gap: 'var(--space-2)',
+            borderLeft: '1px solid var(--paul-border)',
+            paddingLeft: 'var(--space-3)'
+          }}>
+            <button
+              className={`dashboard-action-btn`}
+              onClick={() => setViewMode('grid')}
+              style={{ 
+                background: viewMode === 'grid' ? 'var(--paul-black)' : 'var(--paul-white)',
+                color: viewMode === 'grid' ? 'var(--paul-white)' : 'var(--paul-black)',
+                minWidth: 'auto',
+                padding: '6px 10px'
+              }}
+              title="Карточки"
+            >
+              Сетка
+            </button>
+            <button
+              className={`dashboard-action-btn`}
+              onClick={() => setViewMode('table')}
+              style={{ 
+                background: viewMode === 'table' ? 'var(--paul-black)' : 'var(--paul-white)',
+                color: viewMode === 'table' ? 'var(--paul-white)' : 'var(--paul-black)',
+                minWidth: 'auto',
+                padding: '6px 10px'
+              }}
+              title="Таблица"
+            >
+              Таблица
+            </button>
+            <button
+              className={`dashboard-action-btn`}
+              onClick={() => setViewMode('kanban')}
+              style={{ 
+                background: viewMode === 'kanban' ? 'var(--paul-black)' : 'var(--paul-white)',
+                color: viewMode === 'kanban' ? 'var(--paul-white)' : 'var(--paul-black)',
+                minWidth: 'auto',
+                padding: '6px 10px'
+              }}
+              title="Канбан"
+            >
+              Канбан
+            </button>
+          </div>
+          <button
+            onClick={loadOrders}
+            className="dashboard-refresh-btn"
+            aria-label={t('common.refresh')}
+          >
+            <RefreshIcon size={16} />
+            <span>{t('common.refresh')}</span>
+          </button>
+        </div>
+        
+        <div style={{ 
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: 'var(--space-2)',
+          fontSize: 'var(--text-sm)',
+          color: 'var(--paul-gray)'
+        }}>
+          <span>
+            {t('orders.showingOrders', { count: filteredAndSortedOrders.length, total: orderStats.total })}
+          </span>
+        </div>
+      </section>
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Filters and Search Bar */}
-        <div className="enhanced-filters">
-          <div className="search-row">
-            <div className="search-input-container">
-              <input
-                type="text"
-                placeholder="Поиск по компании или блюдам..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
-              />
-              <svg className="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-
-            <div className="view-toggle">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`view-button ${viewMode === 'grid' ? 'active' : ''}`}
-                title="Карточки"
-              >
-                <svg className="view-icon" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h7v7h-7v-7z"/>
-                </svg>
-              </button>
-              <button
-                onClick={() => setViewMode('table')}
-                className={`view-button ${viewMode === 'table' ? 'active' : ''}`}
-                title="Таблица"
-              >
-                <svg className="view-icon" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
-                </svg>
-              </button>
-              <button
-                onClick={() => setViewMode('kanban')}
-                className={`view-button ${viewMode === 'kanban' ? 'active' : ''}`}
-                title="Канбан"
-              >
-                <svg className="view-icon" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M4 6h4v12H4V6zm6-2h4v16h-4V4zm6 4h4v8h-4V8z"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          {/* Filters Row */}
-          <div className="filter-row">
-            <div className="filter-group">
-              <label className="filter-label">Статус:</label>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-                className="filter-select"
-              >
-                <option value="all">Все статусы</option>
-                <option value="draft">Черновик</option>
-                <option value="submitted">Отправлен</option>
-                <option value="pending_payment">Ожидает оплаты</option>
-                <option value="processing">В обработке</option>
-                <option value="completed">Завершен</option>
-                <option value="cancelled">Отменен</option>
-              </select>
-            </div>
-
-            <div className="filter-group">
-              <label className="filter-label">Сортировка:</label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'created_at' | 'company_name' | 'total_amount')}
-                className="filter-select"
-              >
-                <option value="created_at">По дате</option>
-                <option value="company_name">По компании</option>
-                <option value="total_amount">По сумме</option>
-              </select>
-              <button
-                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                className="sort-button"
-              >
-                <svg 
-                  className={`sort-icon ${sortOrder === 'desc' ? 'desc' : 'asc'}`}
-                  fill="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M7 14l5-5 5 5z"/>
-                </svg>
-              </button>
-            </div>
-
-            <div className="filter-group">
-              <label className="filter-label">Группировка:</label>
-              <select
-                value={groupBy}
-                onChange={(e) => setGroupBy(e.target.value as 'none' | 'status' | 'date' | 'company')}
-                className="filter-select"
-              >
-                <option value="none">Без группировки</option>
-                <option value="status">По статусу</option>
-                <option value="client">По клиентам</option>
-                <option value="date">По датам</option>
-                <option value="amount">По сумме</option>
-              </select>
-            </div>
-
-            <div className="filter-results">
-              <span className="results-text">
-                Найдено: {filteredAndSortedOrders.length} из {orderStats.total}
-              </span>
-            </div>
-          </div>
-        </div>
 
         {/* Orders Display */}
-        <LoadingState isLoading={ordersLoading} loadingText="Загрузка заказов...">{null}
+        <LoadingState isLoading={ordersLoading} loadingText={t('orders.loadingOrders')}>{null}
           {filteredAndSortedOrders.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">📋</div>
               <h3 className="empty-title">
-                {searchTerm || statusFilter !== 'all' ? 'Заказы не найдены' : 'Пока нет заказов'}
+                {searchTerm || statusFilter !== 'all' ? t('orders.noOrders') : t('orders.noOrders')}
               </h3>
               <p className="empty-subtitle">
                 {searchTerm || statusFilter !== 'all' 
-                  ? 'Попробуйте изменить параметры поиска или фильтры'
-                  : 'Создайте первый заказ для начала работы'
-                }
+                  ? t('applications.tryChangingFilters')
+                  : t('applications.createFirst')}
               </p>
               {(!searchTerm && statusFilter === 'all') && (
                 <Button variant="primary" onClick={() => router.push('/dashboard/orders/create')}>
-                  Создать первый заказ
+                  {t('orders.createOrder')}
                 </Button>
               )}
             </div>
@@ -855,6 +898,7 @@ interface OrderCardProps {
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, onQuickStatusChange, isSelected, onToggleSelect }) => {
+  const t = useTranslations();
   return (
     <div className="application-card">
       <div className="card-content">
@@ -875,7 +919,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
                 {order.company_name}
               </h3>
               <p className="card-email">
-                Заказ #{order.id}
+                {t('orders.orderNumber')}{order.id}
               </p>
             </div>
           </div>
@@ -887,7 +931,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
         {/* Menu Items Preview */}
         <div className="card-field">
           <div className="field-label">
-            Блюда ({order.menu_items.length})
+            {t('form.orderItems')} ({order.menu_items.length})
           </div>
           <div className="field-value">
             {order.menu_items.slice(0, 3).map((item, index) => (
@@ -898,7 +942,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
             ))}
             {order.menu_items.length > 3 && (
               <div className="field-subvalue">
-                +{order.menu_items.length - 3} еще...
+                +{order.menu_items.length - 3}...
               </div>
             )}
           </div>

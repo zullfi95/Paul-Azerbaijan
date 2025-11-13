@@ -41,10 +41,11 @@ type OtherInfoFormData = Pick<OrderFormData, 'notes' | 'additionalItems'>;
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const t = useTranslations();
   const { items: cart, clearCart } = useCart();
   const { user, isAuthenticated, isLoading } = useAuth();
   
-  // Проверка авторизации - обязательна для оформления заказа
+  // Check authorization - required for checkout
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push('/auth/login?next=/catering/order');

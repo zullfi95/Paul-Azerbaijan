@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeaturesSection from '../../components/FeaturesSection';
@@ -192,6 +193,7 @@ interface LunchSelection {
 
 export default function CateringPage() {
   const router = useRouter();
+  const t = useTranslations();
   const [selectedCategory, setSelectedCategory] = useState('Sets');
   const [sortBy] = useState('name');
   const [isMobile, setIsMobile] = useState(false);
@@ -462,7 +464,7 @@ export default function CateringPage() {
             <Breadcrumbs 
               items={[
                 { label: 'Home', href: '/' },
-                { label: 'Catering Menu', isActive: true }
+                { label: t('pages.catering.title'), isActive: true }
               ]}
             />
           </div>
@@ -472,7 +474,7 @@ export default function CateringPage() {
         <div className={styles.pageTitleContainer}>
           <div className={styles.pageTitleWrapper}>
             <h1 className={styles.pageTitle}>
-              Catering Menu
+              {t('pages.catering.title')}
             </h1>
           </div>
         </div>
@@ -512,7 +514,7 @@ export default function CateringPage() {
                 data-sort-menu
                 className={styles.sortButton}
               >
-                SORT BY
+                {t('pages.catering.sortBy')}
                 <span style={{ fontSize: '16px', fontWeight: 'bold', lineHeight: '1' }}>...</span>
               </button>
             </div>

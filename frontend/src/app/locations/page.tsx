@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-// import { useRouter } from 'next/navigation'; // Не используется
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeedbackModal from '../../components/FeedbackModal';
@@ -10,7 +10,7 @@ import FeaturesSection from '../../components/FeaturesSection';
 import styles from './LocationsPage.module.css';
 
 export default function LocationsPage() {
-  // const router = useRouter(); // Не используется
+  const t = useTranslations();
 
   return (
     <div className={styles.locationsPage}>
@@ -21,11 +21,11 @@ export default function LocationsPage() {
         <div className={styles.container}>
           <div className={styles.contentWrapper}>
             <h1 className={styles.mainTitle}>
-              Find a PAUL
+              {t('pages.locations.title')}
             </h1>
             
             <p className={styles.subtitle}>
-              Search for a nearest PAUL location and enjoy our unique tastes.
+              {t('pages.locations.subtitle')}
             </p>
 
             {/* Main Map Image */}
@@ -38,12 +38,12 @@ export default function LocationsPage() {
                       <circle cx="12" cy="10" r="3"/>
                     </svg>
                   </div>
-                  <h3 className={styles.mapTitle}>PAUL Locations Map</h3>
+                  <h3 className={styles.mapTitle}>{t('pages.locations.mapTitle')}</h3>
                   <p className={styles.mapDescription}>
-                    Interactive map showing all PAUL locations in Azerbaijan
+                    {t('pages.locations.mapDescription')}
                   </p>
                   <p className={styles.mapNote}>
-                    Google Maps integration coming soon
+                    {t('pages.locations.mapComingSoon')}
                   </p>
                 </div>
               </div>

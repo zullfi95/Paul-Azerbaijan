@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { ArrowLeft, Plus, Minus, ShoppingBag } from 'lucide-react';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
@@ -33,6 +34,7 @@ interface Product {
 export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
+  const t = useTranslations();
   const { addItem } = useCart();
   const { showNotification } = useNotification();
   const [product, setProduct] = useState<Product | null>(null);
@@ -1214,7 +1216,7 @@ export default function ProductPage() {
         <Header />
         <div className={styles.loadingState}>
           <div className={styles.loadingSpinner} />
-          <span>Loading product...</span>
+          <span>{t('product.loadingProduct')}</span>
         </div>
       </div>
     );
@@ -1225,10 +1227,10 @@ export default function ProductPage() {
       <div className={styles.productPage}>
         <Header />
         <div className={styles.notFoundState}>
-          <h2>Product not found</h2>
+          <h2>{t('product.notFound')}</h2>
           <button onClick={() => router.push('/')} className={styles.backButton}>
             <ArrowLeft size={16} />
-            Back to Home
+            {t('product.backToHome')}
           </button>
         </div>
       </div>
@@ -1282,7 +1284,7 @@ export default function ProductPage() {
 
             {/* Quantity Selector and Add to Cart */}
             <div className={styles.quantitySection}>
-              <label className={styles.quantityLabel}>Quantity:</label>
+              <label className={styles.quantityLabel}>{t('product.quantity')}:</label>
               <div className={styles.quantityRow}>
               <div className={styles.quantityControls}>
                 <button
@@ -1309,7 +1311,7 @@ export default function ProductPage() {
               disabled={!product.available}
             >
               <ShoppingBag size={20} />
-              Add to Cart
+              {t('product.addToCart')}
             </button>
               </div>
             </div>
@@ -1317,7 +1319,7 @@ export default function ProductPage() {
             {/* Product Details */}
             {product.ingredients && (
               <div className={styles.productDetails}>
-                <h3 className={styles.detailsTitle}>Ingredients</h3>
+                <h3 className={styles.detailsTitle}>{t('product.ingredients')}</h3>
                 <ul className={styles.ingredientsList}>
                   {product.ingredients.map((ingredient, index) => (
                     <li key={index} className={styles.ingredientItem}>
@@ -1330,22 +1332,22 @@ export default function ProductPage() {
 
             {product.nutritionInfo && (
               <div className={styles.productDetails}>
-                <h3 className={styles.detailsTitle}>Nutrition Information</h3>
+                <h3 className={styles.detailsTitle}>{t('product.nutritionalInfo')}</h3>
                 <div className={styles.nutritionGrid}>
                   <div className={styles.nutritionItem}>
-                    <span className={styles.nutritionLabel}>Calories</span>
+                    <span className={styles.nutritionLabel}>{t('product.calories')}</span>
                     <span className={styles.nutritionValue}>{product.nutritionInfo.calories}</span>
                   </div>
                   <div className={styles.nutritionItem}>
-                    <span className={styles.nutritionLabel}>Protein</span>
+                    <span className={styles.nutritionLabel}>{t('product.protein')}</span>
                     <span className={styles.nutritionValue}>{product.nutritionInfo.protein}g</span>
                   </div>
                   <div className={styles.nutritionItem}>
-                    <span className={styles.nutritionLabel}>Carbs</span>
+                    <span className={styles.nutritionLabel}>{t('product.carbs')}</span>
                     <span className={styles.nutritionValue}>{product.nutritionInfo.carbs}g</span>
                   </div>
                   <div className={styles.nutritionItem}>
-                    <span className={styles.nutritionLabel}>Fat</span>
+                    <span className={styles.nutritionLabel}>{t('product.fat')}</span>
                     <span className={styles.nutritionValue}>{product.nutritionInfo.fat}g</span>
                   </div>
                 </div>
@@ -1359,7 +1361,7 @@ export default function ProductPage() {
       {product && (
         <div className={styles.relatedProductsSection}>
           <div className={styles.relatedProductsContainer}>
-            <h2 className={styles.relatedProductsTitle}>Related Products</h2>
+            <h2 className={styles.relatedProductsTitle}>{t('product.relatedProducts')}</h2>
             <div className={styles.relatedProductsGrid}>
               {products
                 .filter(p => p.category === product.category && p.id !== product.id)

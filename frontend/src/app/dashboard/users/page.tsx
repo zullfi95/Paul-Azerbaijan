@@ -8,6 +8,15 @@ import { User } from "../../../types/common";
 import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/apiHelpers";
 import { useAuthGuard, canManageUsers } from "../../../utils/authConstants";
 import DashboardLayout from "../../../components/DashboardLayout";
+import { 
+  SearchIcon, 
+  FilterIcon, 
+  RefreshIcon, 
+  EyeIcon,
+  UsersIcon,
+  CheckIcon,
+  XIcon 
+} from "../../../components/Icons";
 import "../../../styles/dashboard.css";
 
 // PAUL brand palette and typography
@@ -318,17 +327,15 @@ export default function UsersPage() {
 
   return (
     <DashboardLayout>
-      {/* Page Header */}
-      <div className="page-header">
-        <h1 className="page-title">Пользователи</h1>
-        <p className="page-description">Управление пользователями системы</p>
-      </div>
-
       {/* Stats Cards */}
-      <section className="dashboard-kpi-grid">
-        <div className="dashboard-kpi-card">
+      <section className="dashboard-kpi-grid" style={{ marginBottom: 'var(--space-6)' }}>
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
           <div className="dashboard-kpi-header">
-            <span className="dashboard-kpi-icon">👥</span>
+            <UsersIcon size={16} className="dashboard-kpi-icon" />
             <span className="dashboard-kpi-label">Всего пользователей</span>
           </div>
           <div className="dashboard-kpi-value">{users.length}</div>
@@ -336,122 +343,188 @@ export default function UsersPage() {
             В системе
           </div>
         </div>
-        <div className="dashboard-kpi-card">
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => setStatusFilter('active')}
+        >
           <div className="dashboard-kpi-header">
-            <span className="dashboard-kpi-icon status-approved">✅</span>
+            <CheckIcon size={16} className="dashboard-kpi-icon" style={{ color: '#10B981' }} />
             <span className="dashboard-kpi-label">Активные</span>
           </div>
-          <div className="dashboard-kpi-value status-approved">{users.filter(u => u.status === 'active').length}</div>
+          <div className="dashboard-kpi-value" style={{ color: '#10B981' }}>{users.filter(u => u.status === 'active').length}</div>
           <div className="dashboard-kpi-subtitle">
             Активных пользователей
           </div>
         </div>
-        <div className="dashboard-kpi-card">
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => setUserGroupFilter('client')}
+        >
           <div className="dashboard-kpi-header">
-            <span className="dashboard-kpi-icon status-new">🛍️</span>
+            <UsersIcon size={16} className="dashboard-kpi-icon" style={{ color: '#3B82F6' }} />
             <span className="dashboard-kpi-label">Клиенты</span>
           </div>
-          <div className="dashboard-kpi-value status-new">{users.filter(u => u.user_type === 'client').length}</div>
+          <div className="dashboard-kpi-value" style={{ color: '#3B82F6' }}>{users.filter(u => u.user_type === 'client').length}</div>
           <div className="dashboard-kpi-subtitle">
             Зарегистрированных
           </div>
         </div>
-        <div className="dashboard-kpi-card">
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => setUserGroupFilter('staff')}
+        >
           <div className="dashboard-kpi-header">
-            <span className="dashboard-kpi-icon status-processing">👔</span>
+            <UsersIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
             <span className="dashboard-kpi-label">Сотрудники</span>
           </div>
-          <div className="dashboard-kpi-value status-processing">{users.filter(u => u.user_type === 'staff').length}</div>
+          <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>{users.filter(u => u.user_type === 'staff').length}</div>
           <div className="dashboard-kpi-subtitle">
             Координаторы и наблюдатели
           </div>
         </div>
       </section>
 
-      {/* Enhanced Filters */}
-      <section className="enhanced-filters">
-        <div className="search-row">
+      {/* Filters */}
+      <section className="dashboard-filters" style={{ marginBottom: 'var(--space-6)' }}>
+        <div className="dashboard-search-container">
+          <SearchIcon size={16} className="dashboard-search-icon" />
           <input
             type="text"
             placeholder="Поиск по имени, email, компании..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            className="dashboard-search-input"
+            aria-label="Поиск пользователей"
           />
-          <div className="view-toggle">
-            <button
-              className={`view-button ${viewMode === 'table' ? 'active' : ''}`}
-              onClick={() => setViewMode('table')}
-            >
-              Таблица
-            </button>
-            <button
-              className={`view-button ${viewMode === 'grid' ? 'active' : ''}`}
-              onClick={() => setViewMode('grid')}
-            >
-              Сетка
-            </button>
-            <button
-              className={`view-button ${viewMode === 'cards' ? 'active' : ''}`}
-              onClick={() => setViewMode('cards')}
-            >
-              Карточки
-            </button>
-          </div>
         </div>
-        <div className="filter-row">
+        
+        <div className="dashboard-filter-container">
+          <FilterIcon size={16} className="dashboard-filter-icon" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="filter-select"
+            className="dashboard-filter-select"
+            aria-label="Фильтр по статусу"
           >
             <option value="all">Все статусы</option>
             <option value="active">Активные</option>
             <option value="inactive">Неактивные</option>
             <option value="suspended">Заблокированные</option>
           </select>
+        </div>
+
+        <div className="dashboard-filter-container">
+          <FilterIcon size={16} className="dashboard-filter-icon" />
           <select
             value={userGroupFilter}
             onChange={(e) => setUserGroupFilter(e.target.value as any)}
-            className="filter-select"
+            className="dashboard-filter-select"
+            aria-label="Фильтр по группе"
           >
             <option value="all">Все группы</option>
             <option value="client">Клиенты</option>
             <option value="staff">Сотрудники</option>
           </select>
+        </div>
+
+        <div className="dashboard-filter-container">
+          <FilterIcon size={16} className="dashboard-filter-icon" />
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="filter-select"
+            className="dashboard-filter-select"
+            aria-label="Сортировка"
           >
             <option value="name">По имени</option>
             <option value="email">По email</option>
             <option value="created_at">По дате создания</option>
             <option value="status">По статусу</option>
           </select>
-          <button
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="action-button"
-          >
-            {sortOrder === 'asc' ? '↑' : '↓'}
-          </button>
-          <div className="mass-actions">
-            <span className="selected-count">
+        </div>
+
+        <button
+          onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+          className="dashboard-action-btn"
+          aria-label={`Сортировка ${sortOrder === 'asc' ? 'по возрастанию' : 'по убыванию'}`}
+          style={{ minWidth: '48px' }}
+        >
+          {sortOrder === 'asc' ? '↑' : '↓'}
+        </button>
+
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 'var(--space-2)',
+          marginLeft: 'auto',
+          flexWrap: 'wrap'
+        }}>
+          {selectedUsers.size > 0 && (
+            <span style={{
+              fontSize: 'var(--text-sm)',
+              color: 'var(--paul-gray)',
+              padding: '4px 8px',
+              background: '#F0F9FF',
+              borderRadius: '12px',
+              fontWeight: 600
+            }}>
               Выбрано: {selectedUsers.size}
             </span>
+          )}
+          <div style={{ 
+            display: 'flex', 
+            gap: 'var(--space-2)',
+            borderLeft: '1px solid var(--paul-border)',
+            paddingLeft: 'var(--space-3)'
+          }}>
             <button
-              onClick={() => setShowCreateForm(true)}
-              className="primary-button"
+              className={`dashboard-action-btn`}
+              onClick={() => setViewMode('table')}
+              style={{ 
+                background: viewMode === 'table' ? 'var(--paul-black)' : 'var(--paul-white)',
+                color: viewMode === 'table' ? 'var(--paul-white)' : 'var(--paul-black)',
+                minWidth: 'auto',
+                padding: '6px 10px'
+              }}
             >
-              Добавить пользователя
+              Таблица
             </button>
             <button
-              onClick={loadUsers}
-              className="refresh-button"
+              className={`dashboard-action-btn`}
+              onClick={() => setViewMode('grid')}
+              style={{ 
+                background: viewMode === 'grid' ? 'var(--paul-black)' : 'var(--paul-white)',
+                color: viewMode === 'grid' ? 'var(--paul-white)' : 'var(--paul-black)',
+                minWidth: 'auto',
+                padding: '6px 10px'
+              }}
             >
-              Обновить
+              Сетка
             </button>
           </div>
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="dashboard-action-btn"
+            style={{
+              background: 'var(--paul-black)',
+              color: 'var(--paul-white)'
+            }}
+          >
+            + Добавить
+          </button>
+          <button
+            onClick={loadUsers}
+            className="dashboard-refresh-btn"
+            aria-label="Обновить список пользователей"
+          >
+            <RefreshIcon size={16} />
+            <span>Обновить</span>
+          </button>
         </div>
       </section>
 

@@ -1,6 +1,10 @@
 import Providers from './Providers';
 import './globals.css';
 
+// Force all pages to be dynamically rendered
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+
 export const metadata = {
   title: 'PAUL Azerbaijan',
   description: 'PAUL Azerbaijan - Французская пекарня с 1889 года',

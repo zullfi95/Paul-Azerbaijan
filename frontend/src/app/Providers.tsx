@@ -2,12 +2,20 @@
 
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { NextIntlClientProvider } from 'next-intl';
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { CartModalProvider } from "@/contexts/CartModalContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+interface ProvidersProps {
+  children: React.ReactNode;
+  locale: string;
+  messages: any;
+}
+
+export default function Providers({ children, locale, messages }: ProvidersProps) {
   const [queryClient] = React.useState(() => new QueryClient({
     defaultOptions: {
       queries: {
@@ -32,16 +40,20 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }));
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <CartProvider>
-          <CartModalProvider>
-            <NotificationProvider>
-              {children}
-            </NotificationProvider>
-          </CartModalProvider>
-        </CartProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <LanguageProvider initialLocale={locale}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <CartProvider>
+              <CartModalProvider>
+                <NotificationProvider>
+                  {children}
+                </NotificationProvider>
+              </CartModalProvider>
+            </CartProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </LanguageProvider>
+    </NextIntlClientProvider>
   );
 }

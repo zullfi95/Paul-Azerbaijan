@@ -1,15 +1,12 @@
 import { getRequestConfig } from 'next-intl/server';
-import { headers } from 'next/headers';
-import { getValidLocale, DEFAULT_LOCALE } from './config';
+import { DEFAULT_LOCALE } from './config';
 
 export default getRequestConfig(async () => {
-  // Get locale from headers (set by middleware)
-  const headersList = await headers();
-  const locale = headersList.get('x-next-intl-locale') || DEFAULT_LOCALE;
-  
+  // Always use default locale for server-side rendering
+  // Client-side language switching is handled by LanguageContext
   return {
-    locale: getValidLocale(locale),
-    messages: (await import(`../../messages/${getValidLocale(locale)}.json`)).default,
+    locale: DEFAULT_LOCALE,
+    messages: (await import(`../../messages/${DEFAULT_LOCALE}.json`)).default,
   };
 });
 

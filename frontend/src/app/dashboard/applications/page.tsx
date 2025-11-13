@@ -751,6 +751,20 @@ export default function ApplicationsPage() {
                           <EyeIcon size={12} />
                           <span>Просмотр</span>
                         </button>
+                        <button
+                          onClick={() => router.push(`/dashboard/orders/create?fromApplication=${app.id}`)}
+                          className="dashboard-action-btn"
+                          style={{ 
+                            fontSize: '11px', 
+                            padding: '4px 8px',
+                            background: '#10B981',
+                            color: 'white',
+                            borderColor: '#10B981'
+                          }}
+                        >
+                          <FileTextIcon size={12} />
+                          <span>Создать заказ</span>
+                        </button>
                       </div>
                     </td>
                   </tr>

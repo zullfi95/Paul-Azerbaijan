@@ -215,6 +215,13 @@
 }
 
 /* Social Media */
+.social-media-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
 .social-media {
   display: flex;
   gap: 14px;
@@ -238,6 +245,18 @@
   color: #ffffff;
   border-color: #ffffff;
   transform: translateY(-2px);
+}
+
+/* Developer Credit */
+.developer-credit {
+  color: #666666;
+  font-family: "Parisine Pro Clair", sans-serif;
+  font-size: 9px;
+  font-weight: 300;
+  opacity: 0.6;
+  text-align: center;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
 }
 
 /* Аккордеон для мобильной версии */
@@ -438,10 +457,19 @@
     padding: 13px 16px;
   }
   
+  .footer-mobile .social-media-wrapper {
+    align-items: flex-start;
+  }
+  
   .footer-mobile .social-media {
     justify-content: flex-start;
     margin-top: 0;
     margin-bottom: 0;
+  }
+  
+  .footer-mobile .developer-credit {
+    text-align: left;
+    font-size: 8px;
   }
   
   .footer-mobile .footer-payment {

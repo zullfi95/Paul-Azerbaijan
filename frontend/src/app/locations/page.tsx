@@ -7,6 +7,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import FeedbackModal from '../../components/FeedbackModal';
 import FeaturesSection from '../../components/FeaturesSection';
+import LocationsMap from '../../components/LocationsMap';
 import styles from './LocationsPage.module.css';
 
 export default function LocationsPage() {
@@ -28,25 +29,9 @@ export default function LocationsPage() {
               {t('pages.locations.subtitle')}
             </p>
 
-            {/* Main Map Image */}
+            {/* Interactive Map */}
             <div className={styles.mapContainer}>
-              <div className={styles.mapImage}>
-                <div className={styles.mapPlaceholder}>
-                  <div className={styles.mapIcon}>
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                      <circle cx="12" cy="10" r="3"/>
-                    </svg>
-                  </div>
-                  <h3 className={styles.mapTitle}>{t('pages.locations.mapTitle')}</h3>
-                  <p className={styles.mapDescription}>
-                    {t('pages.locations.mapDescription')}
-                  </p>
-                  <p className={styles.mapNote}>
-                    {t('pages.locations.mapComingSoon')}
-                  </p>
-                </div>
-              </div>
+              <LocationsMap height="600px" />
             </div>
 
             {/* Location Cards Grid */}

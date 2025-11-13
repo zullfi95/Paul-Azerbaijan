@@ -246,7 +246,9 @@
     "deliveryDate": "Çatdırılma Tarixi",
     "deliveryTime": "Çatdırılma Vaxtı",
     "pickupType": "Özü götürür",
+    "pickup": "Özü götürür",
     "delivery": "Çatdırılma",
+    "buffet": "Bufet",
     "additionalInfo": "Əlavə Məlumat",
     "specialRequests": "Xüsusi istəklər və ya qeydlər",
     "additionalItems": "Əlavə Elementlər",
@@ -288,6 +290,7 @@
     "title": "Sifarişlər",
     "orderNumber": "Sifariş №",
     "createOrder": "Sifariş Yarat",
+    "createTitle": "Sifariş Yarat",
     "editOrder": "Sifarişi Redaktə Et",
     "deleteOrder": "Sifarişi Sil",
     "confirmDelete": "Bu sifarişi silmək istədiyinizdən əminsiniz?",
@@ -514,7 +517,14 @@
     "weekdays": "Həftə günləri",
     "recurringTime": "Müntəzəm çatdırılma vaxtı",
     "requestedItems": "Tələb olunan məhsullar",
-    "applicationStatus": "Status"
+    "applicationStatus": "Status",
+    "pricesAndDiscounts": "Qiymətlər və Endirimlər",
+    "fixedDiscount": "Sabit Endirim (₼)",
+    "percentDiscount": "Faiz Endirim (%)",
+    "addFromMenuHint": "Məhsul əlavə etmək üçün \"Menyudan əlavə et\" düyməsini klikləyin",
+    "enableRecurring": "Müntəzəm sifarişləri aktivləşdir",
+    "itemsAvailable": "{count} məhsul mövcuddur",
+    "createOrder": "Sifariş Yarat"
   },
   "profile": {
     "title": "Mənim Profilim",

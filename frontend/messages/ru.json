@@ -246,7 +246,9 @@
     "deliveryDate": "Дата доставки",
     "deliveryTime": "Время доставки",
     "pickupType": "Самовывоз",
+    "pickup": "Самовывоз",
     "delivery": "Доставка",
+    "buffet": "Буфет",
     "additionalInfo": "Дополнительная информация",
     "specialRequests": "Особые пожелания или примечания",
     "additionalItems": "Дополнительные предметы",
@@ -515,7 +517,14 @@
     "weekdays": "Дни недели",
     "recurringTime": "Время повторяющейся доставки",
     "requestedItems": "Запрошенные товары",
-    "applicationStatus": "Статус"
+    "applicationStatus": "Статус",
+    "pricesAndDiscounts": "Цены и скидки",
+    "fixedDiscount": "Фиксированная скидка (₼)",
+    "percentDiscount": "Процентная скидка (%)",
+    "addFromMenuHint": "Нажмите \"Добавить из меню\" чтобы добавить товары",
+    "enableRecurring": "Включить повторяющиеся заказы",
+    "itemsAvailable": "Доступно {count} товаров",
+    "createOrder": "Создать заказ"
   },
   "profile": {
     "title": "Мой профиль",

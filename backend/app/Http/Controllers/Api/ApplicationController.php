@@ -99,8 +99,20 @@ class ApplicationController extends BaseApiController
         try {
             $this->authorize('view', $application);
             
+            $applicationData = $application->load('coordinator')->toArray();
+            
+            // Временное логирование для отладки
+            \Log::info('📋 Application data being sent to frontend:', [
+                'id' => $application->id,
+                'event_date' => $application->event_date,
+                'event_time' => $application->event_time,
+                'event_date_raw' => $application->getAttributes()['event_date'] ?? null,
+                'event_time_raw' => $application->getAttributes()['event_time'] ?? null,
+                'cart_items_count' => is_array($application->cart_items) ? count($application->cart_items) : 0,
+            ]);
+            
             return $this->successResponse([
-                'application' => $application->load('coordinator')
+                'application' => $applicationData
             ], 'Заявка получена успешно');
         } catch (\Exception $e) {
             return $this->handleException($e);

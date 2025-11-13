@@ -2,22 +2,24 @@
  * Internationalization Configuration
  * 
  * Centralized i18n configuration following DRY principle
- * Supports: English (en), Azerbaijani (az)
+ * Supports: English (en), Azerbaijani (az), Russian (ru)
  */
 
-export const LOCALES = ['en', 'az'] as const;
+export const LOCALES = ['en', 'az', 'ru'] as const;
 export type Locale = (typeof LOCALES)[number];
 
-export const DEFAULT_LOCALE: Locale = 'en';
+export const DEFAULT_LOCALE: Locale = 'az';
 
 export const LOCALE_NAMES: Record<Locale, string> = {
   en: 'English',
   az: 'Azərbaycan',
+  ru: 'Русский',
 };
 
 export const LOCALE_FLAGS: Record<Locale, string> = {
   en: '🇬🇧',
   az: '🇦🇿',
+  ru: '🇷🇺',
 };
 
 /**

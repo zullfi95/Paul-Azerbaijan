@@ -155,35 +155,36 @@ export const useOrderForm = () => {
             const result = await makeApiRequest<Application>(`/applications/${clientId}`);
             if (result.success && result.data) {
                 const app = result.data;
+                console.log('📋 Загружена заявка:', app);
                 setApplication(app);
+                
+                // Ищем клиента по client_id или email
+                let selectedClient = null;
+                if (app.client_id) {
+                    selectedClient = clients.find(c => c.id === app.client_id);
+                } else if (app.email) {
+                    selectedClient = clients.find(c => c.email === app.email);
+                }
+
+                console.log('👤 Найден клиент:', selectedClient);
+                
+                // Подставляем ВСЕ поля из заявки
                 setFormData(prev => ({
                     ...prev,
-                    selected_client_id: app.client_id || null,
+                    selected_client_id: selectedClient?.id || app.client_id || null,
                     comment: app.message || '',
                     delivery_date: app.event_date || '',
                     delivery_time: app.event_time || '',
                     delivery_address: app.event_address || '',
+                    delivery_type: 'delivery', // По умолчанию доставка для заявок
                     menu_items: app.cart_items || [],
                     application_id: app.id || null,
+                    // Подставляем тип клиента и название компании
+                    client_type: selectedClient?.client_category || 'one_time',
+                    company_name: app.company_name || selectedClient?.company_name || '',
                 }));
 
-                if (app.client_id) {
-                    const selectedClient = clients.find(c => c.id === app.client_id);
-                    if (selectedClient) {
-                        setFormData(prev => ({ ...prev, client_type: selectedClient.client_category || 'one_time' }));
-                    }
-                }
-                
-                if (!app.client_id && app.email) {
-                    const foundClient = clients.find(c => c.email === app.email);
-                    if (foundClient) {
-                        setFormData(prev => ({ 
-                            ...prev, 
-                            selected_client_id: foundClient.id,
-                            client_type: foundClient.client_category || 'one_time',
-                        }));
-                    }
-                }
+                console.log('✅ Форма заполнена данными из заявки');
             }
         } catch (error) {
             console.error('Ошибка загрузки заявки:', error);

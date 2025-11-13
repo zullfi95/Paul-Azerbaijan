@@ -118,7 +118,7 @@ export default function CartPage() {
           </div>
 
           {validatedCartData.length === 0 ? (
-            /* Пустая корзина */}
+            /* Empty cart */
             <div className={styles.emptyCart}>
               <h2 className={styles.emptyCartTitle}>
                 {t('cart.empty')}

@@ -105,6 +105,41 @@
       "title": "Katerinq Menyusu",
       "breadcrumb": "Katerinq",
       "sortBy": "SİRALA"
+    },
+    "about": {
+      "title": "Haqqımızda",
+      "subtitle": "Bizim Hekayə"
+    },
+    "contact": {
+      "title": "Bizimlə Əlaqə",
+      "subtitle": "Əlaqə Saxlayın",
+      "address": "Ünvan",
+      "phone": "Telefon",
+      "email": "E-poçt",
+      "hours": "İş Saatları",
+      "sendMessage": "Mesaj Göndər",
+      "message": "Mesaj",
+      "messagePlaceholder": "Sizin mesajınız..."
+    },
+    "faq": {
+      "title": "Tez-tez Verilən Suallar",
+      "subtitle": "Ümumi suallara cavablar tapın"
+    },
+    "delivery": {
+      "title": "Çatdırılma Məlumatı",
+      "subtitle": "Çatdırılma haqqında bilməli olduğunuz hər şey"
+    },
+    "terms": {
+      "title": "İstifadə Şərtləri",
+      "subtitle": "Zəhmət olmasa diqqətlə oxuyun"
+    },
+    "privacy": {
+      "title": "Məxfilik Siyasəti",
+      "subtitle": "Məlumatlarınızı necə qoruyuruq"
+    },
+    "cookies": {
+      "title": "Kukilər Siyasəti",
+      "subtitle": "Kukilərdən necə istifadə edirik"
     }
   },
   "hero": {
@@ -211,7 +246,7 @@
     "deliveryDate": "Çatdırılma Tarixi",
     "deliveryTime": "Çatdırılma Vaxtı",
     "pickupType": "Özü götürür",
-    "deliveryType": "Çatdırılma",
+    "delivery": "Çatdırılma",
     "additionalInfo": "Əlavə Məlumat",
     "specialRequests": "Xüsusi istəklər və ya qeydlər",
     "additionalItems": "Əlavə Elementlər",
@@ -519,43 +554,6 @@
     "protein": "Zülal",
     "carbs": "Karbohidrat",
     "fat": "Yağ"
-  },
-  "pages": {
-    "about": {
-      "title": "Haqqımızda",
-      "subtitle": "Bizim Hekayə"
-    },
-    "contact": {
-      "title": "Bizimlə Əlaqə",
-      "subtitle": "Əlaqə Saxlayın",
-      "address": "Ünvan",
-      "phone": "Telefon",
-      "email": "E-poçt",
-      "hours": "İş Saatları",
-      "sendMessage": "Mesaj Göndər",
-      "message": "Mesaj",
-      "messagePlaceholder": "Sizin mesajınız..."
-    },
-    "faq": {
-      "title": "Tez-tez Verilən Suallar",
-      "subtitle": "Ümumi suallara cavablar tapın"
-    },
-    "delivery": {
-      "title": "Çatdırılma Məlumatı",
-      "subtitle": "Çatdırılma haqqında bilməli olduğunuz hər şey"
-    },
-    "terms": {
-      "title": "İstifadə Şərtləri",
-      "subtitle": "Zəhmət olmasa diqqətlə oxuyun"
-    },
-    "privacy": {
-      "title": "Məxfilik Siyasəti",
-      "subtitle": "Məlumatlarınızı necə qoruyuruq"
-    },
-    "cookies": {
-      "title": "Kukilər Siyasəti",
-      "subtitle": "Kukilərdən necə istifadə edirik"
-    }
   }
 }
 

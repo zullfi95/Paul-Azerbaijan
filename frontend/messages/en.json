@@ -105,6 +105,41 @@
       "title": "Catering Menu",
       "breadcrumb": "Catering",
       "sortBy": "SORT BY"
+    },
+    "about": {
+      "title": "About Us",
+      "subtitle": "Our Story"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "subtitle": "Get in Touch",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Working Hours",
+      "sendMessage": "Send Message",
+      "message": "Message",
+      "messagePlaceholder": "Your message..."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers to common questions"
+    },
+    "delivery": {
+      "title": "Delivery Information",
+      "subtitle": "Everything you need to know about delivery"
+    },
+    "terms": {
+      "title": "Terms & Conditions",
+      "subtitle": "Please read carefully"
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "subtitle": "How we protect your data"
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "subtitle": "How we use cookies"
     }
   },
   "hero": {
@@ -211,7 +246,7 @@
     "deliveryDate": "Delivery Date",
     "deliveryTime": "Delivery Time",
     "pickupType": "Pickup",
-    "deliveryType": "Delivery",
+    "delivery": "Delivery",
     "additionalInfo": "Additional Information",
     "specialRequests": "Special requests or notes",
     "additionalItems": "Additional Items",
@@ -334,7 +369,6 @@
     "activeInMenu": "Active (shown in menu)",
     "category": "Category",
     "price": "Price",
-    "description": "Description",
     "images": "Images",
     "name": "Name"
   },
@@ -518,43 +552,6 @@
     "protein": "Protein",
     "carbs": "Carbs",
     "fat": "Fat"
-  },
-  "pages": {
-    "about": {
-      "title": "About Us",
-      "subtitle": "Our Story"
-    },
-    "contact": {
-      "title": "Contact Us",
-      "subtitle": "Get in Touch",
-      "address": "Address",
-      "phone": "Phone",
-      "email": "Email",
-      "hours": "Working Hours",
-      "sendMessage": "Send Message",
-      "message": "Message",
-      "messagePlaceholder": "Your message..."
-    },
-    "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Find answers to common questions"
-    },
-    "delivery": {
-      "title": "Delivery Information",
-      "subtitle": "Everything you need to know about delivery"
-    },
-    "terms": {
-      "title": "Terms & Conditions",
-      "subtitle": "Please read carefully"
-    },
-    "privacy": {
-      "title": "Privacy Policy",
-      "subtitle": "How we protect your data"
-    },
-    "cookies": {
-      "title": "Cookie Policy",
-      "subtitle": "How we use cookies"
-    }
   }
 }
 

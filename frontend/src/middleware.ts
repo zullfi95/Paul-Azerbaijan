@@ -4,15 +4,14 @@ import { LOCALES, DEFAULT_LOCALE } from './i18n/config';
 export default createMiddleware({
   locales: LOCALES,
   defaultLocale: DEFAULT_LOCALE,
-  localePrefix: 'never' // Don't add locale prefix to URLs
+  localePrefix: 'as-needed' //Default locale won't have prefix
 });
 
 export const config = {
   matcher: [
-    // Enable for all routes
-    '/((?!api|_next|_vercel|.*\\..*).*)',
-    // Include root
-    '/'
+    '/',
+    '/(az|en)/:path*',
+    '/((?!api|_next|_vercel|.*\\..*).*)'
   ]
 };
 

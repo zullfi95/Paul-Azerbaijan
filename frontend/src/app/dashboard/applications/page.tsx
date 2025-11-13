@@ -8,6 +8,15 @@ import { Application } from "../../../types/common";
 import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/apiHelpers";
 import { useAuthGuard, isCoordinator } from "../../../utils/authConstants";
 import DashboardLayout from "../../../components/DashboardLayout";
+import { 
+  SearchIcon, 
+  FilterIcon, 
+  RefreshIcon, 
+  EyeIcon,
+  FileTextIcon,
+  XIcon,
+  CheckIcon 
+} from "../../../components/Icons";
 import "../../../styles/dashboard.css";
 
 // Добавляем типы для новых функций
@@ -343,17 +352,15 @@ export default function ApplicationsPage() {
 
   return (
     <DashboardLayout>
-      {/* Page Header */}
-      <div className="page-header">
-        <h1 className="page-title">Заявки</h1>
-        <p className="page-description">Управление заявками клиентов</p>
-      </div>
-
       {/* Stats Cards */}
-      <section className="dashboard-kpi-grid">
-        <div className="dashboard-kpi-card">
+      <section className="dashboard-kpi-grid" style={{ marginBottom: 'var(--space-6)' }}>
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+        >
           <div className="dashboard-kpi-header">
-            <span className="dashboard-kpi-icon">📋</span>
+            <FileTextIcon size={16} className="dashboard-kpi-icon" />
             <span className="dashboard-kpi-label">Всего заявок</span>
           </div>
           <div className="dashboard-kpi-value">{applications.length}</div>
@@ -361,32 +368,47 @@ export default function ApplicationsPage() {
             Всего в системе
           </div>
         </div>
-        <div className="dashboard-kpi-card">
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => setStatusFilter('new')}
+        >
           <div className="dashboard-kpi-header">
-            <span className="dashboard-kpi-icon status-new">🆕</span>
+            <FileTextIcon size={16} className="dashboard-kpi-icon" style={{ color: '#3B82F6' }} />
             <span className="dashboard-kpi-label">Новые</span>
           </div>
-          <div className="dashboard-kpi-value status-new">{applications.filter(a => a.status === 'new').length}</div>
+          <div className="dashboard-kpi-value" style={{ color: '#3B82F6' }}>{applications.filter(a => a.status === 'new').length}</div>
           <div className="dashboard-kpi-subtitle">
             Требуют обработки
           </div>
         </div>
-        <div className="dashboard-kpi-card">
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => setStatusFilter('processing')}
+        >
           <div className="dashboard-kpi-header">
-            <span className="dashboard-kpi-icon status-processing">⏳</span>
+            <FileTextIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
             <span className="dashboard-kpi-label">В обработке</span>
           </div>
-          <div className="dashboard-kpi-value status-processing">{applications.filter(a => a.status === 'processing').length}</div>
+          <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>{applications.filter(a => a.status === 'processing').length}</div>
           <div className="dashboard-kpi-subtitle">
             В работе
           </div>
         </div>
-        <div className="dashboard-kpi-card">
+        <div 
+          className="dashboard-kpi-card"
+          role="button"
+          tabIndex={0}
+          onClick={() => setStatusFilter('approved')}
+        >
           <div className="dashboard-kpi-header">
-            <span className="dashboard-kpi-icon status-approved">✅</span>
+            <CheckIcon size={16} className="dashboard-kpi-icon" style={{ color: '#10B981' }} />
             <span className="dashboard-kpi-label">Одобренные</span>
           </div>
-          <div className="dashboard-kpi-value status-approved">{applications.filter(a => a.status === 'approved').length}</div>
+          <div className="dashboard-kpi-value" style={{ color: '#10B981' }}>{applications.filter(a => a.status === 'approved').length}</div>
           <div className="dashboard-kpi-subtitle">
             Успешно обработаны
           </div>
@@ -394,259 +416,360 @@ export default function ApplicationsPage() {
       </section>
 
       {/* Quick Filters */}
-      <section className="quick-filters">
-        <div className="quick-filters-content">
-          <h3 className="quick-filters-title">Быстрые фильтры</h3>
-          <div className="quick-filters-buttons">
-            {quickFilters.map(filter => (
-              <button
-                key={filter.id}
-                className={`quick-filter-button ${statusFilter === filter.id ? 'active' : ''} ${quickFilterCounts[filter.id] > 0 ? 'has-count' : ''}`}
-                onClick={() => setStatusFilter(filter.id as any)}
-                style={{ '--filter-color': filter.color } as React.CSSProperties}
-              >
-                {filter.label}
-                {quickFilterCounts[filter.id] > 0 && (
-                  <span className="filter-count">{quickFilterCounts[filter.id]}</span>
-                )}
-              </button>
-            ))}
+      <section 
+        className="dashboard-quick-actions"
+        style={{ marginBottom: 'var(--space-4)' }}
+      >
+        <div className="dashboard-quick-actions-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
+          {quickFilters.map(filter => (
             <button
-              className="clear-filters-button"
-              onClick={() => setStatusFilter('all')}
+              key={filter.id}
+              className="dashboard-quick-action-link"
+              onClick={() => setStatusFilter(filter.id as any)}
+              style={{ 
+                background: statusFilter === filter.id ? filter.color : 'var(--paul-white)',
+                color: statusFilter === filter.id ? 'var(--paul-white)' : 'var(--paul-black)',
+                borderColor: filter.color,
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 'var(--space-2)'
+              }}
             >
-              Сбросить
+              {filter.label}
+              {quickFilterCounts[filter.id] > 0 && (
+                <span style={{
+                  padding: '2px 8px',
+                  background: statusFilter === filter.id ? 'rgba(255,255,255,0.3)' : `${filter.color}20`,
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: 700
+                }}>
+                  {quickFilterCounts[filter.id]}
+                </span>
+              )}
             </button>
-          </div>
+          ))}
+          <button
+            className="dashboard-quick-action-link"
+            onClick={() => setStatusFilter('all')}
+            style={{
+              background: statusFilter === 'all' ? 'var(--paul-black)' : 'var(--paul-white)',
+              color: statusFilter === 'all' ? 'var(--paul-white)' : 'var(--paul-gray)',
+              borderColor: 'var(--paul-gray)'
+            }}
+          >
+            Все заявки
+          </button>
         </div>
       </section>
 
       {/* Enhanced Filters */}
-      <section className="enhanced-filters">
-        <div className="search-row">
+      <section className="dashboard-filters" style={{ marginBottom: 'var(--space-6)' }}>
+        <div className="dashboard-search-container">
+          <SearchIcon size={16} className="dashboard-search-icon" />
           <input
             type="text"
             placeholder="Поиск по имени, email, компании..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            className="dashboard-search-input"
+            aria-label="Поиск заявок"
           />
-          <div className="view-toggle">
-            <button
-              className={`view-button ${viewMode === 'table' ? 'active' : ''}`}
-              onClick={() => setViewMode('table')}
-            >
-              Таблица
-            </button>
-            <button
-              className={`view-button ${viewMode === 'grid' ? 'active' : ''}`}
-              onClick={() => setViewMode('grid')}
-            >
-              Сетка
-            </button>
-            <button
-              className={`view-button ${viewMode === 'kanban' ? 'active' : ''}`}
-              onClick={() => setViewMode('kanban')}
-            >
-              Канбан
-            </button>
-          </div>
         </div>
-        <div className="filter-row">
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="filter-select"
-          >
-            <option value="all">Все статусы</option>
-            <option value="new">Новые</option>
-            <option value="processing">В обработке</option>
-            <option value="approved">Одобренные</option>
-            <option value="rejected">Отклоненные</option>
-          </select>
+        <div className="dashboard-filter-container">
+          <FilterIcon size={16} className="dashboard-filter-icon" />
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="filter-select"
+            className="dashboard-filter-select"
+            aria-label="Сортировка"
           >
             <option value="date">По дате</option>
             <option value="name">По имени</option>
             <option value="status">По статусу</option>
             <option value="amount">По сумме</option>
           </select>
+        </div>
+        <button
+          onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+          className="dashboard-action-btn"
+          aria-label={`Сортировка ${sortOrder === 'asc' ? 'по возрастанию' : 'по убыванию'}`}
+          style={{ minWidth: '48px' }}
+        >
+          {sortOrder === 'asc' ? '↑' : '↓'}
+        </button>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 'var(--space-2)',
+          marginLeft: 'auto',
+          flexWrap: 'wrap'
+        }}>
+          {selectedApplications.size > 0 && (
+            <>
+              <span style={{
+                fontSize: 'var(--text-sm)',
+                color: 'var(--paul-gray)',
+                padding: '4px 8px',
+                background: '#F0F9FF',
+                borderRadius: '12px',
+                fontWeight: 600
+              }}>
+                Выбрано: {selectedApplications.size}
+              </span>
+              <button
+                onClick={() => handleMassAction({ type: 'status_change', status: 'approved' })}
+                className="dashboard-action-btn"
+                style={{ 
+                  borderColor: '#10B981',
+                  color: '#10B981'
+                }}
+              >
+                <CheckIcon size={14} />
+                <span>Одобрить</span>
+              </button>
+              <button
+                onClick={() => handleMassAction({ type: 'status_change', status: 'rejected' })}
+                className="dashboard-action-btn"
+                style={{ 
+                  borderColor: '#EF4444',
+                  color: '#EF4444'
+                }}
+              >
+                <XIcon size={14} />
+                <span>Отклонить</span>
+              </button>
+            </>
+          )}
           <button
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="action-button"
+            onClick={loadApplications}
+            className="dashboard-refresh-btn"
+            aria-label="Обновить список заявок"
           >
-            {sortOrder === 'asc' ? '↑' : '↓'}
+            <RefreshIcon size={16} />
+            <span>Обновить</span>
           </button>
-          <div className="mass-actions">
-            <span className="selected-count">
-              Выбрано: {selectedApplications.size}
-            </span>
-            {selectedApplications.size > 0 && (
-              <>
-                <button
-                  onClick={() => handleMassAction({ type: 'status_change', status: 'approved' })}
-                  className="export-button"
-                >
-                  Одобрить
-                </button>
-                <button
-                  onClick={() => handleMassAction({ type: 'status_change', status: 'rejected' })}
-                  className="actions-button"
-                >
-                  Отклонить
-                </button>
-                <button
-                  onClick={handleExport}
-                  className="export-button"
-                >
-                  Экспорт
-                </button>
-              </>
-            )}
-            <button
-              onClick={loadApplications}
-              className="refresh-button"
-            >
-              Обновить
-            </button>
-          </div>
         </div>
       </section>
 
       {/* Applications List */}
-      <section className="applications-container">
-        <div className="applications-main">
-          <div className="applications-header">
-            <div>
-              <h2 className="applications-title">Заявки</h2>
-              <p className="applications-subtitle">
-                {filteredApplications.length} из {applications.length} заявок
-              </p>
-            </div>
-            <div className="select-all-label">
+      <section className="dashboard-table-container">
+        <div className="dashboard-table-header">
+          <div>
+            <h2 className="dashboard-table-title">Заявки клиентов</h2>
+            <p style={{ 
+              fontSize: 'var(--text-sm)', 
+              color: 'var(--paul-gray)', 
+              marginTop: 'var(--space-1)' 
+            }}>
+              Показано {filteredApplications.length} из {applications.length} заявок
+            </p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+            <label style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 'var(--space-2)',
+              cursor: 'pointer',
+              fontSize: 'var(--text-sm)',
+              color: 'var(--paul-gray)'
+            }}>
               <input
                 type="checkbox"
                 checked={selectedApplications.size === filteredApplications.length && filteredApplications.length > 0}
                 onChange={handleSelectAll}
-                className="select-all-checkbox"
+                style={{ cursor: 'pointer' }}
               />
-              <span className="select-all-text">Выбрать все</span>
+              <span>Выбрать все</span>
+            </label>
+            <div style={{ 
+              display: 'flex', 
+              gap: 'var(--space-2)',
+              borderLeft: '1px solid var(--paul-border)',
+              paddingLeft: 'var(--space-3)'
+            }}>
+              <button
+                className={`dashboard-action-btn ${viewMode === 'table' ? '' : ''}`}
+                onClick={() => setViewMode('table')}
+                style={{ 
+                  background: viewMode === 'table' ? 'var(--paul-black)' : 'var(--paul-white)',
+                  color: viewMode === 'table' ? 'var(--paul-white)' : 'var(--paul-black)',
+                  minWidth: 'auto',
+                  padding: '6px 10px'
+                }}
+              >
+                Таблица
+              </button>
+              <button
+                className={`dashboard-action-btn ${viewMode === 'grid' ? '' : ''}`}
+                onClick={() => setViewMode('grid')}
+                style={{ 
+                  background: viewMode === 'grid' ? 'var(--paul-black)' : 'var(--paul-white)',
+                  color: viewMode === 'grid' ? 'var(--paul-white)' : 'var(--paul-black)',
+                  minWidth: 'auto',
+                  padding: '6px 10px'
+                }}
+              >
+                Сетка
+              </button>
+              <button
+                className={`dashboard-action-btn ${viewMode === 'kanban' ? '' : ''}`}
+                onClick={() => setViewMode('kanban')}
+                style={{ 
+                  background: viewMode === 'kanban' ? 'var(--paul-black)' : 'var(--paul-white)',
+                  color: viewMode === 'kanban' ? 'var(--paul-white)' : 'var(--paul-black)',
+                  minWidth: 'auto',
+                  padding: '6px 10px'
+                }}
+              >
+                Канбан
+              </button>
             </div>
           </div>
+        </div>
 
-          {applicationsLoading ? (
-            <div className="loading-state">
-              <div className="loading-spinner"></div>
-              <div className="loading-title">Загрузка заявок...</div>
-              <div className="loading-subtitle">Пожалуйста, подождите</div>
+        {applicationsLoading ? (
+          <div style={{ 
+            padding: '60px', 
+            textAlign: 'center',
+            color: 'var(--paul-gray)'
+          }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              border: '4px solid #f1f5f9',
+              borderTop: '4px solid var(--paul-black)',
+              borderRadius: '50%',
+              margin: '0 auto 24px',
+              animation: 'spin 1.2s linear infinite'
+            }}></div>
+            <div style={{ 
+              fontSize: '16px', 
+              fontWeight: 600, 
+              color: 'var(--paul-black)',
+              marginBottom: '8px'
+            }}>
+              Загрузка заявок...
             </div>
-          ) : filteredApplications.length === 0 ? (
-            <div className="empty-state">
-              <div className="empty-icon">📋</div>
-              <div className="empty-title">Заявки не найдены</div>
-              <div className="empty-subtitle">
-                {searchTerm || statusFilter !== 'all' 
-                  ? 'Попробуйте изменить фильтры поиска' 
-                  : 'Заявки появятся здесь после создания'
-                }
-              </div>
+            <div style={{ fontSize: '14px', color: 'var(--paul-gray)' }}>
+              Пожалуйста, подождите
             </div>
-          ) : viewMode === 'table' ? (
-            <div className="table-responsive">
-              <table className="applications-table">
-                <thead className="table-header">
-                  <tr>
-                    <th className="table-header-cell checkbox-cell">
+          </div>
+        ) : filteredApplications.length === 0 ? (
+          <div style={{ 
+            padding: '60px', 
+            textAlign: 'center',
+            color: 'var(--paul-gray)'
+          }}>
+            <div style={{ 
+              fontSize: '64px', 
+              marginBottom: '20px', 
+              opacity: 0.6 
+            }}>
+              📋
+            </div>
+            <div style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: 'var(--paul-black)',
+              marginBottom: '8px'
+            }}>
+              Заявки не найдены
+            </div>
+            <div style={{ fontSize: '14px', color: 'var(--paul-gray)' }}>
+              {searchTerm || statusFilter !== 'all' 
+                ? 'Попробуйте изменить фильтры поиска' 
+                : 'Заявки появятся здесь после создания'
+              }
+            </div>
+          </div>
+        ) : viewMode === 'table' ? (
+          <div className="responsive-table">
+            <table className="dashboard-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '40px' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedApplications.size === filteredApplications.length && filteredApplications.length > 0}
+                      onChange={handleSelectAll}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </th>
+                  <th>Заявитель</th>
+                  <th>Контакты</th>
+                  <th>Мероприятие</th>
+                  <th>Статус</th>
+                  <th>Сумма</th>
+                  <th>Дата</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredApplications.map((app) => (
+                  <tr key={app.id}>
+                    <td>
                       <input
                         type="checkbox"
-                        checked={selectedApplications.size === filteredApplications.length && filteredApplications.length > 0}
-                        onChange={handleSelectAll}
-                        className="table-checkbox"
+                        checked={selectedApplications.has(app.id)}
+                        onChange={() => handleApplicationSelect(app.id)}
+                        style={{ cursor: 'pointer' }}
                       />
-                    </th>
-                    <th className="table-header-cell">Заявитель</th>
-                    <th className="table-header-cell">Контакт</th>
-                    <th className="table-header-cell">Мероприятие</th>
-                    <th className="table-header-cell">Статус</th>
-                    <th className="table-header-cell">Сумма</th>
-                    <th className="table-header-cell">Дата</th>
-                    <th className="table-header-cell">Действия</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredApplications.map((app) => (
-                    <tr key={app.id} className="table-row">
-                      <td className="table-cell checkbox-cell">
-                        <input
-                          type="checkbox"
-                          checked={selectedApplications.has(app.id)}
-                          onChange={() => handleApplicationSelect(app.id)}
-                          className="table-checkbox"
-                        />
-                      </td>
-                      <td className="table-cell">
-                        <div className="applicant-name">
-                          {app.first_name} {app.last_name || ''}
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: 600, color: 'var(--paul-black)' }}>
+                        {app.first_name} {app.last_name || ''}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ color: 'var(--paul-black)' }}>{app.email}</div>
+                      {app.phone && (
+                        <div style={{ color: 'var(--paul-gray)', fontSize: '12px' }}>{app.phone}</div>
+                      )}
+                    </td>
+                    <td>
+                      {app.event_address ? (
+                        <div style={{ color: 'var(--paul-black)', fontSize: '13px' }}>
+                          {app.event_address}
                         </div>
-                      </td>
-                      <td className="table-cell">
-                        <div className="contact-email">{app.email}</div>
-                        {app.phone && (
-                          <div className="contact-phone">{app.phone}</div>
-                        )}
-                      </td>
-                      <td className="table-cell">
-                        {app.event_address ? (
-                          <div className="event-address">{app.event_address}</div>
-                        ) : (
-                          <div className="no-event">Не указано</div>
-                        )}
-                      </td>
-                      <td className="table-cell">
-                        <span 
-                          className={`status-badge status-${app.status}`}
-                          style={{ 
-                            backgroundColor: `${statusColors[app.status as keyof typeof statusColors]}20`,
-                            color: statusColors[app.status as keyof typeof statusColors]
-                          }}
+                      ) : (
+                        <div style={{ color: 'var(--paul-gray)', fontSize: '12px', fontStyle: 'italic' }}>
+                          Не указано
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <span className="dashboard-status-badge">
+                        {statusLabels[app.status as keyof typeof statusLabels]}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: 600, color: '#D4AF37' }}>
+                        {calculateTotalAmount(app.cart_items) ? `₼${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
+                      </div>
+                    </td>
+                    <td>
+                      {app.created_at ? new Date(app.created_at).toLocaleDateString('ru-RU') : '—'}
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
+                        <button
+                          onClick={() => handleApplicationPreview(app)}
+                          className="dashboard-action-btn"
+                          style={{ fontSize: '11px', padding: '4px 8px' }}
                         >
-                          {statusLabels[app.status as keyof typeof statusLabels]}
-                        </span>
-                      </td>
-                      <td className="table-cell">
-                        <div className="amount-value">
-                          {calculateTotalAmount(app.cart_items) ? `₽${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
-                        </div>
-                      </td>
-                      <td className="table-cell">
-                        <div className="event-date">
-                          {app.created_at ? new Date(app.created_at).toLocaleDateString('ru-RU') : '—'}
-                        </div>
-                      </td>
-                      <td className="table-cell">
-                        <div className="action-buttons">
-                          <button
-                            onClick={() => handleApplicationPreview(app)}
-                            className="action-button preview-button"
-                          >
-                            Просмотр
-                          </button>
-                          <button
-                            onClick={() => handleStatusChange(app.id, 'processing')}
-                            className="action-button edit-button"
-                          >
-                            Обработать
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                          <EyeIcon size={12} />
+                          <span>Просмотр</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           ) : viewMode === 'grid' ? (
             <div className="grid-view">
               {filteredApplications.map((app) => (
@@ -739,30 +862,49 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
               ))}
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </section>
 
       {/* Mass Actions Panel */}
       {showMassActions && massAction && (
-        <div className="mass-actions-panel">
-          <h3 className="mass-actions-title">
+        <div style={{
+          marginTop: 'var(--space-4)',
+          padding: 'var(--space-4)',
+          background: 'linear-gradient(135deg, #F8FAFC, #EEF2FF)',
+          borderRadius: 'var(--radius-xl)',
+          border: '2px solid var(--paul-border)',
+          boxShadow: 'var(--shadow-lg)'
+        }}>
+          <h3 style={{
+            marginBottom: 'var(--space-3)',
+            fontSize: 'var(--text-base)',
+            fontWeight: 700,
+            color: 'var(--paul-black)'
+          }}>
             Массовые действия
-            <span className="selected-count-highlight">
+            <span style={{
+              color: '#3B82F6',
+              marginLeft: 'var(--space-2)'
+            }}>
               ({selectedApplications.size} выбрано)
             </span>
           </h3>
-          <div className="mass-actions-buttons">
+          <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
             <button
               onClick={executeMassAction}
-              className="reject-button"
+              className="dashboard-action-btn"
+              style={{ 
+                background: '#10B981',
+                color: 'var(--paul-white)',
+                borderColor: '#10B981'
+              }}
             >
               Выполнить
             </button>
             <button
               onClick={() => setShowMassActions(false)}
-              className="close-button"
+              className="dashboard-action-btn"
             >
               Отмена
             </button>

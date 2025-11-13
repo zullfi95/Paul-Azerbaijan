@@ -7,15 +7,26 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { CartModalProvider } from "@/contexts/CartModalContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
+import enMessages from '../../messages/en.json';
+import azMessages from '../../messages/az.json';
 
 interface ProvidersProps {
   children: React.ReactNode;
-  locale: string;
-  messages: any;
 }
 
-export default function Providers({ children, locale, messages }: ProvidersProps) {
+function IntlProvider({ children }: { children: React.ReactNode }) {
+  const { locale } = useLanguage();
+  const messages = locale === 'az' ? azMessages : enMessages;
+  
+  return (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      {children}
+    </NextIntlClientProvider>
+  );
+}
+
+export default function Providers({ children }: ProvidersProps) {
   const [queryClient] = React.useState(() => new QueryClient({
     defaultOptions: {
       queries: {
@@ -40,8 +51,8 @@ export default function Providers({ children, locale, messages }: ProvidersProps
   }));
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      <LanguageProvider initialLocale={locale}>
+    <LanguageProvider initialLocale="en">
+      <IntlProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <CartProvider>
@@ -53,7 +64,7 @@ export default function Providers({ children, locale, messages }: ProvidersProps
             </CartProvider>
           </AuthProvider>
         </QueryClientProvider>
-      </LanguageProvider>
-    </NextIntlClientProvider>
+      </IntlProvider>
+    </LanguageProvider>
   );
 }

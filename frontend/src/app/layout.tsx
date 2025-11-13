@@ -1,4 +1,3 @@
-import { getLocale, getMessages } from 'next-intl/server';
 import Providers from './Providers';
 import './globals.css';
 
@@ -17,18 +16,15 @@ export const metadata = {
   manifest: '/manifest.json',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const locale = await getLocale();
-  const messages = await getMessages();
-
   return (
-    <html lang={locale}>
+    <html lang="en">
       <body>
-        <Providers locale={locale} messages={messages}>
+        <Providers>
           {children}
         </Providers>
       </body>

@@ -41,7 +41,6 @@ type OtherInfoFormData = Pick<OrderFormData, 'notes' | 'additionalItems'>;
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const t = useTranslations();
   const { items: cart, clearCart } = useCart();
   const { user, isAuthenticated, isLoading } = useAuth();
   

@@ -33,7 +33,7 @@ export const paulLocations: Location[] = [
     address: 'Neftchilar Avenue, 123',
     phone: ['050 464 07 70', '055 464 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3656, 49.8359] // Port Baku area
+    coordinates: [40.3765113, 49.8637226] // Port Baku Towers (verified)
   },
   {
     id: 2,
@@ -41,7 +41,7 @@ export const paulLocations: Location[] = [
     address: 'Mammad Amin Razulzadeh Street, 8-10',
     phone: ['050 899 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3775, 49.8425] // Park Bulvar area
+    coordinates: [40.3754686, 49.8435136] // Nizami Cinema area
   },
   {
     id: 3,
@@ -49,7 +49,7 @@ export const paulLocations: Location[] = [
     address: 'Jafar Jabbarli Street, 44',
     phone: ['050 890 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3725, 49.8375]
+    coordinates: [40.3998587, 49.8527933] // Ganjlik Mall area
   },
   {
     id: 4,
@@ -57,7 +57,7 @@ export const paulLocations: Location[] = [
     address: 'Khojali Avenue, 37',
     phone: ['051 225 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3895, 49.8495]
+    coordinates: [40.3582328, 49.8374188] // Deniz Mall area
   },
   {
     id: 5,
@@ -65,7 +65,7 @@ export const paulLocations: Location[] = [
     address: 'Heydar Aliyev Avenue, 106A',
     phone: ['051 335 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3825, 49.8520]
+    coordinates: [40.4034736, 49.8729281] // Park Cinema area
   },
   {
     id: 6,
@@ -73,7 +73,7 @@ export const paulLocations: Location[] = [
     address: 'Azadliq Avenue, 15a/4',
     phone: ['050 772 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3995, 49.8665]
+    coordinates: [40.379006, 49.8467346] // 28 Mall (verified)
   },
   {
     id: 7,
@@ -81,7 +81,7 @@ export const paulLocations: Location[] = [
     address: 'Zarifa Aliyeva Street, 93',
     phone: ['051 206 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3785, 49.8395]
+    coordinates: [40.3729566, 49.8496137] // Zarifa Aliyeva 93 (verified)
   },
   {
     id: 8,
@@ -89,7 +89,7 @@ export const paulLocations: Location[] = [
     address: 'Heydar Aliyev Avenue, 155',
     phone: ['050 698 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3915, 49.8585]
+    coordinates: [40.4124336, 49.8969206] // Ministry of Economy (verified)
   },
   {
     id: 9,
@@ -97,7 +97,7 @@ export const paulLocations: Location[] = [
     address: 'Neftchilar avenue 66, 68 (Aypara Palace and Town)',
     phone: ['010 324 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3665, 49.8365]
+    coordinates: [40.3708113, 49.8366915] // Fountains Square area
   },
   {
     id: 10,
@@ -105,7 +105,7 @@ export const paulLocations: Location[] = [
     address: 'Ahmadbey Aghaoghlu str. 61',
     phone: ['010 321 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
-    coordinates: [40.3855, 49.8545]
+    coordinates: [40.3964110, 49.8497598] // ADA University (verified)
   }
 ];
 
@@ -138,8 +138,8 @@ export default function LocationsMap({ height = '600px' }: LocationsMapProps) {
     );
   }
 
-  // Центр Баку
-  const bakuCenter: [number, number] = [40.3777, 49.8420];
+  // Центр Баку (среднее значение всех локаций)
+  const bakuCenter: [number, number] = [40.3845, 49.8565];
 
   return (
     <div style={{ 

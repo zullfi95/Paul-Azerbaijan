@@ -552,6 +552,14 @@
     "protein": "Protein",
     "carbs": "Carbs",
     "fat": "Fat"
+  },
+  "cookieConsent": {
+    "title": "Cookie Consent",
+    "message": "We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking \"Accept All\", you consent to our use of cookies.",
+    "acceptAll": "Accept All",
+    "rejectAll": "Reject All",
+    "preferences": "Cookie Preferences",
+    "learnMore": "Learn More"
   }
 }
 

@@ -313,7 +313,7 @@ export default function PlattersPage() {
             <div className={styles.pageHeaderContent}>
               <h1 className={styles.pageTitle}>
                  {t('pages.platters.title')}
-                </h1>
+              </h1>
               <button className={styles.filterButton}
 >
                 {t('common.filter')}

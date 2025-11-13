@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { X, Search, Plus } from 'lucide-react';
-import { CartItem } from '../types/unified';
+import { CartItem } from '../types/common';
 import styles from './MenuSlidePanel.module.css';
 
 interface MenuCategory {

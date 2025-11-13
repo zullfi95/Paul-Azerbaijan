@@ -275,7 +275,7 @@ export default function ViennoiseriePage() {
             <div className={styles.pageHeaderContent}>
               <h1 className={styles.pageTitle}>
                  {t('pages.viennoiserie.title')}
-                </h1>
+              </h1>
               
               <div className={styles.filterContainer} data-filter-menu>
                 <button 

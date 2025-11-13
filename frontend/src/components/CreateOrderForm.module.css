@@ -105,8 +105,7 @@
 
 .input:focus {
   outline: none;
-  ring: 2px;
-  ring-color: #3b82f6;
+  box-shadow: 0 0 0 2px #3b82f6;
   border-color: transparent;
 }
 
@@ -122,8 +121,7 @@
 
 .textarea:focus {
   outline: none;
-  ring: 2px;
-  ring-color: #3b82f6;
+  box-shadow: 0 0 0 2px #3b82f6;
   border-color: transparent;
 }
 
@@ -139,8 +137,7 @@
 
 .select:focus {
   outline: none;
-  ring: 2px;
-  ring-color: #3b82f6;
+  box-shadow: 0 0 0 2px #3b82f6;
   border-color: transparent;
 }
 
@@ -195,7 +192,8 @@
 }
 
 .radioInput:focus {
-  ring-color: #3b82f6;
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
 .radioText {
@@ -417,7 +415,8 @@
 }
 
 .recurringCheckboxInput:focus {
-  ring-color: #6b7280;
+  outline: 2px solid #6b7280;
+  outline-offset: 2px;
 }
 
 .recurringCheckboxText {
@@ -468,8 +467,7 @@
 
 .recurringInput:focus {
   outline: none;
-  ring: 1px;
-  ring-color: #6b7280;
+  box-shadow: 0 0 0 1px #6b7280;
   border-color: #6b7280;
 }
 
@@ -485,8 +483,7 @@
 
 .recurringSelect:focus {
   outline: none;
-  ring: 1px;
-  ring-color: #6b7280;
+  box-shadow: 0 0 0 1px #6b7280;
   border-color: #6b7280;
 }
 
@@ -502,8 +499,7 @@
 
 .recurringTextarea:focus {
   outline: none;
-  ring: 1px;
-  ring-color: #6b7280;
+  box-shadow: 0 0 0 1px #6b7280;
   border-color: #6b7280;
 }
 
@@ -530,7 +526,8 @@
 }
 
 .dayCheckbox:focus {
-  ring-color: #3b82f6;
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
 .dayText {
@@ -604,8 +601,7 @@
 
 .resourceInput:focus {
   outline: none;
-  ring: 2px;
-  ring-color: #3b82f6;
+  box-shadow: 0 0 0 2px #3b82f6;
   border-color: transparent;
 }
 
@@ -713,8 +709,7 @@
 
 .searchInput:focus {
   outline: none;
-  ring: 2px;
-  ring-color: #3b82f6;
+  box-shadow: 0 0 0 2px #3b82f6;
   border-color: transparent;
 }
 

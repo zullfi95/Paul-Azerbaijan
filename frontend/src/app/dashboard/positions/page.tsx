@@ -37,8 +37,16 @@ export default function PositionsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [detailsItem, setDetailsItem] = useState<MenuItem | null>(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  // Быстрый доступ к названию категории по id
+  const categoryNameById = useMemo(() => {
+    const map = new Map<number, string>();
+    (categories || []).forEach(c => map.set(c.id, c.name));
+    return map;
+  }, [categories]);
 
   // Auth Guard
   useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, (user) => {
@@ -229,7 +237,7 @@ export default function PositionsPage() {
         </div>
       </section>
 
-      <section className="dashboard-table-container">
+      <section className="dashboard-table-container" style={{ maxWidth: '100%', overflowX: 'hidden' }}>
         <div className="dashboard-table-header">
           <div>
             <h2 className="dashboard-table-title">Позиции меню</h2>
@@ -300,8 +308,17 @@ export default function PositionsPage() {
             </button>
           </div>
 
-          <div className="responsive-table">
-            <table className="dashboard-table">
+          <div className="responsive-table" style={{ overflowX: 'hidden' }}>
+            <table className="dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+              <colgroup>
+                <col style={{ width: '56px' }} />
+                <col style={{ width: '28%' }} />
+                <col style={{ width: '22%' }} />
+                <col style={{ width: '12%' }} />
+                <col style={{ width: '9%' }} />
+                <col style={{ width: '9%' }} />
+                <col style={{ width: '20%' }} />
+              </colgroup>
               <thead>
                 <tr>
                   <th>Изображение</th>
@@ -342,23 +359,30 @@ export default function PositionsPage() {
                           <img
                             src={item.images[0]}
                             alt={item.name}
-                            width={50}
-                            height={50}
-                            style={{ objectFit: "cover", borderRadius: "8px" }}
+                            width={40}
+                            height={40}
+                            style={{ objectFit: "cover", borderRadius: "6px" }}
                           />
                         ) : (
-                          <div style={{ width: 50, height: 50, background: '#eee', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#888' }}>
+                          <div style={{ width: 40, height: 40, background: '#eee', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#888' }}>
                             No Image
                           </div>
                         )}
                       </td>
-                      <td>{item.name}</td>
-                      <td>{item.menuCategory?.name || "Без категории"}</td>
+                      <td style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}>{item.name}</td>
+                      <td style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}>{item.menuCategory?.name || (item.menu_category_id ? categoryNameById.get(item.menu_category_id) : "Без категории")}</td>
                       <td>{item.price} {item.currency}</td>
                       <td>{item.is_available ? "Да" : "Нет"}</td>
                       <td>{item.is_active ? "Да" : "Нет"}</td>
                       <td>
-                        <div style={{ display: "flex", gap: "8px" }}>
+                        <div style={{ display: "flex", gap: "6px", flexWrap: 'wrap' }}>
+                          <button
+                            onClick={() => setDetailsItem(item)}
+                            className="dashboard-action-btn"
+                            aria-label="Подробнее"
+                          >
+                            Подробнее
+                          </button>
                           <button
                             onClick={() => router.push(`/dashboard/positions/${item.id}/edit`)}
                             className="dashboard-action-btn"
@@ -385,7 +409,7 @@ export default function PositionsPage() {
 
           {/* Pagination */}
           {menuItems && menuItems.last_page > 1 && (
-            <div className="dashboard-pagination" style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-4)', gap: 'var(--space-2)' }}>
+            <div className="dashboard-pagination" style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-4)', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
               {Array.from({ length: menuItems.last_page }, (_, i) => i + 1).map(page => (
                 <button
                   key={page}
@@ -399,6 +423,92 @@ export default function PositionsPage() {
             </div>
           )}
         </section>
+
+      {/* Slide-over Details Panel */}
+      {detailsItem && (
+        <>
+          <div
+            onClick={() => setDetailsItem(null)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', zIndex: 60 }}
+          />
+          <aside
+            role="dialog"
+            aria-label="Подробнее о продукте"
+            style={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              height: '100vh',
+              width: '420px',
+              maxWidth: '90vw',
+              background: '#FFFCF8',
+              boxShadow: '-8px 0 24px rgba(0,0,0,0.12)',
+              zIndex: 61,
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', borderBottom: '1px solid var(--paul-border)' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--paul-black)' }}>{detailsItem.name}</h3>
+              <button onClick={() => setDetailsItem(null)} className="dashboard-action-btn" aria-label="Закрыть">
+                <XIcon size={14} />
+              </button>
+            </div>
+
+            <div style={{ padding: '16px', overflowY: 'auto' }}>
+              {detailsItem.images && detailsItem.images.length > 0 ? (
+                <img
+                  src={detailsItem.images[0]}
+                  alt={detailsItem.name}
+                  style={{ width: '100%', height: 180, objectFit: 'cover', borderRadius: 8, marginBottom: 12 }}
+                />
+              ) : (
+                <div style={{ width: '100%', height: 180, background: '#eee', borderRadius: 8, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 12 }}>No Image</div>
+              )}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', rowGap: 8 }}>
+                <div>
+                  <div style={{ fontSize: 12, color: '#6b7280' }}>Категория</div>
+                  <div style={{ fontSize: 14 }}>{detailsItem.menuCategory?.name || (detailsItem.menu_category_id ? categoryNameById.get(detailsItem.menu_category_id) : 'Без категории')}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, color: '#6b7280' }}>Цена</div>
+                  <div style={{ fontSize: 14 }}>{detailsItem.price} {detailsItem.currency}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, color: '#6b7280' }}>Доступность</div>
+                  <div style={{ fontSize: 14 }}>{detailsItem.is_available ? 'Да' : 'Нет'}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, color: '#6b7280' }}>Активно</div>
+                  <div style={{ fontSize: 14 }}>{detailsItem.is_active ? 'Да' : 'Нет'}</div>
+                </div>
+                {detailsItem.description && (
+                  <div>
+                    <div style={{ fontSize: 12, color: '#6b7280' }}>Описание</div>
+                    <div style={{ fontSize: 14, whiteSpace: 'pre-wrap' }}>{detailsItem.description}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div style={{ marginTop: 'auto', padding: '12px 16px', borderTop: '1px solid var(--paul-border)', display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => router.push(`/dashboard/positions/${detailsItem.id}/edit`)}
+                className="dashboard-action-btn"
+              >
+                Редактировать
+              </button>
+              <button
+                onClick={() => setDetailsItem(null)}
+                className="dashboard-action-btn"
+              >
+                Закрыть
+              </button>
+            </div>
+          </aside>
+        </>
+      )}
 
       <SkeletonStyles />
     </DashboardLayout>

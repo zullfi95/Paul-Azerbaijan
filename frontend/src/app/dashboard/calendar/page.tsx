@@ -21,10 +21,12 @@ import {
 } from "../../../components/Icons";
 import "../../../styles/dashboard.css";
 import styles from './page.module.css';
+import { useTranslations } from 'next-intl';
 
 export default function CalendarPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const t = useTranslations();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);

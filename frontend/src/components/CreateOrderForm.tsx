@@ -9,11 +9,13 @@ import { Plus, Search, X, ShoppingCart } from 'lucide-react';
 import { useOrderForm } from "../hooks/useOrderForm";
 import MenuSlidePanel from "./MenuSlidePanel";
 import styles from './CreateOrderForm.module.css';
+import { useTranslations } from 'next-intl';
 
 
 export default function CreateOrderForm() {
     const { isAuthenticated, isLoading: authLoading, user } = useAuth();
     const router = useRouter();
+    const t = useTranslations();
     const {
         loading,
         clients,
@@ -63,7 +65,7 @@ export default function CreateOrderForm() {
                 <div className={styles.loadingOverlay}>
                     <div className={styles.loadingContent}>
                         <div className={styles.loadingSpinner}></div>
-                        <p className={styles.loadingText}>Загрузка...</p>
+                        <p className={styles.loadingText}>{t('common.loading')}</p>
                     </div>
                 </div>
             )}
@@ -80,7 +82,7 @@ export default function CreateOrderForm() {
                                 >
                                     ←
                                 </button>
-                                <h1 className={styles.title}>Создание заказа</h1>
+                                <h1 className={styles.title}>{t('orders.createTitle')}</h1>
                             </div>
                         </div>
                     </div>
@@ -104,10 +106,10 @@ export default function CreateOrderForm() {
                                     {application?.message && <p><strong>{t('checkout.message')}:</strong> {application?.message}</p>}
                                     {application?.cart_items && application?.cart_items?.length && (application?.cart_items?.length ?? 0) > 0 && (
                                     <div>
-                                            <p><strong>Запрошенные товары:</strong></p>
+                                            <p><strong>{t('form.requestedItems')}:</strong></p>
                                             <ul className="list-disc list-inside ml-4">
                                                 {application?.cart_items?.map((item, index) => (
-                                                    <li key={index}>{item.name} (x{item.quantity}) - {item.price} ₼</li>
+                                                    <li key={index}>{item.name} (x{item.quantity ?? 0}) - {item.price} ₼</li>
                                                 ))}
                                             </ul>
                                     </div>
@@ -118,7 +120,7 @@ export default function CreateOrderForm() {
 
                         {/* Client Selection */}
                         <div className={styles.formSection}>
-                            <label htmlFor="client" className={styles.label}>Клиент</label>
+                            <label htmlFor="client" className={styles.label}>{t('form.client')}</label>
                             <select
                                 id="client"
                                 value={formData.selected_client_id || ''}
@@ -134,10 +136,10 @@ export default function CreateOrderForm() {
                                 className={styles.select}
                                 required
                             >
-                                <option value="">Выберите клиента</option>
+                                <option value="">{t('form.selectClient')}</option>
                                 {clients.map((client) => (
                                     <option key={client.id} value={client.id}>
-                                        {client.name} ({client.client_category === 'corporate' ? 'Корпоративный' : 'Разовый'})
+                                        {client.name} ({client.client_category === 'corporate' ? t('form.corporate') : t('form.onetime')})
                                     </option>
                                 ))}
                             </select>
@@ -149,7 +151,7 @@ export default function CreateOrderForm() {
                                 <div className="flex items-center">
                                     <div className={`${styles.clientTypeIndicator} ${formData.client_type === 'corporate' ? styles.corporate : styles.individual}`}></div>
                                     <span className={styles.clientTypeText}>
-                                        {formData.client_type === 'corporate' ? 'Корпоративный клиент' : 'Разовый клиент'}
+                                        {formData.client_type === 'corporate' ? t('form.corporateClient') : t('form.onetimeClient')}
                                     </span>
                                 </div>
                             </div>
@@ -157,12 +159,12 @@ export default function CreateOrderForm() {
 
                         {/* Delivery Type */}
                         <div className={styles.formSection}>
-                            <label className={styles.label}>Тип доставки</label>
+                            <label className={styles.label}>{t('form.deliveryType')}</label>
                             <div className={styles.radioGroup}>
                                 {[
-                                    { value: 'delivery', label: 'Доставка' },
-                                    { value: 'pickup', label: 'Самовывоз' },
-                                    { value: 'buffet', label: 'Кейтеринг' }
+                                    { value: 'delivery', label: t('checkout.delivery') },
+                                    { value: 'pickup', label: t('checkout.pickup') },
+                                    { value: 'buffet', label: t('checkout.buffet') }
                                 ].map((type) => (
                                     <label key={type.value} className={styles.radioLabel}>
                                         <input
@@ -183,7 +185,7 @@ export default function CreateOrderForm() {
                         {formData.delivery_type !== 'pickup' && (
                             <div className={styles.grid2}>
                                 <div className={styles.formSection}>
-                                    <label htmlFor="delivery_date" className={styles.label}>Дата</label>
+                                    <label htmlFor="delivery_date" className={styles.label}>{t('form.deliveryDate')}</label>
                                     <input
                                         type="date"
                                         id="delivery_date"
@@ -194,7 +196,7 @@ export default function CreateOrderForm() {
                                     />
                                 </div>
                                 <div className={styles.formSection}>
-                                    <label htmlFor="delivery_time" className={styles.label}>Время</label>
+                                    <label htmlFor="delivery_time" className={styles.label}>{t('form.deliveryTime')}</label>
                                     <input
                                         type="time"
                                         id="delivery_time"
@@ -210,14 +212,14 @@ export default function CreateOrderForm() {
                         {/* Delivery Address */}
                         {formData.delivery_type !== 'pickup' && (
                             <div className={styles.formSection}>
-                                <label htmlFor="delivery_address" className={styles.label}>Адрес доставки</label>
+                                <label htmlFor="delivery_address" className={styles.label}>{t('form.deliveryAddress')}</label>
                                 <input
                                     type="text"
                                     id="delivery_address"
                                     value={formData.delivery_address}
                                     onChange={(e) => handleInputChange('delivery_address', e.target.value)}
                                     className={styles.input}
-                                    placeholder="Введите адрес доставки"
+                                    placeholder={t('form.deliveryAddressPlaceholder')}
                                     required
                                 />
                             </div>
@@ -225,25 +227,25 @@ export default function CreateOrderForm() {
 
                         {/* Comment */}
                         <div className={styles.formSection}>
-                            <label htmlFor="comment" className={styles.label}>Комментарий</label>
+                            <label htmlFor="comment" className={styles.label}>{t('form.comment')}</label>
                             <textarea
                                 id="comment"
                                 value={formData.comment}
                                 onChange={(e) => handleInputChange('comment', e.target.value)}
                                 className={styles.textarea}
-                                placeholder="Дополнительные заметки или инструкции"
+                                placeholder={t('form.commentPlaceholder')}
                                 rows={3}
                             />
                         </div>
 
                         {/* Скидки и стоимость доставки */}
                         <div className={styles.pricingSection}>
-                            <h3 className={styles.pricingTitle}>Цены и скидки</h3>
+                            <h3 className={styles.pricingTitle}>{t('form.pricesAndDiscounts')}</h3>
                             
                             <div className={styles.grid3}>
                                 {/* Стоимость доставки */}
                                 <div className={styles.formSection}>
-                                    <label htmlFor="delivery_cost" className={styles.label}>Стоимость доставки (₼)</label>
+                                    <label htmlFor="delivery_cost" className={styles.label}>{t('form.deliveryCost')}</label>
                                     <input
                                         type="number"
                                         id="delivery_cost"
@@ -258,7 +260,7 @@ export default function CreateOrderForm() {
 
                                 {/* Фиксированная скидка */}
                                 <div className={styles.formSection}>
-                                    <label htmlFor="discount_fixed" className={styles.label}>Скидка фиксир. (₼)</label>
+                                    <label htmlFor="discount_fixed" className={styles.label}>{t('form.fixedDiscount')}</label>
                                     <input
                                         type="number"
                                         id="discount_fixed"
@@ -273,7 +275,7 @@ export default function CreateOrderForm() {
 
                                 {/* Процентная скидка */}
                                 <div className={styles.formSection}>
-                                    <label htmlFor="discount_percent" className={styles.label}>Скидка процент. (%)</label>
+                                    <label htmlFor="discount_percent" className={styles.label}>{t('form.percentDiscount')}</label>
                                     <input
                                         type="number"
                                         id="discount_percent"
@@ -292,10 +294,10 @@ export default function CreateOrderForm() {
                             <div className={styles.menuItemsSection}>
                                 <div className={styles.menuItemsHeader}>
                                     <div>
-                                        <h3 className={styles.menuItemsTitle}>Товары заказа</h3>
+                                        <h3 className={styles.menuItemsTitle}>{t('form.orderItems')}</h3>
                                         {menuItems.length > 0 && (
                                             <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                                                Доступно {menuItems.length} товаров в меню
+                                                {t('form.itemsAvailable', { count: menuItems.length })}
                                             </p>
                                         )}
                                     </div>
@@ -306,7 +308,7 @@ export default function CreateOrderForm() {
                                         disabled={loading || menuItems.length === 0}
                                     >
                                         <Plus className={styles.addMenuIcon} />
-                                        {menuItems.length === 0 ? 'Меню загружается...' : 'Добавить из меню'}
+                                        {menuItems.length === 0 ? t('form.menuLoading') : t('form.addFromMenu')}
                                     </button>
                                 </div>
 
@@ -322,15 +324,15 @@ export default function CreateOrderForm() {
                                                 <div className={styles.menuItemControls}>
                                                     <button
                                                         type="button"
-                                                        onClick={() => updateMenuItemQuantity(item.id, item.quantity - 1)}
+                                                        onClick={() => updateMenuItemQuantity(item.id, (item.quantity ?? 1) - 1)}
                                                         className={styles.quantityButton}
                                                     >
                                                         −
                                                     </button>
-                                                    <span className={styles.quantityInput}>{item.quantity}</span>
+                                                    <span className={styles.quantityInput}>{item.quantity ?? 0}</span>
                                                     <button
                                                         type="button"
-                                                        onClick={() => updateMenuItemQuantity(item.id, item.quantity + 1)}
+                                                        onClick={() => updateMenuItemQuantity(item.id, (item.quantity ?? 0) + 1)}
                                                         className={styles.quantityButton}
                                                     >
                                                         +
@@ -349,8 +351,8 @@ export default function CreateOrderForm() {
                                 ) : (
                                     <div className={styles.emptyState}>
                                         <ShoppingCart className={styles.emptyIcon} />
-                                        <p className={styles.emptyText}>Нет товаров в заказе</p>
-                                        <p className={styles.emptySubtext}>Нажмите &quot;Добавить из меню&quot; для выбора товаров</p>
+                                        <p className={styles.emptyText}>{t('form.noItems')}</p>
+                                        <p className={styles.emptySubtext}>{t('form.addFromMenuHint')}</p>
                                     </div>
                                 )}
                             </div>
@@ -359,26 +361,26 @@ export default function CreateOrderForm() {
                             {formData.menu_items.length > 0 && (
                                 <div className={styles.priceCalculator}>
                                     <div className={styles.priceRow}>
-                                        <span>Сумма товаров:</span>
-                                        <span>{formData.menu_items.reduce((sum, item) => sum + (item.quantity * item.price), 0).toFixed(2)} ₼</span>
+                                        <span>{t('form.itemsTotal')}</span>
+                                        <span>{formData.menu_items.reduce((sum, item) => sum + ((item.quantity ?? 0) * item.price), 0).toFixed(2)} ₼</span>
                                     </div>
                                     {(formData.discount_fixed > 0 || formData.discount_percent > 0) && (
                                         <div className={`${styles.priceRow} ${styles.discount}`}>
-                                            <span>Скидка:</span>
-                                            <span>-{(formData.discount_fixed + (formData.menu_items.reduce((sum, item) => sum + (item.quantity * item.price), 0) * formData.discount_percent / 100)).toFixed(2)} ₼</span>
+                                            <span>{t('form.discount')}</span>
+                                            <span>-{(formData.discount_fixed + (formData.menu_items.reduce((sum, item) => sum + ((item.quantity ?? 0) * item.price), 0) * formData.discount_percent / 100)).toFixed(2)} ₼</span>
                                         </div>
                                     )}
                                     {formData.delivery_cost > 0 && (
                                         <div className={styles.priceRow}>
-                                            <span>Доставка:</span>
+                                            <span>{t('form.deliveryCostLabel')}</span>
                                             <span>{formData.delivery_cost.toFixed(2)} ₼</span>
                                         </div>
                                     )}
                                     <div className={`${styles.priceRow} ${styles.total}`}>
-                                        <span>Итого:</span>
+                                        <span>{t('form.total')}</span>
                                         <span className={styles.totalAmount}>
                                             {(() => {
-                                                const subtotal = formData.menu_items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+                                                const subtotal = formData.menu_items.reduce((sum, item) => sum + ((item.quantity ?? 0) * item.price), 0);
                                                 const discount = formData.discount_fixed + (subtotal * formData.discount_percent / 100);
                                                 return (Math.max(0, subtotal - discount) + formData.delivery_cost).toFixed(2);
                                             })()} ₼
@@ -398,7 +400,7 @@ export default function CreateOrderForm() {
                                     className={styles.recurringCheckboxInput}
                                 />
                                 <span className={styles.recurringCheckboxText}>
-                                    Включить регулярные заказы
+                                    {t('form.enableRecurring')}
                                 </span>
                             </label>
 
@@ -435,13 +437,13 @@ export default function CreateOrderForm() {
                                         <label className={styles.recurringLabel}>{t('form.weekdays')}</label>
                                         <div className={styles.daysGrid}>
                                             {[
-                                                { value: 'monday', label: 'Пн' },
-                                                { value: 'tuesday', label: 'Вт' },
-                                                { value: 'wednesday', label: 'Ср' },
-                                                { value: 'thursday', label: 'Чт' },
-                                                { value: 'friday', label: 'Пт' },
-                                                { value: 'saturday', label: 'Сб' },
-                                                { value: 'sunday', label: 'Вс' }
+                                                { value: 'monday', label: t('form.moShort') },
+                                                { value: 'tuesday', label: t('form.tuShort') },
+                                                { value: 'wednesday', label: t('form.weShort') },
+                                                { value: 'thursday', label: t('form.thShort') },
+                                                { value: 'friday', label: t('form.frShort') },
+                                                { value: 'saturday', label: t('form.saShort') },
+                                                { value: 'sunday', label: t('form.suShort') }
                                             ].map((day) => (
                                                 <label key={day.value} className={styles.dayLabel}>
                                                     <input
@@ -579,7 +581,7 @@ export default function CreateOrderForm() {
                                 disabled={loading}
                                 className={styles.submitButton}
                             >
-                                {loading ? 'Создание...' : 'Создать заказ'}
+                                {loading ? t('form.creating') : t('form.createOrder')}
                             </button>
                         </div>
                     </form>
@@ -638,8 +640,8 @@ export default function CreateOrderForm() {
                                     <div className="space-y-2">
                                         {formData.menu_items.map((item) => (
                                             <div key={item.id} className="flex justify-between text-sm">
-                                                <span>{item.name} x{item.quantity}</span>
-                                                <span>{(item.price * item.quantity).toFixed(2)} ₼</span>
+                                                <span>{item.name} x{item.quantity ?? 0}</span>
+                                                <span>{(item.price * (item.quantity ?? 0)).toFixed(2)} ₼</span>
                                             </div>
                                         ))}
                                     </div>
@@ -652,7 +654,7 @@ export default function CreateOrderForm() {
                                 <div className={styles.previewTotalContent}>
                                     <div className={styles.previewTotalRow}>
                                         <span>{t('form.itemsTotal')}</span>
-                                        <span>{formData.menu_items.reduce((sum, item) => sum + (item.quantity * item.price), 0).toFixed(2)} ₼</span>
+                                        <span>{formData.menu_items.reduce((sum, item) => sum + ((item.quantity ?? 0) * item.price), 0).toFixed(2)} ₼</span>
                                     </div>
                                     {formData.delivery_cost > 0 && (
                                         <div className={styles.previewTotalRow}>
@@ -664,7 +666,7 @@ export default function CreateOrderForm() {
                                         <span>{t('form.total')}</span>
                                         <span>
                                             {(() => {
-                                                const subtotal = formData.menu_items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+                                                const subtotal = formData.menu_items.reduce((sum, item) => sum + ((item.quantity ?? 0) * item.price), 0);
                                                 const discount = formData.discount_fixed + (subtotal * formData.discount_percent / 100);
                                                 return (Math.max(0, subtotal - discount) + formData.delivery_cost).toFixed(2);
                                             })()} ₼

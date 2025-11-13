@@ -8,6 +8,7 @@ import { useCart } from '../contexts/CartContext';
 import { useNotification } from '../contexts/NotificationContext';
 import Image from "next/image";
 import styles from './CartModal.module.css';
+import { useTranslations } from 'next-intl';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ interface CartModalProps {
 
 const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
+  const t = useTranslations('cart');
   const {
     items: cartItems,
     removeItem,
@@ -29,10 +31,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
     const currentQuantity = cartItems.find(item => String(item.id) === String(itemId))?.quantity || 0;
     if (currentQuantity > 1) {
       updateQuantity(itemId, currentQuantity - 1);
-      showNotification('Item quantity decreased');
+      showNotification(t('quantityDecreased'));
     } else {
       removeItem(itemId);
-      showNotification('Item removed from cart');
+      showNotification(t('itemRemoved'));
     }
   };
 
@@ -40,7 +42,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
     const item = cartItems.find(item => String(item.id) === String(itemId));
     if (item) {
       updateQuantity(itemId, item.quantity + 1);
-      showNotification('Item quantity increased');
+      showNotification(t('quantityIncreased'));
     }
   };
 
@@ -72,7 +74,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
         {/* Cart header */}
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>
-            Shopping Cart ({getTotalItems()})
+            {t('title')} ({getTotalItems()})
           </h2>
           <button
             onClick={onClose}
@@ -87,13 +89,13 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
           {cartItems.length === 0 ? (
             <div className={styles.emptyCart}>
               <h3 className={styles.emptyCartTitle}>
-                Your shopping cart is empty
+                {t('empty')}
               </h3>
               <p className={styles.emptyCartText}>
-                To continue shopping, please browse our menu
+                {t('emptyDescription')}
               </p>
               <p className={styles.emptyCartText}>
-                Have a nice experience!
+                {t('emptyWish')}
               </p>
               <button
                 onClick={goToMenu}

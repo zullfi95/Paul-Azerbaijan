@@ -183,7 +183,7 @@ const Footer: React.FC = () => {
                     </a>
                   </div>
                   <div className="developer-credit">
-                    Sci-fi разработчики
+                    Created by Sci-fi | 2025 | All Rights Reserved
                   </div>
                 </div>
 
@@ -322,7 +322,7 @@ const Footer: React.FC = () => {
                     </a>
                   </div>
                   <div className="developer-credit">
-                    Sci-fi разработчики
+                    Created by Sci-fi | 2025 | All Rights Reserved
                   </div>
                 </div>
               </div>

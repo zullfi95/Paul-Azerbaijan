@@ -149,55 +149,76 @@ export const useOrderForm = () => {
         }));
     }, []);
 
-    const loadApplication = useCallback(async (clientId: string) => {
-        setLoading(true);
-        try {
-            const result = await makeApiRequest<Application>(`/applications/${clientId}`);
-            if (result.success && result.data) {
-                const app = result.data;
-                console.log('📋 Загружена заявка:', app);
-                setApplication(app);
-                
-                // Ищем клиента по client_id или email
-                let selectedClient = null;
-                if (app.client_id) {
-                    selectedClient = clients.find(c => c.id === app.client_id);
-                } else if (app.email) {
-                    selectedClient = clients.find(c => c.email === app.email);
-                }
-
-                console.log('👤 Найден клиент:', selectedClient);
-                
-                // Подставляем ВСЕ поля из заявки
-                setFormData(prev => ({
-                    ...prev,
-                    selected_client_id: selectedClient?.id || app.client_id || null,
-                    comment: app.message || '',
-                    delivery_date: app.event_date || '',
-                    delivery_time: app.event_time || '',
-                    delivery_address: app.event_address || '',
-                    delivery_type: 'delivery', // По умолчанию доставка для заявок
-                    menu_items: app.cart_items || [],
-                    application_id: app.id || null,
-                    // Подставляем тип клиента и название компании
-                    client_type: selectedClient?.client_category || 'one_time',
-                    company_name: app.company_name || selectedClient?.company_name || '',
-                }));
-
-                console.log('✅ Форма заполнена данными из заявки');
-            }
-        } catch (error) {
-            console.error('Ошибка загрузки заявки:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, [clients]);
-    
+    // Загрузка заявки и заполнение формы
     useEffect(() => {
-        if (fromApplicationId && clients.length > 0) {
-            loadApplication(fromApplicationId);
-        }
-    }, [fromApplicationId, loadApplication, clients]);
+        const loadApplication = async () => {
+            if (!fromApplicationId || clients.length === 0) {
+                if (fromApplicationId) {
+                    console.log('⏳ Waiting for clients to load...', { fromApplicationId, clientsCount: clients.length });
+                }
+                return;
+            }
+
+            console.log('🔄 Loading application:', fromApplicationId);
+            setLoading(true);
+            
+            try {
+                const result = await makeApiRequest<Application>(`/applications/${fromApplicationId}`);
+                if (result.success && result.data) {
+                    const app = result.data;
+                    console.log('📋 Загружена заявка:', app);
+                    setApplication(app);
+                    
+                    // Ищем клиента по client_id или email
+                    let selectedClient = null;
+                    if (app.client_id) {
+                        selectedClient = clients.find(c => c.id === app.client_id);
+                    } else if (app.email) {
+                        selectedClient = clients.find(c => c.email === app.email);
+                    }
+
+                    console.log('👤 Найден клиент:', selectedClient);
+                    
+                    // Подставляем ВСЕ поля из заявки
+                    const newFormData = {
+                        selected_client_id: selectedClient?.id || app.client_id || null,
+                        comment: app.message || '',
+                        delivery_date: app.event_date || '',
+                        delivery_time: app.event_time || '',
+                        delivery_address: app.event_address || '',
+                        delivery_type: 'delivery' as 'delivery' | 'pickup' | 'buffet',
+                        menu_items: app.cart_items || [],
+                        application_id: app.id || null,
+                        client_type: selectedClient?.client_category || 'one_time' as 'corporate' | 'one_time',
+                        company_name: app.company_name || selectedClient?.company_name || '',
+                        delivery_cost: 0,
+                        discount_fixed: 0,
+                        discount_percent: 0,
+                        recurring_schedule: {
+                            enabled: false,
+                            frequency: 'weekly' as 'weekly' | 'monthly',
+                            days: [],
+                            delivery_time: '',
+                            notes: ''
+                        },
+                        equipment_required: 0,
+                        staff_assigned: 0,
+                        special_instructions: '',
+                    };
+                    
+                    console.log('✅ Устанавливаем данные формы:', newFormData);
+                    setFormData(newFormData);
+                    console.log('✅ Форма заполнена данными из заявки');
+                }
+            } catch (error) {
+                console.error('❌ Ошибка загрузки заявки:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadApplication();
+    }, [fromApplicationId, clients]);
 
     const handleInputChange = (field: keyof OrderFormData, value: string | number | boolean) => {
         setFormData(prev => ({

@@ -5,8 +5,6 @@ import { Calendar, dateFnsLocalizer, Views, type View } from 'react-big-calendar
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import type { Order } from '../types/common';
-import { formatTotalAmount } from '../utils/numberUtils';
-import { generateBEOFile } from '../utils/beoGenerator';
 import { STATUS_LABELS, STATUS_COLORS } from '../utils/statusTranslations';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../styles/calendar.css';
@@ -43,8 +41,6 @@ interface OrderCalendarProps {
 
 export default function OrderCalendar({ orders, onSelectOrder, onCreateOrder, isLoading }: OrderCalendarProps) {
   const [currentView, setCurrentView] = useState<View>(Views.MONTH);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
-  const [showEventModal, setShowEventModal] = useState(false);
 
   // Преобразуем заказы в события календаря
   const events = useMemo((): CalendarEvent[] => {
@@ -97,10 +93,12 @@ export default function OrderCalendar({ orders, onSelectOrder, onCreateOrder, is
     </div>
   );
 
-  // Обработчик выбора события
+  // Обработчик выбора события - НЕ показываем модалку здесь, только передаем в родитель
   const handleSelectEvent = (event: CalendarEvent) => {
-    setSelectedEvent(event);
-    setShowEventModal(true);
+    // Закрываем внутреннюю модалку, если она открыта
+    setShowEventModal(false);
+    setSelectedEvent(null);
+    // Передаем событие в родительский компонент, который покажет свою модалку
     if (onSelectOrder) {
       onSelectOrder(event.resource);
     }
@@ -193,143 +191,6 @@ export default function OrderCalendar({ orders, onSelectOrder, onCreateOrder, is
         />
       </div>
 
-      {/* Модальное окно с деталями заказа */}
-      {showEventModal && selectedEvent && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '0.5rem',
-            padding: '2rem',
-            maxWidth: '500px',
-            width: '90%',
-            maxHeight: '80vh',
-            overflow: 'auto'
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '1.5rem'
-            }}>
-              <h3 style={{
-                fontSize: '1.25rem',
-                fontWeight: 'bold',
-                color: '#1A1A1A',
-                fontFamily: 'Playfair Display, serif'
-              }}>
-                Детали заказа
-              </h3>
-              <button
-                onClick={() => setShowEventModal(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '1.5rem',
-                  cursor: 'pointer',
-                  color: '#6B7280'
-                }}
-              >
-                ×
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div>
-                <strong>Компания:</strong> {selectedEvent.resource.company_name}
-              </div>
-              <div>
-                <strong>Статус:</strong>{' '}
-                                 <span style={{
-                   color: STATUS_COLORS[selectedEvent.status as keyof typeof STATUS_COLORS] || '#6B7280',
-                   fontWeight: 'bold'
-                 }}>
-                   {STATUS_LABELS[selectedEvent.status as keyof typeof STATUS_COLORS] || selectedEvent.status}
-                 </span>
-              </div>
-              <div>
-                <strong>Дата доставки:</strong> {format(selectedEvent.start, 'dd.MM.yyyy')}
-              </div>
-              <div>
-                <strong>Время:</strong> {format(selectedEvent.start, 'HH:mm')}
-              </div>
-              {selectedEvent.resource.total_amount && (
-                <div>
-                  <strong>Сумма:</strong> {formatTotalAmount(selectedEvent.resource.total_amount)} ₼
-                </div>
-              )}
-              {selectedEvent.resource.comment && (
-                <div>
-                  <strong>Комментарий:</strong> {selectedEvent.resource.comment}
-                </div>
-              )}
-              {selectedEvent.resource.menu_items && (
-                <div>
-                  <strong>Меню:</strong>
-                  <ul style={{ marginTop: '0.5rem', paddingLeft: '1rem' }}>
-                    {selectedEvent.resource.menu_items.map((item, index: number) => (
-                      <li key={index} style={{ fontSize: '0.875rem', color: '#4A4A4A' }}>
-                        {item.name} ({item.quantity} шт.)
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-
-                         <div style={{
-               display: 'flex',
-               gap: '0.5rem',
-               marginTop: '2rem',
-               justifyContent: 'flex-end'
-             }}>
-               <button
-                 onClick={async () => {
-                   try {
-                     await generateBEOFile(selectedEvent.resource);
-                   } catch (error) {
-                     console.error('Ошибка при генерации BEO файла:', error);
-                     alert('Ошибка при создании BEO файла');
-                   }
-                 }}
-                 style={{
-                   padding: '0.5rem 1rem',
-                   backgroundColor: '#D4AF37',
-                   color: '#1A1A1A',
-                   border: 'none',
-                   borderRadius: '0.375rem',
-                   cursor: 'pointer',
-                   fontWeight: '500'
-                 }}
-               >
-                 📄 Скачать BEO
-               </button>
-               <button
-                 onClick={() => setShowEventModal(false)}
-                 style={{
-                   padding: '0.5rem 1rem',
-                   backgroundColor: '#f3f4f6',
-                   border: '1px solid #d1d5db',
-                   borderRadius: '0.375rem',
-                   cursor: 'pointer'
-                 }}
-               >
-                 Закрыть
-               </button>
-             </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

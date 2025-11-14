@@ -56,13 +56,27 @@ export default function EditOrderForm({ orderId }: EditOrderFormProps) {
           const orderData = result.data;
           setOrder(orderData);
           
+          // Извлекаем время доставки (может быть в формате datetime или time)
+          let deliveryTime = '';
+          if (orderData.delivery_time) {
+            const timeStr = orderData.delivery_time.toString();
+            // Если это datetime, извлекаем только время
+            if (timeStr.includes('T') || timeStr.includes(' ')) {
+              const timePart = timeStr.includes('T') ? timeStr.split('T')[1] : timeStr.split(' ')[1];
+              deliveryTime = timePart ? timePart.substring(0, 5) : '';
+            } else if (timeStr.includes(':')) {
+              // Если это уже время, используем как есть
+              deliveryTime = timeStr.substring(0, 5);
+            }
+          }
+          
           // Заполняем форму данными заказа
           setFormData({
             selected_client_id: orderData.client_id || null,
             menu_items: orderData.menu_items || [],
             comment: orderData.comment || '',
             delivery_date: orderData.delivery_date ? new Date(orderData.delivery_date).toISOString().split('T')[0] : '',
-            delivery_time: orderData.delivery_time || '',
+            delivery_time: deliveryTime,
             delivery_type: orderData.delivery_type || 'delivery',
             delivery_address: orderData.delivery_address || '',
             delivery_cost: orderData.delivery_cost || 0,

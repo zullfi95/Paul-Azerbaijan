@@ -190,8 +190,8 @@ export default function ReportsPage() {
             onClick={handleExportPDF}
             className="dashboard-quick-action-link"
             style={{
-              background: '#D4AF37',
-              borderColor: '#D4AF37',
+              background: 'var(--paul-black)',
+              borderColor: 'var(--paul-black)',
               color: 'var(--paul-white)'
             }}
           >
@@ -309,174 +309,123 @@ export default function ReportsPage() {
         </div>
       ) : reportData ? (
         <>
-          {/* Основные показатели */}
-          <section className="dashboard-kpi-grid" style={{ marginBottom: 'var(--space-6)' }}>
-            <div className="dashboard-kpi-card">
-              <div className="dashboard-kpi-header">
-                <ShoppingBagIcon size={16} className="dashboard-kpi-icon" />
-                <span className="dashboard-kpi-label">Всего заказов</span>
-              </div>
-              <div className="dashboard-kpi-value">
-                {reportData.totalOrders}
-              </div>
-              <div className="dashboard-kpi-subtitle">
-                За выбранный период
-              </div>
+          {/* Таблица с данными */}
+          <div className="dashboard-table-container">
+            <div className="dashboard-table-header">
+              <h2 className="dashboard-table-title">Отчет по заказам</h2>
+              <p style={{ 
+                fontSize: 'var(--text-sm)', 
+                color: 'var(--paul-gray)', 
+                marginTop: 'var(--space-1)' 
+              }}>
+                Данные за период: {new Date(filters.startDate).toLocaleDateString('ru-RU')} - {new Date(filters.endDate).toLocaleDateString('ru-RU')}
+              </p>
             </div>
-
-            <div className="dashboard-kpi-card">
-              <div className="dashboard-kpi-header">
-                <CheckIcon size={16} className="dashboard-kpi-icon" style={{ color: '#10B981' }} />
-                <span className="dashboard-kpi-label">Завершено</span>
-              </div>
-              <div className="dashboard-kpi-value" style={{ color: '#10B981' }}>
-                {reportData.completedOrders}
-              </div>
-              <div className="dashboard-kpi-subtitle">
-                Успешно выполнено
-              </div>
-            </div>
-
-            <div className="dashboard-kpi-card">
-              <div className="dashboard-kpi-header">
-                <ChartBarIcon size={16} className="dashboard-kpi-icon" style={{ color: '#D4AF37' }} />
-                <span className="dashboard-kpi-label">Общая выручка</span>
-              </div>
-              <div className="dashboard-kpi-value" style={{ color: '#D4AF37' }}>
-                {formatTotalAmount(reportData.totalRevenue)} ₼
-              </div>
-              <div className="dashboard-kpi-subtitle">
-                Доход за период
-              </div>
-            </div>
-
-            <div className="dashboard-kpi-card">
-              <div className="dashboard-kpi-header">
-                <FileTextIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
-                <span className="dashboard-kpi-label">Средний чек</span>
-              </div>
-              <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>
-                {formatTotalAmount(reportData.averageOrderValue)} ₼
-              </div>
-              <div className="dashboard-kpi-subtitle">
-                В среднем на заказ
-              </div>
-            </div>
-          </section>
-
-          {/* Детальная аналитика */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: 'var(--space-4)'
-          }}>
-            {/* Заказы по статусам */}
-            <div className="dashboard-table-container">
-              <div className="dashboard-table-header">
-                <h3 className="dashboard-table-title" style={{ fontSize: 'var(--text-lg)' }}>
-                  Заказы по статусам
-                </h3>
-              </div>
-              <div style={{ padding: 'var(--space-4)' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            <div style={{ padding: 'var(--space-4)', overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ 
+                    backgroundColor: 'var(--paul-subtle-beige)',
+                    borderBottom: '2px solid var(--paul-border)'
+                  }}>
+                    <th style={{ 
+                      padding: 'var(--space-3)', 
+                      textAlign: 'left',
+                      fontWeight: 600,
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-sm)'
+                    }}>Статус</th>
+                    <th style={{ 
+                      padding: 'var(--space-3)', 
+                      textAlign: 'left',
+                      fontWeight: 600,
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-sm)'
+                    }}>Тип клиента</th>
+                    <th style={{ 
+                      padding: 'var(--space-3)', 
+                      textAlign: 'right',
+                      fontWeight: 600,
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-sm)'
+                    }}>Количество</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Строки по статусам */}
                   {Object.entries(reportData.ordersByStatus).map(([status, count]) => (
-                    <div key={status} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: 'var(--space-3)',
-                      background: 'linear-gradient(90deg, var(--paul-subtle-beige) 0%, var(--paul-white) 100%)',
-                      borderRadius: 'var(--radius-md)',
-                      border: '1px solid var(--paul-border)'
+                    <tr key={`status-${status}`} style={{ 
+                      borderBottom: '1px solid var(--paul-border)',
+                      backgroundColor: 'var(--paul-white)'
                     }}>
-                      <span style={{ 
-                        textTransform: 'capitalize',
+                      <td style={{ 
+                        padding: 'var(--space-3)',
                         color: 'var(--paul-black)',
                         fontSize: 'var(--text-sm)',
-                        fontWeight: 500
-                      }}>{status}</span>
-                      <span style={{ 
-                        fontWeight: 700,
+                        textTransform: 'capitalize'
+                      }}>{status}</td>
+                      <td style={{ 
+                        padding: 'var(--space-3)',
+                        color: 'var(--paul-gray)',
+                        fontSize: 'var(--text-sm)'
+                      }}>—</td>
+                      <td style={{ 
+                        padding: 'var(--space-3)',
+                        textAlign: 'right',
+                        fontWeight: 600,
                         color: 'var(--paul-black)',
-                        fontSize: 'var(--text-lg)'
-                      }}>{count}</span>
-                    </div>
+                        fontSize: 'var(--text-sm)'
+                      }}>{count}</td>
+                    </tr>
                   ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Заказы по типам клиентов */}
-            <div className="dashboard-table-container">
-              <div className="dashboard-table-header">
-                <h3 className="dashboard-table-title" style={{ fontSize: 'var(--text-lg)' }}>
-                  Заказы по типам клиентов
-                </h3>
-              </div>
-              <div style={{ padding: 'var(--space-4)' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                  {/* Строки по типам клиентов */}
                   {Object.entries(reportData.ordersByClientType).map(([type, count]) => (
-                    <div key={type} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: 'var(--space-3)',
-                      background: 'linear-gradient(90deg, var(--paul-subtle-beige) 0%, var(--paul-white) 100%)',
-                      borderRadius: 'var(--radius-md)',
-                      border: '1px solid var(--paul-border)'
+                    <tr key={`type-${type}`} style={{ 
+                      borderBottom: '1px solid var(--paul-border)',
+                      backgroundColor: 'var(--paul-white)'
                     }}>
-                      <span style={{ 
+                      <td style={{ 
+                        padding: 'var(--space-3)',
+                        color: 'var(--paul-gray)',
+                        fontSize: 'var(--text-sm)'
+                      }}>—</td>
+                      <td style={{ 
+                        padding: 'var(--space-3)',
                         color: 'var(--paul-black)',
-                        fontSize: 'var(--text-sm)',
-                        fontWeight: 500
+                        fontSize: 'var(--text-sm)'
                       }}>
                         {type === 'corporate' ? 'Корпоративные' : 
                          type === 'one_time' ? 'Разовые' : type}
-                      </span>
-                      <span style={{ 
-                        fontWeight: 700,
+                      </td>
+                      <td style={{ 
+                        padding: 'var(--space-3)',
+                        textAlign: 'right',
+                        fontWeight: 600,
                         color: 'var(--paul-black)',
-                        fontSize: 'var(--text-lg)'
-                      }}>{count}</span>
-                    </div>
+                        fontSize: 'var(--text-sm)'
+                      }}>{count}</td>
+                    </tr>
                   ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Заказы по месяцам */}
-            <div className="dashboard-table-container">
-              <div className="dashboard-table-header">
-                <h3 className="dashboard-table-title" style={{ fontSize: 'var(--text-lg)' }}>
-                  Заказы по месяцам
-                </h3>
-              </div>
-              <div style={{ padding: 'var(--space-4)' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-                  {Object.entries(reportData.ordersByMonth).map(([month, count]) => (
-                    <div key={month} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
+                  {/* Итоговая строка */}
+                  <tr style={{ 
+                    backgroundColor: 'var(--paul-subtle-beige)',
+                    borderTop: '2px solid var(--paul-border)',
+                    fontWeight: 700
+                  }}>
+                    <td colSpan={2} style={{ 
                       padding: 'var(--space-3)',
-                      background: 'linear-gradient(90deg, var(--paul-subtle-beige) 0%, var(--paul-white) 100%)',
-                      borderRadius: 'var(--radius-md)',
-                      border: '1px solid var(--paul-border)'
-                    }}>
-                      <span style={{ 
-                        color: 'var(--paul-black)',
-                        fontSize: 'var(--text-sm)',
-                        fontWeight: 500
-                      }}>{month}</span>
-                      <span style={{ 
-                        fontWeight: 700,
-                        color: 'var(--paul-black)',
-                        fontSize: 'var(--text-lg)'
-                      }}>{count}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-base)'
+                    }}>Всего заказов</td>
+                    <td style={{ 
+                      padding: 'var(--space-3)',
+                      textAlign: 'right',
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-base)'
+                    }}>{reportData.totalOrders}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </>

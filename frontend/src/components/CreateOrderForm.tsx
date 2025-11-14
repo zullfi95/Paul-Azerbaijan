@@ -2,15 +2,47 @@
 
 import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
-import { CartItem } from "../types/unified";
+import { useState } from "react";
 import { useAuthGuard, canCreateOrders } from "../utils/authConstants";
-import { Plus, Search, X, ShoppingCart } from 'lucide-react';
+import { Plus, X, ShoppingCart } from 'lucide-react';
 import { useOrderForm } from "../hooks/useOrderForm";
 import MenuSlidePanel from "./MenuSlidePanel";
 import styles from './CreateOrderForm.module.css';
 import { useTranslations } from 'next-intl';
 
+const applicationStatusMeta: Record<string, { label: string; color: string }> = {
+    new: { label: 'Новая', color: '#2563eb' },
+    processing: { label: 'В обработке', color: '#f59e0b' },
+    approved: { label: 'Одобрена', color: '#10b981' },
+    rejected: { label: 'Отклонена', color: '#ef4444' },
+};
+
+const formatDateValue = (value?: string | null) => {
+    if (!value) return '—';
+    const normalized = value.includes('T')
+        ? value.split('T')[0]
+        : value.includes(' ')
+            ? value.split(' ')[0]
+            : value;
+    const date = new Date(normalized);
+    return Number.isNaN(date.getTime()) ? normalized : date.toLocaleDateString('ru-RU');
+};
+
+const formatTimeValue = (value?: string | null) => {
+    if (!value) return '—';
+    if (value.includes('T')) {
+        return value.split('T')[1]?.slice(0, 5) || '—';
+    }
+    if (value.includes(' ')) {
+        return value.split(' ')[1]?.slice(0, 5) || '—';
+    }
+    return value.slice(0, 5);
+};
+
+const formatCurrency = (value?: number | null) => {
+    if (!value || Number.isNaN(value)) return '—';
+    return `₼${Number(value).toLocaleString('ru-RU', { minimumFractionDigits: 0 })}`;
+};
 
 export default function CreateOrderForm() {
     const { isAuthenticated, isLoading: authLoading, user } = useAuth();
@@ -37,18 +69,6 @@ export default function CreateOrderForm() {
     const hasAccess = useAuthGuard(isAuthenticated, authLoading, user || { user_type: '', staff_role: '' }, canCreateOrders, router);
 
     // Отладочное логирование
-    useEffect(() => {
-        console.log('🔍 CreateOrderForm - menuItems:', menuItems.length);
-        console.log('🔍 CreateOrderForm - loading:', loading);
-        console.log('🔍 CreateOrderForm - user:', user);
-    }, [menuItems, loading, user]);
-
-    useEffect(() => {
-        if (fromApplicationId && hasAccess && clients.length > 0) {
-            // loadApplication(fromApplicationId); // Removed as per new_code
-        }
-    }, [fromApplicationId, hasAccess, clients.length]); // Removed loadApplication as it's now in useOrderForm
-
     if (authLoading || !hasAccess) {
         return (
             <div className="flex justify-center items-center h-screen bg-gray-50">
@@ -94,27 +114,94 @@ export default function CreateOrderForm() {
                         {/* Application Info */}
                         {application && (
                             <div className={styles.applicationInfo}>
-                                <h3 className={styles.applicationTitle}>{t('form.applicationInformation')}</h3>
-                                <div className={styles.applicationContent}>
-                                    <p><strong>{t('common.status')}:</strong> {application?.status}</p>
-                                    <p><strong>{t('form.client')}:</strong> {application?.first_name} {application?.last_name}</p>
-                                    <p><strong>{t('checkout.email')}:</strong> {application?.email}</p>
-                                    <p><strong>{t('checkout.phone')}:</strong> {application?.phone}</p>
-                                    {application?.event_address && <p><strong>{t('checkout.eventAddress')}:</strong> {application?.event_address}</p>}
-                                    {application?.event_date && <p><strong>{t('common.date')}:</strong> {new Date(application?.event_date || '').toLocaleDateString()}</p>}
-                                    {application?.event_time && <p><strong>{t('common.time')}:</strong> {new Date(application?.event_time || '').toLocaleTimeString()}</p>}
-                                    {application?.message && <p><strong>{t('checkout.message')}:</strong> {application?.message}</p>}
-                                    {application?.cart_items && application?.cart_items?.length && (application?.cart_items?.length ?? 0) > 0 && (
+                                <div className={styles.applicationMeta}>
                                     <div>
-                                            <p><strong>{t('form.requestedItems')}:</strong></p>
-                                            <ul className="list-disc list-inside ml-4">
-                                                {application?.cart_items?.map((item, index) => (
-                                                    <li key={index}>{item.name} (x{item.quantity ?? 0}) - {item.price} ₼</li>
-                                                ))}
-                                            </ul>
+                                        <p className={styles.applicationLabel}>{t('form.applicationInformation')}</p>
+                                        <h3 className={styles.applicationName}>
+                                            {application.first_name} {application.last_name || ''}
+                                        </h3>
+                                        <p className={styles.applicationSubtle}>#{application.id}</p>
                                     </div>
-                                    )}
+                                    <span
+                                        className={styles.applicationBadge}
+                                        style={{
+                                            color: applicationStatusMeta[application.status]?.color || '#111827',
+                                            backgroundColor: `${applicationStatusMeta[application.status]?.color || '#111827'}1a`,
+                                        }}
+                                    >
+                                        {applicationStatusMeta[application.status]?.label || application.status}
+                                    </span>
                                 </div>
+
+                                <div className={styles.applicationGrid}>
+                                    <div>
+                                        <p className={styles.applicationFieldLabel}>{t('form.client')}</p>
+                                        <p className={styles.applicationFieldValue}>
+                                            {application.first_name} {application.last_name || '—'}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className={styles.applicationFieldLabel}>{t('checkout.email')}</p>
+                                        <p className={styles.applicationFieldValue}>{application.email || '—'}</p>
+                                    </div>
+                                    <div>
+                                        <p className={styles.applicationFieldLabel}>{t('checkout.phone')}</p>
+                                        <p className={styles.applicationFieldValue}>{application.phone || '—'}</p>
+                                    </div>
+                                    {application.company_name && (
+                                        <div>
+                                            <p className={styles.applicationFieldLabel}>{t('checkout.companyName')}</p>
+                                            <p className={styles.applicationFieldValue}>{application.company_name}</p>
+                                        </div>
+                                    )}
+                                    {application.event_address && (
+                                        <div>
+                                            <p className={styles.applicationFieldLabel}>{t('checkout.eventAddress')}</p>
+                                            <p className={styles.applicationFieldValue}>{application.event_address}</p>
+                                        </div>
+                                    )}
+                                    <div>
+                                        <p className={styles.applicationFieldLabel}>{t('common.date')}</p>
+                                        <p className={styles.applicationFieldValue}>{formatDateValue(application.event_date)}</p>
+                                    </div>
+                                    <div>
+                                        <p className={styles.applicationFieldLabel}>{t('common.time')}</p>
+                                        <p className={styles.applicationFieldValue}>{formatTimeValue(application.event_time)}</p>
+                                    </div>
+                                </div>
+
+                                {(application.message || application.coordinator_comment) && (
+                                    <div className={styles.applicationNotes}>
+                                        {application.message && (
+                                            <p>
+                                                <span>{t('checkout.message')}:</span> {application.message}
+                                            </p>
+                                        )}
+                                        {application.coordinator_comment && (
+                                            <p>
+                                                <span>Комментарий координатора:</span> {application.coordinator_comment}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+
+                                {Array.isArray(application.cart_items) && application.cart_items.length > 0 && (
+                                    <div className={styles.applicationItems}>
+                                        <p className={styles.applicationFieldLabel}>{t('form.requestedItems')}</p>
+                                        <ul>
+                                            {application.cart_items.map((item, index) => (
+                                                <li key={`${item.id ?? index}-${index}`} className={styles.applicationItemRow}>
+                                                    <span className={styles.applicationItemName}>
+                                                        {item.name} ×{item.quantity ?? 1}
+                                                    </span>
+                                                    <span className={styles.applicationItemPrice}>
+                                                        {item.price ? formatCurrency(Number(item.price)) : '—'}
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -135,20 +222,36 @@ export default function CreateOrderForm() {
                             )}
                             <select
                                 id="client"
-                                value={formData.selected_client_id || ''}
+                                value={formData.selected_client_id?.toString() || ''}
                                 onChange={(e) => {
-                                    const clientId = parseInt(e.target.value);
+                                    const rawValue = e.target.value;
+                                    if (!rawValue) {
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            selected_client_id: null,
+                                        }));
+                                        return;
+                                    }
+                                    const clientId = Number(rawValue);
                                     const selectedClient = clients.find(c => c.id === clientId);
                                     setFormData(prev => ({
                                         ...prev,
                                         selected_client_id: clientId,
-                                        client_type: selectedClient?.client_category || 'one_time'
+                                        client_type: selectedClient?.client_category || prev.client_type,
+                                        company_name: selectedClient?.company_name || prev.company_name,
                                     }));
                                 }}
                                 className={styles.select}
                                 required={!fromApplicationId}
                             >
                                 <option value="">{t('form.selectClient')}</option>
+                                {formData.selected_client_id &&
+                                    !clients.some(client => client.id === formData.selected_client_id) &&
+                                    application && (
+                                        <option value={formData.selected_client_id.toString()}>
+                                            {application.first_name} {application.last_name || ''} — {t('form.clientFromApplication')}
+                                        </option>
+                                    )}
                                 {clients.map((client) => (
                                     <option key={client.id} value={client.id}>
                                         {client.name} ({client.client_category === 'corporate' ? t('form.corporate') : t('form.onetime')})
@@ -176,7 +279,6 @@ export default function CreateOrderForm() {
                                 {[
                                     { value: 'delivery', label: t('checkout.delivery') },
                                     { value: 'pickup', label: t('checkout.pickup') },
-                                    { value: 'buffet', label: t('checkout.buffet') }
                                 ].map((type) => (
                                     <label key={type.value} className={styles.radioLabel}>
                                         <input

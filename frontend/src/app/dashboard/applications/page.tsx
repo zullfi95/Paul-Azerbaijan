@@ -61,6 +61,29 @@ const statusColors = {
   rejected: '#EF4444'
 };
 
+const formatApplicationDate = (value?: string | null): string => {
+  if (!value) return '—';
+  const normalized = value.includes('T')
+    ? value.split('T')[0]
+    : value.includes(' ')
+      ? value.split(' ')[0]
+      : value;
+
+  const date = new Date(normalized);
+  return Number.isNaN(date.getTime()) ? normalized : date.toLocaleDateString('ru-RU');
+};
+
+const formatApplicationTime = (value?: string | null): string => {
+  if (!value) return '—';
+  if (value.includes('T')) {
+    return value.split('T')[1]?.slice(0, 5) || '—';
+  }
+  if (value.includes(' ')) {
+    return value.split(' ')[1]?.slice(0, 5) || '—';
+  }
+  return value.slice(0, 5);
+};
+
 // Helper function to calculate total amount from cart items
 const calculateTotalAmount = (cartItems: any[] | null | undefined): number => {
   if (!cartItems || !Array.isArray(cartItems)) return 0;
@@ -912,6 +935,237 @@ export default function ApplicationsPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Slide-over application preview */}
+      {isSidebarOpen && selectedApplication && (
+        <>
+          <div
+            onClick={() => setIsSidebarOpen(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.4)',
+              zIndex: 90
+            }}
+          />
+          <aside
+            role="dialog"
+            aria-label="Просмотр заявки"
+            style={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              height: '100vh',
+              width: '430px',
+              maxWidth: '95vw',
+              background: '#FFFCF8',
+              boxShadow: '-18px 0 32px rgba(0,0,0,0.18)',
+              zIndex: 91,
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <div style={{
+              padding: '20px',
+              borderBottom: '1px solid var(--paul-border)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}>
+              <div>
+                <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--paul-black)' }}>
+                  {selectedApplication.first_name} {selectedApplication.last_name || ''}
+                </div>
+                <div style={{ marginTop: 4, fontSize: '13px', color: 'var(--paul-gray)' }}>
+                  Заявка №{selectedApplication.id}
+                </div>
+              </div>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="dashboard-action-btn"
+                aria-label="Закрыть просмотр заявки"
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{ padding: '20px', overflowY: 'auto' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '16px'
+              }}>
+                <span style={{
+                  padding: '6px 12px',
+                  borderRadius: '999px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  background: `${statusColors[selectedApplication.status] ?? '#1F2937'}15`,
+                  color: statusColors[selectedApplication.status] ?? '#1F2937'
+                }}>
+                  {statusLabels[selectedApplication.status as keyof typeof statusLabels]}
+                </span>
+                <button
+                  onClick={() => {
+                    setIsSidebarOpen(false);
+                    router.push(`/dashboard/orders/create?fromApplication=${selectedApplication.id}`);
+                  }}
+                  className="dashboard-action-btn"
+                  style={{
+                    borderColor: '#10B981',
+                    color: '#fff',
+                    background: '#10B981'
+                  }}
+                >
+                  Создать заказ
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', rowGap: 16 }}>
+                <section style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: 12 }}>
+                  <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                    Контактные данные
+                  </h4>
+                  <div style={{ display: 'grid', rowGap: 8 }}>
+                    <div>
+                      <div className="field-label">Email</div>
+                      <div className="field-value">{selectedApplication.email || '—'}</div>
+                    </div>
+                    <div>
+                      <div className="field-label">Телефон</div>
+                      <div className="field-value">{selectedApplication.phone || '—'}</div>
+                    </div>
+                    {selectedApplication.company_name && (
+                      <div>
+                        <div className="field-label">Компания</div>
+                        <div className="field-value">{selectedApplication.company_name}</div>
+                      </div>
+                    )}
+                    {selectedApplication.contact_person && (
+                      <div>
+                        <div className="field-label">Контактное лицо</div>
+                        <div className="field-value">{selectedApplication.contact_person}</div>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                <section style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: 12 }}>
+                  <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                    Детали мероприятия
+                  </h4>
+                  <div style={{ display: 'grid', rowGap: 8 }}>
+                    <div>
+                      <div className="field-label">Адрес</div>
+                      <div className="field-value">{selectedApplication.event_address || '—'}</div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: 12 }}>
+                      <div>
+                        <div className="field-label">Дата</div>
+                        <div className="field-value">{formatApplicationDate(selectedApplication.event_date)}</div>
+                      </div>
+                      <div>
+                        <div className="field-label">Время</div>
+                        <div className="field-value">{formatApplicationTime(selectedApplication.event_time)}</div>
+                      </div>
+                    </div>
+                    {selectedApplication.message && (
+                      <div>
+                        <div className="field-label">Комментарий клиента</div>
+                        <div className="field-value">{selectedApplication.message}</div>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                {Array.isArray(selectedApplication.cart_items) && selectedApplication.cart_items.length > 0 && (
+                  <section style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: 12 }}>
+                    <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                      Выбранные позиции
+                    </h4>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      {selectedApplication.cart_items.map((item, index) => (
+                        <li key={`${item.id ?? index}-${index}`} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#0f172a', fontWeight: 600 }}>
+                          <span style={{ maxWidth: '70%' }}>
+                            {item.name} ×{item.quantity ?? 1}
+                          </span>
+                          <span style={{ color: '#475569' }}>
+                            {item.price ? `₼${Number(item.price).toLocaleString('ru-RU')}` : '—'}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+
+                <section>
+                  <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                    Системная информация
+                  </h4>
+                  <div style={{ display: 'grid', rowGap: 8 }}>
+                    <div>
+                      <div className="field-label">Создана</div>
+                      <div className="field-value">
+                        {selectedApplication.created_at ? new Date(selectedApplication.created_at).toLocaleString('ru-RU') : '—'}
+                      </div>
+                    </div>
+                    {selectedApplication.processed_at && (
+                      <div>
+                        <div className="field-label">Обработана</div>
+                        <div className="field-value">
+                          {new Date(selectedApplication.processed_at).toLocaleString('ru-RU')}
+                        </div>
+                      </div>
+                    )}
+                    {selectedApplication.coordinator && (
+                      <div>
+                        <div className="field-label">Координатор</div>
+                        <div className="field-value">{selectedApplication.coordinator.name}</div>
+                      </div>
+                    )}
+                    {selectedApplication.coordinator_comment && (
+                      <div>
+                        <div className="field-label">Комментарий координатора</div>
+                        <div className="field-value">{selectedApplication.coordinator_comment}</div>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <div style={{
+              padding: '16px 20px',
+              borderTop: '1px solid var(--paul-border)',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: 12
+            }}>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="dashboard-action-btn"
+              >
+                Закрыть
+              </button>
+              <button
+                onClick={() => {
+                  setIsSidebarOpen(false);
+                  router.push(`/dashboard/orders/create?fromApplication=${selectedApplication.id}`);
+                }}
+                className="dashboard-action-btn"
+                style={{
+                  background: 'var(--paul-black)',
+                  color: '#fff',
+                  borderColor: 'var(--paul-black)'
+                }}
+              >
+                Создать заказ
+              </button>
+            </div>
+          </aside>
+        </>
       )}
     </DashboardLayout>
   );

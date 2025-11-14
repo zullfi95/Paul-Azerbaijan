@@ -5,8 +5,6 @@ import {
   Application,
   CartItem,
   User,
-  Order,
-  Address,
 } from '../types/common';
 import { makeApiRequest } from '../utils/apiHelpers';
 import { useQuery } from '@tanstack/react-query';
@@ -37,6 +35,49 @@ interface OrderFormData {
   special_instructions: string;
   application_id: number | null;
 }
+
+const extractDatePart = (value?: string | null): string => {
+    if (!value) return '';
+    if (value.includes('T')) {
+        return value.split('T')[0];
+    }
+    if (value.includes(' ')) {
+        return value.split(' ')[0];
+    }
+    return value;
+};
+
+const extractTimePart = (value?: string | null): string => {
+    if (!value) return '';
+    if (value.includes('T')) {
+        const timePart = value.split('T')[1];
+        return timePart ? timePart.slice(0, 5) : '';
+    }
+    if (value.includes(' ')) {
+        const timePart = value.split(' ')[1];
+        return timePart ? timePart.slice(0, 5) : '';
+    }
+    return value.slice(0, 5);
+};
+
+const normalizeCartItems = (cartItems: any[] | undefined | null): CartItem[] => {
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
+        return [];
+    }
+
+    return cartItems.map((item, index) => ({
+        id: (item?.id ?? `application-item-${index}`).toString(),
+        name: item?.name || `Позиция ${index + 1}`,
+        description: item?.description || '',
+        image: item?.image || '',
+        category: item?.category || 'application',
+        available: typeof item?.available === 'boolean' ? item.available : true,
+        isSet: typeof item?.isSet === 'boolean' ? item.isSet : false,
+        price: item?.price ? Number(item.price) : 0,
+        quantity: item?.quantity ? Number(item.quantity) : 1,
+        ...item,
+    }));
+};
 
 export const useOrderForm = () => {
     const { user } = useAuth();
@@ -113,7 +154,7 @@ export const useOrderForm = () => {
                     ...prev,
                     menu_items: prev.menu_items.map(menuItem =>
                         menuItem.id === item.id
-                            ? { ...menuItem, quantity: menuItem.quantity + 1 }
+                            ? { ...menuItem, quantity: (menuItem.quantity ?? 0) + 1 }
                             : menuItem
                     )
                 };
@@ -149,108 +190,79 @@ export const useOrderForm = () => {
         }));
     }, []);
 
-    // Загрузка заявки и заполнение формы
     useEffect(() => {
-        const loadApplication = async () => {
-            if (!fromApplicationId || clients.length === 0) {
-                if (fromApplicationId) {
-                    console.log('⏳ Waiting for clients to load...', { fromApplicationId, clientsCount: clients.length });
-                }
-                return;
-            }
+        if (!fromApplicationId) {
+            setApplication(null);
+            return;
+        }
 
+        let isCancelled = false;
+
+        const loadApplication = async () => {
             console.log('🔄 Loading application:', fromApplicationId);
             setLoading(true);
-            
+
             try {
                 const result = await makeApiRequest<Application>(`/applications/${fromApplicationId}`);
-                if (result.success && result.data) {
+                if (result.success && result.data && !isCancelled) {
                     const app = result.data;
-                    console.log('📋 Загружена заявка:', app);
                     setApplication(app);
-                    
-                    // Ищем клиента по client_id или email
-                    let selectedClient = null;
-                    if (app.client_id) {
-                        selectedClient = clients.find(c => c.id === app.client_id);
-                    } else if (app.email) {
-                        selectedClient = clients.find(c => c.email === app.email);
-                    }
 
-                    console.log('👤 Найден клиент:', selectedClient);
-                    
-                    // Парсим event_date для извлечения только даты (если это datetime)
-                    let deliveryDate = '';
-                    if (app.event_date) {
-                        // event_date может быть в формате "2025-11-20" или "2025-11-20 14:30:00"
-                        deliveryDate = app.event_date.includes(' ') 
-                            ? app.event_date.split(' ')[0]  // Берем первую часть "2025-11-20"
-                            : app.event_date;
-                        console.log('📅 Извлечена дата:', { original: app.event_date, parsed: deliveryDate });
-                    }
-                    
-                    // Парсим event_time для извлечения только времени
-                    let deliveryTime = '';
-                    if (app.event_time) {
-                        // event_time может быть в формате "2025-11-20 14:30:00" или "14:30:00"
-                        const timePart = app.event_time.includes(' ') 
-                            ? app.event_time.split(' ')[1]  // Берем вторую часть "14:30:00"
-                            : app.event_time;
-                        // Берем только HH:mm (убираем секунды)
-                        deliveryTime = timePart.substring(0, 5); // "14:30"
-                        console.log('⏰ Извлечено время:', { original: app.event_time, parsed: deliveryTime });
-                    }
-                    
-                    // Подставляем ВСЕ поля из заявки
-                    // Используем app.client_id даже если клиент не найден в списке - бэкенд создаст его автоматически
-                    const newFormData = {
-                        selected_client_id: selectedClient?.id || app.client_id || null,
-                        comment: app.message || '',
-                        delivery_date: deliveryDate,
-                        delivery_time: deliveryTime,
-                        delivery_address: app.event_address || '',
-                        delivery_type: 'delivery' as 'delivery' | 'pickup' | 'buffet',
-                        menu_items: (app.cart_items && Array.isArray(app.cart_items) && app.cart_items.length > 0) 
-                            ? app.cart_items.map((item: any) => ({
-                                id: item.id?.toString() || item.id,
-                                name: item.name || '',
-                                description: item.description || '',
-                                price: parseFloat(item.price) || 0,
-                                quantity: parseInt(item.quantity) || 1,
-                                ...item
-                            }))
+                    const normalizedItems = normalizeCartItems(app.cart_items);
+
+                    setFormData(prev => ({
+                        ...prev,
+                        selected_client_id: app.client_id ?? prev.selected_client_id,
+                        comment: app.message || prev.comment,
+                        delivery_date: extractDatePart(app.event_date) || prev.delivery_date,
+                        delivery_time: extractTimePart(app.event_time) || prev.delivery_time,
+                        delivery_address: app.event_address || prev.delivery_address,
+                        menu_items: normalizedItems.length > 0
+                            ? normalizedItems
                             : [],
                         application_id: app.id || null,
-                        client_type: selectedClient?.client_category || 'one_time' as 'corporate' | 'one_time',
-                        company_name: app.company_name || selectedClient?.company_name || '',
-                        delivery_cost: 0,
-                        discount_fixed: 0,
-                        discount_percent: 0,
-                        recurring_schedule: {
-                            enabled: false,
-                            frequency: 'weekly' as 'weekly' | 'monthly',
-                            days: [],
-                            delivery_time: '',
-                            notes: ''
-                        },
-                        equipment_required: 0,
-                        staff_assigned: 0,
-                        special_instructions: '',
-                    };
-                    
-                    console.log('✅ Устанавливаем данные формы:', newFormData);
-                    setFormData(newFormData);
+                        company_name: app.company_name || prev.company_name,
+                        client_type: prev.client_type || 'one_time',
+                    }));
+
                     console.log('✅ Форма заполнена данными из заявки');
                 }
             } catch (error) {
                 console.error('❌ Ошибка загрузки заявки:', error);
             } finally {
-                setLoading(false);
+                if (!isCancelled) {
+                    setLoading(false);
+                }
             }
         };
 
         loadApplication();
-    }, [fromApplicationId, clients]);
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [fromApplicationId]);
+
+    useEffect(() => {
+        if (!application || !fromApplicationId) return;
+        if (formData.selected_client_id) return;
+        if (!clients || clients.length === 0) return;
+
+        const matchedClient = application.client_id
+            ? clients.find(c => c.id === application.client_id)
+            : application.email
+                ? clients.find(c => c.email === application.email)
+                : null;
+
+        if (matchedClient) {
+            setFormData(prev => ({
+                ...prev,
+                selected_client_id: matchedClient.id,
+                client_type: matchedClient.client_category || prev.client_type,
+                company_name: prev.company_name || matchedClient.company_name || prev.company_name,
+            }));
+        }
+    }, [application, clients, formData.selected_client_id, fromApplicationId]);
 
     const handleInputChange = (field: keyof OrderFormData, value: string | number | boolean) => {
         setFormData(prev => ({

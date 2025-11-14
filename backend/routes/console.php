@@ -3,10 +3,14 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
+use App\Console\Commands\UpdateOrderStatuses;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+// Регистрируем команду для обновления статусов заказов
+Artisan::registerCommand(new UpdateOrderStatuses());
 
 // Планировщик задач
 Schedule::command('orders:update-statuses')

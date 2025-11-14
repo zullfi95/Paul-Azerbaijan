@@ -30,6 +30,16 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
+        protocol: 'https',
+        hostname: 'paul-azerbaijan.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.paul-azerbaijan.com',
+        pathname: '/**',
+      },
+      {
         protocol: 'http',
         hostname: '46.62.152.225',
         pathname: '/**',

@@ -17,20 +17,42 @@
 
 .itemRow {
   display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
   border-bottom: 1px solid #eee;
   font-family: 'Parisine', sans-serif;
   font-size: 0.95rem;
 }
 
+.itemImageContainer {
+  flex-shrink: 0;
+}
+
+.itemImage {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+.itemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .itemName {
   color: #1A1A1A;
+  font-weight: 500;
 }
 
 .itemPrice {
   color: #4A4A4A;
   font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .subtotalRow {

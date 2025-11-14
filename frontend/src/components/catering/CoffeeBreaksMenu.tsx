@@ -64,6 +64,7 @@ export default function CoffeeBreaksMenu({ onAddToCart }: CoffeeBreaksMenuProps)
   const handleAddOption = (optionKey: string, optionName: string, price: number) => {
     const quantity = options[optionKey as keyof typeof options].quantity;
     
+    // Создаем основной элемент меню
     const cartItem: CartItem = {
       id: `coffee-${optionKey}`,
       name: `Coffee Breaks - ${optionName}`,
@@ -77,6 +78,54 @@ export default function CoffeeBreaksMenu({ onAddToCart }: CoffeeBreaksMenuProps)
     };
     
     onAddToCart(cartItem);
+    
+    // Добавляем все дополнительные элементы с количеством > 0
+    Object.entries(additionalItems).forEach(([itemName, itemQuantity]) => {
+      if (itemQuantity > 0) {
+        // Определяем цену для каждого дополнительного элемента
+        let itemPrice = 3;
+        if (itemName === 'Mini Canapes') itemPrice = 4;
+        else if (itemName === 'Mini Salads') itemPrice = 3.5;
+        else if (itemName === 'Hot Chocolates' || itemName === 'Flavored Water') itemPrice = 4.5;
+        else if (itemName === 'Packaged Juice') itemPrice = 2;
+        else if (itemName === 'Fresh Juices' || itemName === 'Soft Drinks') itemPrice = 2.5;
+        
+        const additionalItem: CartItem = {
+          id: `coffee-additional-${optionKey}-${itemName.toLowerCase().replace(/\s+/g, '-')}`,
+          name: `${itemName} (${optionName})`,
+          description: `Additional item for ${optionName}`,
+          price: itemPrice,
+          quantity: itemQuantity,
+          image: '/images/coffee-break.png',
+          category: 'Coffee Breaks & Afternoon Teas',
+          available: true,
+          isSet: false
+        };
+        
+        onAddToCart(additionalItem);
+      }
+    });
+    
+    // Сбрасываем счетчики дополнительных элементов
+    setAdditionalItems({
+      'Mini Viennoiseries': 0,
+      'Mini Tartelettes': 0,
+      'Mini Sweets': 0,
+      'Mini Cakes': 0,
+      'Mini Madeleines': 0,
+      'Mini Canapes': 0,
+      'Mini Wraps': 0,
+      'Mini Toasts': 0,
+      'Mini Salads': 0,
+      'Mini Sandwiches': 0,
+      'Mini Croissants': 0,
+      'Iced Drinks': 0,
+      'Hot Chocolates': 0,
+      'Flavored Water': 0,
+      'Packaged Juice': 0,
+      'Fresh Juices': 0,
+      'Soft Drinks': 0
+    });
   };
 
   const addAllToOrder = () => {

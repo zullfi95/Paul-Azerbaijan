@@ -40,59 +40,67 @@
   border-color: #000000;
 }
 
-.checkboxSection {
-  margin-bottom: 1rem;
+.numberInputsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
-.checkboxTitle {
-  margin-bottom: 1rem;
-  font-weight: bold;
-  font-family: "Sabon Next LT Pro", serif;
-}
-
-.checkboxesContainer {
+.numberInputGroup {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.checkboxItem {
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 0.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
 }
 
-.checkboxItem:hover {
-  background-color: rgba(0,0,0,0.05);
-}
-
-.checkboxInput {
-  width: 16px;
-  height: 16px;
-  accent-color: #000000;
-  cursor: pointer;
-}
-
-.checkboxLabel {
+.numberInputLabel {
   font-family: "Sabon Next LT Pro", serif;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.numberInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 0.5px solid rgba(0,0,0,0.5);
+  border-radius: 4px;
+  background-color: rgba(254,244,230,0.5);
+  font-size: 1rem;
+  font-family: "Sabon Next LT Pro", serif;
+  color: #1A1A1A;
+  transition: border-color 0.2s ease;
+}
+
+.numberInput:focus {
+  outline: none;
+  border-color: #000000;
+}
+
+.numberInput::-webkit-inner-spin-button,
+.numberInput::-webkit-outer-spin-button {
+  opacity: 1;
   cursor: pointer;
-  user-select: none;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .checkboxesContainer {
-    flex-direction: column;
-    gap: 0.5rem;
+  .numberInputsContainer {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
   
-  .checkboxItem {
-    padding: 0.75rem;
+  .numberInputGroup {
+    gap: 0.4rem;
+  }
+  
+  .numberInputLabel {
+    font-size: 0.95rem;
+  }
+  
+  .numberInput {
+    padding: 0.6rem;
+    font-size: 0.95rem;
   }
   
   .sectionHeader {

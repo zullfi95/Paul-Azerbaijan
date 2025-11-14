@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FeedbackModal from '@/components/FeedbackModal';
@@ -26,21 +27,18 @@ interface OrderFormData {
   deliveryDate: string;
   deliveryTime: string;
   notes: string;
-  additionalItems: {
-    knife: boolean;
-    spoon: boolean;
-    forks: boolean;
-    napkins: boolean;
-  };
+  equipment_required: number;
+  staff_assigned: number;
 }
 
 // Типы для дочерних компонентов
 type BillingFormData = Pick<OrderFormData, 'firstName' | 'lastName' | 'email' | 'phone' | 'companyName' | 'streetAddress'>;
 type DeliveryFormData = Pick<OrderFormData, 'deliveryType' | 'deliveryDate' | 'deliveryTime'>;
-type OtherInfoFormData = Pick<OrderFormData, 'notes' | 'additionalItems'>;
+type OtherInfoFormData = Pick<OrderFormData, 'notes' | 'equipment_required' | 'staff_assigned'>;
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const t = useTranslations('checkout');
   const { items: cart, clearCart } = useCart();
   const { user, isAuthenticated, isLoading } = useAuth();
   
@@ -57,17 +55,13 @@ export default function CheckoutPage() {
     email: user?.email || '',
     phone: user?.phone || '',
     companyName: user?.company_name || '',
-    streetAddress: user?.address || '',
+    streetAddress: user?.shipping_address || user?.address || '',
     deliveryType: 'delivery',
     deliveryDate: '',
     deliveryTime: '',
     notes: '',
-    additionalItems: {
-      knife: false,
-      spoon: false,
-      forks: false,
-      napkins: false
-    },
+    equipment_required: 0,
+    staff_assigned: 0,
   });
 
   const [errors, setErrors] = useState<Partial<OrderFormData>>({});
@@ -78,6 +72,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (isAuthenticated && user) {
       const nameParts = user.name?.split(' ') || [];
+      const address = user.shipping_address || user.address || '';
       setFormData(prev => ({
         ...prev,
         firstName: nameParts[0] || '',
@@ -85,7 +80,7 @@ export default function CheckoutPage() {
         email: user.email || '',
         phone: user.phone || '',
         companyName: user.company_name || '',
-        streetAddress: user.address || '',
+        streetAddress: address || prev.streetAddress,
       }));
     }
   }, [isAuthenticated, user]);
@@ -104,13 +99,11 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleAdditionalItemChange = (item: keyof OrderFormData['additionalItems']) => {
+  const handleNumberChange = (field: 'equipment_required' | 'staff_assigned', value: string) => {
+    const numValue = parseInt(value) || 0;
     setFormData(prev => ({
       ...prev,
-      additionalItems: {
-        ...prev.additionalItems,
-        [item]: !prev.additionalItems[item]
-      }
+      [field]: Math.max(0, numValue)
     }));
   };
 
@@ -154,8 +147,9 @@ export default function CheckoutPage() {
       const selectedDate = new Date(formData.deliveryDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      if (selectedDate < today) {
-        newErrors.deliveryDate = 'Delivery date must be today or later';
+      // Бэкенд требует дату в будущем (after:today), поэтому используем строгое сравнение
+      if (selectedDate <= today) {
+        newErrors.deliveryDate = 'Delivery date must be in the future';
       }
     }
     if (!formData.deliveryTime) {
@@ -177,19 +171,36 @@ export default function CheckoutPage() {
 
     try {
       // Создаем заявку, а не заказ
+      // equipment_required и staff_assigned не используются в заявках, только в заказах
+      
+      // Убеждаемся, что дата в формате YYYY-MM-DD, а время в формате HH:MM
+      let eventDate = formData.deliveryDate;
+      if (eventDate) {
+        const date = new Date(eventDate);
+        if (!isNaN(date.getTime())) {
+          // Форматируем дату в YYYY-MM-DD
+          eventDate = date.toISOString().split('T')[0];
+        }
+      }
+      
+      let eventTime = formData.deliveryTime;
+      if (eventTime && eventTime.length > 5) {
+        // Если время содержит секунды, обрезаем до HH:MM
+        eventTime = eventTime.substring(0, 5);
+      }
+      
       const applicationData = {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        company_name: formData.companyName, // Это поле может быть полезно, даже если его нет в валидаторе
-        message: formData.notes,
-        event_address: formData.streetAddress,
-        event_date: formData.deliveryDate,
-        event_time: formData.deliveryTime,
-        cart_items: cart,
+        first_name: formData.firstName.trim(),
+        last_name: formData.lastName?.trim() || null,
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        company_name: formData.companyName?.trim() || null,
+        message: formData.notes?.trim() || null,
+        event_address: formData.streetAddress.trim(),
+        event_date: eventDate || null,
+        event_time: eventTime || null,
+        cart_items: cart || [],
         client_id: (isAuthenticated && user?.user_type === 'client') ? user.id : undefined,
-        // additional_items пока не отправляем, т.к. бэкенд их не ожидает для заявок
       };
 
       const headers: Record<string, string> = {
@@ -333,13 +344,13 @@ export default function CheckoutPage() {
           <OtherInformation 
             formData={formData}
             onInputChange={handleOtherInfoChange}
-            onAdditionalItemChange={handleAdditionalItemChange}
+            onNumberChange={handleNumberChange}
           />
 
           {/* Order Summary and Payment Section */}
           <div className={styles.orderSummarySection}>
             <div className="paul-section-header">
-              Order summary
+              {t('checkout.orderSummary')}
             </div>
 
             {/* Order Summary */}

@@ -259,7 +259,11 @@
     "continueToPayment": "Продолжить к оплате",
     "emptyCart": "Ваша корзина пуста",
     "emptyCartMessage": "Добавьте товары в корзину для продолжения оформления заказа",
-    "backToMenu": "Вернуться к меню"
+    "backToMenu": "Вернуться к меню",
+    "otherInformation": "Дополнительная информация о заказе",
+    "notesPlaceholder": "Заметки о заказе",
+    "equipmentRequired": "Необходимое оборудование",
+    "staffAssigned": "Назначенный персонал"
   },
   "dashboard": {
     "title": "Панель управления",

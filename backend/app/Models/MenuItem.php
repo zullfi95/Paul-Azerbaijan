@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class MenuItem extends Model
 {
@@ -33,6 +34,7 @@ class MenuItem extends Model
 
     protected $appends = [
         'category', // Добавляем имя категории в JSON
+        'images_urls', // Добавляем полные URL изображений
     ];
 
     /**
@@ -84,7 +86,62 @@ class MenuItem extends Model
             return null;
         }
         
-        return is_array($this->images) ? $this->images[0] : null;
+        $images = is_array($this->images) ? $this->images : [];
+        if (empty($images)) {
+            return null;
+        }
+        
+        return $this->getImageUrl($images[0]);
+    }
+
+    /**
+     * Получить полный URL изображения
+     */
+    protected function getImageUrl(string $path): string
+    {
+        // Если это уже полный URL (http/https), возвращаем как есть
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+        
+        // Если путь уже начинается с /storage/, возвращаем как есть (уже полный путь)
+        if (str_starts_with($path, '/storage/')) {
+            return url($path);
+        }
+        
+        // Если это относительный путь, начинающийся с /, формируем полный URL
+        if (str_starts_with($path, '/')) {
+            return url($path);
+        }
+        
+        // Если путь относительно storage (menu_items/...), используем Storage::url
+        if (str_starts_with($path, 'menu_items/')) {
+            return Storage::url($path);
+        }
+        
+        // Если путь уже содержит public/, убираем его
+        if (str_starts_with($path, 'public/')) {
+            $path = substr($path, 7); // Убираем "public/"
+        }
+        
+        // По умолчанию добавляем /storage/ и формируем полный URL
+        return url('/storage/' . ltrim($path, '/'));
+    }
+
+    /**
+     * Получить массив URL изображений с полными путями
+     */
+    public function getImagesUrlsAttribute(): array
+    {
+        if (empty($this->images)) {
+            return [];
+        }
+        
+        $images = is_array($this->images) ? $this->images : [];
+        
+        return array_map(function ($path) {
+            return $this->getImageUrl($path);
+        }, $images);
     }
 
     /**
@@ -93,5 +150,31 @@ class MenuItem extends Model
     public function getCategoryAttribute(): ?string
     {
         return $this->menuCategory?->name;
+    }
+
+    /**
+     * Подготовить модель к сериализации массива
+     */
+    protected function serializeDate($date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Преобразовать модель в массив
+     */
+    public function toArray(): array
+    {
+        $array = parent::toArray();
+        
+        // Заменяем images на полные URL
+        if (isset($array['images']) && !empty($array['images'])) {
+            $images = is_array($array['images']) ? $array['images'] : [];
+            $array['images'] = array_map(function ($path) {
+                return $this->getImageUrl($path);
+            }, $images);
+        }
+        
+        return $array;
     }
 }

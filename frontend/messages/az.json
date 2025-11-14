@@ -259,7 +259,11 @@
     "continueToPayment": "Ödənişə Davam Et",
     "emptyCart": "Səbətiniz boşdur",
     "emptyCartMessage": "Sifarişə davam etmək üçün səbətə məhsul əlavə edin",
-    "backToMenu": "Menyuya Qayıt"
+    "backToMenu": "Menyuya Qayıt",
+    "otherInformation": "Sifariş haqqında əlavə məlumat",
+    "notesPlaceholder": "Sifariş haqqında qeydlər",
+    "equipmentRequired": "Lazım olan avadanlıq",
+    "staffAssigned": "Təyin olunmuş personal"
   },
   "dashboard": {
     "title": "İdarə Paneli",

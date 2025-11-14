@@ -189,7 +189,7 @@ export default function CheckoutPage() {
         eventTime = eventTime.substring(0, 5);
       }
       
-      const applicationData = {
+      const applicationData: Record<string, any> = {
         first_name: formData.firstName.trim(),
         last_name: formData.lastName?.trim() || null,
         email: formData.email.trim(),
@@ -200,8 +200,12 @@ export default function CheckoutPage() {
         event_date: eventDate || null,
         event_time: eventTime || null,
         cart_items: cart || [],
-        client_id: (isAuthenticated && user?.user_type === 'client') ? user.id : undefined,
       };
+      
+      // Добавляем client_id только если пользователь авторизован и является клиентом
+      if (isAuthenticated && user?.user_type === 'client' && user.id) {
+        applicationData.client_id = user.id;
+      }
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',

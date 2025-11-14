@@ -203,12 +203,25 @@ export const useOrderForm = () => {
             setLoading(true);
 
             try {
-                const result = await makeApiRequest<Application>(`/applications/${fromApplicationId}`);
+                const result = await makeApiRequest<{ application?: Application } | Application>(`/applications/${fromApplicationId}`);
+                console.log('📥 API Response:', result);
+                
                 if (result.success && result.data && !isCancelled) {
-                    const app = result.data;
+                    // API может вернуть данные в двух форматах:
+                    // 1. { application: {...} } - обернутый формат
+                    // 2. {...} - прямой формат
+                    const app: Application = (result.data as any)?.application || (result.data as Application);
+                    
+                    if (!app) {
+                        console.error('❌ Заявка не найдена в ответе API');
+                        return;
+                    }
+                    
+                    console.log('📋 Application data:', app);
                     setApplication(app);
 
                     const normalizedItems = normalizeCartItems(app.cart_items);
+                    console.log('🛒 Normalized items:', normalizedItems);
 
                     setFormData(prev => ({
                         ...prev,
@@ -225,7 +238,14 @@ export const useOrderForm = () => {
                         client_type: prev.client_type || 'one_time',
                     }));
 
-                    console.log('✅ Форма заполнена данными из заявки');
+                    console.log('✅ Форма заполнена данными из заявки', {
+                        client_id: app.client_id,
+                        items_count: normalizedItems.length,
+                        delivery_date: extractDatePart(app.event_date),
+                        delivery_time: extractTimePart(app.event_time),
+                    });
+                } else {
+                    console.error('❌ Не удалось загрузить заявку:', result);
                 }
             } catch (error) {
                 console.error('❌ Ошибка загрузки заявки:', error);

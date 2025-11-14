@@ -232,7 +232,7 @@ class PaymentController extends BaseApiController
             $order->updatePaymentStatus($paymentStatus['payment_status'], $paymentStatus);
 
             // Если платеж успешен, отправляем уведомления
-            if ($paymentStatus['payment_status'] === 'charged') {
+            if ($paymentStatus['payment_status'] === Order::PAYMENT_STATUS_CHARGED) {
                 $this->notificationService->sendPaymentSuccessNotification($order);
                 $this->notificationService->sendNewOrderNotifications($order);
             }

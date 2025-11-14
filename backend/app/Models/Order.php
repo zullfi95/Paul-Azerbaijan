@@ -216,11 +216,16 @@ class Order extends Model
      * 
      * ИСПРАВЛЕНО: Использует константы и добавляет payment_completed_at
      */
-    public function updatePaymentStatus(string $status): void
+    public function updatePaymentStatus(string $status, array $details = []): void
     {
         $updateData = [
             'payment_status' => $status,
         ];
+        
+        // Сохраняем детали платежа, если они переданы
+        if (!empty($details)) {
+            $updateData['payment_details'] = $details;
+        }
         
         // Если платеж завершен (успешно или с ошибкой), записываем время завершения
         if (in_array($status, [

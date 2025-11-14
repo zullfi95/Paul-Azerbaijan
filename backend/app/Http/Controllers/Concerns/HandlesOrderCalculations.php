@@ -133,13 +133,23 @@ trait HandlesOrderCalculations
             (float) ($data['delivery_cost'] ?? 0)
         );
 
+        // Определяем статус заказа:
+        // - Если заказ создается из заявки (application_id присутствует) -> pending_payment
+        // - Иначе -> submitted
+        $status = isset($data['application_id']) && $data['application_id'] 
+            ? Order::STATUS_PENDING_PAYMENT 
+            : Order::STATUS_SUBMITTED;
+
         return [
             'client_id' => $client->id,
             'company_name' => $data['company_name'] ?? $client->company_name ?? $client->name,
             'client_type' => $data['client_type'] ?? $client->client_category ?? 'one_time',
             'menu_items' => $totals['resolved_items'],
             'comment' => $data['comment'] ?? null,
-            'status' => 'submitted',
+            'status' => $status,
+            'payment_status' => isset($data['application_id']) && $data['application_id'] 
+                ? Order::PAYMENT_STATUS_PENDING 
+                : Order::PAYMENT_STATUS_PENDING,
             'coordinator_id' => auth()->user()->isCoordinator() ? auth()->id() : null,
             'total_amount' => $totals['subtotal'],
             'discount_fixed' => (float) ($data['discount_fixed'] ?? 0),

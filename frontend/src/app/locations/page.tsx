@@ -31,7 +31,7 @@ export default function LocationsPage() {
 
             {/* Interactive Map */}
             <div className={styles.mapContainer}>
-              <LocationsMap height="600px" />
+              <LocationsMap height="400px" />
             </div>
 
             {/* Location Cards Grid */}
@@ -304,6 +304,33 @@ export default function LocationsPage() {
                   </div>
                   <p className={styles.locationHours}>
                     Mon-Sun. 08:00 - 23:00
+                  </p>
+                </div>
+              </div>
+
+              {/* PAUL Airport */}
+              <div className={styles.locationCard}>
+                <div className={styles.locationImage}>
+                  <Image
+                    src="/images/findpole3.png"
+                    alt="PAUL Airport"
+                    width={300}
+                    height={200}
+                    className={styles.locationImg}
+                  />
+                </div>
+                <div className={styles.locationInfo}>
+                  <h3 className={styles.locationName}>
+                    PAUL Airport
+                  </h3>
+                  <p className={styles.locationAddress}>
+                    Heydar Aliyev International Airport, Terminal 1
+                  </p>
+                  <div className={styles.locationPhone}>
+                    <a href="tel:0501234567">050 123 45 67</a>
+                  </div>
+                  <p className={styles.locationHours}>
+                    Mon-Sun. 06:00 - 24:00
                   </p>
                 </div>
               </div>

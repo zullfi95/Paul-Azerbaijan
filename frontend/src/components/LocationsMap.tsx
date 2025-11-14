@@ -106,6 +106,14 @@ export const paulLocations: Location[] = [
     phone: ['010 321 07 70'],
     hours: 'Mon-Sun. 08:00 - 23:00',
     coordinates: [40.3964110, 49.8497598] // ADA University (verified)
+  },
+  {
+    id: 11,
+    name: 'PAUL Airport',
+    address: 'Heydar Aliyev International Airport, Terminal 1',
+    phone: ['050 123 45 67'],
+    hours: 'Mon-Sun. 06:00 - 24:00',
+    coordinates: [40.4675, 50.0467] // Heydar Aliyev International Airport
   }
 ];
 

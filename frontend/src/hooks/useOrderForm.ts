@@ -179,6 +179,16 @@ export const useOrderForm = () => {
 
                     console.log('👤 Найден клиент:', selectedClient);
                     
+                    // Парсим event_date для извлечения только даты (если это datetime)
+                    let deliveryDate = '';
+                    if (app.event_date) {
+                        // event_date может быть в формате "2025-11-20" или "2025-11-20 14:30:00"
+                        deliveryDate = app.event_date.includes(' ') 
+                            ? app.event_date.split(' ')[0]  // Берем первую часть "2025-11-20"
+                            : app.event_date;
+                        console.log('📅 Извлечена дата:', { original: app.event_date, parsed: deliveryDate });
+                    }
+                    
                     // Парсим event_time для извлечения только времени
                     let deliveryTime = '';
                     if (app.event_time) {
@@ -192,14 +202,24 @@ export const useOrderForm = () => {
                     }
                     
                     // Подставляем ВСЕ поля из заявки
+                    // Используем app.client_id даже если клиент не найден в списке - бэкенд создаст его автоматически
                     const newFormData = {
                         selected_client_id: selectedClient?.id || app.client_id || null,
                         comment: app.message || '',
-                        delivery_date: app.event_date || '',
+                        delivery_date: deliveryDate,
                         delivery_time: deliveryTime,
                         delivery_address: app.event_address || '',
                         delivery_type: 'delivery' as 'delivery' | 'pickup' | 'buffet',
-                        menu_items: app.cart_items || [],
+                        menu_items: (app.cart_items && Array.isArray(app.cart_items) && app.cart_items.length > 0) 
+                            ? app.cart_items.map((item: any) => ({
+                                id: item.id?.toString() || item.id,
+                                name: item.name || '',
+                                description: item.description || '',
+                                price: parseFloat(item.price) || 0,
+                                quantity: parseInt(item.quantity) || 1,
+                                ...item
+                            }))
+                            : [],
                         application_id: app.id || null,
                         client_type: selectedClient?.client_category || 'one_time' as 'corporate' | 'one_time',
                         company_name: app.company_name || selectedClient?.company_name || '',
@@ -259,7 +279,8 @@ export const useOrderForm = () => {
         }
 
         // Валидация клиента
-        if (!formData.selected_client_id) {
+        // Если создаем заказ из заявки, client_id может быть null - бэкенд создаст клиента автоматически
+        if (!fromApplicationId && !formData.selected_client_id) {
             alert('Необходимо выбрать клиента для заказа');
             return;
         }

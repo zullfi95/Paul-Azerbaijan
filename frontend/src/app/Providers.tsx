@@ -11,6 +11,8 @@ import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
 import CookieConsent from "@/components/CookieConsent";
 import enMessages from '../../messages/en.json';
 import azMessages from '../../messages/az.json';
+import ruMessages from '../../messages/ru.json';
+import { DEFAULT_LOCALE } from '@/i18n/config';
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -18,7 +20,7 @@ interface ProvidersProps {
 
 function IntlProvider({ children }: { children: React.ReactNode }) {
   const { locale } = useLanguage();
-  const messages = locale === 'az' ? azMessages : enMessages;
+  const messages = locale === 'az' ? azMessages : locale === 'ru' ? ruMessages : enMessages;
   
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
@@ -51,8 +53,10 @@ export default function Providers({ children }: ProvidersProps) {
     },
   }));
 
+  // Always use default locale initially to avoid SSR issues
+  // LanguageProvider will read from localStorage on the client side
   return (
-    <LanguageProvider initialLocale="en">
+    <LanguageProvider initialLocale={DEFAULT_LOCALE}>
       <IntlProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>

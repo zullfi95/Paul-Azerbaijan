@@ -121,6 +121,18 @@ export default function CreateOrderForm() {
                         {/* Client Selection */}
                         <div className={styles.formSection}>
                             <label htmlFor="client" className={styles.label}>{t('form.client')}</label>
+                            {application && !formData.selected_client_id && (
+                                <div className={styles.applicationClientInfo}>
+                                    <p className={styles.applicationClientText}>
+                                        <strong>{t('form.clientFromApplication')}:</strong> {application.first_name} {application.last_name}
+                                        {application.phone && <span> • {application.phone}</span>}
+                                        {application.email && <span> • {application.email}</span>}
+                                    </p>
+                                    <p className={styles.applicationClientNote}>
+                                        {t('form.clientWillBeCreated')}
+                                    </p>
+                                </div>
+                            )}
                             <select
                                 id="client"
                                 value={formData.selected_client_id || ''}
@@ -134,7 +146,7 @@ export default function CreateOrderForm() {
                                     }));
                                 }}
                                 className={styles.select}
-                                required
+                                required={!fromApplicationId}
                             >
                                 <option value="">{t('form.selectClient')}</option>
                                 {clients.map((client) => (

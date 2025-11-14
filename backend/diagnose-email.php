@@ -104,3 +104,4 @@ echo "5. Если письмо в Brevo logs но не пришло - пробл
 echo "🔍 Проверить логи Laravel:\n";
 echo "   tail -f storage/logs/laravel.log\n\n";
 
+

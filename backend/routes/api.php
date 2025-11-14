@@ -103,6 +103,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/external-menu', [IikoController::class, 'getExternalMenu']); // Получение внешнего меню
             Route::get('/price-categories', [IikoController::class, 'getPriceCategories']); // Категории цен
             Route::post('/sync-menu', [IikoController::class, 'syncMenu']); // Синхронизация меню
+            Route::get('/debug-menu-structure', [IikoController::class, 'debugMenuStructure']); // Отладка структуры меню
         });
     });
 

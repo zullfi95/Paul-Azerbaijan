@@ -1,8 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useCallback, useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { Locale, LOCALES, DEFAULT_LOCALE, LOCALE_STORAGE_KEY, isValidLocale } from '@/i18n/config';
+import { Locale, LOCALES, DEFAULT_LOCALE, LOCALE_STORAGE_KEY, isValidLocale, getValidLocale } from '@/i18n/config';
 
 interface LanguageContextType {
   locale: Locale;
@@ -25,22 +24,38 @@ interface LanguageProviderProps {
  */
 export function LanguageProvider({ children, initialLocale = DEFAULT_LOCALE }: LanguageProviderProps) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
-  const router = useRouter();
-  const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
 
-  // Initialize locale from localStorage on mount (client-side only)
+  // Mark as client-side after mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedLocale = localStorage.getItem(LOCALE_STORAGE_KEY);
-      if (savedLocale && isValidLocale(savedLocale) && savedLocale !== initialLocale) {
-        setLocaleState(savedLocale);
-      }
+    setIsClient(true);
+  }, []);
+
+  // Read locale from localStorage on client-side only (once on mount)
+  useEffect(() => {
+    if (!isClient || typeof window === 'undefined') {
+      return;
     }
-  }, [initialLocale]);
+
+    try {
+      const savedLocale = localStorage.getItem(LOCALE_STORAGE_KEY);
+      if (savedLocale && isValidLocale(savedLocale)) {
+        const validLocale = getValidLocale(savedLocale);
+        setLocaleState(validLocale);
+      }
+    } catch (error) {
+      // If localStorage is not available, keep the initial locale
+      console.warn('Failed to read locale from localStorage:', error);
+    }
+  }, [isClient]); // Only run when isClient changes (once on mount)
 
   /**
    * Changes the application locale
-   * Persists choice to localStorage and updates URL
+   * Persists choice to localStorage and reloads the page to apply changes
+   * 
+   * Note: This implementation doesn't modify the URL because the app
+   * doesn't use server-side locale routing. The locale is stored in
+   * localStorage and applied on client-side.
    */
   const setLocale = useCallback((newLocale: Locale) => {
     if (!isValidLocale(newLocale)) {
@@ -48,32 +63,18 @@ export function LanguageProvider({ children, initialLocale = DEFAULT_LOCALE }: L
       newLocale = DEFAULT_LOCALE;
     }
 
-    setLocaleState(newLocale);
-
-    // Persist to localStorage
+    // Persist to localStorage first
     if (typeof window !== 'undefined') {
       localStorage.setItem(LOCALE_STORAGE_KEY, newLocale);
+      
+      // Reload the current page to apply the new locale
+      // This ensures all components re-render with the new locale from localStorage
+      window.location.reload();
+    } else {
+      // Server-side: just update state
+      setLocaleState(newLocale);
     }
-
-    // Update URL with new locale
-    const currentPathname = pathname || '/';
-    
-    // Remove current locale from pathname if present
-    let newPathname = currentPathname;
-    for (const loc of LOCALES) {
-      if (currentPathname.startsWith(`/${loc}/`) || currentPathname === `/${loc}`) {
-        newPathname = currentPathname.slice(loc.length + 1) || '/';
-        break;
-      }
-    }
-
-    // Add new locale to pathname (unless it's default and we're using 'as-needed' strategy)
-    if (newLocale !== DEFAULT_LOCALE) {
-      newPathname = `/${newLocale}${newPathname}`;
-    }
-
-    router.push(newPathname);
-  }, [pathname, router]);
+  }, []);
 
   const value: LanguageContextType = {
     locale,

@@ -484,6 +484,8 @@
     "confirmApplication": "Подтвердить заявку",
     "client": "Клиент",
     "selectClient": "Выберите клиента",
+    "clientFromApplication": "Клиент из заявки",
+    "clientWillBeCreated": "Клиент будет создан автоматически при создании заказа",
     "clientType": "Тип клиента",
     "corporate": "Корпоративный",
     "onetime": "Разовый",

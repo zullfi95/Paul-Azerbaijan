@@ -484,6 +484,8 @@
     "confirmApplication": "Ərizəni Təsdiq Et",
     "client": "Müştəri",
     "selectClient": "Müştəri seçin",
+    "clientFromApplication": "Ərizədən müştəri",
+    "clientWillBeCreated": "Müştəri sifariş yaradılanda avtomatik yaradılacaq",
     "clientType": "Müştəri Növü",
     "corporate": "Korporativ",
     "onetime": "Birdəfəlik",

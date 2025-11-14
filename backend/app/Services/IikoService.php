@@ -117,7 +117,26 @@ class IikoService
             ]);
 
             if ($response->successful()) {
-                return $response->json();
+                $menuData = $response->json();
+                
+                // Логируем структуру первого продукта для анализа
+                if (!empty($menuData['products']) && is_array($menuData['products'])) {
+                    $firstProduct = $menuData['products'][0];
+                    Log::info('iiko API - First product structure', [
+                        'organization_id' => $organizationId,
+                        'product_keys' => array_keys($firstProduct),
+                        'product_id' => $firstProduct['id'] ?? null,
+                        'product_name' => $firstProduct['name'] ?? null,
+                        'has_ingredients' => isset($firstProduct['ingredients']) || isset($firstProduct['composition']),
+                        'has_modifiers' => isset($firstProduct['modifiers']),
+                        'has_sizePrices' => isset($firstProduct['sizePrices']),
+                        'has_imageLinks' => isset($firstProduct['imageLinks']),
+                        'has_tags' => isset($firstProduct['tags']),
+                        'full_product_structure' => $firstProduct,
+                    ]);
+                }
+                
+                return $menuData;
             } else {
                 Log::error('Failed to get menu', [
                     'status' => $response->status(),

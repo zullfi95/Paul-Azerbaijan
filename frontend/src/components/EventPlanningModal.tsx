@@ -132,7 +132,7 @@ const EventPlanningModal: React.FC<EventPlanningModalProps> = ({ isOpen, onClose
             type="button"
             aria-label="Close"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
           
           <div className={styles.headerContent}>

@@ -483,6 +483,8 @@
     "confirmApplication": "Confirm Application",
     "client": "Client",
     "selectClient": "Select client",
+    "clientFromApplication": "Client from application",
+    "clientWillBeCreated": "Client will be created automatically when order is created",
     "clientType": "Client Type",
     "corporate": "Corporate",
     "onetime": "One-time",

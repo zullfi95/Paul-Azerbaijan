@@ -114,9 +114,9 @@ class MenuItem extends Model
             return url($path);
         }
         
-        // Если путь относительно storage (menu_items/...), используем Storage::url
+        // Если путь относительно storage (menu_items/...), используем Storage::url и преобразуем в полный URL
         if (str_starts_with($path, 'menu_items/')) {
-            return Storage::url($path);
+            return url(Storage::url($path));
         }
         
         // Если путь уже содержит public/, убираем его

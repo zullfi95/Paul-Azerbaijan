@@ -71,7 +71,7 @@ export default function CoffeeBreaksMenu({ onAddToCart }: CoffeeBreaksMenuProps)
       description: optionName,
       price: price,
       quantity: quantity,
-      image: '/images/coffee-break.png',
+      image: '/images/placeholder-food.svg',
       category: 'Coffee Breaks & Afternoon Teas',
       available: true,
       isSet: true
@@ -96,7 +96,7 @@ export default function CoffeeBreaksMenu({ onAddToCart }: CoffeeBreaksMenuProps)
           description: `Additional item for ${optionName}`,
           price: itemPrice,
           quantity: itemQuantity,
-          image: '/images/coffee-break.png',
+          image: '/images/placeholder-food.svg',
           category: 'Coffee Breaks & Afternoon Teas',
           available: true,
           isSet: false

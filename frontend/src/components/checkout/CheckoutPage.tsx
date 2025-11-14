@@ -354,7 +354,7 @@ export default function CheckoutPage() {
           {/* Order Summary and Payment Section */}
           <div className={styles.orderSummarySection}>
             <div className="paul-section-header">
-              {t('checkout.orderSummary')}
+              {t('orderSummary')}
             </div>
 
             {/* Order Summary */}

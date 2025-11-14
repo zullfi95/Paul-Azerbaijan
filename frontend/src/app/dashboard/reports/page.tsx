@@ -9,12 +9,14 @@ import { useAuthGuard, canViewCalendar } from "../../../utils/authConstants";
 import { generateOrdersReport } from "../../../utils/beoGenerator";
 import DashboardLayout from "../../../components/DashboardLayout";
 import { formatTotalAmount } from "../../../utils/numberUtils";
+import { getStatusLabel, STATUS_COLORS } from "../../../utils/statusTranslations";
 import { 
   ChartBarIcon,
   FileTextIcon,
   ShoppingBagIcon,
   CheckIcon,
-  FilterIcon 
+  FilterIcon,
+  EyeIcon 
 } from "../../../components/Icons";
 import "../../../styles/dashboard.css";
 
@@ -26,14 +28,12 @@ interface ReportFilters {
 }
 
 interface ReportData {
+  filteredOrders: Order[];
   totalOrders: number;
   totalApplications: number;
   completedOrders: number;
   totalRevenue: number;
   averageOrderValue: number;
-  ordersByStatus: Record<string, number>;
-  ordersByClientType: Record<string, number>;
-  ordersByMonth: Record<string, number>;
 }
 
 export default function ReportsPage() {
@@ -44,6 +44,7 @@ export default function ReportsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState<ReportData | null>(null);
+  const [filteredOrdersList, setFilteredOrdersList] = useState<Order[]>([]);
   const [filters, setFilters] = useState<ReportFilters>({
     startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0],
@@ -108,35 +109,21 @@ export default function ReportsPage() {
     const totalRevenue = filteredOrders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
     const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-    // Группировка по статусам
-    const ordersByStatus = filteredOrders.reduce((acc, order) => {
-      acc[order.status] = (acc[order.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    // Сортируем заказы по дате доставки (новые сначала)
+    const sortedOrders = [...filteredOrders].sort((a, b) => {
+      const dateA = new Date(a.delivery_date || a.created_at).getTime();
+      const dateB = new Date(b.delivery_date || b.created_at).getTime();
+      return dateB - dateA;
+    });
 
-    // Группировка по типам клиентов
-    const ordersByClientType = filteredOrders.reduce((acc, order) => {
-      const clientType = order.client_type || 'unknown';
-      acc[clientType] = (acc[clientType] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    // Группировка по месяцам
-    const ordersByMonth = filteredOrders.reduce((acc, order) => {
-      const month = new Date(order.created_at).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
-      acc[month] = (acc[month] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
+    setFilteredOrdersList(sortedOrders);
     setReportData({
+      filteredOrders: sortedOrders,
       totalOrders,
       totalApplications,
       completedOrders,
       totalRevenue,
-      averageOrderValue,
-      ordersByStatus,
-      ordersByClientType,
-      ordersByMonth
+      averageOrderValue
     });
   }, [orders, applications, filters]);
 
@@ -307,7 +294,7 @@ export default function ReportsPage() {
             Загрузка данных...
           </div>
         </div>
-      ) : reportData ? (
+      ) : reportData && reportData.filteredOrders && reportData.filteredOrders.length > 0 ? (
         <>
           {/* Таблица с данными */}
           <div className="dashboard-table-container">
@@ -318,7 +305,7 @@ export default function ReportsPage() {
                 color: 'var(--paul-gray)', 
                 marginTop: 'var(--space-1)' 
               }}>
-                Данные за период: {new Date(filters.startDate).toLocaleDateString('ru-RU')} - {new Date(filters.endDate).toLocaleDateString('ru-RU')}
+                Данные за период: {new Date(filters.startDate).toLocaleDateString('ru-RU')} - {new Date(filters.endDate).toLocaleDateString('ru-RU')} ({reportData.totalOrders} заказов)
               </p>
             </div>
             <div style={{ padding: 'var(--space-4)', overflowX: 'auto' }}>
@@ -334,96 +321,137 @@ export default function ReportsPage() {
                       fontWeight: 600,
                       color: 'var(--paul-black)',
                       fontSize: 'var(--text-sm)'
-                    }}>Статус</th>
+                    }}>Дата</th>
                     <th style={{ 
                       padding: 'var(--space-3)', 
                       textAlign: 'left',
                       fontWeight: 600,
                       color: 'var(--paul-black)',
                       fontSize: 'var(--text-sm)'
-                    }}>Тип клиента</th>
+                    }}>Клиент</th>
                     <th style={{ 
                       padding: 'var(--space-3)', 
                       textAlign: 'right',
                       fontWeight: 600,
                       color: 'var(--paul-black)',
                       fontSize: 'var(--text-sm)'
-                    }}>Количество</th>
+                    }}>Чек</th>
+                    <th style={{ 
+                      padding: 'var(--space-3)', 
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-sm)'
+                    }}>Статус</th>
+                    <th style={{ 
+                      padding: 'var(--space-3)', 
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-sm)'
+                    }}>Действия</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Строки по статусам */}
-                  {Object.entries(reportData.ordersByStatus).map(([status, count]) => (
-                    <tr key={`status-${status}`} style={{ 
-                      borderBottom: '1px solid var(--paul-border)',
-                      backgroundColor: 'var(--paul-white)'
-                    }}>
-                      <td style={{ 
-                        padding: 'var(--space-3)',
-                        color: 'var(--paul-black)',
-                        fontSize: 'var(--text-sm)',
-                        textTransform: 'capitalize'
-                      }}>{status}</td>
-                      <td style={{ 
-                        padding: 'var(--space-3)',
-                        color: 'var(--paul-gray)',
-                        fontSize: 'var(--text-sm)'
-                      }}>—</td>
-                      <td style={{ 
-                        padding: 'var(--space-3)',
-                        textAlign: 'right',
-                        fontWeight: 600,
-                        color: 'var(--paul-black)',
-                        fontSize: 'var(--text-sm)'
-                      }}>{count}</td>
-                    </tr>
-                  ))}
-                  {/* Строки по типам клиентов */}
-                  {Object.entries(reportData.ordersByClientType).map(([type, count]) => (
-                    <tr key={`type-${type}`} style={{ 
-                      borderBottom: '1px solid var(--paul-border)',
-                      backgroundColor: 'var(--paul-white)'
-                    }}>
-                      <td style={{ 
-                        padding: 'var(--space-3)',
-                        color: 'var(--paul-gray)',
-                        fontSize: 'var(--text-sm)'
-                      }}>—</td>
-                      <td style={{ 
-                        padding: 'var(--space-3)',
-                        color: 'var(--paul-black)',
-                        fontSize: 'var(--text-sm)'
-                      }}>
-                        {type === 'corporate' ? 'Корпоративные' : 
-                         type === 'one_time' ? 'Разовые' : type}
-                      </td>
-                      <td style={{ 
-                        padding: 'var(--space-3)',
-                        textAlign: 'right',
-                        fontWeight: 600,
-                        color: 'var(--paul-black)',
-                        fontSize: 'var(--text-sm)'
-                      }}>{count}</td>
-                    </tr>
-                  ))}
-                  {/* Итоговая строка */}
-                  <tr style={{ 
-                    backgroundColor: 'var(--paul-subtle-beige)',
-                    borderTop: '2px solid var(--paul-border)',
-                    fontWeight: 700
-                  }}>
-                    <td colSpan={2} style={{ 
-                      padding: 'var(--space-3)',
-                      color: 'var(--paul-black)',
-                      fontSize: 'var(--text-base)'
-                    }}>Всего заказов</td>
-                    <td style={{ 
-                      padding: 'var(--space-3)',
-                      textAlign: 'right',
-                      color: 'var(--paul-black)',
-                      fontSize: 'var(--text-base)'
-                    }}>{reportData.totalOrders}</td>
-                  </tr>
+                  {reportData.filteredOrders.map((order) => {
+                    const clientName = order.client?.name || order.company_name || order.customer?.first_name 
+                      ? `${order.customer?.first_name || ''} ${order.customer?.last_name || ''}`.trim() || order.company_name
+                      : 'Не указан';
+                    const deliveryDate = order.delivery_date 
+                      ? new Date(order.delivery_date).toLocaleDateString('ru-RU')
+                      : new Date(order.created_at).toLocaleDateString('ru-RU');
+                    
+                    return (
+                      <tr key={order.id} style={{ 
+                        borderBottom: '1px solid var(--paul-border)',
+                        backgroundColor: 'var(--paul-white)',
+                        transition: 'background-color 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--paul-subtle-beige)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--paul-white)';
+                      }}
+                      >
+                        <td style={{ 
+                          padding: 'var(--space-3)',
+                          color: 'var(--paul-black)',
+                          fontSize: 'var(--text-sm)',
+                          fontWeight: 500
+                        }}>{deliveryDate}</td>
+                        <td style={{ 
+                          padding: 'var(--space-3)',
+                          color: 'var(--paul-black)',
+                          fontSize: 'var(--text-sm)'
+                        }}>
+                          <div style={{ fontWeight: 600, marginBottom: '2px' }}>{clientName}</div>
+                          {order.client_type && (
+                            <div style={{ fontSize: '0.75rem', color: 'var(--paul-gray)' }}>
+                              {order.client_type === 'corporate' ? 'Корпоративный' : 'Разовый'}
+                            </div>
+                          )}
+                        </td>
+                        <td style={{ 
+                          padding: 'var(--space-3)',
+                          textAlign: 'right',
+                          fontWeight: 600,
+                          color: 'var(--paul-black)',
+                          fontSize: 'var(--text-sm)'
+                        }}>{formatTotalAmount(order.total_amount || 0)} ₼</td>
+                        <td style={{ 
+                          padding: 'var(--space-3)',
+                          textAlign: 'center'
+                        }}>
+                          <span style={{
+                            display: 'inline-block',
+                            padding: '4px 12px',
+                            borderRadius: 'var(--radius-md)',
+                            fontSize: 'var(--text-xs)',
+                            fontWeight: 600,
+                            backgroundColor: `${STATUS_COLORS[order.status as keyof typeof STATUS_COLORS] || '#6B7280'}20`,
+                            color: STATUS_COLORS[order.status as keyof typeof STATUS_COLORS] || '#6B7280',
+                            border: `1px solid ${STATUS_COLORS[order.status as keyof typeof STATUS_COLORS] || '#6B7280'}40`
+                          }}>
+                            {getStatusLabel(order.status)}
+                          </span>
+                        </td>
+                        <td style={{ 
+                          padding: 'var(--space-3)',
+                          textAlign: 'center'
+                        }}>
+                          <button
+                            onClick={() => router.push(`/dashboard/orders/${order.id}/edit`)}
+                            style={{
+                              padding: '6px 16px',
+                              border: '2px solid var(--paul-black)',
+                              borderRadius: 'var(--radius-md)',
+                              background: 'var(--paul-white)',
+                              color: 'var(--paul-black)',
+                              fontSize: 'var(--text-xs)',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = 'var(--paul-black)';
+                              e.currentTarget.style.color = 'var(--paul-white)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'var(--paul-white)';
+                              e.currentTarget.style.color = 'var(--paul-black)';
+                            }}
+                          >
+                            <EyeIcon size={14} />
+                            Просмотреть
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FeedbackModal from '@/components/FeedbackModal';
 import { getApiUrl, API_CONFIG } from '@/config/api';
+import type { CartItem } from '@/config/api';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -189,6 +190,15 @@ export default function CheckoutPage() {
         eventTime = eventTime.substring(0, 5);
       }
       
+      const normalizeCartItems = (cartItems: CartItem[]) =>
+        cartItems.map(item => ({
+          id: String(item.id),
+          name: item.name,
+          quantity: Number(item.quantity) || 0,
+          price: Number(item.price) || 0,
+          description: item.description || null,
+        }));
+
       const applicationData: Record<string, any> = {
         first_name: formData.firstName.trim(),
         last_name: formData.lastName?.trim() || null,
@@ -199,7 +209,7 @@ export default function CheckoutPage() {
         event_address: formData.streetAddress.trim(),
         event_date: eventDate || null,
         event_time: eventTime || null,
-        cart_items: cart || [],
+        cart_items: normalizeCartItems(cart || []),
       };
       
       // Добавляем client_id только если пользователь авторизован и является клиентом

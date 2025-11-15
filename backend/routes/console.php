@@ -10,7 +10,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // Регистрируем команду для обновления статусов заказов
-Artisan::resolve(UpdateOrderStatuses::class);
+// Команда регистрируется автоматически через ServiceProvider
 
 // Планировщик задач
 Schedule::command('orders:update-statuses')

@@ -50,6 +50,14 @@ services:
       - CACHE_DRIVER=redis
       - SESSION_DRIVER=file
       - QUEUE_CONNECTION=redis
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=smtp-relay.brevo.com
+      - MAIL_PORT=587
+      - MAIL_USERNAME=9b682e001@smtp-brevo.com
+      - MAIL_PASSWORD=xsmtpsib-8771a99c7073efd3240de4e350cafca996b45f7327e9007cf12155b0f4acd1c2-tv23nSHEuWMfu3tV
+      - MAIL_ENCRYPTION=tls
+      - MAIL_FROM_ADDRESS=info@paul-azerbaijan.com
+      - MAIL_FROM_NAME=PAUL Azerbaijan
     volumes:
       - ../backend/storage:/var/www/html/storage
       - ../backend/bootstrap/cache:/var/www/html/bootstrap/cache
@@ -125,6 +133,14 @@ services:
       - CACHE_DRIVER=redis
       - SESSION_DRIVER=file
       - QUEUE_CONNECTION=redis
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=smtp-relay.brevo.com
+      - MAIL_PORT=587
+      - MAIL_USERNAME=9b682e001@smtp-brevo.com
+      - MAIL_PASSWORD=xsmtpsib-8771a99c7073efd3240de4e350cafca996b45f7327e9007cf12155b0f4acd1c2-tv23nSHEuWMfu3tV
+      - MAIL_ENCRYPTION=tls
+      - MAIL_FROM_ADDRESS=info@paul-azerbaijan.com
+      - MAIL_FROM_NAME=PAUL Azerbaijan
     volumes:
       - ../backend/storage:/var/www/html/storage
     depends_on:

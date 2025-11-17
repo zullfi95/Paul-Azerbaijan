@@ -222,71 +222,8 @@ class NotificationService
     private function sendOrderCreatedEmail(Order $order): void
     {
         try {
-            $deliveryDate = $order->delivery_date ? 
-                \Carbon\Carbon::parse($order->delivery_date)->format('d.m.Y') : 
-                'Təyin edilməyib';
-            
-            $deliveryTime = $order->delivery_time ? 
-                \Carbon\Carbon::parse($order->delivery_time)->format('H:i') : 
-                'Təyin edilməyib';
-
-            $itemsList = '';
-            foreach ($order->menu_items as $item) {
-                $itemsList .= "<li>{$item['name']} - {$item['quantity']} ədəd</li>";
-            }
-
-            $emailContent = "
-                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
-                    <div style='background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%); color: white; padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 20px;'>
-                        <h1 style='margin: 0; font-size: 28px; font-weight: bold;'>PAUL Catering</h1>
-                        <p style='margin: 10px 0 0 0; opacity: 0.9;'>Sifarişiniz qəbul edildi</p>
-                    </div>
-                    
-                    <div style='background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);'>
-                        <h2 style='color: #1A1A1A; margin-bottom: 20px;'>Salam {$order->client->name}!</h2>
-                        
-                        <p style='color: #4A4A4A; line-height: 1.6; margin-bottom: 20px;'>
-                            Sizin üçün yeni sifariş yaradıldı və qəbul edildi. Sifarişiniz hazırlanma prosesindədir.
-                        </p>
-                        
-                        <div style='background: #F8FAFC; border-radius: 10px; padding: 20px; margin: 20px 0;'>
-                            <h3 style='color: #1A1A1A; margin: 0 0 15px 0;'>Sifariş Məlumatları</h3>
-                            <p style='margin: 5px 0; color: #4A4A4A;'><strong>Sifariş №:</strong> {$order->id}</p>
-                            <p style='margin: 5px 0; color: #4A4A4A;'><strong>Şirkət:</strong> {$order->company_name}</p>
-                            <p style='margin: 5px 0; color: #4A4A4A;'><strong>Çatdırılma tarixi:</strong> {$deliveryDate}</p>
-                            <p style='margin: 5px 0; color: #4A4A4A;'><strong>Çatdırılma vaxtı:</strong> {$deliveryTime}</p>
-                            <p style='margin: 5px 0; color: #4A4A4A;'><strong>Ünvan:</strong> {$order->delivery_address}</p>
-                        </div>
-                        
-                        <div style='background: #F8FAFC; border-radius: 10px; padding: 20px; margin: 20px 0;'>
-                            <h3 style='color: #1A1A1A; margin: 0 0 15px 0;'>Sifariş Edilən Məhsullar</h3>
-                            <ul style='margin: 0; padding-left: 20px; color: #4A4A4A;'>
-                                {$itemsList}
-                            </ul>
-                        </div>
-                        
-                        <div style='background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%); color: white; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center;'>
-                            <h3 style='margin: 0 0 10px 0; font-size: 24px;'>Ümumi Məbləğ</h3>
-                            <p style='margin: 0; font-size: 32px; font-weight: bold;'>{$order->final_amount} ₼</p>
-                        </div>
-                        
-                        <p style='color: #6B7280; font-size: 14px; line-height: 1.6; margin-top: 20px;'>
-                            Sifarişiniz hazırlanma prosesindədir. Hazır olduqda sizə məlumat veriləcək.
-                        </p>
-                    </div>
-                    
-                    <div style='text-align: center; margin-top: 20px; color: #6B7280; font-size: 12px;'>
-                        <p>PAUL Catering komandası</p>
-                        <p>Bu email avtomatik olaraq göndərilmişdir.</p>
-                    </div>
-                </div>
-            ";
-
-            // Отправляем email
-            Mail::html($emailContent, function ($message) use ($order) {
-                $message->to($order->client->email, $order->client->name)
-                        ->subject('Yeni sifariş yaradıldı - PAUL Catering');
-            });
+            // Используем класс OrderCreated с улучшенным шаблоном
+            Mail::to($order->client->email)->send(new OrderCreated($order));
 
             Log::info('Order created email sent', [
                 'order_id' => $order->id,

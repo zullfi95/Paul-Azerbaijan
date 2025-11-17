@@ -16,9 +16,10 @@ import {
   ChartBarIcon,
   MenuIcon,
   XIcon,
-  BookOpenIcon
+  BookOpenIcon,
+  UtensilsIcon
 } from "./Icons";
-import { canManageMenu } from "../utils/authConstants";
+import { canManageMenu, canViewKitchen } from "../utils/authConstants";
 import { getShortRoleLabel } from "../utils/userHelpers";
 
 interface DashboardSidebarProps {
@@ -126,6 +127,18 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
             >
               <BookOpenIcon size={18} />
               <span>{t('sidebar.positions')}</span>
+            </Link>
+          )}
+
+          {user && canViewKitchen(user) && (
+            <Link
+              href="/dashboard/kitchen"
+              className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/kitchen") ? 'active' : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-label={t('sidebar.kitchen')}
+            >
+              <UtensilsIcon size={18} />
+              <span>{t('sidebar.kitchen')}</span>
             </Link>
           )}
         </nav>

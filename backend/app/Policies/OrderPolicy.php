@@ -17,6 +17,11 @@ class OrderPolicy
             return true;
         }
         
+        // Наблюдатели могут видеть заказы для кухни
+        if ($user->isObserver()) {
+            return true;
+        }
+        
         // Клиенты могут видеть свои заказы
         if ($user->isClient()) {
             return true;
@@ -32,6 +37,11 @@ class OrderPolicy
     {
         // Координаторы могут видеть все заказы
         if ($user->isCoordinator()) {
+            return true;
+        }
+
+        // Наблюдатели могут видеть все заказы для кухни
+        if ($user->isObserver()) {
             return true;
         }
 

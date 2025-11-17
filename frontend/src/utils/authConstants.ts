@@ -27,6 +27,13 @@ export function isCoordinator(user: { user_type?: string; staff_role?: string })
 }
 
 /**
+ * Проверка, является ли пользователь наблюдателем
+ */
+export function isObserver(user: { user_type?: string; staff_role?: string }): boolean {
+  return user?.user_type === 'staff' && user?.staff_role === STAFF_ROLES.OBSERVER;
+}
+
+/**
  * Проверка, является ли пользователь сотрудником
  */
 export function isStaff(user: { user_type?: string }): boolean {
@@ -73,6 +80,13 @@ export function canViewCalendar(user: { user_type?: string; staff_role?: string 
  */
 export function canManageMenu(user: { user_type?: string; staff_role?: string }): boolean {
   return isCoordinator(user);
+}
+
+/**
+ * Проверка, может ли пользователь просматривать данные кухни
+ */
+export function canViewKitchen(user: { user_type?: string; staff_role?: string }): boolean {
+  return isObserver(user) || isCoordinator(user);
 }
 
 /**

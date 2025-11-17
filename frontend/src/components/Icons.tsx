@@ -322,3 +322,41 @@ export const CheckIcon: React.FC<IconProps> = ({ size = 20, color = 'currentColo
     <polyline points="20 6 9 17 4 12"></polyline>
   </svg>
 );
+
+export const UtensilsIcon: React.FC<IconProps> = ({ size = 20, color = 'currentColor', className = '', style = {} }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke={color} 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className={className}
+    style={style}
+  >
+    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+    <path d="M7 2v20"></path>
+    <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3a2 2 0 0 0 2-2V9a5 5 0 0 0-5-5z"></path>
+  </svg>
+);
+
+export const TableIcon: React.FC<IconProps> = ({ size = 20, color = 'currentColor', className = '', style = {} }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke={color} 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className={className}
+    style={style}
+  >
+    <path d="M12 3v18"></path>
+    <path d="M3 12h18"></path>
+    <path d="M3 3h18v18H3z"></path>
+  </svg>
+);

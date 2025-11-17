@@ -95,6 +95,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->middleware('throttle:10,1'); // Rate limiting
         Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->middleware('throttle:3,1'); // Rate limiting
         Route::post('/applications/{application}/create-order', [OrderController::class, 'createFromApplication']); // Создание заказа из заявки
+        
+        // Данные для кухни (наблюдатели)
+        Route::get('/observer/kitchen-view', [OrderController::class, 'kitchenView']); // Данные для кухни
         // iiko API интеграция
         Route::prefix('iiko')->group(function () {
             Route::get('/test-connection', [IikoController::class, 'testConnection']); // Проверка подключения

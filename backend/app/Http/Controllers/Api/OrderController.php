@@ -502,4 +502,120 @@ class OrderController extends BaseApiController
             return $this->handleException($e);
         }
     }
+
+    /**
+     * Получение данных для кухни (наблюдатель)
+     * Возвращает позиции меню сгруппированные по датам доставки
+     */
+    public function kitchenView(Request $request)
+    {
+        try {
+            $user = $this->getAuthenticatedUser($request);
+            
+            // Проверяем, что пользователь является наблюдателем
+            if (!$user->isObserver()) {
+                return $this->errorResponse('Доступ запрещен. Только наблюдатели могут просматривать данные кухни.', 403);
+            }
+
+            // Получаем заказы со статусами, которые требуют приготовления
+            $orders = Order::whereIn('status', [
+                Order::STATUS_SUBMITTED,
+                Order::STATUS_PAID,
+                Order::STATUS_PROCESSING
+            ])
+            ->whereNotNull('delivery_date')
+            ->where('delivery_date', '>=', now()->startOfDay())
+            ->orderBy('delivery_date', 'asc')
+            ->orderBy('delivery_time', 'asc')
+            ->get();
+
+            // Группируем позиции по датам и позициям меню
+            $itemsByDate = [];
+            $itemsSummary = []; // Общая сводка по позициям
+
+            foreach ($orders as $order) {
+                $deliveryDate = $order->delivery_date->format('Y-m-d');
+                $deliveryDateFormatted = $order->delivery_date->format('d.m.Y');
+                
+                if (!isset($itemsByDate[$deliveryDate])) {
+                    $itemsByDate[$deliveryDate] = [
+                        'date' => $deliveryDate,
+                        'date_formatted' => $deliveryDateFormatted,
+                        'orders' => [],
+                        'items' => []
+                    ];
+                }
+
+                // Добавляем заказ
+                $itemsByDate[$deliveryDate]['orders'][] = [
+                    'id' => $order->id,
+                    'company_name' => $order->company_name,
+                    'delivery_time' => $order->delivery_time ? $order->delivery_time->format('H:i') : null,
+                    'status' => $order->status,
+                ];
+
+                // Обрабатываем позиции меню
+                if (is_array($order->menu_items)) {
+                    foreach ($order->menu_items as $menuItem) {
+                        $itemId = $menuItem['id'] ?? $menuItem['name'];
+                        $itemName = $menuItem['name'] ?? 'Неизвестная позиция';
+                        $quantity = (int)($menuItem['quantity'] ?? 1);
+                        $price = (float)($menuItem['price'] ?? 0);
+
+                        // Добавляем в сводку по дате
+                        if (!isset($itemsByDate[$deliveryDate]['items'][$itemId])) {
+                            $itemsByDate[$deliveryDate]['items'][$itemId] = [
+                                'id' => $itemId,
+                                'name' => $itemName,
+                                'quantity' => 0,
+                                'price' => $price,
+                                'orders' => []
+                            ];
+                        }
+                        $itemsByDate[$deliveryDate]['items'][$itemId]['quantity'] += $quantity;
+                        $itemsByDate[$deliveryDate]['items'][$itemId]['orders'][] = [
+                            'order_id' => $order->id,
+                            'company_name' => $order->company_name,
+                            'quantity' => $quantity,
+                        ];
+
+                        // Добавляем в общую сводку
+                        if (!isset($itemsSummary[$itemId])) {
+                            $itemsSummary[$itemId] = [
+                                'id' => $itemId,
+                                'name' => $itemName,
+                                'total_quantity' => 0,
+                                'price' => $price,
+                                'dates' => []
+                            ];
+                        }
+                        $itemsSummary[$itemId]['total_quantity'] += $quantity;
+                        if (!in_array($deliveryDate, $itemsSummary[$itemId]['dates'])) {
+                            $itemsSummary[$itemId]['dates'][] = $deliveryDate;
+                        }
+                    }
+                }
+            }
+
+            // Преобразуем массивы в списки
+            foreach ($itemsByDate as &$dateData) {
+                $dateData['items'] = array_values($dateData['items']);
+            }
+
+            // Преобразуем сводку в список
+            $itemsSummary = array_values($itemsSummary);
+
+            return $this->successResponse([
+                'items_by_date' => array_values($itemsByDate),
+                'items_summary' => $itemsSummary,
+                'total_orders' => count($orders),
+                'date_range' => [
+                    'from' => count($itemsByDate) > 0 ? min(array_keys($itemsByDate)) : null,
+                    'to' => count($itemsByDate) > 0 ? max(array_keys($itemsByDate)) : null,
+                ]
+            ], 'Данные для кухни получены успешно');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
 }

@@ -170,7 +170,7 @@ export default function ApplicationsPage() {
   ];
 
   // Auth guard
-  useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, isCoordinator, router);
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, isCoordinator, router);
 
   // Load applications with pagination
   const loadApplications = useCallback(async (page: number) => {
@@ -495,7 +495,7 @@ export default function ApplicationsPage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || !hasAccess) {
     return (
       <div className="loading-state">
         <div className="loading-spinner"></div>

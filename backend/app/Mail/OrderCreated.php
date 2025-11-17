@@ -70,7 +70,13 @@ class OrderCreated extends Mailable
         // Генерируем URL для оплаты, если клиент разовый
         $paymentUrl = null;
         if ($isOneTimeClient) {
-            $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
+            // Используем FRONTEND_URL из конфига, если не установлен - берем из APP_URL или дефолтный
+            $frontendUrl = config('app.frontend_url');
+            if (!$frontendUrl || $frontendUrl === 'http://localhost:3000') {
+                // Если FRONTEND_URL не установлен, используем APP_URL (без /api)
+                $appUrl = config('app.url', 'https://paul-azerbaijan.com');
+                $frontendUrl = rtrim($appUrl, '/');
+            }
             $paymentUrl = rtrim($frontendUrl, '/') . '/payment/' . $this->order->id;
         }
 

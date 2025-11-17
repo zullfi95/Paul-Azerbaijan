@@ -62,7 +62,7 @@
     "patisserie": "Patisserie",
     "platters": "Qablar",
     "bread": "Çörək",
-    "savoury": "Duzlu"
+    "savoury": "Qəlyanaltı"
   },
   "pages": {
     "cakes": {
@@ -90,8 +90,8 @@
       "breadcrumb": "Çörək"
     },
     "savoury": {
-      "title": "Şor",
-      "breadcrumb": "Şor"
+      "title": "Qəlyanaltı",
+      "breadcrumb": "Qəlyanaltı"
     },
     "locations": {
       "title": "PAUL Tap",

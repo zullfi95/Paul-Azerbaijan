@@ -62,7 +62,7 @@
     "patisserie": "Patisserie",
     "platters": "Блюда",
     "bread": "Хлеб",
-    "savoury": "Соленое"
+    "savoury": "Закуски"
   },
   "pages": {
     "cakes": {
@@ -90,8 +90,8 @@
       "breadcrumb": "Хлеб"
     },
     "savoury": {
-      "title": "Соленое",
-      "breadcrumb": "Соленое"
+      "title": "Закуски",
+      "breadcrumb": "Закуски"
     },
     "locations": {
       "title": "Найти PAUL",

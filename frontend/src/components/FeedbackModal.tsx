@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import styles from './FeedbackModal.module.css';
 
 const FeedbackModal: React.FC = () => {
+  const t = useTranslations('feedbackModal');
   const [showFeedback, setShowFeedback] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -63,7 +65,7 @@ const FeedbackModal: React.FC = () => {
           onClick={handleFeedbackOpen}
           className={`${styles.feedbackButton} ${showFeedback ? styles.feedbackButtonHidden : ''}`}
         >
-          Feedback
+          {t('button')}
         </button>
       </div>
 
@@ -76,7 +78,7 @@ const FeedbackModal: React.FC = () => {
           <div className={`${styles.feedbackModalContent} ${isAnimating ? styles.feedbackModalContentOpen : styles.feedbackModalContentClosed} ${currentStep === 2 ? styles.expanded : ''}`}>
             <div className={styles.feedbackModalHeader}>
               <h3 className={styles.feedbackModalTitle}>
-                {currentStep === 1 ? 'How would you rate your experience?' : 'Tell us more'}
+                {currentStep === 1 ? t('step1.title') : t('step2.title')}
               </h3>
             </div>
 
@@ -94,21 +96,21 @@ const FeedbackModal: React.FC = () => {
                   ))}
                 </div>
                 <div className={styles.ratingLabels}>
-                  <span className={styles.ratingLabel}>Awful</span>
-                  <span className={styles.ratingLabel}>Amazing</span>
+                  <span className={styles.ratingLabel}>{t('step1.awful')}</span>
+                  <span className={styles.ratingLabel}>{t('step1.amazing')}</span>
                 </div>
                 <button 
                   className={`${styles.nextButton} ${rating > 0 ? styles.nextButtonActive : ''}`}
                   onClick={handleNext}
                   disabled={rating === 0}
                 >
-                  Next
+                  {t('step1.next')}
                 </button>
               </div>
             ) : (
               <div className={styles.feedbackStep}>
                 <textarea
-                  placeholder="Tell us about your experience with our service..."
+                  placeholder={t('step2.placeholder')}
                   className={styles.feedbackTextarea}
                   value={feedbackText}
                   onChange={(e) => setFeedbackText(e.target.value)}
@@ -118,13 +120,13 @@ const FeedbackModal: React.FC = () => {
                     className={styles.backButton}
                     onClick={() => setCurrentStep(1)}
                   >
-                    Back
+                    {t('step2.back')}
                   </button>
                   <button 
                     className={styles.submitButton}
                     onClick={handleSubmit}
                   >
-                    Submit Feedback
+                    {t('step2.submit')}
                   </button>
                 </div>
               </div>

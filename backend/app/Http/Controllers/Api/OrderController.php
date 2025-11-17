@@ -83,6 +83,9 @@ class OrderController extends BaseApiController
 
             // Создаем заказ
             $order = Order::create($orderData);
+            
+            // Загружаем связи для уведомлений (важно для отправки email клиенту)
+            $order->load('client', 'coordinator');
 
             // Отправляем уведомления о новом заказе
             $notificationService = new NotificationService();
@@ -304,6 +307,9 @@ class OrderController extends BaseApiController
 
             // Создаем заказ
             $order = Order::create($orderData);
+            
+            // Загружаем связи для уведомлений (важно для отправки email клиенту)
+            $order->load('client', 'coordinator');
 
             // Отправляем уведомления о новом заказе
             $notificationService = new NotificationService();

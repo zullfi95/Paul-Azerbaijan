@@ -105,3 +105,8 @@ echo "🔍 Проверить логи Laravel:\n";
 echo "   tail -f storage/logs/laravel.log\n\n";
 
 
+
+
+
+
+

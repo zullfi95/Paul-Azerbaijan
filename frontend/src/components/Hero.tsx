@@ -120,7 +120,7 @@ const Hero: React.FC = () => {
                 loading={currentSlide === 0 ? "eager" : "lazy"}
               />
               <div className="hero-overlay-label">
-                explore more
+                {t('hero.exploreMore')}
               </div>
               
               {/* Navigation Arrows - Mobile */}

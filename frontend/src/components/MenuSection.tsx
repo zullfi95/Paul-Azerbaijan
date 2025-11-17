@@ -3,11 +3,13 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useIsMobile } from '../hooks/use-mobile';
 import './MenuSection.css';
 
 const MenuSection: React.FC = () => {
   const isMobile = useIsMobile();
+  const t = useTranslations();
   
   return (
     <section className={`menu-section ${isMobile ? 'menu-section-mobile' : ''}`}>
@@ -15,9 +17,7 @@ const MenuSection: React.FC = () => {
         {/* Описание */}
         <div className="menu-description">
           <p>
-            Discover the delightful world of our bakery, where every bite is a taste of happiness! 
-            From freshly baked bread to scrumptious pastries, we have something for everyone. 
-            Come visit us today and treat yourself to a sweet experience!
+            {t('menuSection.description')}
           </p>
         </div>
 

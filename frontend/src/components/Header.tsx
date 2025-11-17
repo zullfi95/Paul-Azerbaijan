@@ -181,12 +181,12 @@ const Header: React.FC = React.memo(function Header() {
 
           {/* Main Navigation */}
           <nav className="main-nav">
-            <Link href="/cakes" className="nav-link">Cakes & Pies</Link>
-            <Link href="/viennoiserie" className="nav-link">Viennoiserie</Link>
-            <Link href="/patisserie" className="nav-link">Patisserie</Link>
-            <Link href="/platters" className="nav-link">Platters</Link>
-            <Link href="/bread" className="nav-link">Bread</Link>
-            <Link href="/Savoury" className="nav-link">Savoury</Link>
+            <Link href="/cakes" className="nav-link">{t('navigation.cakesPies')}</Link>
+            <Link href="/viennoiserie" className="nav-link">{t('navigation.viennoiserie')}</Link>
+            <Link href="/patisserie" className="nav-link">{t('navigation.patisserie')}</Link>
+            <Link href="/platters" className="nav-link">{t('navigation.platters')}</Link>
+            <Link href="/bread" className="nav-link">{t('navigation.bread')}</Link>
+            <Link href="/Savoury" className="nav-link">{t('navigation.savoury')}</Link>
           </nav>
 
           {/* Right Side Actions */}
@@ -413,22 +413,22 @@ const Header: React.FC = React.memo(function Header() {
                   {/* Navigation Links */}
                   <nav className="mobile-nav">
                 <Link href="/cakes" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  Cakes & Pies
+                  {t('navigation.cakesPies')}
                 </Link>
                 <Link href="/viennoiserie" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  Viennoiserie
+                  {t('navigation.viennoiserie')}
                 </Link>
                 <Link href="/patisserie" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  Patisserie
+                  {t('navigation.patisserie')}
                 </Link>
                 <Link href="/platters" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  Platters
+                  {t('navigation.platters')}
                 </Link>
                 <Link href="/bread" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  Bread
+                  {t('navigation.bread')}
                 </Link>
                 <Link href="/Savoury" className="mobile-nav-link" onClick={closeMobileMenu}>
-                  Savoury
+                  {t('navigation.savoury')}
                 </Link>
               </nav>
 

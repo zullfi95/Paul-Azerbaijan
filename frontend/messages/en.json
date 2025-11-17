@@ -157,6 +157,60 @@
       "title": "PAUL Stores",
       "description": "Visit our charming locations and immerse yourself in the authentic French bakery experience.",
       "button": "Find Store"
+    },
+    "exploreMore": "Explore more"
+  },
+  "menuSection": {
+    "description": "Discover the delightful world of our bakery, where every bite is a taste of happiness! From freshly baked bread to scrumptious pastries, we have something for everyone. Come visit us today and treat yourself to a sweet experience!"
+  },
+  "tastesSection": {
+    "seasonalTastes": {
+      "title": "Seasonal Tastes",
+      "description": "Discover the delightful world of our bakery, where every bite is a taste of happiness! From freshly baked bread to scrumptious pastries, we have something for everyone. Come visit us today and treat yourself to a sweet experience!",
+      "button": "Explore more"
+    },
+    "personaliseCake": {
+      "title": "Personalise your cake",
+      "description": "Discover the delightful world of our bakery, where every bite is a taste of happiness! From freshly baked bread to scrumptious pastries, we have something for everyone. Come visit us today and treat yourself to a sweet experience!",
+      "button": "Discover more"
+    }
+  },
+  "artOfBread": {
+    "title": "From sourdough to baguettes",
+    "description": "Discover the delightful world of our bakery, where every bite is a taste of happiness! From freshly baked bread to scrumptious pastries, we have something for everyone. Come visit us today and treat yourself to a sweet experience!",
+    "button": "Shop now"
+  },
+  "featuresSection": {
+    "qualityAtHeart": {
+      "title": "Quality at Heart",
+      "description": "Delivering the highest standard in all we do"
+    },
+    "passionForBread": {
+      "title": "Passion for Bread",
+      "description": "Freshly baked everyday all year round"
+    },
+    "frenchTradition": {
+      "title": "French Tradition",
+      "description": "Taste of France at your local bakery"
+    },
+    "familyOwned": {
+      "title": "Family-Owned Company",
+      "description": "Established since 1889"
+    }
+  },
+  "feedbackModal": {
+    "button": "Feedback",
+    "step1": {
+      "title": "How would you rate your experience?",
+      "awful": "Awful",
+      "amazing": "Amazing",
+      "next": "Next"
+    },
+    "step2": {
+      "title": "Tell us more",
+      "placeholder": "Tell us about your experience with our service...",
+      "back": "Back",
+      "submit": "Submit Feedback"
     }
   },
   "cart": {

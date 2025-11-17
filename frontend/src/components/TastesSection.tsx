@@ -3,12 +3,14 @@
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useIsMobile } from '../hooks/use-mobile';
 import './TastesSection.css';
 
 const TastesSection: React.FC = () => {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const t = useTranslations('tastesSection');
 
   const handleExploreClick = () => {
     router.push('/cakes');
@@ -25,7 +27,7 @@ const TastesSection: React.FC = () => {
             <div className="tastes-image-wrapper">
               <Image
                 src="/images/testes1.jpg"
-                alt="Seasonal Tastes 1"
+                alt={t('seasonalTastes.title')}
                 fill
                 className="tastes-image"
               />
@@ -36,13 +38,11 @@ const TastesSection: React.FC = () => {
           <div className="tastes-text-column">
             <div className="tastes-text">
               {/* Заголовок */}
-              <h2 className="tastes-title">Seasonal Tastes</h2>
+              <h2 className="tastes-title">{t('seasonalTastes.title')}</h2>
               
               {/* Описание */}
               <p className="tastes-description">
-                Discover the delightful world of our bakery, where every bite is a taste of happiness! 
-                From freshly baked bread to scrumptious pastries, we have something for everyone. 
-                Come visit us today and treat yourself to a sweet experience!
+                {t('seasonalTastes.description')}
               </p>
               
               {/* Кнопка */}
@@ -50,7 +50,7 @@ const TastesSection: React.FC = () => {
                 className="tastes-button"
                 onClick={handleExploreClick}
               >
-                Explore more
+                {t('seasonalTastes.button')}
               </button>
             </div>
           </div>
@@ -62,14 +62,11 @@ const TastesSection: React.FC = () => {
           <div className="tastes-text-column">
             <div className="tastes-text">
               {/* Заголовок */}
-              <h2 className="tastes-title">Personalise your cake</h2>
+              <h2 className="tastes-title">{t('personaliseCake.title')}</h2>
               
               {/* Описание */}
               <p className="tastes-description">
-              Discover the delightful world of our bakery, where 
-              every bite is a taste of happiness! From freshly baked bread 
-              to scrumptious pastries, we have something for everyone. Come visit us 
-              today and treat yourself to a sweet experience!
+                {t('personaliseCake.description')}
               </p>
               
               {/* Кнопка */}
@@ -77,7 +74,7 @@ const TastesSection: React.FC = () => {
                 className="tastes-button"
                 onClick={handleExploreClick}
               >
-                Discover more
+                {t('personaliseCake.button')}
               </button>
             </div>
           </div>

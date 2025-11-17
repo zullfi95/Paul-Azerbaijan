@@ -3,12 +3,14 @@
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useIsMobile } from '../hooks/use-mobile';
 import './ArtOfBread.css';
 
 const ArtOfBread: React.FC = () => {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const t = useTranslations('artOfBread');
 
   const handleShopClick = () => {
     router.push('/bread');
@@ -21,7 +23,7 @@ const ArtOfBread: React.FC = () => {
           <div className="art-image-wrapper">
             <Image
               src="/images/artofbread.jpg"
-              alt="The art of making bread"
+              alt={t('title')}
               fill
               className="art-image"
               priority
@@ -31,14 +33,12 @@ const ArtOfBread: React.FC = () => {
 
         {/* Нижняя часть - заголовок, описание и кнопка */}
         <div className="art-content-section">
-          <h2 className="art-title">From sourdough to baguettes</h2>
+          <h2 className="art-title">{t('title')}</h2>
           <p className="art-description">
-            Discover the delightful world of our bakery, where every bite is a taste of happiness! 
-            From freshly baked bread to scrumptious pastries, we have something for everyone. 
-            Come visit us today and treat yourself to a sweet experience!
+            {t('description')}
           </p>
           <button className="art-button" onClick={handleShopClick}>
-            Shop now
+            {t('button')}
           </button>
         </div>
       </div>

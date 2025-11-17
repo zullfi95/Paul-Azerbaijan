@@ -217,8 +217,7 @@ export default function ApplicationsPage() {
     if (isAuthenticated) {
       loadApplications(1);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated]);
+  }, [isAuthenticated, loadApplications]);
   
   // Перезагрузка при изменении страницы (только если страница действительно изменилась пользователем)
   const handlePageChange = useCallback((newPage: number) => {

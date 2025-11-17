@@ -321,20 +321,21 @@
             }
             .items-table {
                 font-size: 12px;
-                display: block;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            .items-table thead {
-                display: block;
-            }
-            .items-table tbody {
-                display: block;
+                width: 100%;
+                display: table;
             }
             .items-table th,
             .items-table td {
-                padding: 10px 8px;
+                padding: 10px 6px;
                 font-size: 11px;
+            }
+            .items-table th:first-child,
+            .items-table td:first-child {
+                padding-left: 12px;
+            }
+            .items-table th:last-child,
+            .items-table td:last-child {
+                padding-right: 12px;
             }
             .items-table th:nth-child(2),
             .items-table th:nth-child(3),
@@ -343,7 +344,11 @@
             .items-table td:nth-child(3),
             .items-table td:nth-child(4) {
                 text-align: center;
-                min-width: 60px;
+                width: 20%;
+            }
+            .items-table th:first-child,
+            .items-table td:first-child {
+                width: 40%;
             }
             .highlight-box,
             .payment-box {

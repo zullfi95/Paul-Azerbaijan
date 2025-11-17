@@ -8,6 +8,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { CartModalProvider } from "@/contexts/CartModalContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
+import { ToastProvider } from "@/components/ui/Toast";
 import CookieConsent from "@/components/CookieConsent";
 import enMessages from '../../messages/en.json';
 import azMessages from '../../messages/az.json';
@@ -63,8 +64,10 @@ export default function Providers({ children }: ProvidersProps) {
             <CartProvider>
               <CartModalProvider>
                 <NotificationProvider>
-                  {children}
-                  <CookieConsent />
+                  <ToastProvider>
+                    {children}
+                    <CookieConsent />
+                  </ToastProvider>
                 </NotificationProvider>
               </CartModalProvider>
             </CartProvider>

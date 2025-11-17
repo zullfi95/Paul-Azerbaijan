@@ -264,26 +264,120 @@
             color: #6B7280;
         }
         @media (max-width: 600px) {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .email-wrapper {
+                max-width: 100%;
+                margin: 0;
+            }
             .content {
-                padding: 28px 20px;
+                padding: 24px 16px;
             }
             .header {
-                padding: 40px 20px;
+                padding: 32px 16px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .header p {
+                font-size: 14px;
+            }
+            .greeting {
+                margin-bottom: 24px;
+            }
+            .greeting h2 {
+                font-size: 22px;
+            }
+            .order-badge {
+                padding: 12px 20px;
+                font-size: 16px;
+                margin: 20px 0 12px 0;
+            }
+            .info-section {
+                padding: 20px 16px;
+                margin: 20px 0;
+            }
+            .info-section h3 {
+                font-size: 16px;
+                margin-bottom: 16px;
             }
             .info-row {
                 flex-direction: column;
                 align-items: flex-start;
+                margin: 12px 0;
+                padding: 10px 0;
+            }
+            .info-label {
+                font-size: 13px;
+                margin-bottom: 4px;
             }
             .info-value {
                 text-align: left;
-                margin-top: 6px;
+                margin-top: 0;
+                font-size: 14px;
+                width: 100%;
             }
             .items-table {
                 font-size: 12px;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .items-table thead {
+                display: block;
+            }
+            .items-table tbody {
+                display: block;
             }
             .items-table th,
             .items-table td {
-                padding: 10px;
+                padding: 10px 8px;
+                font-size: 11px;
+            }
+            .items-table th:nth-child(2),
+            .items-table th:nth-child(3),
+            .items-table th:nth-child(4),
+            .items-table td:nth-child(2),
+            .items-table td:nth-child(3),
+            .items-table td:nth-child(4) {
+                text-align: center;
+                min-width: 60px;
+            }
+            .highlight-box,
+            .payment-box {
+                padding: 20px 16px;
+                margin: 24px 0;
+            }
+            .payment-box h3 {
+                font-size: 18px;
+            }
+            .payment-box p {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+            .payment-button {
+                padding: 14px 28px;
+                font-size: 14px;
+                width: 100%;
+                max-width: 280px;
+            }
+            .contact-section {
+                padding: 20px 16px;
+                margin: 20px 0;
+            }
+            .contact-section h4 {
+                font-size: 15px;
+            }
+            .contact-section p {
+                font-size: 13px;
+            }
+            .footer {
+                padding: 24px 16px;
+            }
+            .footer p {
+                font-size: 13px;
             }
         }
     </style>

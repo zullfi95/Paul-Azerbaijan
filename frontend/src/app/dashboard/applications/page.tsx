@@ -699,7 +699,7 @@ export default function ApplicationsPage() {
             </>
           )}
           <button
-            onClick={loadApplications}
+            onClick={() => loadApplications(currentPage)}
             className="dashboard-refresh-btn"
             aria-label={t('common.refresh')}
           >
@@ -841,107 +841,108 @@ export default function ApplicationsPage() {
             </div>
           </div>
         ) : viewMode === 'table' ? (
-          <div className="responsive-table">
-            <table className="dashboard-table">
-              <thead>
-                <tr>
-                  <th style={{ width: '40px' }}>
-                    <input
-                      type="checkbox"
-                      checked={selectedApplications.size === filteredApplications.length && filteredApplications.length > 0}
-                      onChange={handleSelectAll}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </th>
-                  <th>{t('applications.applicant')}</th>
-                  <th>{t('applications.contacts')}</th>
-                  <th>{t('applications.event')}</th>
-                  <th>{t('common.status')}</th>
-                  <th>{t('common.amount')}</th>
-                  <th>{t('common.date')}</th>
-                  <th>{t('common.actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredApplications.map((app) => (
-                  <tr key={app.id}>
-                    <td>
+          <>
+            <div className="responsive-table">
+              <table className="dashboard-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: '40px' }}>
                       <input
                         type="checkbox"
-                        checked={selectedApplications.has(app.id)}
-                        onChange={() => handleApplicationSelect(app.id)}
+                        checked={selectedApplications.size === filteredApplications.length && filteredApplications.length > 0}
+                        onChange={handleSelectAll}
                         style={{ cursor: 'pointer' }}
                       />
-                    </td>
-                    <td>
-                      <div style={{ fontWeight: 600, color: 'var(--paul-black)' }}>
-                        {app.first_name} {app.last_name || ''}
-                      </div>
-                    </td>
-                    <td>
-                      <div style={{ color: 'var(--paul-black)' }}>{app.email}</div>
-                      {app.phone && (
-                        <div style={{ color: 'var(--paul-gray)', fontSize: '12px' }}>{app.phone}</div>
-                      )}
-                    </td>
-                    <td>
-                      {app.event_address ? (
-                        <div style={{ color: 'var(--paul-black)', fontSize: '13px' }}>
-                          {app.event_address}
-                        </div>
-                      ) : (
-                        <div style={{ color: 'var(--paul-gray)', fontSize: '12px', fontStyle: 'italic' }}>
-                          {t('applications.notSpecified')}
-                        </div>
-                      )}
-                    </td>
-                    <td>
-                      <span className="dashboard-status-badge">
-                        {statusLabels[app.status as keyof typeof statusLabels]}
-                      </span>
-                    </td>
-                    <td>
-                      <div style={{ fontWeight: 600, color: 'var(--paul-black)' }}>
-                        {applicationAmounts.get(app.id) ? `₼${applicationAmounts.get(app.id)!.toLocaleString()}` : '—'}
-                      </div>
-                    </td>
-                    <td>
-                      {app.created_at ? new Date(app.created_at).toLocaleDateString('ru-RU') : '—'}
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
-                        <button
-                          onClick={() => handleApplicationPreview(app)}
-                          className="dashboard-action-btn"
-                          style={{ fontSize: '11px', padding: '4px 8px' }}
-                        >
-                          <EyeIcon size={12} />
-                          <span>{t('common.view')}</span>
-                        </button>
-                        <button
-                          onClick={() => router.push(`/dashboard/orders/create?fromApplication=${app.id}`)}
-                          className="dashboard-action-btn"
-                          style={{ 
-                            fontSize: '11px', 
-                            padding: '4px 8px',
-                            background: '#10B981',
-                            color: 'white',
-                            borderColor: '#10B981'
-                          }}
-                        >
-                          <FileTextIcon size={12} />
-                          <span>{t('applications.createOrder')}</span>
-                        </button>
-                      </div>
-                    </td>
+                    </th>
+                    <th>{t('applications.applicant')}</th>
+                    <th>{t('applications.contacts')}</th>
+                    <th>{t('applications.event')}</th>
+                    <th>{t('common.status')}</th>
+                    <th>{t('common.amount')}</th>
+                    <th>{t('common.date')}</th>
+                    <th>{t('common.actions')}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          {/* Pagination */}
-          {totalPages > 1 && (
+                </thead>
+                <tbody>
+                  {filteredApplications.map((app) => (
+                    <tr key={app.id}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedApplications.has(app.id)}
+                          onChange={() => handleApplicationSelect(app.id)}
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: 600, color: 'var(--paul-black)' }}>
+                          {app.first_name} {app.last_name || ''}
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{ color: 'var(--paul-black)' }}>{app.email}</div>
+                        {app.phone && (
+                          <div style={{ color: 'var(--paul-gray)', fontSize: '12px' }}>{app.phone}</div>
+                        )}
+                      </td>
+                      <td>
+                        {app.event_address ? (
+                          <div style={{ color: 'var(--paul-black)', fontSize: '13px' }}>
+                            {app.event_address}
+                          </div>
+                        ) : (
+                          <div style={{ color: 'var(--paul-gray)', fontSize: '12px', fontStyle: 'italic' }}>
+                            {t('applications.notSpecified')}
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        <span className="dashboard-status-badge">
+                          {statusLabels[app.status as keyof typeof statusLabels]}
+                        </span>
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: 600, color: 'var(--paul-black)' }}>
+                          {applicationAmounts.get(app.id) ? `₼${applicationAmounts.get(app.id)!.toLocaleString()}` : '—'}
+                        </div>
+                      </td>
+                      <td>
+                        {app.created_at ? new Date(app.created_at).toLocaleDateString('ru-RU') : '—'}
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
+                          <button
+                            onClick={() => handleApplicationPreview(app)}
+                            className="dashboard-action-btn"
+                            style={{ fontSize: '11px', padding: '4px 8px' }}
+                          >
+                            <EyeIcon size={12} />
+                            <span>{t('common.view')}</span>
+                          </button>
+                          <button
+                            onClick={() => router.push(`/dashboard/orders/create?fromApplication=${app.id}`)}
+                            className="dashboard-action-btn"
+                            style={{ 
+                              fontSize: '11px', 
+                              padding: '4px 8px',
+                              background: '#10B981',
+                              color: 'white',
+                              borderColor: '#10B981'
+                            }}
+                          >
+                            <FileTextIcon size={12} />
+                            <span>{t('applications.createOrder')}</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
             <div style={{
               display: 'flex',
               justifyContent: 'center',
@@ -981,6 +982,7 @@ export default function ApplicationsPage() {
               </button>
             </div>
           )}
+          </>
           ) : viewMode === 'grid' ? (
             <div className="grid-view">
               {filteredApplications.map((app) => (

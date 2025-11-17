@@ -35,7 +35,9 @@ class OrderCreated extends Mailable
         }
         
         // Определяем тему письма в зависимости от типа клиента
-        $isOneTimeClient = $this->order->client && $this->order->client->client_category === 'one_time';
+        // Проверяем client_type из заказа или client_category из клиента
+        $clientType = $this->order->client_type ?? ($this->order->client->client_category ?? null);
+        $isOneTimeClient = $this->order->client && ($clientType === 'one_time' || $clientType === 'one-time');
         $subject = $isOneTimeClient 
             ? 'PAUL Azerbaijan - Sifariş yaradıldı - Ödəniş gözlənilir'
             : 'PAUL Azerbaijan - Yeni sifariş yaradıldı';
@@ -59,7 +61,9 @@ class OrderCreated extends Mailable
         }
 
         // Определяем, является ли клиент разовым
-        $isOneTimeClient = $this->order->client && $this->order->client->client_category === 'one_time';
+        // Сначала проверяем client_type из заказа, затем client_category из клиента
+        $clientType = $this->order->client_type ?? ($this->order->client->client_category ?? null);
+        $isOneTimeClient = $this->order->client && ($clientType === 'one_time' || $clientType === 'one-time');
         
         // Генерируем URL для оплаты, если клиент разовый
         $paymentUrl = null;

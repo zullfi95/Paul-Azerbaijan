@@ -5,202 +5,270 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAUL Azerbaijan - Yeni Sifariş</title>
     <style>
+        /* PAUL Brand Colors */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Sabon Next LT Pro', 'Playfair Display', 'Parisine Pro Gris', serif;
             line-height: 1.6;
-            color: #333;
+            color: #1A1A1A;
             margin: 0;
             padding: 0;
-            background-color: #fffcf8;
+            background-color: #FFFCF8;
         }
         .email-wrapper {
             max-width: 600px;
             margin: 0 auto;
-            background-color: #ffffff;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         .header {
-            background: linear-gradient(135deg, #1A1A1A 0%, #D4AF37 100%);
-            color: white;
-            padding: 40px 30px;
+            background: #1A1A1A;
+            color: #FFFCF8;
+            padding: 50px 30px;
             text-align: center;
         }
         .header h1 {
             margin: 0;
             font-size: 32px;
-            font-weight: bold;
-            letter-spacing: 1px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-family: 'Sabon Next LT Pro', serif;
         }
         .header p {
-            margin: 10px 0 0 0;
+            margin: 12px 0 0 0;
             font-size: 16px;
-            opacity: 0.95;
+            opacity: 0.9;
+            font-family: 'Parisine Pro Gris', sans-serif;
         }
         .content {
             padding: 40px 30px;
+            background-color: #FFFFFF;
         }
         .greeting {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
         .greeting h2 {
             color: #1A1A1A;
-            margin: 0 0 10px 0;
-            font-size: 24px;
+            margin: 0 0 12px 0;
+            font-size: 26px;
+            font-weight: 600;
+            font-family: 'Sabon Next LT Pro', serif;
         }
         .greeting p {
-            color: #666;
+            color: #4A4A4A;
             font-size: 16px;
             margin: 0;
+            font-family: 'Parisine Pro Gris', sans-serif;
         }
         .order-badge {
-            background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
-            color: #1A1A1A;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-weight: bold;
+            background: #1A1A1A;
+            color: #FFFCF8;
+            padding: 14px 28px;
+            border-radius: 4px;
+            font-weight: 600;
             font-size: 18px;
             display: inline-block;
-            margin: 20px 0;
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            margin: 25px 0 15px 0;
+            font-family: 'Sabon Next LT Pro', serif;
+            letter-spacing: 0.5px;
         }
         .status-badge {
             padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
+            border-radius: 4px;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             display: inline-block;
             margin: 10px 5px;
+            font-family: 'Parisine Pro Gris', sans-serif;
+            letter-spacing: 0.5px;
         }
-        .status-draft { background-color: #e3f2fd; color: #1976d2; }
-        .status-submitted { background-color: #e8f5e8; color: #2e7d32; }
-        .status-processing { background-color: #fff3e0; color: #f57c00; }
-        .status-completed { background-color: #e8f5e8; color: #2e7d32; }
+        .status-draft { background-color: #F8F6F3; color: #4A4A4A; border: 1px solid #EDEAE3; }
+        .status-submitted { background-color: #F0FDF4; color: #2e7d32; border: 1px solid #C3E6C3; }
+        .status-processing { background-color: #FEF4E6; color: #856404; border: 1px solid #FCD34D; }
+        .status-completed { background-color: #F0FDF4; color: #2e7d32; border: 1px solid #C3E6C3; }
         .info-section {
-            background-color: #f8f9fa;
-            padding: 25px;
-            border-radius: 12px;
-            margin: 25px 0;
-            border-left: 4px solid #D4AF37;
+            background-color: #F8F6F3;
+            padding: 28px;
+            border-radius: 4px;
+            margin: 28px 0;
+            border-left: 3px solid #1A1A1A;
         }
         .info-section h3 {
             color: #1A1A1A;
-            margin: 0 0 20px 0;
+            margin: 0 0 22px 0;
             font-size: 18px;
             font-weight: 600;
+            font-family: 'Sabon Next LT Pro', serif;
         }
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 12px 0;
-            padding: 10px 0;
-            border-bottom: 1px solid #e5e7eb;
+            margin: 14px 0;
+            padding: 12px 0;
+            border-bottom: 1px solid #EDEAE3;
         }
         .info-row:last-child {
             border-bottom: none;
         }
         .info-label {
             font-weight: 600;
-            color: #666;
+            color: #4A4A4A;
             font-size: 14px;
+            font-family: 'Parisine Pro Gris', sans-serif;
         }
         .info-value {
             color: #1A1A1A;
             font-weight: 500;
             text-align: right;
+            font-size: 14px;
+            font-family: 'Parisine Pro Gris', sans-serif;
         }
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
+            margin: 22px 0;
+            background-color: #FFFFFF;
+            border: 1px solid #EDEAE3;
         }
         .items-table thead {
-            background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
-            color: #1A1A1A;
+            background: #1A1A1A;
+            color: #FFFCF8;
         }
         .items-table th {
-            padding: 15px;
+            padding: 16px;
             text-align: left;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
+            font-family: 'Parisine Pro Gris', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .items-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 14px 16px;
+            border-bottom: 1px solid #EDEAE3;
             font-size: 14px;
+            font-family: 'Parisine Pro Gris', sans-serif;
         }
         .items-table tbody tr:last-child td {
             border-bottom: none;
         }
         .items-table tbody tr:nth-child(even) {
-            background-color: #fafafa;
+            background-color: #F8F6F3;
         }
         .total-row {
-            background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%) !important;
-            color: white !important;
+            background: #1A1A1A !important;
+            color: #FFFCF8 !important;
             font-weight: bold;
         }
         .total-row td {
-            color: white !important;
+            color: #FFFCF8 !important;
             font-size: 16px;
+            font-family: 'Sabon Next LT Pro', serif;
         }
         .highlight-box {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            border: 2px solid #D4AF37;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 30px 0;
+            background: #FEF4E6;
+            border: 1px solid #EDEAE3;
+            border-radius: 4px;
+            padding: 24px;
+            margin: 32px 0;
             text-align: center;
         }
         .highlight-box p {
             margin: 0;
-            color: #856404;
-            font-weight: 600;
+            color: #1A1A1A;
+            font-weight: 500;
             font-size: 15px;
+            font-family: 'Parisine Pro Gris', sans-serif;
+        }
+        .payment-box {
+            background: #FEF4E6;
+            border: 2px solid #1A1A1A;
+            border-radius: 4px;
+            padding: 28px;
+            margin: 32px 0;
+            text-align: center;
+        }
+        .payment-box h3 {
+            color: #1A1A1A;
+            margin: 0 0 16px 0;
+            font-size: 20px;
+            font-weight: 600;
+            font-family: 'Sabon Next LT Pro', serif;
+        }
+        .payment-box p {
+            color: #4A4A4A;
+            margin: 0 0 24px 0;
+            font-size: 15px;
+            line-height: 1.6;
+            font-family: 'Parisine Pro Gris', sans-serif;
+        }
+        .payment-button {
+            display: inline-block;
+            background: #1A1A1A;
+            color: #FFFCF8;
+            padding: 16px 40px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            font-family: 'Parisine Pro Gris', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.2s;
+        }
+        .payment-button:hover {
+            background: #2D2D2D;
         }
         .contact-section {
-            background-color: #e8f5e8;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 25px 0;
-            border: 1px solid #c3e6c3;
+            background-color: #F8F6F3;
+            border-radius: 4px;
+            padding: 24px;
+            margin: 28px 0;
+            border: 1px solid #EDEAE3;
         }
         .contact-section h4 {
-            color: #2d5a2d;
-            margin: 0 0 15px 0;
+            color: #1A1A1A;
+            margin: 0 0 16px 0;
             font-size: 16px;
+            font-weight: 600;
+            font-family: 'Sabon Next LT Pro', serif;
         }
         .contact-section p {
-            color: #2d5a2d;
-            margin: 8px 0;
+            color: #4A4A4A;
+            margin: 10px 0;
             font-size: 14px;
+            font-family: 'Parisine Pro Gris', sans-serif;
         }
         .footer {
-            background-color: #f8f9fa;
-            padding: 30px;
+            background-color: #F8F6F3;
+            padding: 32px 30px;
             text-align: center;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #EDEAE3;
         }
         .footer p {
             margin: 8px 0;
-            color: #666;
+            color: #4A4A4A;
             font-size: 14px;
+            font-family: 'Parisine Pro Gris', sans-serif;
         }
         .footer strong {
             color: #1A1A1A;
+            font-weight: 600;
+            font-family: 'Sabon Next LT Pro', serif;
         }
         .footer .disclaimer {
-            margin-top: 20px;
+            margin-top: 24px;
             font-size: 12px;
-            color: #999;
+            color: #6B7280;
         }
         @media (max-width: 600px) {
             .content {
-                padding: 25px 20px;
+                padding: 28px 20px;
+            }
+            .header {
+                padding: 40px 20px;
             }
             .info-row {
                 flex-direction: column;
@@ -208,7 +276,7 @@
             }
             .info-value {
                 text-align: left;
-                margin-top: 5px;
+                margin-top: 6px;
             }
             .items-table {
                 font-size: 12px;
@@ -259,7 +327,7 @@
 
             <!-- Order Information -->
             <div class="info-section">
-                <h3>📋 Sifariş Məlumatları</h3>
+                <h3>Sifariş Məlumatları</h3>
                 
                 @if($order->company_name)
                 <div class="info-row">
@@ -270,36 +338,36 @@
 
                 @if($order->delivery_date)
                 <div class="info-row">
-                    <span class="info-label">📅 Çatdırılma tarixi:</span>
+                    <span class="info-label">Çatdırılma tarixi:</span>
                     <span class="info-value">{{ \Carbon\Carbon::parse($order->delivery_date)->format('d.m.Y') }}</span>
                 </div>
                 @endif
 
                 @if($order->delivery_time)
                 <div class="info-row">
-                    <span class="info-label">🕐 Çatdırılma vaxtı:</span>
+                    <span class="info-label">Çatdırılma vaxtı:</span>
                     <span class="info-value">{{ \Carbon\Carbon::parse($order->delivery_time)->format('H:i') }}</span>
                 </div>
                 @endif
 
                 @if($order->delivery_address)
                 <div class="info-row">
-                    <span class="info-label">📍 Ünvan:</span>
+                    <span class="info-label">Ünvan:</span>
                     <span class="info-value">{{ $order->delivery_address }}</span>
                 </div>
                 @endif
 
                 @if($coordinator)
                 <div class="info-row">
-                    <span class="info-label">👤 Koordinator:</span>
+                    <span class="info-label">Koordinator:</span>
                     <span class="info-value">{{ $coordinator->name }}</span>
                 </div>
                 @endif
 
                 @if($totalAmount > 0)
-                <div class="info-row" style="border-top: 2px solid #D4AF37; margin-top: 15px; padding-top: 15px;">
-                    <span class="info-label" style="font-size: 16px;">💰 Ümumi məbləğ:</span>
-                    <span class="info-value" style="font-size: 18px; font-weight: bold; color: #D4AF37;">{{ number_format($totalAmount, 2) }} ₼</span>
+                <div class="info-row" style="border-top: 2px solid #1A1A1A; margin-top: 18px; padding-top: 18px;">
+                    <span class="info-label" style="font-size: 16px;">Ümumi məbləğ:</span>
+                    <span class="info-value" style="font-size: 20px; font-weight: bold; color: #1A1A1A;">{{ number_format($totalAmount, 2) }} ₼</span>
                 </div>
                 @endif
             </div>
@@ -307,7 +375,7 @@
             <!-- Menu Items -->
             @if($order->menu_items && count($order->menu_items) > 0)
             <div class="info-section">
-                <h3>🍽️ Sifariş Edilən Məhsullar</h3>
+                <h3>Sifariş Edilən Məhsullar</h3>
                 <table class="items-table">
                     <thead>
                         <tr>
@@ -347,30 +415,30 @@
             <!-- Comment -->
             @if($order->comment)
             <div class="info-section">
-                <h3>💬 Əlavə Qeydlər</h3>
-                <p style="color: #4A4A4A; margin: 0; white-space: pre-wrap;">{{ $order->comment }}</p>
+                <h3>Əlavə Qeydlər</h3>
+                <p style="color: #4A4A4A; margin: 0; white-space: pre-wrap; font-family: 'Parisine Pro Gris', sans-serif;">{{ $order->comment }}</p>
             </div>
             @endif
 
             <!-- Payment Required Box (for one-time clients) -->
             @if($isOneTimeClient && $paymentUrl)
-            <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border: 2px solid #FCD34D; border-radius: 12px; padding: 25px; margin: 30px 0; text-align: center;">
-                <h3 style="color: #D97706; margin: 0 0 15px 0; font-size: 20px;">⚠️ Ödəniş Tələb Olunur</h3>
-                <p style="color: #92400E; margin: 0 0 20px 0; font-size: 15px; line-height: 1.6;">
+            <div class="payment-box">
+                <h3>Ödəniş Tələb Olunur</h3>
+                <p>
                     Sifarişinizin təsdiqlənməsi və hazırlanması üçün ödəniş edilməlidir.
                 </p>
-                <a href="{{ $paymentUrl }}" style="display: inline-block; background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 15px 35px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transition: transform 0.2s;">
-                    💳 Ödəniş Et
+                <a href="{{ $paymentUrl }}" class="payment-button">
+                    Ödəniş Et
                 </a>
-                <p style="color: #92400E; margin: 15px 0 0 0; font-size: 13px; font-weight: normal;">
+                <p style="margin-top: 20px; font-size: 13px; font-weight: normal;">
                     Ödəniş edildikdən sonra sifarişiniz hazırlanma prosesinə keçəcək
                 </p>
             </div>
             @else
             <!-- Highlight Box (for regular clients) -->
             <div class="highlight-box">
-                <p>✅ Sifarişiniz qəbul edildi və hazırlanma prosesindədir</p>
-                <p style="margin-top: 10px; font-size: 14px; font-weight: normal;">
+                <p>Sifarişiniz qəbul edildi və hazırlanma prosesindədir</p>
+                <p style="margin-top: 12px; font-size: 14px; font-weight: normal;">
                     Hazır olduqda sizə məlumat veriləcək
                 </p>
             </div>
@@ -379,7 +447,7 @@
             <!-- Contact Information -->
             @if($client)
             <div class="contact-section">
-                <h4>📞 Əlaqə Məlumatları</h4>
+                <h4>Əlaqə Məlumatları</h4>
                 <p><strong>Ad:</strong> {{ $client->name }}</p>
                 @if($client->email)
                 <p><strong>E-poçt:</strong> {{ $client->email }}</p>
@@ -395,10 +463,10 @@
         <div class="footer">
             <p><strong>PAUL Azerbaijan</strong></p>
             <p>Premium Katerinq Xidməti</p>
-            <p>📧 info@paul-azerbaijan.com</p>
-            <p>📞 +994 50 123 45 67</p>
-            <p>📍 Bakı şəhəri</p>
-            <p>🌐 www.paul-azerbaijan.com</p>
+            <p>info@paul-azerbaijan.com</p>
+            <p>+994 50 123 45 67</p>
+            <p>Bakı şəhəri</p>
+            <p>www.paul-azerbaijan.com</p>
             
             <p class="disclaimer">
                 Bu email avtomatik olaraq göndərilmişdir. Cavab verməyin.

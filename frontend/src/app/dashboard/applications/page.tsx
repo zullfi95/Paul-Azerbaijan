@@ -3,10 +3,13 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from 'next-intl';
 import { useAuth } from "../../../contexts/AuthContext";
 import { Application } from "../../../types/common";
 import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/apiHelpers";
 import { useAuthGuard, isCoordinator } from "../../../utils/authConstants";
+import { useDebounce } from "../../../utils/useDebounce";
+import { useToast } from "../../../components/ui/Toast";
 import DashboardLayout from "../../../components/DashboardLayout";
 import { 
   SearchIcon, 
@@ -47,12 +50,7 @@ interface QuickFilter {
 const paul = { black: '#1A1A1A', beige: '#EBDCC8', border: '#EDEAE3', gray: '#4A4A4A', white: '#FFFCF8' };
 const serifTitle: React.CSSProperties = { fontFamily: 'Playfair Display, serif' };
 
-const statusLabels = {
-  new: 'Новая',
-  processing: 'В обработке',
-  approved: 'Одобрена',
-  rejected: 'Отклонена'
-};
+// Status labels will be retrieved from translations
 
 const statusColors = {
   new: '#3B82F6',
@@ -85,7 +83,8 @@ const formatApplicationTime = (value?: string | null): string => {
 };
 
 // Helper function to calculate total amount from cart items
-const calculateTotalAmount = (cartItems: any[] | null | undefined): number => {
+// Мемоизированная версия будет создана внутри компонента
+const calculateTotalAmountRaw = (cartItems: any[] | null | undefined): number => {
   if (!cartItems || !Array.isArray(cartItems)) return 0;
   return cartItems.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
 };
@@ -93,6 +92,15 @@ const calculateTotalAmount = (cartItems: any[] | null | undefined): number => {
 export default function ApplicationsPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const t = useTranslations();
+  const { showToast } = useToast();
+  
+  const statusLabels = {
+    new: t('applications.new'),
+    processing: t('applications.processing'),
+    approved: t('applications.approvedStatus'),
+    rejected: t('applications.rejectedStatus')
+  };
 
   const [applications, setApplications] = useState<Application[]>([]);
   const [applicationsLoading, setApplicationsLoading] = useState(false);
@@ -109,31 +117,53 @@ export default function ApplicationsPage() {
   const [massAction, setMassAction] = useState<MassAction | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingUser, setEditingUser] = useState<Application | null>(null);
-  // Form data removed - not needed in applications page
+  
+  // Пагинация
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 20;
+  
+  // Debounced search для производительности
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  
+  // Мемоизированная функция для расчета суммы
+  const calculateTotalAmount = useCallback((cartItems: any[] | null | undefined): number => {
+    return calculateTotalAmountRaw(cartItems);
+  }, []);
+  
+  // Мемоизированный кэш сумм для каждой заявки
+  const applicationAmounts = useMemo(() => {
+    const amounts = new Map<number, number>();
+    applications.forEach(app => {
+      amounts.set(app.id, calculateTotalAmount(app.cart_items));
+    });
+    return amounts;
+  }, [applications, calculateTotalAmount]);
 
   // Quick filters
   const quickFilters: QuickFilter[] = [
     {
       id: 'new',
-      label: 'Новые',
+      label: t('applications.new'),
       filter: (app) => app.status === 'new',
       color: '#3B82F6'
     },
     {
       id: 'processing',
-      label: 'В обработке',
+      label: t('applications.processing'),
       filter: (app) => app.status === 'processing',
       color: '#F59E0B'
     },
     {
       id: 'approved',
-      label: 'Одобренные',
+      label: t('applications.approved'),
       filter: (app) => app.status === 'approved',
       color: '#10B981'
     },
     {
       id: 'rejected',
-      label: 'Отклоненные',
+      label: t('applications.rejected'),
       filter: (app) => app.status === 'rejected',
       color: '#EF4444'
     }
@@ -142,36 +172,69 @@ export default function ApplicationsPage() {
   // Auth guard
   useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, isCoordinator, router);
 
-  // Load applications
-  const loadApplications = useCallback(async () => {
+  // Load applications with pagination
+  const loadApplications = useCallback(async (page: number) => {
     setApplicationsLoading(true);
     try {
-      const result = await makeApiRequest<Application[]>('/applications');
-      if (result.success) {
-        setApplications(extractApiData(result.data || []));
+      const result = await makeApiRequest<{ data: Application[]; current_page?: number; last_page?: number; total?: number }>(
+        `/applications?page=${page}&per_page=${itemsPerPage}`
+      );
+      if (result.success && result.data) {
+        const data = result.data;
+        setApplications(extractApiData(data.data || []));
+        // Обновляем пагинацию только если данные пришли с сервера
+        if (data.current_page !== undefined) {
+          setCurrentPage(data.current_page);
+        }
+        if (data.last_page !== undefined) {
+          setTotalPages(data.last_page);
+        }
+        if (data.total !== undefined) {
+          setTotalItems(data.total);
+        }
       } else {
-        console.error('Ошибка загрузки заявок:', handleApiError(result as any));
+        const errorMessage = handleApiError(result as any);
+        console.error('Ошибка загрузки заявок:', errorMessage);
+        showToast({
+          type: 'error',
+          title: t('common.error'),
+          message: t('applications.loadError') || errorMessage
+        });
       }
     } catch (error) {
       console.error('Ошибка загрузки заявок:', error);
+      showToast({
+        type: 'error',
+        title: t('common.error'),
+        message: t('applications.loadError') || 'Ошибка загрузки заявок'
+      });
     } finally {
       setApplicationsLoading(false);
     }
-  }, []);
+  }, [itemsPerPage, t, showToast]);
 
   useEffect(() => {
     if (isAuthenticated) {
-      loadApplications();
+      loadApplications(1);
     }
-  }, [isAuthenticated, loadApplications]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+  
+  // Перезагрузка при изменении страницы (только если страница действительно изменилась пользователем)
+  const handlePageChange = useCallback((newPage: number) => {
+    if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      loadApplications(newPage);
+    }
+  }, [currentPage, totalPages, loadApplications]);
 
-  // Filtered applications
+  // Filtered applications (client-side filtering для текущей страницы)
   const filteredApplications = useMemo(() => {
-    let filtered = applications;
+    let filtered = [...applications];
 
-    // Search filter
-    if (searchTerm) {
-      const q = searchTerm.toLowerCase();
+    // Search filter (используем debounced значение)
+    if (debouncedSearchTerm) {
+      const q = debouncedSearchTerm.toLowerCase();
       filtered = filtered.filter(app => 
         app.first_name?.toLowerCase().includes(q) ||
         (app.last_name && app.last_name.toLowerCase().includes(q)) ||
@@ -199,8 +262,8 @@ export default function ApplicationsPage() {
           bValue = b.status;
           break;
         case 'amount':
-          aValue = calculateTotalAmount(a.cart_items || []);
-          bValue = calculateTotalAmount(b.cart_items || []);
+          aValue = applicationAmounts.get(a.id) || 0;
+          bValue = applicationAmounts.get(b.id) || 0;
           break;
         case 'date':
         default:
@@ -217,7 +280,7 @@ export default function ApplicationsPage() {
     });
 
     return filtered;
-  }, [applications, searchTerm, statusFilter, sortBy, sortOrder]);
+  }, [applications, debouncedSearchTerm, statusFilter, sortBy, sortOrder, applicationAmounts]);
 
   // Quick filter counts
   const quickFilterCounts = useMemo(() => {
@@ -266,24 +329,55 @@ export default function ApplicationsPage() {
 
     try {
       const applicationIds = Array.from(selectedApplications);
+      let successCount = 0;
+      let errorCount = 0;
       
       if (massAction.type === 'status_change' && massAction.status) {
         // Update status for selected applications
         for (const id of applicationIds) {
-          await makeApiRequest(`/applications/${id}/status`, {
-            method: 'PUT',
-            body: JSON.stringify({ status: massAction.status })
-          });
+          try {
+            const result = await makeApiRequest(`/applications/${id}/status`, {
+              method: 'PUT',
+              body: JSON.stringify({ status: massAction.status })
+            });
+            if (result.success) {
+              successCount++;
+            } else {
+              errorCount++;
+            }
+          } catch (error) {
+            errorCount++;
+          }
         }
       }
 
-      // Reload applications
-      await loadApplications();
+      // Reload applications (используем текущую страницу)
+      const pageToLoad = currentPage;
+      await loadApplications(pageToLoad);
       setSelectedApplications(new Set());
       setShowMassActions(false);
       setMassAction(null);
+      
+      if (errorCount === 0) {
+        showToast({
+          type: 'success',
+          title: t('common.success'),
+          message: t('applications.massActionSuccess', { count: successCount }) || `Успешно обработано ${successCount} заявок`
+        });
+      } else {
+        showToast({
+          type: 'warning',
+          title: t('common.warning'),
+          message: t('applications.massActionPartial', { success: successCount, error: errorCount }) || `Обработано ${successCount}, ошибок: ${errorCount}`
+        });
+      }
     } catch (error) {
-      console.error('Ошибка выполнения массового действия:', error);
+      console.error('Ошибка массового действия:', error);
+      showToast({
+        type: 'error',
+        title: t('common.error'),
+        message: t('applications.massActionError') || 'Ошибка выполнения массового действия'
+      });
     }
   };
 
@@ -296,18 +390,35 @@ export default function ApplicationsPage() {
       });
 
       if (result.success) {
-        await loadApplications();
+        const pageToLoad = currentPage;
+        await loadApplications(pageToLoad);
+        showToast({
+          type: 'success',
+          title: t('common.success'),
+          message: t('applications.statusUpdated') || 'Статус заявки обновлен'
+        });
       } else {
-        console.error('Ошибка изменения статуса:', handleApiError(result as any));
+        const errorMessage = handleApiError(result as any);
+        console.error('Ошибка изменения статуса:', errorMessage);
+        showToast({
+          type: 'error',
+          title: t('common.error'),
+          message: t('applications.statusUpdateError') || errorMessage
+        });
       }
     } catch (error) {
       console.error('Ошибка изменения статуса:', error);
+      showToast({
+        type: 'error',
+        title: t('common.error'),
+        message: t('applications.statusUpdateError') || 'Ошибка изменения статуса'
+      });
     }
   };
 
   // Handle application delete
   const handleDelete = async (id: number) => {
-    if (!confirm('Вы уверены, что хотите удалить эту заявку?')) return;
+    if (!confirm(t('applications.confirmDelete') || 'Вы уверены, что хотите удалить эту заявку?')) return;
 
     try {
       const result = await makeApiRequest(`/applications/${id}`, {
@@ -315,12 +426,29 @@ export default function ApplicationsPage() {
       });
 
       if (result.success) {
-        await loadApplications();
+        const pageToLoad = currentPage;
+        await loadApplications(pageToLoad);
+        showToast({
+          type: 'success',
+          title: t('common.success'),
+          message: t('applications.deleted') || 'Заявка удалена'
+        });
       } else {
-        console.error('Ошибка удаления заявки:', handleApiError(result as any));
+        const errorMessage = handleApiError(result as any);
+        console.error('Ошибка удаления заявки:', errorMessage);
+        showToast({
+          type: 'error',
+          title: t('common.error'),
+          message: t('applications.deleteError') || errorMessage
+        });
       }
     } catch (error) {
       console.error('Ошибка удаления заявки:', error);
+      showToast({
+        type: 'error',
+        title: t('common.error'),
+        message: t('applications.deleteError') || 'Ошибка удаления заявки'
+      });
     }
   };
 
@@ -346,9 +474,25 @@ export default function ApplicationsPage() {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
+        showToast({
+          type: 'success',
+          title: t('common.success'),
+          message: t('applications.exportSuccess') || 'Экспорт выполнен успешно'
+        });
+      } else {
+        showToast({
+          type: 'error',
+          title: t('common.error'),
+          message: t('applications.exportError') || 'Ошибка экспорта'
+        });
       }
     } catch (error) {
       console.error('Ошибка экспорта:', error);
+      showToast({
+        type: 'error',
+        title: t('common.error'),
+        message: t('applications.exportError') || 'Ошибка экспорта'
+      });
     }
   };
 
@@ -356,7 +500,7 @@ export default function ApplicationsPage() {
     return (
       <div className="loading-state">
         <div className="loading-spinner"></div>
-        <div className="loading-title">Загрузка...</div>
+        <div className="loading-title">{t('common.loading')}</div>
       </div>
     );
   }
@@ -372,11 +516,11 @@ export default function ApplicationsPage() {
         >
           <div className="dashboard-kpi-header">
             <FileTextIcon size={16} className="dashboard-kpi-icon" />
-            <span className="dashboard-kpi-label">Всего заявок</span>
+            <span className="dashboard-kpi-label">{t('applications.totalApplications')}</span>
           </div>
           <div className="dashboard-kpi-value">{applications.length}</div>
           <div className="dashboard-kpi-subtitle">
-            Всего в системе
+            {t('dashboard.inSystem')}
           </div>
         </div>
         <div 
@@ -387,11 +531,11 @@ export default function ApplicationsPage() {
         >
           <div className="dashboard-kpi-header">
             <FileTextIcon size={16} className="dashboard-kpi-icon" style={{ color: '#3B82F6' }} />
-            <span className="dashboard-kpi-label">Новые</span>
+            <span className="dashboard-kpi-label">{t('applications.newApplications')}</span>
           </div>
           <div className="dashboard-kpi-value" style={{ color: '#3B82F6' }}>{applications.filter(a => a.status === 'new').length}</div>
           <div className="dashboard-kpi-subtitle">
-            Требуют обработки
+            {t('applications.requireProcessing')}
           </div>
         </div>
         <div 
@@ -402,11 +546,11 @@ export default function ApplicationsPage() {
         >
           <div className="dashboard-kpi-header">
             <FileTextIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
-            <span className="dashboard-kpi-label">В обработке</span>
+            <span className="dashboard-kpi-label">{t('applications.processing')}</span>
           </div>
           <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>{applications.filter(a => a.status === 'processing').length}</div>
           <div className="dashboard-kpi-subtitle">
-            В работе
+            {t('applications.inProcessing')}
           </div>
         </div>
         <div 
@@ -417,11 +561,11 @@ export default function ApplicationsPage() {
         >
           <div className="dashboard-kpi-header">
             <CheckIcon size={16} className="dashboard-kpi-icon" style={{ color: '#10B981' }} />
-            <span className="dashboard-kpi-label">Одобренные</span>
+            <span className="dashboard-kpi-label">{t('applications.approved')}</span>
           </div>
           <div className="dashboard-kpi-value" style={{ color: '#10B981' }}>{applications.filter(a => a.status === 'approved').length}</div>
           <div className="dashboard-kpi-subtitle">
-            Успешно обработаны
+            {t('applications.successfullyProcessed')}
           </div>
         </div>
       </section>
@@ -471,7 +615,7 @@ export default function ApplicationsPage() {
               borderColor: 'var(--paul-gray)'
             }}
           >
-            Все заявки
+            {t('common.all')}
           </button>
         </div>
       </section>
@@ -482,11 +626,11 @@ export default function ApplicationsPage() {
           <SearchIcon size={16} className="dashboard-search-icon" />
           <input
             type="text"
-            placeholder="Поиск по имени, email, компании..."
+            placeholder={t('applications.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="dashboard-search-input"
-            aria-label="Поиск заявок"
+            aria-label={t('applications.title')}
           />
         </div>
         <div className="dashboard-filter-container">
@@ -495,18 +639,18 @@ export default function ApplicationsPage() {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
             className="dashboard-filter-select"
-            aria-label="Сортировка"
+            aria-label={t('common.sort')}
           >
-            <option value="date">По дате</option>
-            <option value="name">По имени</option>
-            <option value="status">По статусу</option>
-            <option value="amount">По сумме</option>
+            <option value="date">{t('applications.sortByDate')}</option>
+            <option value="name">{t('applications.sortByName')}</option>
+            <option value="status">{t('applications.sortByStatus')}</option>
+            <option value="amount">{t('applications.sortByAmount')}</option>
           </select>
         </div>
         <button
           onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
           className="dashboard-action-btn"
-          aria-label={`Сортировка ${sortOrder === 'asc' ? 'по возрастанию' : 'по убыванию'}`}
+          aria-label={sortOrder === 'asc' ? t('common.sortAscending') : t('common.sortDescending')}
           style={{ minWidth: '48px' }}
         >
           {sortOrder === 'asc' ? '↑' : '↓'}
@@ -528,7 +672,7 @@ export default function ApplicationsPage() {
                 borderRadius: '12px',
                 fontWeight: 600
               }}>
-                Выбрано: {selectedApplications.size}
+                {t('applications.selected', { count: selectedApplications.size })}
               </span>
               <button
                 onClick={() => handleMassAction({ type: 'status_change', status: 'approved' })}
@@ -539,7 +683,7 @@ export default function ApplicationsPage() {
                 }}
               >
                 <CheckIcon size={14} />
-                <span>Одобрить</span>
+                <span>{t('applications.approve')}</span>
               </button>
               <button
                 onClick={() => handleMassAction({ type: 'status_change', status: 'rejected' })}
@@ -550,17 +694,17 @@ export default function ApplicationsPage() {
                 }}
               >
                 <XIcon size={14} />
-                <span>Отклонить</span>
+                <span>{t('applications.reject')}</span>
               </button>
             </>
           )}
           <button
             onClick={loadApplications}
             className="dashboard-refresh-btn"
-            aria-label="Обновить список заявок"
+            aria-label={t('common.refresh')}
           >
             <RefreshIcon size={16} />
-            <span>Обновить</span>
+            <span>{t('common.refresh')}</span>
           </button>
         </div>
       </section>
@@ -569,13 +713,13 @@ export default function ApplicationsPage() {
       <section className="dashboard-table-container">
         <div className="dashboard-table-header">
           <div>
-            <h2 className="dashboard-table-title">Заявки клиентов</h2>
+            <h2 className="dashboard-table-title">{t('applications.title')}</h2>
             <p style={{ 
               fontSize: 'var(--text-sm)', 
               color: 'var(--paul-gray)', 
               marginTop: 'var(--space-1)' 
             }}>
-              Показано {filteredApplications.length} из {applications.length} заявок
+              {t('applications.showing', { count: filteredApplications.length, total: totalItems })}
             </p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
@@ -593,7 +737,7 @@ export default function ApplicationsPage() {
                 onChange={handleSelectAll}
                 style={{ cursor: 'pointer' }}
               />
-              <span>Выбрать все</span>
+              <span>{t('applications.selectAll')}</span>
             </label>
             <div style={{ 
               display: 'flex', 
@@ -611,7 +755,7 @@ export default function ApplicationsPage() {
                   padding: '6px 10px'
                 }}
               >
-                Таблица
+                {t('applications.viewTable')}
               </button>
               <button
                 className={`dashboard-action-btn ${viewMode === 'grid' ? '' : ''}`}
@@ -623,7 +767,7 @@ export default function ApplicationsPage() {
                   padding: '6px 10px'
                 }}
               >
-                Сетка
+                {t('applications.viewGrid')}
               </button>
               <button
                 className={`dashboard-action-btn ${viewMode === 'kanban' ? '' : ''}`}
@@ -635,7 +779,7 @@ export default function ApplicationsPage() {
                   padding: '6px 10px'
                 }}
               >
-                Канбан
+                {t('applications.viewKanban')}
               </button>
             </div>
           </div>
@@ -662,10 +806,10 @@ export default function ApplicationsPage() {
               color: 'var(--paul-black)',
               marginBottom: '8px'
             }}>
-              Загрузка заявок...
+              {t('applications.loadingApplications')}
             </div>
             <div style={{ fontSize: '14px', color: 'var(--paul-gray)' }}>
-              Пожалуйста, подождите
+              {t('common.pleaseWait')}
             </div>
           </div>
         ) : filteredApplications.length === 0 ? (
@@ -687,12 +831,12 @@ export default function ApplicationsPage() {
               color: 'var(--paul-black)',
               marginBottom: '8px'
             }}>
-              Заявки не найдены
+              {t('applications.applicationsNotFound')}
             </div>
             <div style={{ fontSize: '14px', color: 'var(--paul-gray)' }}>
               {searchTerm || statusFilter !== 'all' 
-                ? 'Попробуйте изменить фильтры поиска' 
-                : 'Заявки появятся здесь после создания'
+                ? t('applications.tryChangingFilters')
+                : t('applications.createFirst')
               }
             </div>
           </div>
@@ -709,13 +853,13 @@ export default function ApplicationsPage() {
                       style={{ cursor: 'pointer' }}
                     />
                   </th>
-                  <th>Заявитель</th>
-                  <th>Контакты</th>
-                  <th>Мероприятие</th>
-                  <th>Статус</th>
-                  <th>Сумма</th>
-                  <th>Дата</th>
-                  <th>Действия</th>
+                  <th>{t('applications.applicant')}</th>
+                  <th>{t('applications.contacts')}</th>
+                  <th>{t('applications.event')}</th>
+                  <th>{t('common.status')}</th>
+                  <th>{t('common.amount')}</th>
+                  <th>{t('common.date')}</th>
+                  <th>{t('common.actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -747,7 +891,7 @@ export default function ApplicationsPage() {
                         </div>
                       ) : (
                         <div style={{ color: 'var(--paul-gray)', fontSize: '12px', fontStyle: 'italic' }}>
-                          Не указано
+                          {t('applications.notSpecified')}
                         </div>
                       )}
                     </td>
@@ -758,7 +902,7 @@ export default function ApplicationsPage() {
                     </td>
                     <td>
                       <div style={{ fontWeight: 600, color: 'var(--paul-black)' }}>
-                        {calculateTotalAmount(app.cart_items) ? `₼${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
+                        {applicationAmounts.get(app.id) ? `₼${applicationAmounts.get(app.id)!.toLocaleString()}` : '—'}
                       </div>
                     </td>
                     <td>
@@ -772,7 +916,7 @@ export default function ApplicationsPage() {
                           style={{ fontSize: '11px', padding: '4px 8px' }}
                         >
                           <EyeIcon size={12} />
-                          <span>Просмотр</span>
+                          <span>{t('common.view')}</span>
                         </button>
                         <button
                           onClick={() => router.push(`/dashboard/orders/create?fromApplication=${app.id}`)}
@@ -786,7 +930,7 @@ export default function ApplicationsPage() {
                           }}
                         >
                           <FileTextIcon size={12} />
-                          <span>Создать заказ</span>
+                          <span>{t('applications.createOrder')}</span>
                         </button>
                       </div>
                     </td>
@@ -795,6 +939,48 @@ export default function ApplicationsPage() {
               </tbody>
             </table>
           </div>
+          
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 'var(--space-2)',
+              marginTop: 'var(--space-4)',
+              padding: 'var(--space-3)'
+            }}>
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="dashboard-action-btn"
+                style={{
+                  opacity: currentPage === 1 ? 0.5 : 1,
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                }}
+              >
+                ← {t('common.previous') || 'Назад'}
+              </button>
+              <span style={{
+                fontSize: 'var(--text-sm)',
+                color: 'var(--paul-gray)',
+                padding: '0 var(--space-3)'
+              }}>
+                {t('common.page', { current: currentPage, total: totalPages }) || `Страница ${currentPage} из ${totalPages}`}
+              </span>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="dashboard-action-btn"
+                style={{
+                  opacity: currentPage === totalPages ? 0.5 : 1,
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {t('common.next') || 'Вперед'} →
+              </button>
+            </div>
+          )}
           ) : viewMode === 'grid' ? (
             <div className="grid-view">
               {filteredApplications.map((app) => (
@@ -821,15 +1007,15 @@ export default function ApplicationsPage() {
                     </span>
                   </div>
                   <div className="card-field">
-                    <div className="field-label">Мероприятие</div>
+                    <div className="field-label">{t('applications.event')}</div>
                     <div className="field-value">
-                      {app.event_address || 'Не указано'}
+                      {app.event_address || t('applications.notSpecified')}
                     </div>
                   </div>
                   <div className="card-field">
-                    <div className="field-label">Сумма</div>
+                    <div className="field-label">{t('applications.amount')}</div>
                     <div className="field-value">
-                      {calculateTotalAmount(app.cart_items) ? `₽${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
+                      {applicationAmounts.get(app.id) ? `₼${applicationAmounts.get(app.id)!.toLocaleString()}` : '—'}
                     </div>
                   </div>
                   <div className="card-footer">
@@ -837,7 +1023,7 @@ export default function ApplicationsPage() {
                       {app.created_at ? new Date(app.created_at).toLocaleDateString('ru-RU') : '—'}
                     </div>
                     <div className="card-amount">
-                      {calculateTotalAmount(app.cart_items) ? `₽${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
+                      {applicationAmounts.get(app.id) ? `₼${applicationAmounts.get(app.id)!.toLocaleString()}` : '—'}
                     </div>
                   </div>
                 </div>
@@ -875,14 +1061,14 @@ export default function ApplicationsPage() {
                               {app.created_at ? new Date(app.created_at).toLocaleDateString('ru-RU') : '—'}
                             </div>
                             <div className="kanban-amount">
-                              {calculateTotalAmount(app.cart_items) ? `₽${calculateTotalAmount(app.cart_items).toLocaleString()}` : '—'}
+                              {applicationAmounts.get(app.id) ? `₼${applicationAmounts.get(app.id)!.toLocaleString()}` : '—'}
                             </div>
                           </div>
                         </div>
                       </div>
                     ))}
                     {filteredApplications.filter(filter.filter).length === 0 && (
-                      <div className="kanban-empty">Нет заявок</div>
+                      <div className="kanban-empty">{t('applications.noApplications')}</div>
                     )}
                   </div>
                 </div>
@@ -907,12 +1093,12 @@ export default function ApplicationsPage() {
             fontWeight: 700,
             color: 'var(--paul-black)'
           }}>
-            Массовые действия
+            {t('applications.massActions')}
             <span style={{
               color: '#3B82F6',
               marginLeft: 'var(--space-2)'
             }}>
-              ({selectedApplications.size} выбрано)
+              ({selectedApplications.size} {t('applications.selected')})
             </span>
           </h3>
           <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
@@ -925,13 +1111,13 @@ export default function ApplicationsPage() {
                 borderColor: '#10B981'
               }}
             >
-              Выполнить
+              {t('applications.execute')}
             </button>
             <button
               onClick={() => setShowMassActions(false)}
               className="dashboard-action-btn"
             >
-              Отмена
+              {t('common.cancel')}
             </button>
           </div>
         </div>
@@ -951,7 +1137,7 @@ export default function ApplicationsPage() {
           />
           <aside
             role="dialog"
-            aria-label="Просмотр заявки"
+            aria-label={t('applications.viewApplication')}
             style={{
               position: 'fixed',
               top: 0,
@@ -978,13 +1164,13 @@ export default function ApplicationsPage() {
                   {selectedApplication.first_name} {selectedApplication.last_name || ''}
                 </div>
                 <div style={{ marginTop: 4, fontSize: '13px', color: 'var(--paul-gray)' }}>
-                  Заявка №{selectedApplication.id}
+                  {t('applications.application')} №{selectedApplication.id}
                 </div>
               </div>
               <button
                 onClick={() => setIsSidebarOpen(false)}
                 className="dashboard-action-btn"
-                aria-label="Закрыть просмотр заявки"
+                aria-label={t('common.close')}
               >
                 ×
               </button>
@@ -1019,14 +1205,14 @@ export default function ApplicationsPage() {
                     background: '#10B981'
                   }}
                 >
-                  Создать заказ
+                  {t('applications.createOrder')}
                 </button>
               </div>
 
               <div style={{ display: 'grid', rowGap: 16 }}>
                 <section style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: 12 }}>
                   <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                    Контактные данные
+                    {t('applications.contactDetails')}
                   </h4>
                   <div style={{ display: 'grid', rowGap: 8 }}>
                     <div>
@@ -1034,18 +1220,18 @@ export default function ApplicationsPage() {
                       <div className="field-value">{selectedApplication.email || '—'}</div>
                     </div>
                     <div>
-                      <div className="field-label">Телефон</div>
+                      <div className="field-label">{t('common.phone')}</div>
                       <div className="field-value">{selectedApplication.phone || '—'}</div>
                     </div>
                     {selectedApplication.company_name && (
                       <div>
-                        <div className="field-label">Компания</div>
+                        <div className="field-label">{t('common.company')}</div>
                         <div className="field-value">{selectedApplication.company_name}</div>
                       </div>
                     )}
                     {selectedApplication.contact_person && (
                       <div>
-                        <div className="field-label">Контактное лицо</div>
+                        <div className="field-label">{t('applications.contactPerson')}</div>
                         <div className="field-value">{selectedApplication.contact_person}</div>
                       </div>
                     )}
@@ -1054,26 +1240,26 @@ export default function ApplicationsPage() {
 
                 <section style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: 12 }}>
                   <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                    Детали мероприятия
+                    {t('applications.eventDetails')}
                   </h4>
                   <div style={{ display: 'grid', rowGap: 8 }}>
                     <div>
-                      <div className="field-label">Адрес</div>
+                      <div className="field-label">{t('common.address')}</div>
                       <div className="field-value">{selectedApplication.event_address || '—'}</div>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: 12 }}>
                       <div>
-                        <div className="field-label">Дата</div>
+                        <div className="field-label">{t('common.date')}</div>
                         <div className="field-value">{formatApplicationDate(selectedApplication.event_date)}</div>
                       </div>
                       <div>
-                        <div className="field-label">Время</div>
+                        <div className="field-label">{t('common.time')}</div>
                         <div className="field-value">{formatApplicationTime(selectedApplication.event_time)}</div>
                       </div>
                     </div>
                     {selectedApplication.message && (
                       <div>
-                        <div className="field-label">Комментарий клиента</div>
+                        <div className="field-label">{t('form.clientComment')}</div>
                         <div className="field-value">{selectedApplication.message}</div>
                       </div>
                     )}
@@ -1083,7 +1269,7 @@ export default function ApplicationsPage() {
                 {Array.isArray(selectedApplication.cart_items) && selectedApplication.cart_items.length > 0 && (
                   <section style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: 12 }}>
                     <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                      Выбранные позиции
+                      {t('applications.selectedItems')}
                     </h4>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                       {selectedApplication.cart_items.map((item, index) => (
@@ -1102,18 +1288,18 @@ export default function ApplicationsPage() {
 
                 <section>
                   <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                    Системная информация
+                    {t('applications.systemInformation')}
                   </h4>
                   <div style={{ display: 'grid', rowGap: 8 }}>
                     <div>
-                      <div className="field-label">Создана</div>
+                      <div className="field-label">{t('applications.created')}</div>
                       <div className="field-value">
                         {selectedApplication.created_at ? new Date(selectedApplication.created_at).toLocaleString('ru-RU') : '—'}
                       </div>
                     </div>
                     {selectedApplication.processed_at && (
                       <div>
-                        <div className="field-label">Обработана</div>
+                        <div className="field-label">{t('applications.processed')}</div>
                         <div className="field-value">
                           {new Date(selectedApplication.processed_at).toLocaleString('ru-RU')}
                         </div>
@@ -1121,13 +1307,13 @@ export default function ApplicationsPage() {
                     )}
                     {selectedApplication.coordinator && (
                       <div>
-                        <div className="field-label">Координатор</div>
+                        <div className="field-label">{t('applications.coordinator')}</div>
                         <div className="field-value">{selectedApplication.coordinator.name}</div>
                       </div>
                     )}
                     {selectedApplication.coordinator_comment && (
                       <div>
-                        <div className="field-label">Комментарий координатора</div>
+                        <div className="field-label">{t('applications.coordinatorComment')}</div>
                         <div className="field-value">{selectedApplication.coordinator_comment}</div>
                       </div>
                     )}
@@ -1147,7 +1333,7 @@ export default function ApplicationsPage() {
                 onClick={() => setIsSidebarOpen(false)}
                 className="dashboard-action-btn"
               >
-                Закрыть
+                {t('common.close')}
               </button>
               <button
                 onClick={() => {
@@ -1161,7 +1347,7 @@ export default function ApplicationsPage() {
                   borderColor: 'var(--paul-black)'
                 }}
               >
-                Создать заказ
+                {t('applications.createOrder')}
               </button>
             </div>
           </aside>

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from 'next-intl';
 import { useAuth } from "../../../contexts/AuthContext";
 import { User } from "../../../types/common";
 import { makeApiRequest, extractApiData, handleApiError } from "../../../utils/apiHelpers";
@@ -37,25 +38,28 @@ interface UserFormData {
   status: 'active' | 'inactive' | 'suspended';
 }
 
-const staffRoleLabels: Record<string, string> = {
-  coordinator: 'Координатор',
-  observer: 'Наблюдатель'
-};
-
-const clientCategoryLabels: Record<string, string> = {
-  corporate: 'Корпоративный',
-  one_time: 'Разовый'
-};
-
-const statusLabels: Record<string, string> = {
-  active: 'Активный',
-  inactive: 'Неактивный',
-  suspended: 'Заблокирован'
-};
+// Labels will be retrieved from translations
 
 export default function UsersPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const t = useTranslations();
+  
+  const staffRoleLabels: Record<string, string> = {
+    coordinator: t('users.roles.coordinator'),
+    observer: t('users.roles.observer')
+  };
+
+  const clientCategoryLabels: Record<string, string> = {
+    corporate: t('users.corporate'),
+    one_time: t('users.oneTime')
+  };
+
+  const statusLabels: Record<string, string> = {
+    active: t('users.active'),
+    inactive: t('users.inactive'),
+    suspended: t('users.suspended')
+  };
 
   const [users, setUsers] = useState<User[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
@@ -96,10 +100,10 @@ export default function UsersPage() {
       if (result.success) {
         setUsers(extractApiData(result.data || []));
       } else {
-        console.error('Ошибка загрузки пользователей:', handleApiError(result as any));
+        console.error(t('users.loadError'), handleApiError(result as any));
       }
     } catch (error) {
-      console.error('Ошибка загрузки пользователей:', error);
+      console.error(t('users.loadError'), error);
     } finally {
       setUsersLoading(false);
     }
@@ -281,7 +285,7 @@ export default function UsersPage() {
 
   // Handle user delete
   const handleDelete = async (id: number) => {
-    if (!confirm('Вы уверены, что хотите удалить этого пользователя?')) return;
+    if (!confirm(t('users.confirmDelete'))) return;
 
     try {
       const result = await makeApiRequest(`/users/${id}`, {
@@ -320,7 +324,7 @@ export default function UsersPage() {
     return (
       <div className="loading-state">
         <div className="loading-spinner"></div>
-        <div className="loading-title">Загрузка...</div>
+        <div className="loading-title">{t('common.loading')}</div>
       </div>
     );
   }
@@ -336,11 +340,11 @@ export default function UsersPage() {
         >
           <div className="dashboard-kpi-header">
             <UsersIcon size={16} className="dashboard-kpi-icon" />
-            <span className="dashboard-kpi-label">Всего пользователей</span>
+            <span className="dashboard-kpi-label">{t('users.totalUsers')}</span>
           </div>
           <div className="dashboard-kpi-value">{users.length}</div>
           <div className="dashboard-kpi-subtitle">
-            В системе
+            {t('dashboard.inSystem')}
           </div>
         </div>
         <div 
@@ -351,11 +355,11 @@ export default function UsersPage() {
         >
           <div className="dashboard-kpi-header">
             <CheckIcon size={16} className="dashboard-kpi-icon" style={{ color: '#10B981' }} />
-            <span className="dashboard-kpi-label">Активные</span>
+            <span className="dashboard-kpi-label">{t('users.active')}</span>
           </div>
           <div className="dashboard-kpi-value" style={{ color: '#10B981' }}>{users.filter(u => u.status === 'active').length}</div>
           <div className="dashboard-kpi-subtitle">
-            Активных пользователей
+            {t('users.activeUsers')}
           </div>
         </div>
         <div 
@@ -366,11 +370,11 @@ export default function UsersPage() {
         >
           <div className="dashboard-kpi-header">
             <UsersIcon size={16} className="dashboard-kpi-icon" style={{ color: '#3B82F6' }} />
-            <span className="dashboard-kpi-label">Клиенты</span>
+            <span className="dashboard-kpi-label">{t('users.clients')}</span>
           </div>
           <div className="dashboard-kpi-value" style={{ color: '#3B82F6' }}>{users.filter(u => u.user_type === 'client').length}</div>
           <div className="dashboard-kpi-subtitle">
-            Зарегистрированных
+            {t('users.registered')}
           </div>
         </div>
         <div 
@@ -381,11 +385,11 @@ export default function UsersPage() {
         >
           <div className="dashboard-kpi-header">
             <UsersIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
-            <span className="dashboard-kpi-label">Сотрудники</span>
+            <span className="dashboard-kpi-label">{t('users.staff')}</span>
           </div>
           <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>{users.filter(u => u.user_type === 'staff').length}</div>
           <div className="dashboard-kpi-subtitle">
-            Координаторы и наблюдатели
+            {t('users.coordinatorsAndObservers')}
           </div>
         </div>
       </section>
@@ -396,11 +400,11 @@ export default function UsersPage() {
           <SearchIcon size={16} className="dashboard-search-icon" />
           <input
             type="text"
-            placeholder="Поиск по имени, email, компании..."
+            placeholder={t('users.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="dashboard-search-input"
-            aria-label="Поиск пользователей"
+            aria-label={t('users.title')}
           />
         </div>
         
@@ -410,12 +414,12 @@ export default function UsersPage() {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
             className="dashboard-filter-select"
-            aria-label="Фильтр по статусу"
+            aria-label={t('common.filter')}
           >
-            <option value="all">Все статусы</option>
-            <option value="active">Активные</option>
-            <option value="inactive">Неактивные</option>
-            <option value="suspended">Заблокированные</option>
+            <option value="all">{t('users.allStatuses')}</option>
+            <option value="active">{t('users.activeUsers')}</option>
+            <option value="inactive">{t('users.inactiveUsers')}</option>
+            <option value="suspended">{t('users.blocked')}</option>
           </select>
         </div>
 
@@ -425,11 +429,11 @@ export default function UsersPage() {
             value={userTypeFilter}
             onChange={(e) => setUserTypeFilter(e.target.value as any)}
             className="dashboard-filter-select"
-            aria-label="Фильтр по группе"
+            aria-label={t('common.filter')}
           >
-            <option value="all">Все группы</option>
-            <option value="client">Клиенты</option>
-            <option value="staff">Сотрудники</option>
+            <option value="all">{t('users.allGroups')}</option>
+            <option value="client">{t('users.clients')}</option>
+            <option value="staff">{t('users.staff')}</option>
           </select>
         </div>
 
@@ -439,19 +443,19 @@ export default function UsersPage() {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
             className="dashboard-filter-select"
-            aria-label="Сортировка"
+            aria-label={t('common.sort')}
           >
-            <option value="name">По имени</option>
-            <option value="email">По email</option>
-            <option value="created_at">По дате создания</option>
-            <option value="status">По статусу</option>
+            <option value="name">{t('users.sortByName')}</option>
+            <option value="email">{t('users.sortByEmail')}</option>
+            <option value="created_at">{t('users.sortByDate')}</option>
+            <option value="status">{t('users.sortByStatus')}</option>
           </select>
         </div>
 
         <button
           onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
           className="dashboard-action-btn"
-          aria-label={`Сортировка ${sortOrder === 'asc' ? 'по возрастанию' : 'по убыванию'}`}
+          aria-label={t('common.sort') + ' ' + (sortOrder === 'asc' ? t('common.sortAscending') : t('common.sortDescending'))}
           style={{ minWidth: '48px' }}
         >
           {sortOrder === 'asc' ? '↑' : '↓'}
@@ -473,7 +477,7 @@ export default function UsersPage() {
               borderRadius: '12px',
               fontWeight: 600
             }}>
-              Выбрано: {selectedUsers.size}
+              {t('users.selected')}: {selectedUsers.size}
             </span>
           )}
           <div style={{ 
@@ -492,7 +496,7 @@ export default function UsersPage() {
                 padding: '6px 10px'
               }}
             >
-              Таблица
+              {t('users.viewTable')}
             </button>
             <button
               className={`dashboard-action-btn`}
@@ -504,7 +508,7 @@ export default function UsersPage() {
                 padding: '6px 10px'
               }}
             >
-              Сетка
+              {t('users.viewGrid')}
             </button>
           </div>
           <button
@@ -515,15 +519,15 @@ export default function UsersPage() {
               color: 'var(--paul-white)'
             }}
           >
-            + Добавить
+            + {t('users.add')}
           </button>
           <button
             onClick={loadUsers}
             className="dashboard-refresh-btn"
-            aria-label="Обновить список пользователей"
+            aria-label={t('users.refreshList')}
           >
             <RefreshIcon size={16} />
-            <span>Обновить</span>
+            <span>{t('users.refresh')}</span>
           </button>
         </div>
       </section>
@@ -533,9 +537,9 @@ export default function UsersPage() {
         <div className="applications-main">
           <div className="applications-header">
             <div>
-              <h2 className="applications-title">Пользователи</h2>
+              <h2 className="applications-title">{t('users.title')}</h2>
               <p className="applications-subtitle">
-                {filteredUsers.length} из {users.length} пользователей
+                {t('users.showing', { current: filteredUsers.length, total: users.length })}
               </p>
             </div>
             <div className="select-all-label">
@@ -545,24 +549,24 @@ export default function UsersPage() {
                 onChange={handleSelectAll}
                 className="select-all-checkbox"
               />
-              <span className="select-all-text">Выбрать все</span>
+              <span className="select-all-text">{t('users.selectAll')}</span>
             </div>
           </div>
 
           {usersLoading ? (
             <div className="loading-state">
               <div className="loading-spinner"></div>
-              <div className="loading-title">Загрузка пользователей...</div>
-              <div className="loading-subtitle">Пожалуйста, подождите</div>
+              <div className="loading-title">{t('users.loadingUsers')}</div>
+              <div className="loading-subtitle">{t('common.pleaseWait')}</div>
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">👥</div>
-              <div className="empty-title">Пользователи не найдены</div>
+              <div className="empty-title">{t('users.usersNotFound')}</div>
               <div className="empty-subtitle">
                 {searchTerm || statusFilter !== 'all' || userTypeFilter !== 'all'
-                  ? 'Попробуйте изменить фильтры поиска' 
-                  : 'Пользователи появятся здесь после создания'
+                  ? t('users.tryChangingFilters')
+                  : t('users.createFirst')
                 }
               </div>
             </div>
@@ -579,12 +583,12 @@ export default function UsersPage() {
                         className="table-checkbox"
                       />
                     </th>
-                    <th className="table-header-cell">Пользователь</th>
-                    <th className="table-header-cell">Контакт</th>
-                    <th className="table-header-cell">Группа</th>
-                    <th className="table-header-cell">Статус</th>
-                    <th className="table-header-cell">Дата создания</th>
-                    <th className="table-header-cell">Действия</th>
+                    <th className="table-header-cell">{t('users.user')}</th>
+                    <th className="table-header-cell">{t('users.contact')}</th>
+                    <th className="table-header-cell">{t('users.group')}</th>
+                    <th className="table-header-cell">{t('users.status')}</th>
+                    <th className="table-header-cell">{t('users.createdAt')}</th>
+                    <th className="table-header-cell">{t('users.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -614,7 +618,7 @@ export default function UsersPage() {
                       </td>
                       <td className="table-cell">
                         <span className="status-badge">
-                          {u.user_type === 'staff' ? 'Сотрудник' : 'Клиент'}
+                          {u.user_type === 'staff' ? t('users.staff') : t('users.client')}
                         </span>
                         {u.user_type === 'staff' && u.staff_role && (
                           <div className="contact-phone">
@@ -644,19 +648,19 @@ export default function UsersPage() {
                             onClick={() => handleUserPreview(u)}
                             className="action-button preview-button"
                           >
-                            Просмотр
+                            {t('common.view')}
                           </button>
                           <button
                             onClick={() => handleUserEdit(u)}
                             className="action-button edit-button"
                           >
-                            Редактировать
+                            {t('users.edit')}
                           </button>
                           <button
                             onClick={() => handleDelete(u.id)}
                             className="action-button delete-button"
                           >
-                            Удалить
+                            {t('users.delete')}
                           </button>
                         </div>
                       </td>
@@ -691,14 +695,14 @@ export default function UsersPage() {
                     </span>
                   </div>
                   <div className="card-field">
-                    <div className="field-label">Группа</div>
+                    <div className="field-label">{t('users.group')}</div>
                     <div className="field-value">
-                      {u.user_type === 'staff' ? 'Сотрудник' : 'Клиент'}
+                      {u.user_type === 'staff' ? t('users.staff') : t('users.client')}
                     </div>
                   </div>
                   {u.company_name && (
                     <div className="card-field">
-                      <div className="field-label">Компания</div>
+                      <div className="field-label">{t('common.company')}</div>
                       <div className="field-value">
                         {u.company_name}
                       </div>
@@ -713,7 +717,7 @@ export default function UsersPage() {
                         onClick={() => handleUserEdit(u)}
                         className="quick-action-button"
                       >
-                        Редактировать
+                        {t('users.edit')}
                       </button>
                     </div>
                   </div>
@@ -748,14 +752,14 @@ export default function UsersPage() {
                     </span>
                   </div>
                   <div className="card-field">
-                    <div className="field-label">Группа</div>
+                    <div className="field-label">{t('users.group')}</div>
                     <div className="field-value">
-                      {u.user_type === 'staff' ? 'Сотрудник' : 'Клиент'}
+                      {u.user_type === 'staff' ? t('users.staff') : t('users.client')}
                     </div>
                   </div>
                   {u.company_name && (
                     <div className="card-field">
-                      <div className="field-label">Компания</div>
+                      <div className="field-label">{t('common.company')}</div>
                       <div className="field-value">
                         {u.company_name}
                       </div>
@@ -763,7 +767,7 @@ export default function UsersPage() {
                   )}
                   {u.phone && (
                     <div className="card-field">
-                      <div className="field-label">Телефон</div>
+                      <div className="field-label">{t('common.phone')}</div>
                       <div className="field-value">
                         {u.phone}
                       </div>
@@ -778,7 +782,7 @@ export default function UsersPage() {
                         onClick={() => handleUserEdit(u)}
                         className="quick-action-button"
                       >
-                        Редактировать
+                        {t('users.edit')}
                       </button>
                     </div>
                   </div>
@@ -795,7 +799,7 @@ export default function UsersPage() {
           <div className="modal-content">
             <div className="modal-header">
               <h2 className="modal-title">
-                {editingUser ? 'Редактировать пользователя' : 'Добавить пользователя'}
+                {editingUser ? t('users.editUser') : t('users.addUser')}
               </h2>
               <button
                 onClick={() => {
@@ -823,7 +827,7 @@ export default function UsersPage() {
             <form onSubmit={handleFormSubmit} className="modal-form">
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Имя *</label>
+                  <label className="form-label">{t('users.name')} *</label>
                   <input
                     type="text"
                     value={formData.name}
@@ -845,7 +849,7 @@ export default function UsersPage() {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Пароль {!editingUser && '*'}</label>
+                  <label className="form-label">{t('users.password')} {!editingUser && '*'}</label>
                   <input
                     type="password"
                     value={formData.password}
@@ -855,30 +859,30 @@ export default function UsersPage() {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Группа *</label>
+                  <label className="form-label">{t('users.group')} *</label>
                   <select
                     value={formData.user_type}
                     onChange={(e) => setFormData({ ...formData, user_type: e.target.value as 'client' | 'staff' })}
                     className="form-select"
                     required
                   >
-                    <option value="client">Клиент</option>
-                    <option value="staff">Сотрудник</option>
+                    <option value="client">{t('users.client')}</option>
+                    <option value="staff">{t('users.staff')}</option>
                   </select>
                 </div>
               </div>
               {formData.user_type === 'staff' && (
                 <div className="form-row">
                   <div className="form-group">
-                    <label className="form-label">Роль *</label>
+                    <label className="form-label">{t('users.role')} *</label>
                     <select
                       value={formData.staff_role}
                       onChange={(e) => setFormData({ ...formData, staff_role: e.target.value as 'coordinator' | 'observer' })}
                       className="form-select"
                       required
                     >
-                      <option value="coordinator">Координатор</option>
-                      <option value="observer">Наблюдатель</option>
+                      <option value="coordinator">{t('users.roles.coordinator')}</option>
+                      <option value="observer">{t('users.roles.observer')}</option>
                     </select>
                   </div>
                 </div>
@@ -886,22 +890,22 @@ export default function UsersPage() {
               {formData.user_type === 'client' && (
                 <div className="form-row">
                   <div className="form-group">
-                    <label className="form-label">Категория клиента *</label>
+                    <label className="form-label">{t('users.clientCategory')} *</label>
                     <select
                       value={formData.client_category}
                       onChange={(e) => setFormData({ ...formData, client_category: e.target.value as 'corporate' | 'one_time' })}
                       className="form-select"
                       required
                     >
-                      <option value="corporate">Корпоративный</option>
-                      <option value="one_time">Разовый</option>
+                      <option value="corporate">{t('users.corporate')}</option>
+                      <option value="one_time">{t('users.oneTime')}</option>
                     </select>
                   </div>
                 </div>
               )}
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Компания</label>
+                  <label className="form-label">{t('common.company')}</label>
                   <input
                     type="text"
                     value={formData.company_name}
@@ -910,7 +914,7 @@ export default function UsersPage() {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Должность</label>
+                  <label className="form-label">{t('users.position')}</label>
                   <input
                     type="text"
                     value={formData.position}
@@ -921,7 +925,7 @@ export default function UsersPage() {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Телефон</label>
+                  <label className="form-label">{t('common.phone')}</label>
                   <input
                     type="tel"
                     value={formData.phone}
@@ -930,21 +934,21 @@ export default function UsersPage() {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Статус *</label>
+                  <label className="form-label">{t('users.status')} *</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' | 'suspended' })}
                     className="form-select"
                     required
                   >
-                    <option value="active">Активный</option>
-                    <option value="inactive">Неактивный</option>
-                    <option value="suspended">Заблокирован</option>
+                    <option value="active">{t('users.active')}</option>
+                    <option value="inactive">{t('users.inactive')}</option>
+                    <option value="suspended">{t('users.suspended')}</option>
                   </select>
                 </div>
               </div>
               <div className="form-group">
-                <label className="form-label">Адрес</label>
+                <label className="form-label">{t('common.address')}</label>
                 <textarea
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
@@ -974,13 +978,13 @@ export default function UsersPage() {
                   }}
                   className="action-button"
                 >
-                  Отмена
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
                   className="primary-button"
                 >
-                  {editingUser ? 'Сохранить' : 'Создать'}
+                  {editingUser ? t('users.save') : t('users.create')}
                 </button>
               </div>
             </form>
@@ -997,7 +1001,7 @@ export default function UsersPage() {
           />
           <aside
             role="dialog"
-            aria-label="Просмотр пользователя"
+            aria-label={t('users.viewUser')}
             style={{
               position: 'fixed',
               top: 0,
@@ -1014,7 +1018,7 @@ export default function UsersPage() {
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', borderBottom: '1px solid var(--paul-border)' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--paul-black)' }}>{selectedUser.name}</h3>
-              <button onClick={() => setIsSidebarOpen(false)} className="dashboard-action-btn" aria-label="Закрыть">
+              <button onClick={() => setIsSidebarOpen(false)} className="dashboard-action-btn" aria-label={t('common.close')}>
                 ×
               </button>
             </div>
@@ -1027,44 +1031,44 @@ export default function UsersPage() {
                 </div>
                 {selectedUser.phone && (
                   <div>
-                    <div className="field-label">Телефон</div>
+                    <div className="field-label">{t('common.phone')}</div>
                     <div className="field-value">{selectedUser.phone}</div>
                   </div>
                 )}
                 {selectedUser.company_name && (
                   <div>
-                    <div className="field-label">Компания</div>
+                    <div className="field-label">{t('common.company')}</div>
                     <div className="field-value">{selectedUser.company_name}</div>
                   </div>
                 )}
                 {selectedUser.position && (
                   <div>
-                    <div className="field-label">Должность</div>
+                    <div className="field-label">{t('users.position')}</div>
                     <div className="field-value">{selectedUser.position}</div>
                   </div>
                 )}
                 <div>
-                  <div className="field-label">Группа</div>
-                  <div className="field-value">{selectedUser.user_type === 'staff' ? 'Сотрудник' : 'Клиент'}</div>
+                  <div className="field-label">{t('users.group')}</div>
+                  <div className="field-value">{selectedUser.user_type === 'staff' ? t('users.staff') : t('users.client')}</div>
                 </div>
                 {selectedUser.user_type === 'staff' && selectedUser.staff_role && (
                   <div>
-                    <div className="field-label">Роль</div>
+                    <div className="field-label">{t('users.role')}</div>
                     <div className="field-value">{staffRoleLabels[selectedUser.staff_role] || selectedUser.staff_role}</div>
                   </div>
                 )}
                 <div>
-                  <div className="field-label">Статус</div>
+                    <div className="field-label">{t('users.status')}</div>
                   <div className="field-value">{statusLabels[selectedUser.status] || selectedUser.status}</div>
                 </div>
                 {selectedUser.address && (
                   <div>
-                    <div className="field-label">Адрес</div>
+                    <div className="field-label">{t('common.address')}</div>
                     <div className="field-value">{selectedUser.address}</div>
                   </div>
                 )}
                 <div>
-                  <div className="field-label">Создан</div>
+                    <div className="field-label">{t('users.created')}</div>
                   <div className="field-value">{selectedUser.created_at ? new Date(selectedUser.created_at).toLocaleDateString('ru-RU') : '—'}</div>
                 </div>
               </div>
@@ -1075,13 +1079,13 @@ export default function UsersPage() {
                 onClick={() => { setIsSidebarOpen(false); handleUserEdit(selectedUser); }}
                 className="dashboard-action-btn"
               >
-                Редактировать
+                {t('users.edit')}
               </button>
               <button
                 onClick={() => setIsSidebarOpen(false)}
                 className="dashboard-action-btn"
               >
-                Закрыть
+                {t('common.close')}
               </button>
             </div>
           </aside>

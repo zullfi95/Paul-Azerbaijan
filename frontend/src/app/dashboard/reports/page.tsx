@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from 'next-intl';
 import { useAuth } from "../../../contexts/AuthContext";
 import { Order, Application } from "../../../types/common";
 import { makeApiRequest, extractApiData } from "../../../utils/apiHelpers";
@@ -39,6 +40,7 @@ interface ReportData {
 export default function ReportsPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const t = useTranslations();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -159,7 +161,7 @@ export default function ReportsPage() {
         alignItems: 'center',
         height: '100vh'
       }}>
-        <div>Загрузка...</div>
+        <div>{t('common.loading')}</div>
       </div>
     );
   }
@@ -182,13 +184,13 @@ export default function ReportsPage() {
               color: 'var(--paul-white)'
             }}
           >
-            Экспорт PDF
+            {t('reports.exportPDF')}
           </button>
           <button
             onClick={() => router.push('/dashboard')}
             className="dashboard-quick-action-link"
           >
-            ← Назад к дашборду
+            ← {t('reports.backToDashboard')}
           </button>
         </div>
       </section>
@@ -197,13 +199,13 @@ export default function ReportsPage() {
       <section className="dashboard-table-container" style={{ marginBottom: 'var(--space-6)' }}>
         <div className="dashboard-table-header">
           <div>
-            <h2 className="dashboard-table-title">Фильтры отчета</h2>
+            <h2 className="dashboard-table-title">{t('reports.filters')}</h2>
             <p style={{ 
               fontSize: 'var(--text-sm)', 
               color: 'var(--paul-gray)', 
               marginTop: 'var(--space-1)' 
             }}>
-              Настройте параметры для генерации отчета
+              {t('reports.configureParameters')}
             </p>
           </div>
         </div>
@@ -214,7 +216,7 @@ export default function ReportsPage() {
             gap: 'var(--space-4)'
           }}>
             <div className="dashboard-info-item">
-              <label className="dashboard-info-label">Дата начала</label>
+              <label className="dashboard-info-label">{t('reports.startDate')}</label>
               <input
                 type="date"
                 value={filters.startDate}
@@ -225,7 +227,7 @@ export default function ReportsPage() {
             </div>
 
             <div className="dashboard-info-item">
-              <label className="dashboard-info-label">Дата окончания</label>
+              <label className="dashboard-info-label">{t('reports.endDate')}</label>
               <input
                 type="date"
                 value={filters.endDate}
@@ -236,33 +238,33 @@ export default function ReportsPage() {
             </div>
 
             <div className="dashboard-info-item">
-              <label className="dashboard-info-label">Статус заказа</label>
+              <label className="dashboard-info-label">{t('reports.orderStatus')}</label>
               <select
                 value={filters.status}
                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
                 className="dashboard-filter-select"
                 style={{ minHeight: '40px' }}
               >
-                <option value="all">Все статусы</option>
-                <option value="draft">Черновик</option>
-                <option value="submitted">Отправлен</option>
-                <option value="processing">В обработке</option>
-                <option value="completed">Завершен</option>
-                <option value="cancelled">Отменен</option>
+                <option value="all">{t('users.allStatuses')}</option>
+                <option value="draft">{t('orders.status.draft')}</option>
+                <option value="submitted">{t('orders.status.submitted')}</option>
+                <option value="processing">{t('orders.status.processing')}</option>
+                <option value="completed">{t('orders.status.completed')}</option>
+                <option value="cancelled">{t('orders.status.cancelled')}</option>
               </select>
             </div>
 
             <div className="dashboard-info-item">
-              <label className="dashboard-info-label">Тип клиента</label>
+              <label className="dashboard-info-label">{t('reports.clientType')}</label>
               <select
                 value={filters.clientType}
                 onChange={(e) => setFilters(prev => ({ ...prev, clientType: e.target.value }))}
                 className="dashboard-filter-select"
                 style={{ minHeight: '40px' }}
               >
-                <option value="all">Все типы</option>
-                <option value="corporate">Корпоративные</option>
-                <option value="one_time">Разовые</option>
+                <option value="all">{t('reports.allTypes')}</option>
+                <option value="corporate">{t('users.corporate')}</option>
+                <option value="one_time">{t('users.oneTime')}</option>
               </select>
             </div>
           </div>
@@ -291,7 +293,7 @@ export default function ReportsPage() {
             color: 'var(--paul-black)',
             marginBottom: '8px'
           }}>
-            Загрузка данных...
+            {t('reports.loadingData')}
           </div>
         </div>
       ) : reportData && reportData.filteredOrders && reportData.filteredOrders.length > 0 ? (
@@ -299,13 +301,17 @@ export default function ReportsPage() {
           {/* Таблица с данными */}
           <div className="dashboard-table-container">
             <div className="dashboard-table-header">
-              <h2 className="dashboard-table-title">Отчет по заказам</h2>
+              <h2 className="dashboard-table-title">{t('reports.ordersReport')}</h2>
               <p style={{ 
                 fontSize: 'var(--text-sm)', 
                 color: 'var(--paul-gray)', 
                 marginTop: 'var(--space-1)' 
               }}>
-                Данные за период: {new Date(filters.startDate).toLocaleDateString('ru-RU')} - {new Date(filters.endDate).toLocaleDateString('ru-RU')} ({reportData.totalOrders} заказов)
+                {t('reports.dataForPeriod', { 
+                  startDate: new Date(filters.startDate).toLocaleDateString('ru-RU'),
+                  endDate: new Date(filters.endDate).toLocaleDateString('ru-RU'),
+                  count: reportData.totalOrders
+                })}
               </p>
             </div>
             <div style={{ padding: 'var(--space-4)', overflowX: 'auto' }}>
@@ -321,42 +327,42 @@ export default function ReportsPage() {
                       fontWeight: 600,
                       color: 'var(--paul-black)',
                       fontSize: 'var(--text-sm)'
-                    }}>Дата</th>
+                    }}>{t('reports.date')}</th>
                     <th style={{ 
                       padding: 'var(--space-3)', 
                       textAlign: 'left',
                       fontWeight: 600,
                       color: 'var(--paul-black)',
                       fontSize: 'var(--text-sm)'
-                    }}>Клиент</th>
+                    }}>{t('reports.client')}</th>
                     <th style={{ 
                       padding: 'var(--space-3)', 
                       textAlign: 'right',
                       fontWeight: 600,
                       color: 'var(--paul-black)',
                       fontSize: 'var(--text-sm)'
-                    }}>Чек</th>
+                    }}>{t('reports.check')}</th>
                     <th style={{ 
                       padding: 'var(--space-3)', 
                       textAlign: 'center',
                       fontWeight: 600,
                       color: 'var(--paul-black)',
                       fontSize: 'var(--text-sm)'
-                    }}>Статус</th>
+                    }}>{t('reports.status')}</th>
                     <th style={{ 
                       padding: 'var(--space-3)', 
                       textAlign: 'center',
                       fontWeight: 600,
                       color: 'var(--paul-black)',
                       fontSize: 'var(--text-sm)'
-                    }}>Действия</th>
+                    }}>{t('reports.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {reportData.filteredOrders.map((order) => {
                     const clientName = order.client?.name || order.company_name || order.customer?.first_name 
                       ? `${order.customer?.first_name || ''} ${order.customer?.last_name || ''}`.trim() || order.company_name
-                      : 'Не указан';
+                      : t('reports.notSpecified');
                     const deliveryDate = order.delivery_date 
                       ? new Date(order.delivery_date).toLocaleDateString('ru-RU')
                       : new Date(order.created_at).toLocaleDateString('ru-RU');
@@ -388,7 +394,7 @@ export default function ReportsPage() {
                           <div style={{ fontWeight: 600, marginBottom: '2px' }}>{clientName}</div>
                           {order.client_type && (
                             <div style={{ fontSize: '0.75rem', color: 'var(--paul-gray)' }}>
-                              {order.client_type === 'corporate' ? 'Корпоративный' : 'Разовый'}
+                              {order.client_type === 'corporate' ? t('users.corporate') : t('users.oneTime')}
                             </div>
                           )}
                         </td>
@@ -446,7 +452,7 @@ export default function ReportsPage() {
                             }}
                           >
                             <EyeIcon size={14} />
-                            Просмотреть
+                            {t('reports.view')}
                           </button>
                         </td>
                       </tr>
@@ -476,10 +482,10 @@ export default function ReportsPage() {
             color: 'var(--paul-black)',
             marginBottom: '8px'
           }}>
-            Нет данных для отображения
+            {t('reports.noData')}
           </div>
           <div style={{ fontSize: '14px', color: 'var(--paul-gray)' }}>
-            Измените параметры фильтров для получения отчета
+            {t('reports.changeFilters')}
           </div>
         </div>
       )}

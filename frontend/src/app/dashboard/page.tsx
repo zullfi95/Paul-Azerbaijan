@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from 'next-intl';
 import { useAuth } from "../../contexts/AuthContext";
 import { Application, Order } from "../../types/common";
 import { makeApiRequest, extractApiData, handleApiError } from "../../utils/apiHelpers";
@@ -27,6 +28,7 @@ import "../../styles/dashboard.css";
 export default function DashboardPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const t = useTranslations();
 
   const [applications, setApplications] = useState<Application[]>([]);
   const [applicationsLoading, setApplicationsLoading] = useState(false);
@@ -38,7 +40,6 @@ export default function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "new" | "processing" | "approved" | "rejected">("all");
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [weather, setWeather] = useState<{ temperature: number; condition: string } | null>(null);
   
   // Debounced search для производительности
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
@@ -102,15 +103,6 @@ export default function DashboardPage() {
     return () => clearInterval(timer);
   }, []);
 
-  // Получение погоды (заглушка - в реальном приложении можно использовать API погоды)
-  useEffect(() => {
-    // Заглушка для демонстрации - в реальном приложении здесь будет API запрос
-    setWeather({
-      temperature: 22,
-      condition: "Ясно"
-    });
-  }, []);
-
   // Filters с мемоизацией для производительности и debounced поиском
   const filteredApplications = useMemo(() => {
     return applications.filter((app) => {
@@ -168,7 +160,7 @@ export default function DashboardPage() {
           const originalApp = previousApplications.find(app => app.id === applicationId);
           setSelectedApplication(originalApp || null);
         }
-        alert(handleApiError(result as any, "Не удалось обновить статус заявки"));
+        alert(handleApiError(result as any, t('applications.updateStatusError')));
       }
     } catch (e) {
       // Откатываем оптимистичные изменения при ошибке
@@ -178,7 +170,7 @@ export default function DashboardPage() {
         setSelectedApplication(originalApp || null);
       }
       console.error("Failed to update status", e);
-      alert("Произошла ошибка при обновлении статуса");
+      alert(t('applications.updateStatusError'));
     }
   }, [applications, selectedApplication, loadApplications]);
 
@@ -191,7 +183,7 @@ export default function DashboardPage() {
         justifyContent: "center",
         backgroundColor: "#fafafa",
       }}>
-        <div style={{ textAlign: "center", color: "#6b7280" }}>Загрузка…</div>
+        <div style={{ textAlign: "center", color: "#6b7280" }}>{t('common.loading')}</div>
       </div>
     );
   }
@@ -216,63 +208,60 @@ export default function DashboardPage() {
                 className="dashboard-kpi-card"
                 onClick={() => scrollToElement('applications-section')}
                 role="button"
-                aria-label="Перейти к заявкам"
+                aria-label={t('applications.title')}
                 tabIndex={0}
               >
                 <div className="dashboard-kpi-header">
                   <FileTextIcon size={14} className="dashboard-kpi-icon" />
-                  <span className="dashboard-kpi-label">Заявки</span>
+                  <span className="dashboard-kpi-label">{t('dashboard.applications')}</span>
                 </div>
                 <div className="dashboard-kpi-value">{applications.length}</div>
                 <div className="dashboard-kpi-subtitle">
-                  Новых: {applications.filter(a => a.status === "new").length} | 
-                  В работе: {applications.filter(a => a.status === "processing").length}
+                  {t('applications.newApplications')}: {applications.filter(a => a.status === "new").length} | 
+                  {t('orders.status.processing')}: {applications.filter(a => a.status === "processing").length}
                 </div>
               </div>
               <div 
                 className="dashboard-kpi-card"
                 onClick={() => scrollToElement('applications-section')}
                 role="button"
-                aria-label="Перейти к новым заявкам"
+                aria-label={t('applications.newApplications')}
                 tabIndex={0}
               >
                 <div className="dashboard-kpi-header">
                   <ShoppingBagIcon size={14} className="dashboard-kpi-icon" />
-                  <span className="dashboard-kpi-label">Заказы</span>
+                  <span className="dashboard-kpi-label">{t('dashboard.orders')}</span>
                 </div>
                 <div className="dashboard-kpi-value">{orders.length}</div>
                 <div className="dashboard-kpi-subtitle">
-                  В работе: {orders.filter(o => o.status === "processing").length} | 
-                  Завершено: {orders.filter(o => o.status === "completed").length}
+                  {t('orders.status.processing')}: {orders.filter(o => o.status === "processing").length} | 
+                  {t('dashboard.completedOrders')}: {orders.filter(o => o.status === "completed").length}
                 </div>
                 <div className="dashboard-kpi-subtitle" style={{ marginTop: '4px', fontSize: '9px' }}>
-                  Оплачено: {orders.filter(o => o.status === "paid").length} | 
-                  Ожидают оплаты: {orders.filter(o => o.status === "pending_payment").length}
+                  {t('orders.status.paid')}: {orders.filter(o => o.status === "paid").length} | 
+                  {t('orders.status.pendingPayment')}: {orders.filter(o => o.status === "pending_payment").length}
                 </div>
                 <div className="dashboard-kpi-subtitle" style={{ marginTop: '2px', fontSize: '9px' }}>
-                  Отправлено: {orders.filter(o => o.status === "submitted").length} | 
-                  Черновики: {orders.filter(o => o.status === "draft").length} | 
-                  Отменено: {orders.filter(o => o.status === "cancelled").length}
+                  {t('orders.status.submitted')}: {orders.filter(o => o.status === "submitted").length} | 
+                  {t('orders.status.draft')}: {orders.filter(o => o.status === "draft").length} | 
+                  {t('orders.status.cancelled')}: {orders.filter(o => o.status === "cancelled").length}
                 </div>
               </div>
               <div 
                 className="dashboard-kpi-card"
                 role="button"
-                aria-label="Время и погода"
+                aria-label={t('common.time')}
                 tabIndex={0}
               >
                 <div className="dashboard-kpi-header">
                   <CalendarIcon size={14} className="dashboard-kpi-icon" />
-                  <span className="dashboard-kpi-label">Время & Погода</span>
+                  <span className="dashboard-kpi-label">{t('common.time')}</span>
                 </div>
                 <div className="dashboard-kpi-value" style={{ fontSize: '1.5rem' }}>
                   {currentTime.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}
                 </div>
-                <div className="dashboard-kpi-subtitle" style={{ marginBottom: '4px' }}>
-                  {currentTime.toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "short" })}
-                </div>
                 <div className="dashboard-kpi-subtitle">
-                  {weather ? `${weather.temperature}°C ${weather.condition}` : "Загрузка..."}
+                  {currentTime.toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "short" })}
                 </div>
               </div>
             </>
@@ -286,14 +275,14 @@ export default function DashboardPage() {
               href="/dashboard/applications" 
               className="dashboard-quick-action-link"
             >
-              Просмотр заявок
+              {t('applications.title')}
             </Link>
             {canManageOrders(user || { user_type: '', staff_role: '' }) && (
               <Link 
                 href="/dashboard/orders/create" 
                 className="dashboard-quick-action-link"
               >
-                Создать заказ
+                {t('orders.createOrder')}
               </Link>
             )}
             {canManageOrders(user || { user_type: '', staff_role: '' }) && (
@@ -301,14 +290,14 @@ export default function DashboardPage() {
                 href="/dashboard/users" 
                 className="dashboard-quick-action-link"
               >
-                Пользователи
+                {t('dashboard.users')}
               </Link>
             )}
             <Link 
               href="/dashboard/calendar" 
               className="dashboard-quick-action-link"
             >
-              Календарь заказов
+              {t('calendar.title')}
             </Link>
           </div>
         </section>
@@ -326,9 +315,9 @@ export default function DashboardPage() {
             <input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Поиск (имя, email, телефон, адрес)"
+              placeholder={t('dashboard.searchPlaceholder')}
               className="dashboard-search-input"
-              aria-label="Поиск заявок"
+              aria-label={t('applications.title')}
             />
           </div>
           <div className="dashboard-filter-container">
@@ -340,22 +329,22 @@ export default function DashboardPage() {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as 'all' | 'new' | 'processing' | 'approved' | 'rejected')}
               className="dashboard-filter-select"
-              aria-label="Фильтр по статусу"
+              aria-label={t('common.filter')}
             >
-              <option value="all">Все статусы</option>
-              <option value="new">Новые</option>
-              <option value="processing">В обработке</option>
-              <option value="approved">Одобренные</option>
-              <option value="rejected">Отклоненные</option>
+              <option value="all">{t('common.all')}</option>
+              <option value="new">{t('applications.newApplications')}</option>
+              <option value="processing">{t('orders.status.processing')}</option>
+              <option value="approved">{t('applications.approved')}</option>
+              <option value="rejected">{t('applications.rejected')}</option>
             </select>
           </div>
           <button 
             onClick={loadApplications} 
             className="dashboard-refresh-btn"
-            aria-label="Обновить список заявок"
+            aria-label={t('common.refresh')}
           >
             <RefreshIcon size={16} />
-            <span>Обновить</span>
+            <span>{t('common.refresh')}</span>
           </button>
         </section>
 
@@ -367,12 +356,12 @@ export default function DashboardPage() {
             className="dashboard-table-container"
           >
             <div className="dashboard-table-header">
-              <h2 className="dashboard-table-title">Последние заявки</h2>
+              <h2 className="dashboard-table-title">{t('applications.title')}</h2>
               <Link 
                 href="/dashboard/applications" 
                 className="dashboard-table-link"
               >
-                Все →
+                {t('common.all')} →
               </Link>
             </div>
 
@@ -380,12 +369,12 @@ export default function DashboardPage() {
               <table className="dashboard-table">
                 <thead>
                   <tr>
-                    <th>Заявитель</th>
-                    <th>Контакты</th>
-                    <th>Мероприятие</th>
-                    <th>Статус</th>
-                    <th>Дата</th>
-                    <th>Действия</th>
+                    <th>{t('applications.applicant')}</th>
+                    <th>{t('applications.contacts')}</th>
+                    <th>{t('applications.event')}</th>
+                    <th>{t('common.status')}</th>
+                    <th>{t('common.date')}</th>
+                    <th>{t('common.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -397,7 +386,7 @@ export default function DashboardPage() {
                 ) : filteredApplications.length === 0 ? (
                   <tr>
                     <td colSpan={6} style={{ padding: 24, textAlign: "center", color: "#6b7280" }}>
-                      {debouncedSearchTerm ? 'Ничего не найдено' : 'Заявок пока нет'}
+                      {debouncedSearchTerm ? t('common.noData') : t('applications.noApplications')}
                     </td>
                   </tr>
                 ) : (
@@ -422,12 +411,12 @@ export default function DashboardPage() {
                             )}
                           </div>
                         ) : (
-                          <div style={{ color: "#6b7280", fontSize: 12, fontStyle: "italic" }}>Не указано</div>
+                          <div style={{ color: "#6b7280", fontSize: 12, fontStyle: "italic" }}>{t('applications.notSpecified')}</div>
                         )}
                       </td>
                       <td>
                         <span className="dashboard-status-badge">
-                          {a.status === "new" ? "Новая" : a.status === "processing" ? "В обработке" : a.status === "approved" ? "Одобрена" : "Отклонена"}
+                          {a.status === "new" ? t('applications.new') : a.status === "processing" ? t('applications.processing') : a.status === "approved" ? t('applications.approvedStatus') : t('applications.rejectedStatus')}
                         </span>
                       </td>
                       <td>{new Date(a.created_at).toLocaleDateString("ru-RU")}</td>
@@ -435,10 +424,10 @@ export default function DashboardPage() {
                         <button
                           onClick={() => { setSelectedApplication(a); setIsModalOpen(true); }}
                           className="dashboard-action-btn"
-                          aria-label={`Просмотреть заявку от ${a.first_name} ${a.last_name}`}
+                          aria-label={t('applications.viewApplication')}
                         >
                           <EyeIcon size={14} />
-                          <span>Просмотреть</span>
+                          <span>{t('common.view')}</span>
                         </button>
                       </td>
                     </tr>
@@ -452,7 +441,7 @@ export default function DashboardPage() {
           {/* Mini Calendar */}
           <section className="dashboard-calendar-container">
             <h3 className="dashboard-calendar-title">
-              Календарь
+              {t('calendar.title')}
             </h3>
             <MiniCalendar orders={orders} />
           </section>
@@ -464,34 +453,34 @@ export default function DashboardPage() {
         <div className="dashboard-modal-overlay">
           <div className="dashboard-modal">
             <div className="dashboard-modal-header">
-              <h2 className="dashboard-modal-title">Заявка от {selectedApplication.first_name} {selectedApplication.last_name}</h2>
+              <h2 className="dashboard-modal-title">{t('applications.title')} {selectedApplication.first_name} {selectedApplication.last_name}</h2>
               <button 
                 onClick={() => { setIsModalOpen(false); setSelectedApplication(null); }} 
                 className="dashboard-modal-close"
               >
-                Закрыть
+                {t('common.close')}
               </button>
             </div>
             <div className="dashboard-modal-content">
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12, marginBottom: 16 }}>
-                <Info label="Имя" value={selectedApplication.first_name} />
-                <Info label="Фамилия" value={selectedApplication.last_name} />
-                <Info label="Email" value={selectedApplication.email} />
-                <Info label="Телефон" value={selectedApplication.phone} />
-                <Info label="Статус" value={selectedApplication.status} />
+                <Info label={t('users.firstName')} value={selectedApplication.first_name} />
+                <Info label={t('users.lastName')} value={selectedApplication.last_name} />
+                <Info label={t('users.email')} value={selectedApplication.email} />
+                <Info label={t('users.phone')} value={selectedApplication.phone} />
+                <Info label={t('common.status')} value={selectedApplication.status} />
               </div>
 
               {/* Информация о мероприятии */}
               {(selectedApplication.event_address || selectedApplication.event_date || selectedApplication.event_time) && (
                 <>
                   <div className="dashboard-section-divider">
-                    <h3 className="dashboard-section-title">Информация о мероприятии</h3>
+                    <h3 className="dashboard-section-title">{t('form.eventInformation')}</h3>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
-                      {selectedApplication.event_address && <Info label="Адрес" value={selectedApplication.event_address} />}
-                      {selectedApplication.event_date && <Info label="Дата" value={new Date(selectedApplication.event_date).toLocaleDateString("ru-RU")} />}
-                      {selectedApplication.event_time && <Info label="Время" value={selectedApplication.event_time} />}
+                      {selectedApplication.event_address && <Info label={t('common.address')} value={selectedApplication.event_address} />}
+                      {selectedApplication.event_date && <Info label={t('common.date')} value={new Date(selectedApplication.event_date).toLocaleDateString("ru-RU")} />}
+                      {selectedApplication.event_time && <Info label={t('common.time')} value={selectedApplication.event_time} />}
                       {selectedApplication.event_lat && selectedApplication.event_lng && (
-                        <Info label="Координаты" value={`${selectedApplication.event_lat}, ${selectedApplication.event_lng}`} />
+                        <Info label={t('form.coordinates')} value={`${selectedApplication.event_lat}, ${selectedApplication.event_lng}`} />
                       )}
                     </div>
                   </div>
@@ -501,7 +490,7 @@ export default function DashboardPage() {
               {/* Комментарий клиента */}
               {selectedApplication.message && (
                 <div className="dashboard-section-divider">
-                  <h3 className="dashboard-section-title">Комментарий клиента</h3>
+                  <h3 className="dashboard-section-title">{t('form.clientComment')}</h3>
                   <div style={{ 
                     padding: 12, 
                     background: '#F9F9F6', 
@@ -519,7 +508,7 @@ export default function DashboardPage() {
               {/* Позиции корзины */}
               {selectedApplication.cart_items && selectedApplication.cart_items.length > 0 && (
                 <div className="dashboard-section-divider">
-                  <h3 className="dashboard-section-title">Позиции заказа</h3>
+                  <h3 className="dashboard-section-title">{t('form.orderItems')}</h3>
                   <div style={{ 
                     background: '#F9F9F6', 
                     borderRadius: 8, 
@@ -529,10 +518,10 @@ export default function DashboardPage() {
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                       <thead>
                         <tr style={{ background: '#F0F0F0' }}>
-                          <th style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: 'var(--paul-gray)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Товар</th>
-                          <th style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: 'var(--paul-gray)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Количество</th>
-                          <th style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: 'var(--paul-gray)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Цена</th>
-                          <th style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: 'var(--paul-gray)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Сумма</th>
+                          <th style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: 'var(--paul-gray)', textTransform: 'uppercase', letterSpacing: 0.6 }}>{t('form.product')}</th>
+                          <th style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: 'var(--paul-gray)', textTransform: 'uppercase', letterSpacing: 0.6 }}>{t('common.quantity')}</th>
+                          <th style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: 'var(--paul-gray)', textTransform: 'uppercase', letterSpacing: 0.6 }}>{t('common.price')}</th>
+                          <th style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: 'var(--paul-gray)', textTransform: 'uppercase', letterSpacing: 0.6 }}>{t('common.amount')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -561,7 +550,7 @@ export default function DashboardPage() {
                       }}
                       className="dashboard-action-btn"
                     >
-                      Создать заказ
+                      {t('orders.createOrder')}
                     </button>
                     <button
                       onClick={() => updateApplicationStatus(selectedApplication.id, "rejected")}
@@ -571,7 +560,7 @@ export default function DashboardPage() {
                         borderColor: "#dc2626"
                       }}
                     >
-                      Отклонить
+                      {t('applications.reject')}
                     </button>
                   </>
                 )}
@@ -579,7 +568,7 @@ export default function DashboardPage() {
                   onClick={() => { setIsModalOpen(false); setSelectedApplication(null); }} 
                   className="dashboard-action-btn"
                 >
-                  Закрыть
+                  {t('common.close')}
                 </button>
               </div>
             </div>
@@ -604,6 +593,7 @@ function Info({ label, value }: { label: string; value?: string | number | null 
 
 // Mini Calendar Component
 function MiniCalendar({ orders }: { orders: Order[] }) {
+  const t = useTranslations('calendar');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   
@@ -630,12 +620,8 @@ function MiniCalendar({ orders }: { orders: Order[] }) {
     days.push(day);
   }
   
-  const monthNames = [
-    "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-    "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-  ];
-  
-  const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+  const monthNames = t.raw('months') as string[];
+  const dayNames = t.raw('days') as string[];
   
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
@@ -865,7 +851,7 @@ function MiniCalendar({ orders }: { orders: Order[] }) {
             color: "var(--paul-black)",
             marginBottom: "4px"
           }}>
-            Заказы на {selectedDay} {monthNames[currentMonth]}
+            {t('dashboard.ordersOn', { day: selectedDay, month: monthNames[currentMonth] })}
           </div>
           {getOrdersForDate(selectedDay).map((order) => (
             <div key={order.id} style={{

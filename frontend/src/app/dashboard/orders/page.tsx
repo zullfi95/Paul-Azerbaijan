@@ -226,6 +226,8 @@ function OrdersPage() {
       isExpress?: boolean;
       needsCatering?: boolean;
       distance?: number;
+      customDiscountPercent?: number;
+      customDeliveryCost?: number;
     } = {}
   ) => {
     let finalPrice = basePrice;
@@ -274,9 +276,24 @@ function OrdersPage() {
       appliedMarkups.push({ name: 'Catering service', rate: markup, amount });
     }
 
+    // Custom discount percent (применяется после всех наценок)
+    let customDiscountAmount = 0;
+    if (options.customDiscountPercent && options.customDiscountPercent > 0) {
+      customDiscountAmount = finalPrice * (options.customDiscountPercent / 100);
+      finalPrice -= customDiscountAmount;
+      appliedMarkups.push({ 
+        name: t('orders.customDiscount', { percent: options.customDiscountPercent }), 
+        rate: -options.customDiscountPercent / 100, 
+        amount: -customDiscountAmount 
+      });
+    }
+
     // Delivery calculation
     let deliveryFee = 0;
-    if (options.distance && finalPrice < pricingRules.delivery_rates.free_delivery_threshold) {
+    // Если указана пользовательская стоимость доставки, используем её
+    if (options.customDeliveryCost !== undefined && options.customDeliveryCost > 0) {
+      deliveryFee = options.customDeliveryCost;
+    } else if (options.distance && finalPrice < pricingRules.delivery_rates.free_delivery_threshold) {
       deliveryFee = pricingRules.delivery_rates.base_rate + (options.distance * pricingRules.delivery_rates.per_km);
     }
 
@@ -376,13 +393,13 @@ function OrdersPage() {
         case 'amount':
           if (order.total_amount < 50) {
             groupKey = 'small';
-            groupLabel = 'До 50₼';
+            groupLabel = t('orders.amountGroup.small');
           } else if (order.total_amount < 200) {
             groupKey = 'medium';
-            groupLabel = '50-200₼';
+            groupLabel = t('orders.amountGroup.medium');
           } else {
             groupKey = 'large';
-            groupLabel = 'Свыше 200₼';
+            groupLabel = t('orders.amountGroup.large');
           }
           break;
       }
@@ -573,13 +590,13 @@ function OrdersPage() {
         >
           <div className="dashboard-kpi-header">
             <FileTextIcon size={16} className="dashboard-kpi-icon" style={{ color: '#F59E0B' }} />
-            <span className="dashboard-kpi-label">В обработке</span>
+            <span className="dashboard-kpi-label">{t('orders.status.processing')}</span>
           </div>
           <div className="dashboard-kpi-value" style={{ color: '#F59E0B' }}>
             {orderStats.byStatus.processing}
           </div>
           <div className="dashboard-kpi-subtitle">
-            Требуют внимания
+            {t('orders.requireAttention')}
           </div>
         </div>
 
@@ -639,15 +656,15 @@ function OrdersPage() {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
             className="dashboard-filter-select"
-            aria-label="Фильтр по статусу"
+            aria-label={t('orders.statusFilter')}
           >
-            <option value="all">Все статусы</option>
-            <option value="draft">Черновик</option>
-            <option value="submitted">Отправлен</option>
-            <option value="pending_payment">Ожидает оплаты</option>
-            <option value="processing">В обработке</option>
-            <option value="completed">Завершен</option>
-            <option value="cancelled">Отменен</option>
+            <option value="all">{t('users.allStatuses')}</option>
+            <option value="draft">{t('orders.status.draft')}</option>
+            <option value="submitted">{t('orders.status.submitted')}</option>
+            <option value="pending_payment">{t('orders.status.pendingPayment')}</option>
+            <option value="processing">{t('orders.status.processing')}</option>
+            <option value="completed">{t('orders.status.completed')}</option>
+            <option value="cancelled">{t('orders.status.cancelled')}</option>
           </select>
         </div>
 
@@ -657,18 +674,18 @@ function OrdersPage() {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'created_at' | 'company_name' | 'total_amount')}
             className="dashboard-filter-select"
-            aria-label="Сортировка"
+            aria-label={t('common.sort')}
           >
-            <option value="created_at">По дате</option>
-            <option value="company_name">По компании</option>
-            <option value="total_amount">По сумме</option>
+            <option value="created_at">{t('orders.sortByDate')}</option>
+            <option value="company_name">{t('orders.sortByCompany')}</option>
+            <option value="total_amount">{t('orders.sortByAmount')}</option>
           </select>
         </div>
 
         <button
           onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
           className="dashboard-action-btn"
-          aria-label={`Сортировка ${sortOrder === 'asc' ? 'по возрастанию' : 'по убыванию'}`}
+          aria-label={t('common.sort') + ' ' + (sortOrder === 'asc' ? t('common.sortAscending') : t('common.sortDescending'))}
           style={{ minWidth: '48px' }}
         >
           {sortOrder === 'asc' ? '↑' : '↓'}
@@ -680,13 +697,13 @@ function OrdersPage() {
             value={groupBy}
             onChange={(e) => setGroupBy(e.target.value as 'none' | 'status' | 'date' | 'company')}
             className="dashboard-filter-select"
-            aria-label="Группировка"
+            aria-label={t('orders.grouping')}
           >
-            <option value="none">Без группировки</option>
-            <option value="status">По статусу</option>
-            <option value="client">По клиентам</option>
-            <option value="date">По датам</option>
-            <option value="amount">По сумме</option>
+            <option value="none">{t('orders.noGrouping')}</option>
+            <option value="status">{t('orders.groupByStatus')}</option>
+            <option value="client">{t('orders.groupByClient')}</option>
+            <option value="date">{t('orders.groupByDate')}</option>
+            <option value="amount">{t('orders.groupByAmount')}</option>
           </select>
         </div>
 
@@ -712,9 +729,9 @@ function OrdersPage() {
                 minWidth: 'auto',
                 padding: '6px 10px'
               }}
-              title="Карточки"
+              title={t('orders.viewGrid')}
             >
-              Сетка
+              {t('orders.viewGrid')}
             </button>
             <button
               className={`dashboard-action-btn`}
@@ -725,9 +742,9 @@ function OrdersPage() {
                 minWidth: 'auto',
                 padding: '6px 10px'
               }}
-              title="Таблица"
+              title={t('orders.viewTable')}
             >
-              Таблица
+              {t('orders.viewTable')}
             </button>
             <button
               className={`dashboard-action-btn`}
@@ -738,9 +755,9 @@ function OrdersPage() {
                 minWidth: 'auto',
                 padding: '6px 10px'
               }}
-              title="Канбан"
+              title={t('orders.viewKanban')}
             >
-              Канбан
+              {t('orders.viewKanban')}
             </button>
           </div>
           <button
@@ -950,7 +967,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
 
         {/* Total Amount */}
         <div className="card-footer">
-          <span className="field-label">Общая сумма:</span>
+          <span className="field-label">{t('orders.totalAmount')}:</span>
           <span className="card-amount">
             {formatTotalAmount(order.total_amount)} ₼
           </span>
@@ -958,7 +975,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
 
         {/* Date */}
         <div className="card-date">
-          Создан: {new Date(order.created_at).toLocaleDateString('ru-RU')}
+          {t('orders.created')}: {new Date(order.created_at).toLocaleDateString('ru-RU')}
         </div>
 
         {/* Actions */}
@@ -969,27 +986,27 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
               <button
                 onClick={() => onQuickStatusChange(order.id, 'processing')}
                 className="quick-action-button approve"
-                title="Начать обработку"
+                title={t('orders.startProcessing')}
               >
-                ▶️ В обработку
+                ▶️ {t('orders.toProcessing')}
               </button>
             )}
             {order.status === 'processing' && (
               <button
                 onClick={() => onQuickStatusChange(order.id, 'completed')}
                 className="quick-action-button approve"
-                title="Завершить заказ"
+                title={t('orders.completeOrder')}
               >
-                ✅ Завершить
+                ✅ {t('orders.complete')}
               </button>
             )}
             {order.status !== 'cancelled' && order.status !== 'completed' && (
               <button
                 onClick={() => onQuickStatusChange(order.id, 'cancelled')}
                 className="quick-action-button reject"
-                title="Отменить заказ"
+                title={t('orders.cancelOrder')}
               >
-                ❌ Отменить
+                ❌ {t('orders.cancel')}
               </button>
             )}
           </div>
@@ -997,7 +1014,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
           {/* Основные действия */}
           <div className="main-actions">
             <Button variant="secondary" size="sm" onClick={() => onEdit(order)} className="action-button">
-              ✏️ Редактировать
+              ✏️ {t('orders.edit')}
             </Button>
             <Button
               variant="ghost"
@@ -1005,10 +1022,10 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onEdit, onDelete, onCopy, 
               onClick={() => onCopy && onCopy(order.id)}
               className="action-button copy"
             >
-              📋 Копировать
+              📋 {t('orders.copy')}
             </Button>
             <Button variant="danger" size="sm" onClick={() => onDelete(order.id)} className="action-button">
-              🗑️ Удалить
+              🗑️ {t('orders.delete')}
             </Button>
           </div>
         </div>
@@ -1025,28 +1042,29 @@ interface OrderTableProps {
 }
 
 const OrderTable: React.FC<OrderTableProps> = ({ orders, onEdit, onDelete }) => {
+  const t = useTranslations('orders');
   return (
     <div className="table-responsive">
       <table className="applications-table">
         <thead>
           <tr className="table-header">
             <th className="table-header-cell">
-              Компания
+              {t('orders.company')}
             </th>
             <th className="table-header-cell">
-              Блюда
+              {t('orders.dishes')}
             </th>
             <th className="table-header-cell">
-              Сумма
+              {t('orders.totalAmount')}
             </th>
             <th className="table-header-cell">
-              Статус
+              {t('orders.status')}
             </th>
             <th className="table-header-cell">
-              Дата
+              {t('orders.date')}
             </th>
             <th className="table-header-cell">
-              Действия
+              {t('orders.actions')}
             </th>
           </tr>
         </thead>
@@ -1063,7 +1081,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onEdit, onDelete }) => 
               </td>
               <td className="table-cell">
                 <div className="contact-email">
-                  {order.menu_items.length} позиций
+                  {t('orders.itemsCount', { count: order.menu_items.length })}
                 </div>
                 <div className="contact-phone">
                   {order.menu_items.slice(0, 2).map(item => item.name).join(', ')}
@@ -1088,10 +1106,10 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onEdit, onDelete }) => 
               <td className="table-cell">
                 <div className="action-buttons">
                   <Button variant="ghost" size="sm" onClick={() => onEdit(order)} className="preview-button">
-                    Изменить
+                    {t('orders.edit')}
                   </Button>
                   <Button variant="danger" size="sm" onClick={() => onDelete(order.id)} className="edit-button">
-                    Удалить
+                    {t('orders.delete')}
                   </Button>
                 </div>
               </td>
@@ -1107,7 +1125,26 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onEdit, onDelete }) => 
 interface PriceCalculatorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  calculatePrice: (basePrice: number, options: { [key: string]: string | number | boolean }) => { basePrice: number; appliedMarkups: Array<{ name: string; amount: number }>; totalPrice: number; deliveryFee: number; savings: number };
+  calculatePrice: (
+    basePrice: number, 
+    options: {
+      isCorporate?: boolean;
+      deliveryDate?: string;
+      deliveryTime?: string;
+      isExpress?: boolean;
+      needsCatering?: boolean;
+      distance?: number;
+      customDiscountPercent?: number;
+      customDeliveryCost?: number;
+    }
+  ) => { 
+    basePrice: number; 
+    appliedMarkups: Array<{ name: string; amount: number }>; 
+    totalPrice: number; 
+    deliveryFee: number; 
+    savings: number;
+    finalPrice: number;
+  };
   pricingRules: PricingRules;
 }
 
@@ -1117,6 +1154,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
   calculatePrice, 
   pricingRules 
 }) => {
+  const t = useTranslations('orders');
   const [basePrice, setBasePrice] = useState(100);
   const [options, setOptions] = useState({
     isCorporate: false,
@@ -1124,7 +1162,9 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
     deliveryTime: '',
     isExpress: false,
     needsCatering: false,
-    distance: 5
+    distance: 5,
+    customDiscountPercent: 0,
+    customDeliveryCost: 0
   });
 
   const calculation = calculatePrice(basePrice, options);
@@ -1136,7 +1176,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
       <Card variant="elevated" padding="lg" className={styles.calculatorCard}>
         <CardHeader>
           <div className={styles.calculatorHeader}>
-            <CardTitle size="lg">🧮 Калькулятор стоимости</CardTitle>
+            <CardTitle size="lg">🧮 {t('orders.priceCalculator')}</CardTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
           </div>
         </CardHeader>
@@ -1145,7 +1185,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
             {/* Базовая стоимость */}
             <div className={styles.inputGroup}>
               <label className={styles.inputLabel}>
-                Базовая стоимость (₼)
+                {t('orders.basePrice')} (₼)
               </label>
               <input
                 type="number"
@@ -1157,7 +1197,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
 
             {/* Опции */}
             <div className={styles.optionsSection}>
-              <h3 className={styles.optionsTitle}>Дополнительные параметры</h3>
+              <h3 className={styles.optionsTitle}>{t('orders.additionalOptions')}</h3>
               <div className={styles.optionsGroup}>
                 <label className={styles.checkboxLabel}>
                   <input
@@ -1165,7 +1205,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
                     checked={options.isCorporate}
                     onChange={(e) => setOptions({...options, isCorporate: e.target.checked})}
                   />
-                  Корпоративный клиент (скидка {Math.abs(pricingRules.markups.corporate_discount * 100)}%)
+                  {t('orders.corporateClient')} ({t('orders.discount')} {Math.abs(pricingRules.markups.corporate_discount * 100)}%)
                 </label>
                 
                 <label className={styles.checkboxLabel}>
@@ -1174,7 +1214,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
                     checked={options.isExpress}
                     onChange={(e) => setOptions({...options, isExpress: e.target.checked})}
                   />
-                  Срочная доставка (+{pricingRules.markups.express_delivery_markup * 100}%)
+                  {t('orders.expressDelivery')} (+{pricingRules.markups.express_delivery_markup * 100}%)
                 </label>
                 
                 <label className={styles.checkboxLabel}>
@@ -1183,7 +1223,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
                     checked={options.needsCatering}
                     onChange={(e) => setOptions({...options, needsCatering: e.target.checked})}
                   />
-                  Обслуживание (+{pricingRules.markups.catering_service_markup * 100}%)
+                  {t('orders.cateringService')} (+{pricingRules.markups.catering_service_markup * 100}%)
                 </label>
               </div>
             </div>
@@ -1192,7 +1232,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
             <div className={styles.dateTimeGrid}>
               <div className={styles.inputGroup}>
                 <label className={styles.inputLabel}>
-                  Дата доставки
+                  {t('orders.deliveryDate')}
                 </label>
                 <input
                   type="date"
@@ -1203,7 +1243,7 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
               </div>
               <div className={styles.inputGroup}>
                 <label className={styles.inputLabel}>
-                  Время доставки
+                  {t('orders.deliveryTime')}
                 </label>
                 <input
                   type="time"
@@ -1217,25 +1257,63 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
             {/* Расстояние */}
             <div className={styles.inputGroup}>
               <label className={styles.inputLabel}>
-                Расстояние доставки (км)
+                {t('orders.deliveryDistance')} (км)
               </label>
               <input
                 type="number"
                 value={options.distance}
                 onChange={(e) => setOptions({...options, distance: parseFloat(e.target.value) || 0})}
                 className={styles.inputField}
+                min="0"
+                step="0.1"
               />
+            </div>
+
+            {/* Пользовательская скидка */}
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>
+                {t('orders.discountPercent')} (%)
+              </label>
+              <input
+                type="number"
+                value={options.customDiscountPercent}
+                onChange={(e) => setOptions({...options, customDiscountPercent: parseFloat(e.target.value) || 0})}
+                className={styles.inputField}
+                min="0"
+                max="100"
+                step="0.1"
+                placeholder="0"
+              />
+            </div>
+
+            {/* Пользовательская стоимость доставки */}
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>
+                {t('orders.deliveryCost')} (₼)
+              </label>
+              <input
+                type="number"
+                value={options.customDeliveryCost}
+                onChange={(e) => setOptions({...options, customDeliveryCost: parseFloat(e.target.value) || 0})}
+                className={styles.inputField}
+                min="0"
+                step="0.01"
+                placeholder="0"
+              />
+              <small style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px', display: 'block' }}>
+                {t('orders.leaveZeroForAuto')}
+              </small>
             </div>
 
             {/* Результат расчета */}
             <div className={styles.calculationResult}>
               <h3 className={styles.resultTitle}>
-                📊 Результат расчета
+                📊 {t('orders.calculationResult')}
               </h3>
               
               <div className={styles.resultRows}>
                 <div className={styles.resultRow}>
-                  <span>Базовая стоимость:</span>
+                  <span>{t('orders.basePrice')}:</span>
                   <span className={styles.resultValue}>{calculation.basePrice.toFixed(2)} ₼</span>
                 </div>
 
@@ -1249,20 +1327,20 @@ const PriceCalculatorModal: React.FC<PriceCalculatorModalProps> = ({
                 ))}
 
                 <div className={styles.resultRow}>
-                  <span>Доставка:</span>
+                  <span>{t('orders.delivery')}:</span>
                   <span className={styles.resultValue}>{calculation.deliveryFee.toFixed(2)} ₼</span>
                 </div>
 
                 <hr className={styles.resultDivider} />
                 
                 <div className={styles.totalRow}>
-                  <span>Итоговая стоимость:</span>
+                  <span>{t('orders.finalPrice')}:</span>
                   <span>{calculation.totalPrice.toFixed(2)} ₼</span>
                 </div>
 
                 {calculation.savings > 0 && (
                   <div className={styles.savingsRow}>
-                    <span>Экономия:</span>
+                    <span>{t('orders.savings')}:</span>
                     <span className={styles.resultValue}>{calculation.savings.toFixed(2)} ₼</span>
                   </div>
                 )}
@@ -1478,12 +1556,13 @@ const KanbanOrdersView: React.FC<KanbanOrdersViewProps> = ({
   selectedOrders,
   onToggleSelect
 }) => {
+  const t = useTranslations('orders');
   const statuses = [
-    { key: 'draft', label: 'Черновики', color: '#64748B' },
-    { key: 'submitted', label: 'Отправлены', color: '#3B82F6' },
-    { key: 'processing', label: 'В обработке', color: '#F59E0B' },
-    { key: 'completed', label: 'Завершены', color: '#10B981' },
-    { key: 'cancelled', label: 'Отменены', color: '#EF4444' },
+    { key: 'draft', label: t('orders.status.draft'), color: '#64748B' },
+    { key: 'submitted', label: t('orders.status.submitted'), color: '#3B82F6' },
+    { key: 'processing', label: t('orders.status.processing'), color: '#F59E0B' },
+    { key: 'completed', label: t('orders.status.completed'), color: '#10B981' },
+    { key: 'cancelled', label: t('orders.status.cancelled'), color: '#EF4444' },
   ];
 
   const groupedByStatus = statuses.map(status => ({
@@ -1520,7 +1599,7 @@ const KanbanOrdersView: React.FC<KanbanOrdersViewProps> = ({
                       {order.company_name}
                     </h4>
                     <p className={styles.kanbanCardSubtitle}>
-                      Заказ #{order.id} • {order.menu_items.length} позиций
+                      {t('orders.order')} #{order.id} • {t('orders.itemsCount', { count: order.menu_items.length })}
                     </p>
                   </div>
                 </div>

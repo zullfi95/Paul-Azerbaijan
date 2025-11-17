@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from "../../contexts/AuthContext";
 import { Application, Order } from "../../types/common";
 import { makeApiRequest, extractApiData, handleApiError } from "../../utils/apiHelpers";
-import { useAuthGuard, canManageOrders } from "../../utils/authConstants";
+import { useAuthGuard, canManageOrders, canViewDashboard, isObserver } from "../../utils/authConstants";
 import { getStatusLabel, getStatusColor } from "../../utils/statusTranslations";
 import { useDebounce } from "../../utils/useDebounce";
 import { useSmoothScroll } from "../../utils/useSmoothScroll";
@@ -47,14 +47,22 @@ export default function DashboardPage() {
   const { scrollToElement } = useSmoothScroll();
 
   // Auth guard - проверяем тип пользователя
-  useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, (user) => {
-    // Если пользователь клиент, редиректим на профиль
-    if (user.user_type === 'client') {
-      router.push('/profile');
-      return false;
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && user) {
+      // Если пользователь наблюдатель, редиректим на кухню
+      if (isObserver(user)) {
+        router.replace('/dashboard/kitchen');
+        return;
+      }
+      // Если пользователь клиент, редиректим на профиль
+      if (user.user_type === 'client') {
+        router.replace('/profile');
+        return;
+      }
     }
-    return true;
-  }, router);
+  }, [isLoading, isAuthenticated, user, router]);
+
+  const hasAccess = useAuthGuard(isAuthenticated, isLoading, user || { user_type: '', staff_role: '' }, canViewDashboard, router);
 
   // Data fetching с оптимизацией
   const loadApplications = useCallback(async () => {

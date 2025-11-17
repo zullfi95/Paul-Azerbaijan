@@ -19,7 +19,7 @@ import {
   BookOpenIcon,
   UtensilsIcon
 } from "./Icons";
-import { canManageMenu, canViewKitchen } from "../utils/authConstants";
+import { canManageMenu, canViewKitchen, isObserver } from "../utils/authConstants";
 import { getShortRoleLabel } from "../utils/userHelpers";
 
 interface DashboardSidebarProps {
@@ -62,84 +62,102 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
         </div>
 
         <nav className="dashboard-sidebar-nav">
-          <div className="dashboard-nav-section">{t('sidebar.main')}</div>
-          <Link
-            href="/dashboard"
-            className={`dashboard-nav-link ${pathname === "/dashboard" ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-label={t('sidebar.dashboardOverview')}
-          >
-            <DashboardIcon size={18} />
-            <span>{t('sidebar.overview')}</span>
-          </Link>
-          <Link
-            href="/dashboard/applications"
-            className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/applications") ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-label={t('sidebar.manageApplications')}
-          >
-            <FileTextIcon size={18} />
-            <span>{t('sidebar.applications')}</span>
-          </Link>
-          <Link
-            href="/dashboard/orders"
-            className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/orders") ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-label={t('sidebar.manageOrders')}
-          >
-            <ShoppingBagIcon size={18} />
-            <span>{t('sidebar.orders')}</span>
-          </Link>
-          <Link
-            href="/dashboard/users"
-            className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/users") ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-label={t('sidebar.manageUsers')}
-          >
-            <UsersIcon size={18} />
-            <span>{t('sidebar.users')}</span>
-          </Link>
-          <Link
-            href="/dashboard/calendar"
-            className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/calendar") ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-label={t('sidebar.orderCalendar')}
-          >
-            <CalendarIcon size={18} />
-            <span>{t('sidebar.calendar')}</span>
-          </Link>
-          <Link
-            href="/dashboard/reports"
-            className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/reports") ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-label={t('sidebar.reportsAnalytics')}
-          >
-            <ChartBarIcon size={18} />
-            <span>{t('sidebar.reports')}</span>
-          </Link>
+          {/* Для наблюдателей показываем только кухню */}
+          {user && isObserver(user) ? (
+            <>
+              <div className="dashboard-nav-section">{t('sidebar.main')}</div>
+              <Link
+                href="/dashboard/kitchen"
+                className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/kitchen") ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label={t('sidebar.kitchen')}
+              >
+                <UtensilsIcon size={18} />
+                <span>{t('sidebar.kitchen')}</span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <div className="dashboard-nav-section">{t('sidebar.main')}</div>
+              <Link
+                href="/dashboard"
+                className={`dashboard-nav-link ${pathname === "/dashboard" ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label={t('sidebar.dashboardOverview')}
+              >
+                <DashboardIcon size={18} />
+                <span>{t('sidebar.overview')}</span>
+              </Link>
+              <Link
+                href="/dashboard/applications"
+                className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/applications") ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label={t('sidebar.manageApplications')}
+              >
+                <FileTextIcon size={18} />
+                <span>{t('sidebar.applications')}</span>
+              </Link>
+              <Link
+                href="/dashboard/orders"
+                className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/orders") ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label={t('sidebar.manageOrders')}
+              >
+                <ShoppingBagIcon size={18} />
+                <span>{t('sidebar.orders')}</span>
+              </Link>
+              <Link
+                href="/dashboard/users"
+                className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/users") ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label={t('sidebar.manageUsers')}
+              >
+                <UsersIcon size={18} />
+                <span>{t('sidebar.users')}</span>
+              </Link>
+              <Link
+                href="/dashboard/calendar"
+                className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/calendar") ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label={t('sidebar.orderCalendar')}
+              >
+                <CalendarIcon size={18} />
+                <span>{t('sidebar.calendar')}</span>
+              </Link>
+              <Link
+                href="/dashboard/reports"
+                className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/reports") ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label={t('sidebar.reportsAnalytics')}
+              >
+                <ChartBarIcon size={18} />
+                <span>{t('sidebar.reports')}</span>
+              </Link>
 
-          {user && canManageMenu(user) && (
-            <Link
-              href="/dashboard/positions"
-              className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/positions") ? 'active' : ''}`}
-              onClick={() => setIsMobileMenuOpen(false)}
-              aria-label={t('sidebar.manageMenuPositions')}
-            >
-              <BookOpenIcon size={18} />
-              <span>{t('sidebar.positions')}</span>
-            </Link>
-          )}
+              {user && canManageMenu(user) && (
+                <Link
+                  href="/dashboard/positions"
+                  className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/positions") ? 'active' : ''}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label={t('sidebar.manageMenuPositions')}
+                >
+                  <BookOpenIcon size={18} />
+                  <span>{t('sidebar.positions')}</span>
+                </Link>
+              )}
 
-          {user && canViewKitchen(user) && (
-            <Link
-              href="/dashboard/kitchen"
-              className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/kitchen") ? 'active' : ''}`}
-              onClick={() => setIsMobileMenuOpen(false)}
-              aria-label={t('sidebar.kitchen')}
-            >
-              <UtensilsIcon size={18} />
-              <span>{t('sidebar.kitchen')}</span>
-            </Link>
+              {user && canViewKitchen(user) && (
+                <Link
+                  href="/dashboard/kitchen"
+                  className={`dashboard-nav-link ${pathname?.startsWith("/dashboard/kitchen") ? 'active' : ''}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label={t('sidebar.kitchen')}
+                >
+                  <UtensilsIcon size={18} />
+                  <span>{t('sidebar.kitchen')}</span>
+                </Link>
+              )}
+            </>
           )}
         </nav>
 

@@ -72,7 +72,7 @@ export function canManageUsers(user: { user_type?: string; staff_role?: string }
  * Проверка, может ли пользователь видеть календарь
  */
 export function canViewCalendar(user: { user_type?: string; staff_role?: string }): boolean {
-  return isStaff(user);
+  return isCoordinator(user);
 }
 
 /**
@@ -87,6 +87,13 @@ export function canManageMenu(user: { user_type?: string; staff_role?: string })
  */
 export function canViewKitchen(user: { user_type?: string; staff_role?: string }): boolean {
   return isObserver(user) || isCoordinator(user);
+}
+
+/**
+ * Проверка, может ли пользователь просматривать главную страницу дашборда
+ */
+export function canViewDashboard(user: { user_type?: string; staff_role?: string }): boolean {
+  return isCoordinator(user);
 }
 
 /**

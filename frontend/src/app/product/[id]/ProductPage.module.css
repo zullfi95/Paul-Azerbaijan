@@ -97,7 +97,9 @@
 /* Product Images */
 .productImages {
   position: sticky;
-  top: 100px;
+  top: 20px;
+  align-self: start;
+  height: fit-content;
 }
 
 .mainImage {

@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Routing\Exceptions\RouteNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -51,13 +50,6 @@ class Handler extends ExceptionHandler
     {
         // Обрабатываем только API запросы
         if ($request->is('api/*') || $request->expectsJson()) {
-            // Перехватываем RouteNotFoundException для маршрута login до обработки
-            if ($exception instanceof RouteNotFoundException && str_contains($exception->getMessage(), 'Route [login] not defined')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Unauthenticated'
-                ], 401);
-            }
             return $this->handleApiException($request, $exception);
         }
 
@@ -83,7 +75,7 @@ class Handler extends ExceptionHandler
         
         // Обработка ошибки "Route [login] not defined" для API запросов
         // Это происходит, когда Laravel пытается использовать route('login') для редиректа
-        if ($exception instanceof RouteNotFoundException && str_contains($exception->getMessage(), 'Route [login] not defined')) {
+        if (str_contains($exception->getMessage(), 'Route [login] not defined')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthenticated'

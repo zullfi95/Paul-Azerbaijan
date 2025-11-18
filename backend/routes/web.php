@@ -10,3 +10,9 @@ Route::get('/', function () {
 Route::get('/sanctum/csrf-cookie', function () {
     return response()->json(['message' => 'CSRF cookie set']);
 });
+
+// Именованный маршрут login для Laravel (используется в Authenticate middleware)
+// Фактический login обрабатывается через API /api/login
+Route::get('/login', function () {
+    return redirect('/auth/login');
+})->name('login');

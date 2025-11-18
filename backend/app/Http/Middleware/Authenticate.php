@@ -34,18 +34,18 @@ class Authenticate extends Middleware
     protected function unauthenticated($request, array $guards)
     {
         // Для API запросов возвращаем JSON ответ вместо редиректа
+        // Не передаем redirectTo, чтобы Laravel не пытался использовать route('login')
         if ($request->is('api/*') || $request->expectsJson()) {
             throw new AuthenticationException(
                 'Unauthenticated.',
-                $guards,
-                $this->redirectTo($request)
+                $guards
             );
         }
         
         throw new AuthenticationException(
             'Unauthenticated.',
             $guards,
-            $this->redirectTo($request)
+            '/login' // Используем прямой путь вместо route('login')
         );
     }
 }

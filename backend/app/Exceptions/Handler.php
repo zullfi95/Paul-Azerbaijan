@@ -50,6 +50,13 @@ class Handler extends ExceptionHandler
     {
         // Обрабатываем только API запросы
         if ($request->is('api/*') || $request->expectsJson()) {
+            // Перехватываем ошибку "Route [login] not defined" до обработки
+            if (str_contains($exception->getMessage(), 'Route [login] not defined')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthenticated'
+                ], 401);
+            }
             return $this->handleApiException($request, $exception);
         }
 

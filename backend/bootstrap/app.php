@@ -34,6 +34,15 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Auth\Middleware\Authenticate::class => \App\Http\Middleware\Authenticate::class,
         ]);
         
+        // Настраиваем редирект для неавторизованных пользователей
+        // Для API запросов не редиректим
+        $middleware->redirectGuestsTo(function ($request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return null;
+            }
+            return '/login';
+        });
+        
         // Регистрируем кастомные middleware
         $middleware->alias([
             'coordinator' => \App\Http\Middleware\CoordinatorMiddleware::class,

@@ -71,7 +71,7 @@ class OrderCreated extends Mailable
         $paymentUrl = null;
         if ($isOneTimeClient) {
             // Всегда используем APP_URL из конфига для генерации ссылки
-            $appUrl = config('app.url', 'https://paul.az'); // Фоллбэк на основной домен
+            $appUrl = config('app.url', 'https://paul-azerbaijan.com'); // Фоллбэк на основной домен
             $paymentUrl = rtrim($appUrl, '/') . '/payment/' . $this->order->id;
         }
 

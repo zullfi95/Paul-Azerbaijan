@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends BaseApiController
 {
@@ -355,12 +356,28 @@ class AuthController extends BaseApiController
                 ['email.required' => 'Email обязателен', 'email.email' => 'Некорректный email']
             );
             
-            // Здесь можно сохранить подписку в отдельную таблицу newsletters
-            // Для MVP просто логируем
-            Log::info('Newsletter subscription', ['email' => $validatedData['email']]);
+            // Сохраняем подписку в БД
+            $subscriber = \App\Models\NewsletterSubscriber::subscribe($validatedData['email']);
             
-            // TODO: Сохранить в таблицу newsletter_subscribers или интегрировать с email сервисом
-            // TODO: Отправить welcome email через NotificationService
+            Log::info('Newsletter subscription', [
+                'email' => $validatedData['email'],
+                'subscriber_id' => $subscriber->id,
+                'is_new' => $subscriber->wasRecentlyCreated
+            ]);
+            
+            // Отправляем приветственное письмо
+            try {
+                Mail::to($validatedData['email'])->send(
+                    new \App\Mail\NewsletterWelcome($subscriber->email, $subscriber->unsubscribe_token)
+                );
+                Log::info('Newsletter welcome email sent', ['email' => $validatedData['email']]);
+            } catch (\Exception $e) {
+                // Логируем ошибку отправки, но не прерываем процесс подписки
+                Log::error('Failed to send newsletter welcome email', [
+                    'email' => $validatedData['email'],
+                    'error' => $e->getMessage()
+                ]);
+            }
             
             return $this->successResponse([
                 'email' => $validatedData['email'],

@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
 
 echo "=== Mail Configuration ===\n";
+echo "Environment Variables:\n";
+echo "MAIL_MAILER (env): " . env('MAIL_MAILER', 'not set') . "\n";
+echo "MAIL_HOST (env): " . env('MAIL_HOST', 'not set') . "\n";
+echo "MAIL_PORT (env): " . env('MAIL_PORT', 'not set') . "\n";
+echo "MAIL_USERNAME (env): " . env('MAIL_USERNAME', 'not set') . "\n";
+echo "MAIL_PASSWORD (env): " . (env('MAIL_PASSWORD') ? '***SET***' : 'not set') . "\n";
+echo "\n";
+echo "Laravel Config:\n";
 echo "MAIL_MAILER (default): " . Config::get('mail.default') . "\n";
 echo "SMTP Host: " . Config::get('mail.mailers.smtp.host') . "\n";
 echo "SMTP Port: " . Config::get('mail.mailers.smtp.port') . "\n";
@@ -17,6 +25,8 @@ echo "SMTP Username: " . Config::get('mail.mailers.smtp.username') . "\n";
 echo "SMTP Encryption: " . Config::get('mail.mailers.smtp.encryption') . "\n";
 echo "MAIL_FROM_ADDRESS: " . Config::get('mail.from.address') . "\n";
 echo "MAIL_FROM_NAME: " . Config::get('mail.from.name') . "\n";
+echo "\n";
+echo "Mailer Transport: " . get_class(app('mailer')->getSymfonyTransport()) . "\n";
 echo "\n";
 
 $testEmail = $argv[1] ?? 'alliyev.zulfi95@gmail.com';

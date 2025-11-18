@@ -517,12 +517,9 @@ class OrderController extends BaseApiController
                 return $this->errorResponse('Доступ запрещен. Только наблюдатели могут просматривать данные кухни.', 403);
             }
 
-            // Получаем заказы со статусами, которые требуют приготовления
-            $orders = Order::whereIn('status', [
-                Order::STATUS_SUBMITTED,
-                Order::STATUS_PAID,
-                Order::STATUS_PROCESSING
-            ])
+            // Получаем только подтвержденные заказы (со статусом processing)
+            // Кухня должна видеть только заказы, которые подтверждены координатором и готовы к приготовлению
+            $orders = Order::where('status', Order::STATUS_PROCESSING)
             ->whereNotNull('delivery_date')
             ->where('delivery_date', '>=', now()->startOfDay())
             ->orderBy('delivery_date', 'asc')

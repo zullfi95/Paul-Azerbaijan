@@ -129,8 +129,82 @@ export default function CoffeeBreaksMenu({ onAddToCart }: CoffeeBreaksMenuProps)
   };
 
   const addAllToOrder = () => {
-    // TODO: Handle adding all selected items with additional items
-    console.log('Adding all to order');
+    // Добавляем все опции с их количествами
+    const optionConfigs = [
+      { key: 'option1', name: 'Option I', price: 0 },
+      { key: 'option2', name: 'Option II', price: 0 },
+      { key: 'option3', name: 'Option III', price: 0 },
+      { key: 'option4', name: 'Option IV', price: 0 },
+    ];
+
+    optionConfigs.forEach(({ key, name, price }) => {
+      const quantity = options[key as keyof typeof options].quantity;
+      
+      // Добавляем опцию только если количество > 0
+      if (quantity > 0) {
+        const cartItem: CartItem = {
+          id: `coffee-${key}`,
+          name: `Coffee Breaks - ${name}`,
+          description: name,
+          price: price,
+          quantity: quantity,
+          image: '/images/placeholder-food.svg',
+          category: 'Coffee Breaks & Afternoon Teas',
+          available: true,
+          isSet: true
+        };
+        
+        onAddToCart(cartItem);
+      }
+    });
+
+    // Добавляем все дополнительные элементы с количеством > 0
+    Object.entries(additionalItems).forEach(([itemName, itemQuantity]) => {
+      if (itemQuantity > 0) {
+        // Определяем цену для каждого дополнительного элемента
+        let itemPrice = 3;
+        if (itemName === 'Mini Canapes') itemPrice = 4;
+        else if (itemName === 'Mini Salads') itemPrice = 3.5;
+        else if (itemName === 'Hot Chocolates' || itemName === 'Flavored Water') itemPrice = 4.5;
+        else if (itemName === 'Packaged Juice') itemPrice = 2;
+        else if (itemName === 'Fresh Juices' || itemName === 'Soft Drinks') itemPrice = 2.5;
+        
+        const additionalItem: CartItem = {
+          id: `coffee-additional-all-${itemName.toLowerCase().replace(/\s+/g, '-')}`,
+          name: itemName,
+          description: `Additional item`,
+          price: itemPrice,
+          quantity: itemQuantity,
+          image: '/images/placeholder-food.svg',
+          category: 'Coffee Breaks & Afternoon Teas',
+          available: true,
+          isSet: false
+        };
+        
+        onAddToCart(additionalItem);
+      }
+    });
+
+    // Сбрасываем счетчики дополнительных элементов после добавления
+    setAdditionalItems({
+      'Mini Viennoiseries': 0,
+      'Mini Tartelettes': 0,
+      'Mini Sweets': 0,
+      'Mini Cakes': 0,
+      'Mini Madeleines': 0,
+      'Mini Canapes': 0,
+      'Mini Wraps': 0,
+      'Mini Toasts': 0,
+      'Mini Salads': 0,
+      'Mini Sandwiches': 0,
+      'Mini Croissants': 0,
+      'Iced Drinks': 0,
+      'Hot Chocolates': 0,
+      'Flavored Water': 0,
+      'Packaged Juice': 0,
+      'Fresh Juices': 0,
+      'Soft Drinks': 0
+    });
   };
 
   return (

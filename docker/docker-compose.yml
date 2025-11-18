@@ -54,7 +54,7 @@ services:
       - MAIL_HOST=smtp-relay.brevo.com
       - MAIL_PORT=587
       - MAIL_USERNAME=9b682e001@smtp-brevo.com
-      - MAIL_PASSWORD=xsmtpsib-8771a99c7073efd3240de4e350cafca996b45f7327e9007cf12155b0f4acd1c2-tv23nSHEuWMfu3tV
+      - MAIL_PASSWORD=xsmtpsib-8771a99c7073efd3240de4e350cafca996b45f7327e9007cf12155b0f4acd1c2-zXrPiIasEgkzoHw0
       - MAIL_ENCRYPTION=tls
       - MAIL_FROM_ADDRESS=info@paul-azerbaijan.com
       - MAIL_FROM_NAME=PAUL Azerbaijan
@@ -137,7 +137,7 @@ services:
       - MAIL_HOST=smtp-relay.brevo.com
       - MAIL_PORT=587
       - MAIL_USERNAME=9b682e001@smtp-brevo.com
-      - MAIL_PASSWORD=xsmtpsib-8771a99c7073efd3240de4e350cafca996b45f7327e9007cf12155b0f4acd1c2-tv23nSHEuWMfu3tV
+      - MAIL_PASSWORD=xsmtpsib-8771a99c7073efd3240de4e350cafca996b45f7327e9007cf12155b0f4acd1c2-zXrPiIasEgkzoHw0
       - MAIL_ENCRYPTION=tls
       - MAIL_FROM_ADDRESS=info@paul-azerbaijan.com
       - MAIL_FROM_NAME=PAUL Azerbaijan

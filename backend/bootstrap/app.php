@@ -25,6 +25,15 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class => \App\Http\Middleware\VerifyCsrfToken::class,
         ]);
         
+        // Заменяем стандартный Authenticate middleware на наш кастомный
+        $middleware->web(replace: [
+            \Illuminate\Auth\Middleware\Authenticate::class => \App\Http\Middleware\Authenticate::class,
+        ]);
+        
+        $middleware->api(replace: [
+            \Illuminate\Auth\Middleware\Authenticate::class => \App\Http\Middleware\Authenticate::class,
+        ]);
+        
         // Регистрируем кастомные middleware
         $middleware->alias([
             'coordinator' => \App\Http\Middleware\CoordinatorMiddleware::class,

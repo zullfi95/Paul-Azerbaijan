@@ -35,11 +35,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         
         // Настраиваем редирект для неавторизованных пользователей
-        // Для API запросов не редиректим
+        // Для API запросов не редиректим - возвращаем null, чтобы Laravel не пытался использовать route('login')
+        // Для веб-запросов возвращаем прямой путь '/login' вместо использования route('login')
         $middleware->redirectGuestsTo(function ($request) {
             if ($request->is('api/*') || $request->expectsJson()) {
                 return null;
             }
+            // Возвращаем прямой путь, чтобы Laravel не пытался использовать route('login')
             return '/login';
         });
         

@@ -99,9 +99,12 @@
 /* Modal Content */
 .modalContent {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   padding: 0;
   background: rgb(26, 26, 26); /* Changed to black */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 /* Empty Cart */
@@ -177,26 +180,30 @@
 /* Cart Items Container */
 .cartItemsContainer {
   padding: 1.275rem 1.7rem; /* Reduced by 15% from 1.5rem 2rem */
-  max-height: 340px; /* Reduced by 15% from 400px */
+  flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  max-height: calc(78vh - 200px); /* Вычитаем высоту header и footer */
+  scroll-behavior: smooth;
 }
 
 .cartItemsContainer::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .cartItemsContainer::-webkit-scrollbar-track {
-  background: var(--paul-ivory);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
 }
 
 .cartItemsContainer::-webkit-scrollbar-thumb {
-  background: var(--paul-border);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 
 .cartItemsContainer::-webkit-scrollbar-thumb:hover {
-  background: var(--paul-text-secondary);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .cartItem {
@@ -565,7 +572,8 @@
 
   .cartItemsContainer {
     padding: 1rem 1.2rem;
-    max-height: 300px;
+    max-height: calc(90vh - 250px); /* Вычитаем высоту header и footer для мобильных */
+    scroll-behavior: smooth;
   }
 
   .cartItem {

@@ -57,8 +57,20 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
         className={`dashboard-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}
       >
         <div className="dashboard-sidebar-header">
-          <h1 className="dashboard-sidebar-title">PAUL Dashboard</h1>
-          <p className="dashboard-sidebar-subtitle">{t('sidebar.coordinatorPanel')}</p>
+          <div>
+            <h1 className="dashboard-sidebar-title">PAUL Dashboard</h1>
+            <p className="dashboard-sidebar-subtitle">{t('sidebar.coordinatorPanel')}</p>
+          </div>
+          {/* User Info in Header */}
+          <div className="dashboard-user-info-header">
+            <div className="dashboard-user-avatar">
+              {user?.name?.charAt(0)?.toUpperCase() || "U"}
+            </div>
+            <div className="dashboard-user-details">
+              <h4>{user?.name}</h4>
+              <p>{getShortRoleLabel(user)}</p>
+            </div>
+          </div>
         </div>
 
         <nav className="dashboard-sidebar-nav">
@@ -203,15 +215,6 @@ export default function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen
             </select>
           </div>
 
-          <div className="dashboard-user-info">
-            <div className="dashboard-user-avatar">
-              {user?.name?.charAt(0)?.toUpperCase() || "U"}
-            </div>
-            <div className="dashboard-user-details">
-              <h4>{user?.name}</h4>
-              <p>{getShortRoleLabel(user)}</p>
-            </div>
-          </div>
           <button onClick={logout} className="dashboard-logout-btn">
             {t('sidebar.logout')}
           </button>

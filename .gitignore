@@ -8,6 +8,8 @@ vendor/
 .env.development.local
 .env.test.local
 .env.production.local
+docker/docker.env
+docker/.env
 
 # Next.js
 .next/

@@ -36,6 +36,8 @@ services:
       dockerfile: Dockerfile
     container_name: paul_backend
     restart: unless-stopped
+    env_file:
+      - docker.env
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
@@ -50,14 +52,20 @@ services:
       - CACHE_DRIVER=redis
       - SESSION_DRIVER=file
       - QUEUE_CONNECTION=redis
-      - MAIL_MAILER=smtp
-      - MAIL_HOST=smtp-relay.brevo.com
-      - MAIL_PORT=587
-      - MAIL_USERNAME=9b682e001@smtp-brevo.com
-      - MAIL_PASSWORD=xsmtpsib-8771a99c7073efd3240de4e350cafca996b45f7327e9007cf12155b0f4acd1c2-zXrPiIasEgkzoHw0
-      - MAIL_ENCRYPTION=tls
-      - MAIL_FROM_ADDRESS=info@paul-azerbaijan.com
-      - MAIL_FROM_NAME=PAUL Azerbaijan
+      - MAIL_MAILER=${MAIL_MAILER:-smtp}
+      - MAIL_HOST=${MAIL_HOST:-smtp-relay.brevo.com}
+      - MAIL_PORT=${MAIL_PORT:-587}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-tls}
+      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS:-info@paul-azerbaijan.com}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME:-PAUL Azerbaijan}
+      - IIKO_API_URL=${IIKO_API_URL}
+      - IIKO_API_LOGIN=${IIKO_API_LOGIN}
+      - IIKO_API_PASSWORD=${IIKO_API_PASSWORD}
+      - ALGORITMA_API_URL=${ALGORITMA_API_URL}
+      - ALGORITMA_API_KEY=${ALGORITMA_API_KEY}
+      - ALGORITMA_API_SECRET=${ALGORITMA_API_SECRET}
     volumes:
       - ../backend/storage:/var/www/html/storage
       - ../backend/bootstrap/cache:/var/www/html/bootstrap/cache
@@ -119,6 +127,8 @@ services:
     container_name: paul_queue
     restart: unless-stopped
     command: php artisan queue:work --verbose --tries=3 --timeout=90
+    env_file:
+      - docker.env
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
@@ -133,14 +143,20 @@ services:
       - CACHE_DRIVER=redis
       - SESSION_DRIVER=file
       - QUEUE_CONNECTION=redis
-      - MAIL_MAILER=smtp
-      - MAIL_HOST=smtp-relay.brevo.com
-      - MAIL_PORT=587
-      - MAIL_USERNAME=9b682e001@smtp-brevo.com
-      - MAIL_PASSWORD=xsmtpsib-8771a99c7073efd3240de4e350cafca996b45f7327e9007cf12155b0f4acd1c2-zXrPiIasEgkzoHw0
-      - MAIL_ENCRYPTION=tls
-      - MAIL_FROM_ADDRESS=info@paul-azerbaijan.com
-      - MAIL_FROM_NAME=PAUL Azerbaijan
+      - MAIL_MAILER=${MAIL_MAILER:-smtp}
+      - MAIL_HOST=${MAIL_HOST:-smtp-relay.brevo.com}
+      - MAIL_PORT=${MAIL_PORT:-587}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-tls}
+      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS:-info@paul-azerbaijan.com}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME:-PAUL Azerbaijan}
+      - IIKO_API_URL=${IIKO_API_URL}
+      - IIKO_API_LOGIN=${IIKO_API_LOGIN}
+      - IIKO_API_PASSWORD=${IIKO_API_PASSWORD}
+      - ALGORITMA_API_URL=${ALGORITMA_API_URL}
+      - ALGORITMA_API_KEY=${ALGORITMA_API_KEY}
+      - ALGORITMA_API_SECRET=${ALGORITMA_API_SECRET}
     volumes:
       - ../backend/storage:/var/www/html/storage
     depends_on:

@@ -15,6 +15,7 @@ import { useCartModal } from '@/contexts/CartModalContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { isCoordinator, isObserver, isClient } from '@/utils/authConstants';
 import './Header.css';
 
 const Header: React.FC = React.memo(function Header() {
@@ -23,7 +24,7 @@ const Header: React.FC = React.memo(function Header() {
   const { locale, setLocale, availableLocales } = useLanguage();
   const { getTotalItems } = useCart();
   const { isOpen: isCartModalOpen, openModal: openCartModal, closeModal: closeCartModal } = useCartModal();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const isMobile = useIsMobile();
   const [searchQuery, setSearchQuery] = useState('');
   const [email, setEmail] = useState('');
@@ -51,13 +52,28 @@ const Header: React.FC = React.memo(function Header() {
   }, [isMobileMenuOpen, closeMobileMenu]);
 
   const handleLogin = useCallback(() => {
-    if (isAuthenticated) {
-      router.push('/profile');
+    if (isAuthenticated && user) {
+      // Клиенты -> профиль
+      if (isClient(user)) {
+        router.push('/profile');
+      }
+      // Координатор -> дашборд
+      else if (isCoordinator(user)) {
+        router.push('/dashboard');
+      }
+      // Observer (кухня) -> кухня
+      else if (isObserver(user)) {
+        router.push('/dashboard/kitchen');
+      }
+      // По умолчанию -> профиль
+      else {
+        router.push('/profile');
+      }
     } else {
       router.push('/auth/login');
     }
     closeMobileMenu();
-  }, [isAuthenticated, router, closeMobileMenu]);
+  }, [isAuthenticated, user, router, closeMobileMenu]);
 
   const handleCartClick = useCallback(() => {
     openCartModal();
@@ -439,8 +455,23 @@ const Header: React.FC = React.memo(function Header() {
               <button 
                 className="mobile-menu-item"
                 onClick={() => {
-                  if (isAuthenticated) {
-                    router.push('/profile');
+                  if (isAuthenticated && user) {
+                    // Клиенты -> профиль
+                    if (isClient(user)) {
+                      router.push('/profile');
+                    }
+                    // Координатор -> дашборд
+                    else if (isCoordinator(user)) {
+                      router.push('/dashboard');
+                    }
+                    // Observer (кухня) -> кухня
+                    else if (isObserver(user)) {
+                      router.push('/dashboard/kitchen');
+                    }
+                    // По умолчанию -> профиль
+                    else {
+                      router.push('/profile');
+                    }
                   } else {
                     router.push('/auth/login');
                   }

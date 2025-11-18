@@ -25,26 +25,6 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class => \App\Http\Middleware\VerifyCsrfToken::class,
         ]);
         
-        // Заменяем стандартный Authenticate middleware на наш кастомный
-        $middleware->web(replace: [
-            \Illuminate\Auth\Middleware\Authenticate::class => \App\Http\Middleware\Authenticate::class,
-        ]);
-        
-        $middleware->api(replace: [
-            \Illuminate\Auth\Middleware\Authenticate::class => \App\Http\Middleware\Authenticate::class,
-        ]);
-        
-        // Настраиваем редирект для неавторизованных пользователей
-        // Для API запросов не редиректим - возвращаем null, чтобы Laravel не пытался использовать route('login')
-        // Для веб-запросов возвращаем прямой путь '/login' вместо использования route('login')
-        $middleware->redirectGuestsTo(function ($request) {
-            if ($request->is('api/*') || $request->expectsJson()) {
-                return null;
-            }
-            // Возвращаем прямой путь, чтобы Laravel не пытался использовать route('login')
-            return '/login';
-        });
-        
         // Регистрируем кастомные middleware
         $middleware->alias([
             'coordinator' => \App\Http\Middleware\CoordinatorMiddleware::class,
@@ -54,6 +34,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, $request) {
             if ($request->is('api/*') || $request->expectsJson()) {
+                // Перехватываем RouteNotFoundException для маршрута login
+                if (str_contains($e->getMessage(), 'Route [login] not defined')) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Unauthenticated'
+                    ], 401);
+                }
                 return app(\App\Exceptions\Handler::class)->handleApiException($request, $e);
             }
         });

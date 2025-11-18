@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Routing\Exceptions\RouteNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -50,7 +51,14 @@ class Handler extends ExceptionHandler
     {
         // Обрабатываем только API запросы
         if ($request->is('api/*') || $request->expectsJson()) {
-            // Перехватываем ошибку "Route [login] not defined" до обработки
+            // Перехватываем RouteNotFoundException для маршрута login
+            if ($exception instanceof RouteNotFoundException && str_contains($exception->getMessage(), 'Route [login] not defined')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthenticated'
+                ], 401);
+            }
+            // Также перехватываем любые исключения с сообщением "Route [login] not defined"
             if (str_contains($exception->getMessage(), 'Route [login] not defined')) {
                 return response()->json([
                     'success' => false,

@@ -79,9 +79,9 @@ class PaymentController extends BaseApiController
             $order->incrementPaymentAttempts();
 
             // Подготавливаем данные для создания платежа
-            $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
-            $returnUrl = $frontendUrl . '/payment/success/' . $order->id;
-            $failureUrl = $frontendUrl . '/payment/failure/' . $order->id;
+            $appUrl = config('app.url', 'https://paul-azerbaijan.com');
+            $returnUrl = rtrim($appUrl, '/') . '/payment/success/' . $order->id;
+            $failureUrl = rtrim($appUrl, '/') . '/payment/failure/' . $order->id;
 
             $orderData = [
                 'amount' => number_format($order->final_amount, 2, '.', ''),

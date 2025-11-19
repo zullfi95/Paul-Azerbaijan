@@ -964,6 +964,7 @@ body.menu-open {
   
   .logo-image {
     height: 28px;
+    width: auto;
   }
   
   .nav-link {

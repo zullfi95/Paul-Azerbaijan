@@ -1,5 +1,5 @@
 {
-  "common": {
+    "common": {
     "loading": "Загрузка...",
     "error": "Ошибка",
     "success": "Успешно",
@@ -39,7 +39,9 @@
     "sortDescending": "Сортировка по убыванию",
     "pleaseWait": "Пожалуйста, подождите",
     "company": "Компания",
-    "phone": "Телефон"
+    "phone": "Телефон",
+    "page": "Страница {current} из {total}",
+    "previous": "Предыдущая"
   },
   "header": {
     "searchPlaceholder": "поиск товара",
@@ -399,6 +401,17 @@
     "completeOrder": "Завершить заказ",
     "cancelOrder": "Отменить заказ",
     "copyOrder": "Копировать",
+    "requireAttention": "Требуют внимания",
+    "statusFilter": "Фильтр по статусу",
+    "sortByDate": "По дате",
+    "sortByCompany": "По компании",
+    "sortByAmount": "По сумме",
+    "grouping": "Группировка",
+    "noGrouping": "Без группировки",
+    "groupByStatus": "По статусу",
+    "groupByClient": "По клиентам",
+    "groupByDate": "По датам",
+    "groupByAmount": "По сумме",
     "viewGrid": "Сетка",
     "viewTable": "Таблица",
     "viewKanban": "Канбан",
@@ -413,6 +426,12 @@
     "edit": "Редактировать",
     "copy": "Копировать",
     "delete": "Удалить",
+    "customDiscount": "Скидка {percent}%",
+    "amountGroup": {
+      "small": "До 50₼",
+      "medium": "50-200₼",
+      "large": "Свыше 200₼"
+    },
     "company": "Компания",
     "dishes": "Блюда",
     "date": "Дата",
@@ -603,6 +622,7 @@
       "observer": "Наблюдатель",
       "client": "Клиент"
     },
+    "allStatuses": "Все статусы",
     "corporate": "Корпоративный",
     "oneTime": "Разовый",
     "suspended": "Заблокирован",
@@ -612,7 +632,6 @@
     "coordinatorsAndObservers": "Координаторы и наблюдатели",
     "activeUsers": "Активных пользователей",
     "searchPlaceholder": "Поиск по имени, email, компании...",
-    "allStatuses": "Все статусы",
     "allGroups": "Все группы",
     "blocked": "Заблокированные",
     "sortByName": "По имени",

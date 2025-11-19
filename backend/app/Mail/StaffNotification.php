@@ -60,13 +60,19 @@ class StaffNotification extends Mailable
             default => 'emails.staff.general-notification'
         };
 
+        $viewData = [
+            'data' => $this->data,
+            'staffRole' => $this->staffRole,
+            'notificationType' => $this->notificationType,
+        ];
+
+        if ($this->notificationType === 'new_order' || $this->notificationType === 'order_updated') {
+            $viewData['order'] = $this->data;
+        }
+
         return new Content(
             view: $view,
-            with: [
-                'data' => $this->data,
-                'staffRole' => $this->staffRole,
-                'notificationType' => $this->notificationType,
-            ],
+            with: $viewData,
         );
     }
 

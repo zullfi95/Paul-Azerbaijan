@@ -6,6 +6,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\SaveShippingAddressRequest;
+use App\Mail\UserRegistered;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +37,22 @@ class AuthController extends BaseApiController
 
             // Создаем Sanctum токен для автоматического входа
             $token = $user->createToken('auth-token')->plainTextToken;
+
+            // Отправляем письмо с поздравлением о регистрации
+            try {
+                Mail::to($user->email)->send(new UserRegistered($user));
+                Log::info('Registration welcome email sent successfully', [
+                    'email' => $user->email,
+                    'user_id' => $user->id,
+                ]);
+            } catch (\Exception $e) {
+                // Логируем ошибку отправки, но не прерываем процесс регистрации
+                Log::error('Failed to send registration welcome email', [
+                    'email' => $user->email,
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             return $this->createdResponse([
                 'user' => $user,

@@ -2,38 +2,38 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../contexts/AuthContext';
 import {
-  Application,
-  CartItem,
-  User,
+    Application,
+    CartItem,
+    User,
 } from '../types/common';
 import { makeApiRequest } from '../utils/apiHelpers';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../utils/queryKeys';
 
 interface OrderFormData {
-  selected_client_id: number | null;
-  menu_items: CartItem[];
-  comment: string;
-  delivery_date: string;
-  delivery_time: string;
-  delivery_type: 'delivery' | 'pickup' | 'buffet';
-  delivery_address: string;
-  delivery_cost: number;
-  discount_fixed: number;
-  discount_percent: number;
-  client_type: 'corporate' | 'one_time';
-  company_name?: string;
-  recurring_schedule: {
-    enabled: boolean;
-    frequency: 'weekly' | 'monthly';
-    days: string[];
+    selected_client_id: number | null;
+    menu_items: CartItem[];
+    comment: string;
+    delivery_date: string;
     delivery_time: string;
-    notes: string;
-  };
-  equipment_required: number;
-  staff_assigned: number;
-  special_instructions: string;
-  application_id: number | null;
+    delivery_type: 'delivery' | 'pickup' | 'buffet';
+    delivery_address: string;
+    delivery_cost: number;
+    discount_fixed: number;
+    discount_percent: number;
+    client_type: 'corporate' | 'one_time';
+    company_name?: string;
+    recurring_schedule: {
+        enabled: boolean;
+        frequency: 'weekly' | 'monthly';
+        days: string[];
+        delivery_time: string;
+        notes: string;
+    };
+    equipment_required: number;
+    staff_assigned: number;
+    special_instructions: string;
+    application_id: number | null;
 }
 
 const extractDatePart = (value?: string | null): string => {
@@ -64,7 +64,6 @@ const normalizeCartItems = (cartItems: any[] | undefined | null): CartItem[] => 
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
         return [];
     }
-
     return cartItems.map((item, index) => ({
         id: (item?.id ?? `application-item-${index}`).toString(),
         name: item?.name || `Позиция ${index + 1}`,
@@ -86,9 +85,7 @@ export const useOrderForm = () => {
     const fromApplicationId = searchParams.get('fromApplication');
 
     const [loading, setLoading] = useState(false);
-    // const [clients, setClients] = useState<User[]>([]); // Will be replaced by useQuery
     const [application, setApplication] = useState<Application | null>(null);
-    // const [menuItems, setMenuItems] = useState<CartItem[]>([]); // Will be replaced by useQuery
     const [formData, setFormData] = useState<OrderFormData>({
         selected_client_id: null,
         menu_items: [],
@@ -118,33 +115,25 @@ export const useOrderForm = () => {
     const { data: clients = [], isLoading: isLoadingClients } = useQuery<User[]>({
         queryKey: queryKeys.clients.lists(),
         queryFn: async () => {
-            const result = await makeApiRequest<{data: User[]}>('/clients');
+            const result = await makeApiRequest<{ data: User[] }>('/clients');
             return result.success ? result.data?.data || [] : [];
         },
-        staleTime: 10 * 60 * 1000, // 10 минут
+        staleTime: 10 * 60 * 1000,
     });
 
     const { data: menuItems = [], isLoading: isLoadingMenuItems } = useQuery<CartItem[]>({
         queryKey: queryKeys.menu.items(user?.id?.toString()),
         queryFn: async () => {
-            console.log('📥 Загрузка меню...');
-            // Загружаем все позиции меню без фильтра по организации
-            const result = await makeApiRequest<{data: CartItem[]}>('/menu/items');
-            console.log('📦 Ответ от API:', result);
-            
+            const result = await makeApiRequest<{ data: CartItem[] }>('/menu/items');
             if (result.success && result.data) {
                 const items = result.data.data || result.data || [];
-                console.log('✅ Получено товаров:', items.length);
                 return Array.isArray(items) ? items : [];
             }
-            
-            console.log('❌ Не удалось загрузить меню');
             return [];
         },
-        enabled: !!user, // Only run query if user is available
-        staleTime: 15 * 60 * 1000, // 15 минут
+        enabled: !!user,
+        staleTime: 15 * 60 * 1000,
     });
-
 
     const addMenuItem = useCallback((item: CartItem) => {
         setFormData(prev => {
@@ -156,12 +145,12 @@ export const useOrderForm = () => {
                         menuItem.id === item.id
                             ? { ...menuItem, quantity: (menuItem.quantity ?? 0) + 1 }
                             : menuItem
-                    )
+                    ),
                 };
             } else {
                 return {
                     ...prev,
-                    menu_items: [...prev.menu_items, { ...item, quantity: 1 }]
+                    menu_items: [...prev.menu_items, { ...item, quantity: 1 }],
                 };
             }
         });
@@ -171,14 +160,14 @@ export const useOrderForm = () => {
         if (quantity <= 0) {
             setFormData(prev => ({
                 ...prev,
-                menu_items: prev.menu_items.filter(item => item.id !== itemId)
+                menu_items: prev.menu_items.filter(item => item.id !== itemId),
             }));
         } else {
             setFormData(prev => ({
                 ...prev,
                 menu_items: prev.menu_items.map(item =>
                     item.id === itemId ? { ...item, quantity } : item
-                )
+                ),
             }));
         }
     }, []);
@@ -186,7 +175,7 @@ export const useOrderForm = () => {
     const removeMenuItem = useCallback((itemId: string) => {
         setFormData(prev => ({
             ...prev,
-            menu_items: prev.menu_items.filter(item => item.id !== itemId)
+            menu_items: prev.menu_items.filter(item => item.id !== itemId),
         }));
     }, []);
 
@@ -195,34 +184,19 @@ export const useOrderForm = () => {
             setApplication(null);
             return;
         }
-
         let isCancelled = false;
-
         const loadApplication = async () => {
-            console.log('🔄 Loading application:', fromApplicationId);
             setLoading(true);
-
             try {
                 const result = await makeApiRequest<{ application?: Application } | Application>(`/applications/${fromApplicationId}`);
-                console.log('📥 API Response:', result);
-                
                 if (result.success && result.data && !isCancelled) {
-                    // API может вернуть данные в двух форматах:
-                    // 1. { application: {...} } - обернутый формат
-                    // 2. {...} - прямой формат
                     const app: Application = (result.data as any)?.application || (result.data as Application);
-                    
                     if (!app) {
                         console.error('❌ Заявка не найдена в ответе API');
                         return;
                     }
-                    
-                    console.log('📋 Application data:', app);
                     setApplication(app);
-
                     const normalizedItems = normalizeCartItems(app.cart_items);
-                    console.log('🛒 Normalized items:', normalizedItems);
-
                     setFormData(prev => ({
                         ...prev,
                         selected_client_id: app.client_id ?? prev.selected_client_id,
@@ -230,20 +204,11 @@ export const useOrderForm = () => {
                         delivery_date: extractDatePart(app.event_date) || prev.delivery_date,
                         delivery_time: extractTimePart(app.event_time) || prev.delivery_time,
                         delivery_address: app.event_address || prev.delivery_address,
-                        menu_items: normalizedItems.length > 0
-                            ? normalizedItems
-                            : [],
+                        menu_items: normalizedItems.length > 0 ? normalizedItems : [],
                         application_id: app.id || null,
                         company_name: app.company_name || prev.company_name,
                         client_type: prev.client_type || 'one_time',
                     }));
-
-                    console.log('✅ Форма заполнена данными из заявки', {
-                        client_id: app.client_id,
-                        items_count: normalizedItems.length,
-                        delivery_date: extractDatePart(app.event_date),
-                        delivery_time: extractTimePart(app.event_time),
-                    });
                 } else {
                     console.error('❌ Не удалось загрузить заявку:', result);
                 }
@@ -255,9 +220,7 @@ export const useOrderForm = () => {
                 }
             }
         };
-
         loadApplication();
-
         return () => {
             isCancelled = true;
         };
@@ -267,13 +230,11 @@ export const useOrderForm = () => {
         if (!application || !fromApplicationId) return;
         if (formData.selected_client_id) return;
         if (!clients || clients.length === 0) return;
-
         const matchedClient = application.client_id
             ? clients.find(c => c.id === application.client_id)
             : application.email
                 ? clients.find(c => c.email === application.email)
                 : null;
-
         if (matchedClient) {
             setFormData(prev => ({
                 ...prev,
@@ -287,7 +248,7 @@ export const useOrderForm = () => {
     const handleInputChange = (field: keyof OrderFormData, value: string | number | boolean) => {
         setFormData(prev => ({
             ...prev,
-            [field]: value
+            [field]: value,
         }));
     };
 
@@ -296,28 +257,21 @@ export const useOrderForm = () => {
             ...prev,
             recurring_schedule: {
                 ...prev.recurring_schedule,
-                [field]: value
-            }
+                [field]: value,
+            },
         }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        // Валидация меню
         if (!formData.menu_items || formData.menu_items.length === 0) {
             alert('Необходимо выбрать хотя бы один товар из меню');
             return;
         }
-
-        // Валидация клиента
-        // Если создаем заказ из заявки, client_id может быть null - бэкенд создаст клиента автоматически
         if (!fromApplicationId && !formData.selected_client_id) {
             alert('Необходимо выбрать клиента для заказа');
             return;
         }
-
-        // Валидация даты доставки
         if (formData.delivery_date) {
             const selectedDate = new Date(formData.delivery_date);
             const today = new Date();
@@ -327,38 +281,29 @@ export const useOrderForm = () => {
                 return;
             }
         }
-
         setLoading(true);
-
-        // Подготовка payload без лишних полей
         const { selected_client_id, ...restFormData } = formData;
         const payload = {
             ...restFormData,
             client_id: selected_client_id,
-            // Преобразуем ID в строки для совместимости с бэкендом
             menu_items: formData.menu_items.map(item => ({
                 ...item,
-                id: item.id.toString()
-            }))
+                id: item.id.toString(),
+            })),
         };
-
         try {
             let result;
-            
-            // Если создаем заказ из заявки, используем специальный endpoint
             if (fromApplicationId && formData.application_id) {
                 result = await makeApiRequest(`/applications/${fromApplicationId}/create-order`, {
                     method: 'POST',
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload),
                 });
             } else {
-                // Обычное создание заказа
                 result = await makeApiRequest('/orders', {
                     method: 'POST',
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload),
                 });
             }
-            
             if (result.success) {
                 router.push('/dashboard/orders');
             } else {

@@ -6,6 +6,9 @@ use App\Http\Requests\CreateApplicationRequest;
 use App\Models\Application;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ApplicationReceived;
+
 
 class ApplicationController extends BaseApiController
 {
@@ -39,14 +42,14 @@ class ApplicationController extends BaseApiController
                 'client_id' => $clientId,
             ]);
 
-            // Отправляем уведомления (временно отключено для отладки)
+            // Отправляем уведомления
             \Log::info('Application created successfully', ['application_id' => $application->id]);
-            // try {
-            //     $notificationService = new NotificationService();
-            //     $notificationService->sendNewApplicationNotifications($application);
-            // } catch (\Exception $e) {
-            //     \Log::error('Notification error: ' . $e->getMessage());
-            // }
+            try {
+                $notificationService = new NotificationService();
+                $notificationService->sendNewApplicationNotifications($application);
+            } catch (\Exception $e) {
+                \Log::error('Notification error: ' . $e->getMessage());
+            }
 
             return $this->createdResponse([
                 'application' => $application
@@ -245,17 +248,17 @@ class ApplicationController extends BaseApiController
 
             \Log::info('Event application created successfully:', ['id' => $application->id]);
 
-            // Отправляем уведомление координаторам (временно отключено для отладки)
-            // $notificationService = new NotificationService();
-            // $notificationService->sendNewApplicationNotifications($application);
+            // Отправляем уведомление координаторам
+            $notificationService = new NotificationService();
+            $notificationService->sendNewApplicationNotifications($application);
 
-            // Отправляем email подтверждение клиенту (временно отключено для отладки)
-            // try {
-            //     Mail::to($request->email)->send(new ApplicationReceived($application));
-            // } catch (\Exception $e) {
-            //     // Логируем ошибку, но не прерываем процесс
-            //     \Log::error('Failed to send confirmation email: ' . $e->getMessage());
-            // }
+            // Отправляем email подтверждение клиенту
+            try {
+                Mail::to($request->email)->send(new ApplicationReceived($application));
+            } catch (\Exception $e) {
+                // Логируем ошибку, но не прерываем процесс
+                \Log::error('Failed to send confirmation email: ' . $e->getMessage());
+            }
 
             return $this->createdResponse([
                 'application_id' => $application->id

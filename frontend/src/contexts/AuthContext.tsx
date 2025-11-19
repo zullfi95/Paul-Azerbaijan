@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           console.warn('⚠️ Token verification failed with status:', response.status);
         }
       } else {
-                // Токен валиден, обновляем данные пользователя
+        // Токен валиден, обновляем данные пользователя
         try {
           const userData = await response.json();
 
@@ -134,15 +134,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return false;
       }
 
-        if (response.success && response.data && user) {
-          // Обновляем данные пользователя
-          const updatedUser = { ...user, ...response.data } as User;
-          setUser(updatedUser);
-          localStorage.setItem('user', JSON.stringify(updatedUser));
-          return true;
-        } else {
-          return false;
-        }
+      if (response.success && response.data && user) {
+        // Обновляем данные пользователя
+        const updatedUser = { ...user, ...response.data } as User;
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        return true;
+      } else {
+        return false;
+      }
     } catch (error) {
       console.error('🌐 Update user network error:', error);
       return false;
@@ -158,7 +158,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = useCallback(async (email: string, password: string) => {
     try {
       const url = getApiUrl('login');
-      
+
       // CSRF отключен для API, но оставляем cookie для совместимости
       // const baseUrl = API_CONFIG.BASE_URL;
 
@@ -217,17 +217,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const register = useCallback(async (email: string, password: string, name: string, surname: string, phone: string) => {
     try {
       const url = getApiUrl('register');
-      const requestData = { 
-        email, 
-        password, 
-        name, 
-        surname, 
+      const requestData = {
+        email,
+        password,
+        name,
+        surname,
         phone,
-        user_type: 'client' // Обязательное поле для backend
+        user_type: 'client', // Обязательное поле для backend
+        client_category: 'one_time' // Обязательное поле для клиентов (по умолчанию - частное лицо)
       };
-      
-      
-      
+
+
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {

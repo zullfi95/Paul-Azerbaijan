@@ -1,7 +1,8 @@
 {
   "common": {
     "loading": "Yüklənir...",
-    "error": "Xəta",
+    "loadingData": "Məlumatlar yüklənir...",
+    "error": "Xəta baş verdi",
     "success": "Uğurlu",
     "save": "Yadda saxla",
     "cancel": "Ləğv et",
@@ -28,7 +29,7 @@
     "quantity": "Miqdar",
     "amount": "Məbləğ",
     "actions": "Əməliyyatlar",
-    "noData": "Məlumat yoxdur",
+    "noData": "Göstərmək üçün məlumat yoxdur",
     "allCategories": "Bütün kateqoriyalar",
     "copy": "Kopyala",
     "all": "Hamısı",
@@ -41,7 +42,10 @@
     "company": "Şirkət",
     "phone": "Telefon",
     "page": "Səhifə {current} / {total}",
-    "previous": "Əvvəlki"
+    "previous": "Əvvəlki",
+    "export": "PDF-ə ixrac",
+    "apply": "Tətbiq et",
+    "reset": "Sıfırla"
   },
   "header": {
     "searchPlaceholder": "məhsul axtarın",
@@ -262,10 +266,24 @@
     "brunchMenu": "Brunch Menyusu",
     "coffeeBreaks": "Qəhvə Fasiləsi\n& Günorta Çayı",
     "cateringMenu": "Katerinq Menyusu",
-    "ourStory": "Bizim Hekayə",
-    "copyright": "© 2024 PAUL Bakery. Bütün hüquqlar qorunur.",
+    "ourStory": "Bizim Hekayəmiz",
+    "termsConditions": "Qaydalar və Şərtlər",
     "privacyPolicy": "Məxfilik Siyasəti",
-    "termsConditions": "İstifadə Şərtləri"
+    "customer": {
+      "title": "Müştəri",
+      "myAccount": "Mənim Hesabım",
+      "contactInfo": "Əlaqə Məlumatı",
+      "deliveryInfo": "Çatdırılma Məlumatı",
+      "cookiePolicy": "Kuki Siyasəti",
+      "faq": "Tez-tez Verilən Suallar"
+    },
+    "newsletter": {
+      "title": "Xəbər Bülleteni",
+      "description": "Ən son xəbərləri və təklifləri əldə etmək üçün bülletenimizə abunə olun.",
+      "placeholder": "E-poçtunuzu daxil edin",
+      "button": "Abunə ol"
+    },
+    "developerCredit": "Sci-fi tərəfindən yaradılmışdır | 2025 | Bütün hüquqlar qorunur"
   },
   "auth": {
     "login": "Daxil ol",
@@ -354,7 +372,13 @@
     "calculator": "Qiymət Kalkulyatoru",
     "analytics": "Sifariş Analitikası",
     "inSystem": "Sistemdə",
-    "ordersOn": "Sifarişlər {day} {month}"
+    "ordersOn": "Sifarişlər {day} {month}",
+    "totalClients": "Ümumi Müştərilər",
+    "recentApplications": "Son Müraciətlər",
+    "upcomingOrders": "Qarşıdan Gələn Sifarişlər",
+    "kpi": "Əsas Göstəricilər",
+    "exportExcel": "Excel-ə ixrac",
+    "exportToPdf": "PDF-ə ixrac"
   },
   "orders": {
     "title": "Sifarişlər",
@@ -950,6 +974,12 @@
     "print": "Çap",
     "noOrders": "Sifariş yoxdur",
     "createOrderToGenerate": "BEO yaratmaq üçün sifariş yaradın"
+  },
+  "filters": {
+    "allClientTypes": "Bütün Müştəri Növləri",
+    "corporate": "Korporativ",
+    "oneTime": "Birdəfəlik",
+    "allClients": "Bütün Müştərilər"
   }
 }
 

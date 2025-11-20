@@ -41,7 +41,14 @@
     "company": "Компания",
     "phone": "Телефон",
     "page": "Страница {current} из {total}",
-    "previous": "Предыдущая"
+    "previous": "Предыдущая",
+    "loadingData": "Загрузка данных...",
+    "noData": "Нет данных для отображения",
+    "actions": "Действия",
+    "export": "Экспорт в PDF",
+    "all": "Все",
+    "apply": "Применить",
+    "reset": "Сбросить"
   },
   "header": {
     "searchPlaceholder": "поиск товара",
@@ -263,6 +270,23 @@
     "coffeeBreaks": "Кофе-брейк\n& Полдник",
     "cateringMenu": "Меню кейтеринга",
     "ourStory": "Наша история",
+    "termsConditions": "Правила и условия",
+    "privacyPolicy": "Политика конфиденциальности",
+    "customer": {
+      "title": "Клиентам",
+      "myAccount": "Мой аккаунт",
+      "contactInfo": "Контактная информация",
+      "deliveryInfo": "Информация о доставке",
+      "cookiePolicy": "Политика использования файлов cookie",
+      "faq": "Часто задаваемые вопросы"
+    },
+    "newsletter": {
+      "title": "Подписка",
+      "description": "Подпишитесь на нашу рассылку, чтобы быть в курсе последних новостей и предложений.",
+      "placeholder": "Введите ваш email",
+      "button": "Подписаться"
+    },
+    "developerCredit": "Создано Sci-fi | 2025 | Все права защищены",
     "copyright": "© 2024 PAUL Bakery. Все права защищены.",
     "privacyPolicy": "Политика конфиденциальности",
     "termsConditions": "Условия использования"
@@ -948,5 +972,11 @@
     "print": "Печать",
     "noOrders": "Нет заказов",
     "createOrderToGenerate": "Создайте заказ для генерации BEO"
+  },
+  "filters": {
+    "allClientTypes": "Все типы клиентов",
+    "corporate": "Корпоративный",
+    "oneTime": "Разовый",
+    "allClients": "Все клиенты"
   }
 }

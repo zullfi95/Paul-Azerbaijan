@@ -26,9 +26,28 @@ class OrderController extends BaseApiController
     {
         try {
             $this->authorize('viewAny', Order::class);
-            
-            $orders = Order::with(['coordinator', 'client'])
-                ->orderBy('created_at', 'desc')
+            $query = Order::with(['coordinator', 'client', 'application']);
+
+            if ($request->user()->isClient()) {
+                $query->where('client_id', $request->user()->id);
+            }
+
+            if ($request->filled('client_id')) {
+                $query->where('client_id', $request->client_id);
+            }
+
+            if ($request->filled('client_type')) {
+                $query->whereHas('client', function ($q) use ($request) {
+                    $q->where('client_category', $request->client_type);
+                });
+            }
+
+            // Фильтрация по статусу
+            if ($request->has('status') && $request->status !== 'all') {
+                $query->where('status', $request->status);
+            }
+
+            $orders = $query->orderBy('created_at', 'desc')
                 ->paginate(20);
 
             return $this->paginatedResponse($orders, 'Заказы получены успешно');

@@ -41,7 +41,9 @@
     "company": "Company",
     "phone": "Phone",
     "page": "Page {current} of {total}",
-    "previous": "Previous"
+    "previous": "Previous",
+    "loadingData": "Loading data...",
+    "noDataToDisplay": "No data to display"
   },
   "header": {
     "searchPlaceholder": "search for product",
@@ -64,7 +66,26 @@
     "patisserie": "Patisserie",
     "platters": "Platters",
     "bread": "Bread",
-    "savoury": "Savoury"
+    "savoury": "Savoury",
+    "overview": "Overview",
+    "applications": "Applications",
+    "orders": "Orders",
+    "users": "Users",
+    "calendar": "Calendar",
+    "reports": "Reports",
+    "positions": "Positions",
+    "kitchen": "Kitchen",
+    "dashboardOverview": "Dashboard Overview",
+    "manageApplications": "Manage Applications",
+    "manageOrders": "Manage Orders",
+    "manageUsers": "Manage Users",
+    "orderCalendar": "Order Calendar",
+    "reportsAnalytics": "Reports & Analytics",
+    "manageMenuPositions": "Manage Menu Positions",
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "logout": "Logout",
+    "openMenu": "Open Menu"
   },
   "pages": {
     "cakes": {
@@ -263,6 +284,23 @@
     "coffeeBreaks": "Coffee Breaks\n& Afternoon Teas",
     "cateringMenu": "Catering Menu",
     "ourStory": "Our Story",
+    "termsConditions": "Terms & Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "customer": {
+      "title": "Customer",
+      "myAccount": "My Account",
+      "contactInfo": "Contact Info",
+      "deliveryInfo": "Delivery Info",
+      "cookiePolicy": "Cookie Policy",
+      "faq": "FAQ"
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Subscribe to our newsletter to get the latest news and offers.",
+      "placeholder": "Enter your email",
+      "button": "Subscribe"
+    },
+    "developerCredit": "Created by Sci-fi | 2025 | All Rights Reserved",
     "copyright": "© 2024 PAUL Bakery. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
     "termsConditions": "Terms & Conditions"
@@ -354,7 +392,13 @@
     "calculator": "Price Calculator",
     "analytics": "Order Analytics",
     "inSystem": "In system",
-    "ordersOn": "Orders on {day} {month}"
+    "ordersOn": "Orders on {day} {month}",
+    "totalClients": "Total Clients",
+    "recentApplications": "Recent Applications",
+    "upcomingOrders": "Upcoming Orders",
+    "kpi": "Key Indicators",
+    "exportExcel": "Export to Excel",
+    "exportToPdf": "Export to PDF"
   },
   "orders": {
     "title": "Orders",
@@ -926,6 +970,12 @@
     "print": "Print",
     "noOrders": "No orders",
     "createOrderToGenerate": "Create an order to generate BEO"
+  },
+  "filters": {
+    "allClientTypes": "All Client Types",
+    "corporate": "Corporate",
+    "oneTime": "One-Time",
+    "allClients": "All Clients"
   }
 }
 

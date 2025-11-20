@@ -80,15 +80,15 @@ const Footer: React.FC = () => {
       ],
     },
     {
-      title: 'Customer',
+      title: t('customer.title'),
       links: [
-        { label: 'My Account', href: '/profile' },
-        { label: 'Contact info', href: '/contact' },
-        { label: 'Delivery info', href: '/delivery' },
+        { label: t('customer.myAccount'), href: '/profile' },
+        { label: t('customer.contactInfo'), href: '/contact' },
+        { label: t('customer.deliveryInfo'), href: '/delivery' },
         { label: t('termsConditions'), href: '/terms' },
         { label: t('privacyPolicy'), href: '/privacy' },
-        { label: 'Cookie policy', href: '/cookies' },
-        { label: 'FAQ', href: '/faq' },
+        { label: t('customer.cookiePolicy'), href: '/cookies' },
+        { label: t('customer.faq'), href: '/faq' },
       ],
     },
   ];
@@ -183,7 +183,7 @@ const Footer: React.FC = () => {
                     </a>
                   </div>
                   <div className="developer-credit">
-                    Created by Sci-fi | 2025 | All Rights Reserved
+                    {t('developerCredit')}
                   </div>
                 </div>
 
@@ -322,7 +322,7 @@ const Footer: React.FC = () => {
                     </a>
                   </div>
                   <div className="developer-credit">
-                    Created by Sci-fi | 2025 | All Rights Reserved
+                    {t('developerCredit')}
                   </div>
                 </div>
               </div>

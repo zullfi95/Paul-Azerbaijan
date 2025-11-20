@@ -79,7 +79,17 @@ class ApplicationController extends BaseApiController
             if ($request->user()->isClient()) {
                 $query->where('client_id', $request->user()->id);
             }
-            
+
+            if ($request->filled('client_id')) {
+                $query->where('client_id', $request->client_id);
+            }
+
+            if ($request->filled('client_type')) {
+                $query->whereHas('client', function ($q) use ($request) {
+                    $q->where('client_category', $request->client_type);
+                });
+            }
+           
             $applications = $query->orderBy('created_at', 'desc')
                                 ->paginate(20);
 

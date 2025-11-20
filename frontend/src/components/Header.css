@@ -63,7 +63,6 @@ body.menu-open {
 /* Main Navigation */
 .main-nav {
   color: #000;
-  font-family: "Sabon Next LT Pro";
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
@@ -72,7 +71,6 @@ body.menu-open {
 
 .nav-link {
   color: #000;
-  font-family: "Sabon Next LT Pro";
   font-size: 17.6px;
   font-style: normal;
   font-weight: 500;
@@ -444,7 +442,6 @@ body.menu-open {
 
 .mobile-nav-link {
   color: #000;
-  font-family: "Sabon Next LT Pro";
   font-size: 14px;
   font-weight: 400;
   text-decoration: none;
@@ -483,7 +480,6 @@ body.menu-open {
   background: none;
   border: none;
   color: #000;
-  font-family: "Sabon Next LT Pro";
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;

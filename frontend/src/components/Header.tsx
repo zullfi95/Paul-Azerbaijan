@@ -10,6 +10,7 @@ import CartModal from './CartModal';
 import EventPlanningModal from './EventPlanningModal';
 import EventSuccessNotification from './EventSuccessNotification';
 import SearchDropdown from './SearchDropdown';
+import LanguageSwitcher from './LanguageSwitcher';
 import { useCart } from '@/contexts/CartContext';
 import { useCartModal } from '@/contexts/CartModalContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -158,13 +159,6 @@ const Header: React.FC = React.memo(function Header() {
     }
   }, [router]);
 
-  const handleLanguageToggle = useCallback(() => {
-    const currentIndex = availableLocales.indexOf(locale);
-    const nextIndex = (currentIndex + 1) % availableLocales.length;
-    const nextLocale = availableLocales[nextIndex];
-    setLocale(nextLocale);
-  }, [locale, availableLocales, setLocale]);
-
   // Add/remove menu-open class to body when mobile menu is opened
   React.useEffect(() => {
     if (isMobile && isMobileMenuOpen) {
@@ -277,32 +271,11 @@ const Header: React.FC = React.memo(function Header() {
               )}
             </button>
 
-            {/* Language Toggle - Desktop only */}
-            {!isMobile && (
-              <button
-                className="icon-button"
-                aria-label={t('header.switchLanguage')}
-                onClick={handleLanguageToggle}
-                title={t('header.switchLanguage')}
-              >
-                <Globe className="icon" size={20} />
-              </button>
-            )}
-
-            {/* Language Toggle - Mobile only */}
+            {/* Language Switcher */}
+            {!isMobile && <LanguageSwitcher />}
+              
+            {/* Mobile Menu Button */}
             {isMobile && (
-              <button
-                className="icon-button"
-                aria-label={t('header.switchLanguage')}
-                onClick={handleLanguageToggle}
-                title={t('header.switchLanguage')}
-              >
-                <Globe className="icon" size={20} />
-              </button>
-            )}
-
-              {/* Mobile Menu Button */}
-              {isMobile && (
                 <button
                   className="mobile-menu-button"
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
@@ -421,6 +394,7 @@ const Header: React.FC = React.memo(function Header() {
                     <Search className="icon" size={20} />
                   </button>
                   
+                  <LanguageSwitcher />
                   
                   <button 
                     className="icon-button cart-button" 

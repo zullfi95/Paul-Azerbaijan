@@ -169,11 +169,28 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 </div>
               </div>
 
-              {/* Special Instructions */}
-              {order.comment && (
+              {/* Comments */}
+              {(order.kitchen_comment || order.operation_comment || order.desserts_comment) && (
                 <div className={styles.infoSection}>
-                  <h3 className={styles.sectionTitle}>Special Instructions</h3>
-                  <p className={styles.commentText}>{order.comment}</p>
+                  <h3 className={styles.sectionTitle}>Комментарии</h3>
+                  {order.kitchen_comment && (
+                    <div className={styles.commentItem}>
+                      <strong>Для кухни:</strong>
+                      <p className={styles.commentText}>{order.kitchen_comment}</p>
+                    </div>
+                  )}
+                  {order.operation_comment && (
+                    <div className={styles.commentItem}>
+                      <strong>Для operation:</strong>
+                      <p className={styles.commentText}>{order.operation_comment}</p>
+                    </div>
+                  )}
+                  {order.desserts_comment && (
+                    <div className={styles.commentItem}>
+                      <strong>Для сладостей:</strong>
+                      <p className={styles.commentText}>{order.desserts_comment}</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

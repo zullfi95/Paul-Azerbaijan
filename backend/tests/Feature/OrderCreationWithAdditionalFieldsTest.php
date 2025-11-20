@@ -62,7 +62,9 @@ class OrderCreationWithAdditionalFieldsTest extends TestCase
             'delivery_cost' => 10.00,
             'discount_fixed' => 5.00,
             'discount_percent' => 10,
-            'comment' => 'Test order comment',
+            'kitchen_comment' => 'Test kitchen comment',
+            'operation_comment' => 'Test operation comment',
+            'desserts_comment' => 'Test desserts comment',
             
             // Новые поля
             'equipment_required' => 5,

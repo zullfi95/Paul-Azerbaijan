@@ -327,19 +327,47 @@ export default function CalendarPage() {
                 )}
               </div>
 
-              {selectedOrder.comment && (
+              {(selectedOrder.kitchen_comment || selectedOrder.operation_comment || selectedOrder.desserts_comment) && (
                 <div className="dashboard-section-divider">
                   <h3 className="dashboard-section-title">{t('calendar.comment')}</h3>
-                  <div style={{ 
-                    padding: 'var(--space-3)', 
-                    background: '#F9F9F6', 
-                    borderRadius: 'var(--radius-md)', 
-                    border: '1px solid var(--paul-border)',
-                    color: 'var(--paul-black)',
-                    fontSize: 'var(--text-sm)'
-                  }}>
-                    {selectedOrder.comment}
-                  </div>
+                  {selectedOrder.kitchen_comment && (
+                    <div style={{ 
+                      padding: 'var(--space-3)', 
+                      background: '#F9F9F6', 
+                      borderRadius: 'var(--radius-md)', 
+                      border: '1px solid var(--paul-border)',
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-sm)',
+                      marginBottom: 'var(--space-2)'
+                    }}>
+                      <strong>Для кухни:</strong> {selectedOrder.kitchen_comment}
+                    </div>
+                  )}
+                  {selectedOrder.operation_comment && (
+                    <div style={{ 
+                      padding: 'var(--space-3)', 
+                      background: '#F9F9F6', 
+                      borderRadius: 'var(--radius-md)', 
+                      border: '1px solid var(--paul-border)',
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-sm)',
+                      marginBottom: 'var(--space-2)'
+                    }}>
+                      <strong>Для operation:</strong> {selectedOrder.operation_comment}
+                    </div>
+                  )}
+                  {selectedOrder.desserts_comment && (
+                    <div style={{ 
+                      padding: 'var(--space-3)', 
+                      background: '#F9F9F6', 
+                      borderRadius: 'var(--radius-md)', 
+                      border: '1px solid var(--paul-border)',
+                      color: 'var(--paul-black)',
+                      fontSize: 'var(--text-sm)'
+                    }}>
+                      <strong>Для сладостей:</strong> {selectedOrder.desserts_comment}
+                    </div>
+                  )}
                 </div>
               )}
 

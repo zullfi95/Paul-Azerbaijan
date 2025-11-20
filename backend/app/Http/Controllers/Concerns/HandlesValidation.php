@@ -99,7 +99,9 @@ trait HandlesValidation
             'equipment_required' => 'nullable|integer|min:0',
             'staff_assigned' => 'nullable|integer|min:0',
             'special_instructions' => 'nullable|string',
-            'comment' => 'nullable|string',
+            'kitchen_comment' => 'nullable|string',
+            'operation_comment' => 'nullable|string',
+            'desserts_comment' => 'nullable|string',
         ];
     }
 

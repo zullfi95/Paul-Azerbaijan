@@ -145,7 +145,9 @@ trait HandlesOrderCalculations
             'company_name' => $data['company_name'] ?? $client->company_name ?? $client->name,
             'client_type' => $data['client_type'] ?? $client->client_category ?? 'one_time',
             'menu_items' => $totals['resolved_items'],
-            'comment' => $data['comment'] ?? null,
+            'kitchen_comment' => $data['kitchen_comment'] ?? null,
+            'operation_comment' => $data['operation_comment'] ?? null,
+            'desserts_comment' => $data['desserts_comment'] ?? null,
             'status' => $status,
             'payment_status' => isset($data['application_id']) && $data['application_id'] 
                 ? Order::PAYMENT_STATUS_PENDING 

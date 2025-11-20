@@ -511,11 +511,25 @@
             </div>
             @endif
 
-            <!-- Comment -->
-            @if($order->comment)
+            <!-- Comments -->
+            @if($order->kitchen_comment || $order->operation_comment || $order->desserts_comment)
             <div class="info-section">
                 <h3>Əlavə Qeydlər</h3>
-                <p style="color: #4A4A4A; margin: 0; white-space: pre-wrap; font-family: 'Parisine Pro Gris', sans-serif;">{{ $order->comment }}</p>
+                @if($order->kitchen_comment)
+                <p style="color: #4A4A4A; margin: 0 0 10px 0; white-space: pre-wrap; font-family: 'Parisine Pro Gris', sans-serif;">
+                    <strong>Mətbəx üçün:</strong> {{ $order->kitchen_comment }}
+                </p>
+                @endif
+                @if($order->operation_comment)
+                <p style="color: #4A4A4A; margin: 0 0 10px 0; white-space: pre-wrap; font-family: 'Parisine Pro Gris', sans-serif;">
+                    <strong>Operation üçün:</strong> {{ $order->operation_comment }}
+                </p>
+                @endif
+                @if($order->desserts_comment)
+                <p style="color: #4A4A4A; margin: 0; white-space: pre-wrap; font-family: 'Parisine Pro Gris', sans-serif;">
+                    <strong>Şirniyyatlar üçün:</strong> {{ $order->desserts_comment }}
+                </p>
+                @endif
             </div>
             @endif
 

@@ -31,7 +31,9 @@ export const DEFAULT_ORDER_FORM = {
   delivery_time: '',
   delivery_address: '',
   delivery_type: 'delivery' as 'delivery' | 'pickup' | 'buffet',
-  comment: '',
+  kitchen_comment: '',
+  operation_comment: '',
+  desserts_comment: '',
   discount_fixed: 0,
   discount_percent: 0
 } as const;

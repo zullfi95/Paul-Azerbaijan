@@ -29,7 +29,9 @@ export default function EditOrderForm({ orderId }: EditOrderFormProps) {
   const [formData, setFormData] = useState({
     selected_client_id: null as number | null,
     menu_items: [] as CartItem[],
-    comment: '',
+    kitchen_comment: '',
+    operation_comment: '',
+    desserts_comment: '',
     delivery_date: '',
     delivery_time: '',
     delivery_type: 'delivery' as 'delivery' | 'pickup' | 'buffet',
@@ -74,7 +76,9 @@ export default function EditOrderForm({ orderId }: EditOrderFormProps) {
           setFormData({
             selected_client_id: orderData.client_id || null,
             menu_items: orderData.menu_items || [],
-            comment: orderData.comment || '',
+            kitchen_comment: orderData.kitchen_comment || '',
+            operation_comment: orderData.operation_comment || '',
+            desserts_comment: orderData.desserts_comment || '',
             delivery_date: orderData.delivery_date ? new Date(orderData.delivery_date).toISOString().split('T')[0] : '',
             delivery_time: deliveryTime,
             delivery_type: orderData.delivery_type || 'delivery',
@@ -540,13 +544,39 @@ export default function EditOrderForm({ orderId }: EditOrderFormProps) {
               </div>
             )}
 
-            {/* Comment */}
+            {/* Comment for Kitchen */}
             <div className={styles.formSection}>
-              <label htmlFor="comment" className={styles.label}>Комментарий</label>
+              <label htmlFor="kitchen_comment" className={styles.label}>Комментарий для кухни</label>
               <textarea
-                id="comment"
-                value={formData.comment}
-                onChange={(e) => setFormData(prev => ({ ...prev, comment: e.target.value }))}
+                id="kitchen_comment"
+                value={formData.kitchen_comment}
+                onChange={(e) => setFormData(prev => ({ ...prev, kitchen_comment: e.target.value }))}
+                className={styles.textarea}
+                placeholder="Специальные инструкции для кухни..."
+                rows={3}
+              />
+            </div>
+
+            {/* Comment for Operation */}
+            <div className={styles.formSection}>
+              <label htmlFor="operation_comment" className={styles.label}>Комментарий для operation</label>
+              <textarea
+                id="operation_comment"
+                value={formData.operation_comment}
+                onChange={(e) => setFormData(prev => ({ ...prev, operation_comment: e.target.value }))}
+                className={styles.textarea}
+                placeholder="Инструкции для отдела operation..."
+                rows={3}
+              />
+            </div>
+
+            {/* Comment for Desserts */}
+            <div className={styles.formSection}>
+              <label htmlFor="desserts_comment" className={styles.label}>Комментарии для сладостей</label>
+              <textarea
+                id="desserts_comment"
+                value={formData.desserts_comment}
+                onChange={(e) => setFormData(prev => ({ ...prev, desserts_comment: e.target.value }))}
                 className={styles.textarea}
                 rows={4}
                 placeholder="Дополнительные пожелания или комментарии"

@@ -339,19 +339,6 @@ export default function CreateOrderForm() {
                             </div>
                         )}
 
-                        {/* Comment */}
-                        <div className={styles.formSection}>
-                            <label htmlFor="comment" className={styles.label}>{t('form.comment')}</label>
-                            <textarea
-                                id="comment"
-                                value={formData.comment}
-                                onChange={(e) => handleInputChange('comment', e.target.value)}
-                                className={styles.textarea}
-                                placeholder={t('form.commentPlaceholder')}
-                                rows={3}
-                            />
-                        </div>
-
                         {/* Скидки и стоимость доставки */}
                         <div className={styles.pricingSection}>
                             <h3 className={styles.pricingTitle}>{t('form.pricesAndDiscounts')}</h3>
@@ -602,6 +589,51 @@ export default function CreateOrderForm() {
                         <div className={styles.additionalSection}>
                             <h3 className={styles.additionalTitle}>{t('form.additionalDetails')}</h3>
                             
+                            {/* Comment for Kitchen */}
+                            <div className={styles.formSection}>
+                                <label htmlFor="kitchen_comment" className={styles.label}>
+                                    {t('form.kitchenComment')}
+                                </label>
+                                <textarea
+                                    id="kitchen_comment"
+                                    value={formData.kitchen_comment}
+                                    onChange={(e) => handleInputChange('kitchen_comment', e.target.value)}
+                                    className={styles.textarea}
+                                    placeholder={t('form.kitchenCommentPlaceholder')}
+                                    rows={3}
+                                />
+                            </div>
+
+                            {/* Comment for Operation */}
+                            <div className={styles.formSection}>
+                                <label htmlFor="operation_comment" className={styles.label}>
+                                    {t('form.operationComment')}
+                                </label>
+                                <textarea
+                                    id="operation_comment"
+                                    value={formData.operation_comment}
+                                    onChange={(e) => handleInputChange('operation_comment', e.target.value)}
+                                    className={styles.textarea}
+                                    placeholder={t('form.operationCommentPlaceholder')}
+                                    rows={3}
+                                />
+                            </div>
+
+                            {/* Comment for Desserts */}
+                            <div className={styles.formSection}>
+                                <label htmlFor="desserts_comment" className={styles.label}>
+                                    {t('form.dessertsComment')}
+                                </label>
+                                <textarea
+                                    id="desserts_comment"
+                                    value={formData.desserts_comment}
+                                    onChange={(e) => handleInputChange('desserts_comment', e.target.value)}
+                                    className={styles.textarea}
+                                    placeholder={t('form.dessertsCommentPlaceholder')}
+                                    rows={3}
+                                />
+                            </div>
+
                             {/* Special Instructions */}
                             <div className={styles.formSection}>
                                 <label htmlFor="special_instructions" className={styles.label}>

@@ -152,10 +152,10 @@ class OrderController extends BaseApiController
             $validatedData = $this->validateRequest($request, $rules, $this->getCommonValidationMessages(), $this->getCommonValidationAttributes());
 
             $updateData = $request->only([
-                'client_type', 'company_name', 'comment', 'status', 
+                'client_type', 'company_name', 'status', 
                 'delivery_date', 'delivery_type', 'delivery_address', 
                 'recurring_schedule', 'equipment_required', 'staff_assigned', 
-                'special_instructions'
+                'special_instructions', 'kitchen_comment', 'operation_comment', 'desserts_comment'
             ]);
 
             // Пересчитываем суммы если изменились товары или скидки

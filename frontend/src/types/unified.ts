@@ -129,7 +129,9 @@ export interface Order {
     phone?: string;
   }>;
   menu_items: MenuItem[];
-  comment?: string;
+  kitchen_comment?: string;
+  operation_comment?: string;
+  desserts_comment?: string;
   status: OrderStatus;
   payment_status?: PaymentStatus;
   coordinator_id?: number;

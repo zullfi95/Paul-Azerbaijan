@@ -46,7 +46,9 @@ export interface OrderCreateRequest {
   
   // Common fields
   menu_items: CartItem[];
-  comment?: string;
+  kitchen_comment?: string;
+  operation_comment?: string;
+  desserts_comment?: string;
   delivery_date?: string;
   delivery_time?: string;
   delivery_type?: 'delivery' | 'pickup' | 'buffet';

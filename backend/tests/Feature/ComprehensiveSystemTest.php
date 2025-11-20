@@ -186,7 +186,9 @@ class ComprehensiveSystemTest extends TestCase
             'delivery_date' => now()->addDays(3)->format('Y-m-d'),
             'delivery_time' => '12:00',
             'delivery_address' => 'Test Address',
-            'comment' => 'Test order',
+            'kitchen_comment' => 'Test kitchen comment',
+            'operation_comment' => 'Test operation comment',
+            'desserts_comment' => 'Test desserts comment',
         ]);
 
         $response->assertStatus(201)

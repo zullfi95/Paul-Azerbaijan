@@ -146,7 +146,9 @@ export interface Order {
     phone?: string;
   }>;
   menu_items: MenuItem[];
-  comment?: string;
+  kitchen_comment?: string;
+  operation_comment?: string;
+  desserts_comment?: string;
   status: 'draft' | 'submitted' | 'processing' | 'completed' | 'cancelled' | 'paid' | 'pending_payment';
   payment_status?: 'pending' | 'authorized' | 'charged' | 'failed' | 'refunded' | 'credited';
   coordinator_id?: number;

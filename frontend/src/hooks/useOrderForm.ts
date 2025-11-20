@@ -13,7 +13,9 @@ import { queryKeys } from '../utils/queryKeys';
 interface OrderFormData {
     selected_client_id: number | null;
     menu_items: CartItem[];
-    comment: string;
+    kitchen_comment: string;
+    operation_comment: string;
+    desserts_comment: string;
     delivery_date: string;
     delivery_time: string;
     delivery_type: 'delivery' | 'pickup' | 'buffet';
@@ -89,7 +91,9 @@ export const useOrderForm = () => {
     const [formData, setFormData] = useState<OrderFormData>({
         selected_client_id: null,
         menu_items: [],
-        comment: '',
+        kitchen_comment: '',
+        operation_comment: '',
+        desserts_comment: '',
         delivery_date: '',
         delivery_time: '',
         delivery_type: 'delivery',
@@ -200,7 +204,6 @@ export const useOrderForm = () => {
                     setFormData(prev => ({
                         ...prev,
                         selected_client_id: app.client_id ?? prev.selected_client_id,
-                        comment: app.message || prev.comment,
                         delivery_date: extractDatePart(app.event_date) || prev.delivery_date,
                         delivery_time: extractTimePart(app.event_time) || prev.delivery_time,
                         delivery_address: app.event_address || prev.delivery_address,

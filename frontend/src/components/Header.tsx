@@ -289,6 +289,18 @@ const Header: React.FC = React.memo(function Header() {
               </button>
             )}
 
+            {/* Language Toggle - Mobile only */}
+            {isMobile && (
+              <button
+                className="icon-button"
+                aria-label={t('header.switchLanguage')}
+                onClick={handleLanguageToggle}
+                title={t('header.switchLanguage')}
+              >
+                <Globe className="icon" size={20} />
+              </button>
+            )}
+
               {/* Mobile Menu Button */}
               {isMobile && (
                 <button
@@ -376,17 +388,6 @@ const Header: React.FC = React.memo(function Header() {
                   />
                 </div>
                 <div className="mobile-menu-header-actions">
-                  {/* Language Toggle - Mobile */}
-                  <button
-                    className="icon-button"
-                    aria-label={t('header.switchLanguage')}
-                    onClick={handleLanguageToggle}
-                    onTouchStart={() => {}}
-                    type="button"
-                  >
-                    <Globe className="icon" size={20} />
-                  </button>
-
                   {/* Profile Icon - Mobile */}
                   <button 
                     className="icon-button" 

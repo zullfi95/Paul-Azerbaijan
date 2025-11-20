@@ -57,8 +57,10 @@ class CreateOrderRequest extends BaseFormRequest
             'staff_assigned' => 'nullable|integer|min:0',
             'special_instructions' => 'nullable|string',
             
-            // Комментарий
-            'comment' => 'nullable|string',
+            // Комментарии
+            'kitchen_comment' => 'nullable|string',
+            'operation_comment' => 'nullable|string',
+            'desserts_comment' => 'nullable|string',
         ];
     }
 

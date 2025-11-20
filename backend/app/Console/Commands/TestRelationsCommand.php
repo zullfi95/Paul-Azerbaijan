@@ -72,7 +72,9 @@ class TestRelationsCommand extends Command
                 ['id' => 1, 'name' => 'Блюдо 1', 'quantity' => 2, 'price' => 500],
                 ['id' => 2, 'name' => 'Блюдо 2', 'quantity' => 1, 'price' => 300]
             ]),
-            'comment' => 'Тестовый заказ',
+            'kitchen_comment' => 'Тестовый комментарий для кухни',
+            'operation_comment' => 'Тестовый комментарий для operation',
+            'desserts_comment' => 'Тестовый комментарий для сладостей',
             'status' => 'submitted',
             'coordinator_id' => $coordinator->id,
             'client_id' => $client->id,

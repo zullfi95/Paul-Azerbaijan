@@ -165,18 +165,66 @@ export async function generateBEOFile(order: Order): Promise<void> {
 
   }
   
-  // Special Instructions
-  if (order.comment) {
+  // Comments Section
+  const hasComments = order.kitchen_comment || order.operation_comment || order.desserts_comment || order.special_instructions;
+  if (hasComments) {
     doc.setFontSize(14);
     doc.setTextColor(26, 26, 26);
-    doc.text('ОСОБЫЕ ТРЕБОВАНИЯ', 20, yPosition);
+    doc.text('ОСОБЫЕ ТРЕБОВАНИЯ И КОММЕНТАРИИ', 20, yPosition);
     yPosition += 10;
     
     doc.setFontSize(10);
     doc.setTextColor(74, 74, 74);
-    const splitComment = doc.splitTextToSize(order.comment, 170);
-    doc.text(splitComment, 20, yPosition);
-    yPosition += splitComment.length * 5 + 10;
+    
+    if (order.kitchen_comment) {
+      doc.setFontSize(11);
+      doc.setTextColor(26, 26, 26);
+      doc.text('Для кухни:', 20, yPosition);
+      yPosition += 6;
+      doc.setFontSize(10);
+      doc.setTextColor(74, 74, 74);
+      const splitKitchenComment = doc.splitTextToSize(order.kitchen_comment, 170);
+      doc.text(splitKitchenComment, 20, yPosition);
+      yPosition += splitKitchenComment.length * 5 + 8;
+    }
+    
+    if (order.operation_comment) {
+      doc.setFontSize(11);
+      doc.setTextColor(26, 26, 26);
+      doc.text('Для operation:', 20, yPosition);
+      yPosition += 6;
+      doc.setFontSize(10);
+      doc.setTextColor(74, 74, 74);
+      const splitOperationComment = doc.splitTextToSize(order.operation_comment, 170);
+      doc.text(splitOperationComment, 20, yPosition);
+      yPosition += splitOperationComment.length * 5 + 8;
+    }
+    
+    if (order.desserts_comment) {
+      doc.setFontSize(11);
+      doc.setTextColor(26, 26, 26);
+      doc.text('Для сладостей:', 20, yPosition);
+      yPosition += 6;
+      doc.setFontSize(10);
+      doc.setTextColor(74, 74, 74);
+      const splitDessertsComment = doc.splitTextToSize(order.desserts_comment, 170);
+      doc.text(splitDessertsComment, 20, yPosition);
+      yPosition += splitDessertsComment.length * 5 + 8;
+    }
+    
+    if (order.special_instructions) {
+      doc.setFontSize(11);
+      doc.setTextColor(26, 26, 26);
+      doc.text('Специальные инструкции:', 20, yPosition);
+      yPosition += 6;
+      doc.setFontSize(10);
+      doc.setTextColor(74, 74, 74);
+      const splitSpecialInstructions = doc.splitTextToSize(order.special_instructions, 170);
+      doc.text(splitSpecialInstructions, 20, yPosition);
+      yPosition += splitSpecialInstructions.length * 5 + 8;
+    }
+    
+    yPosition += 5;
   }
   
   // Service Details Section

@@ -28,7 +28,9 @@ class OrderFactory extends Factory
                     'server_price' => 10.00,
                 ],
             ],
-            'comment' => null,
+            'kitchen_comment' => null,
+            'operation_comment' => null,
+            'desserts_comment' => null,
             'status' => 'submitted',
             'coordinator_id' => User::factory()->staff()->create()->id,
             'client_id' => User::factory()->create([

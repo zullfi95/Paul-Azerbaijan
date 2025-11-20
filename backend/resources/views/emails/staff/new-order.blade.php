@@ -26,9 +26,17 @@
         <li><strong>Общая сумма:</strong> {{ $order->final_amount ?? 0 }} руб.</li>
     </ul>
     
-    @if($order->comment)
-    <h3>Комментарий:</h3>
-    <p>{{ $order->comment }}</p>
+    @if($order->kitchen_comment || $order->operation_comment || $order->desserts_comment)
+    <h3>Комментарии:</h3>
+    @if($order->kitchen_comment)
+    <p><strong>Для кухни:</strong> {{ $order->kitchen_comment }}</p>
+    @endif
+    @if($order->operation_comment)
+    <p><strong>Для operation:</strong> {{ $order->operation_comment }}</p>
+    @endif
+    @if($order->desserts_comment)
+    <p><strong>Для сладостей:</strong> {{ $order->desserts_comment }}</p>
+    @endif
     @endif
     
     <h3>Состав заказа:</h3>

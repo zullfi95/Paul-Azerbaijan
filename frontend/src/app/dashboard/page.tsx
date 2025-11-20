@@ -6,21 +6,14 @@ import Link from "next/link";
 import { useTranslations } from 'next-intl';
 import { useAuth } from "../../contexts/AuthContext";
 import { Application, Order, User } from "../../types/common";
-import {
-  getRecentApplications,
-  getUpcomingOrders,
-  calculateStatistics,
-} from "../../utils/dashboardUtils";
 import { makeApiRequest, extractApiData, handleApiError } from "../../utils/apiHelpers";
 import { useAuthGuard, canViewDashboard } from "../../utils/authConstants";
 import DashboardLayout from "../../components/DashboardLayout";
-import StatCard from "../../components/StatCard";
 import MiniCalendar from "../../components/MiniCalendar";
 import { 
-    DownloadIcon,
     UsersIcon, 
-    ClipboardListIcon, 
-    TrendingUpIcon, 
+    BookOpenIcon, 
+    ShoppingBagIcon, 
     CheckCircleIcon,
     FileTextIcon
 } from "../../components/Icons";
@@ -99,15 +92,20 @@ export default function Dashboard() {
   }, [hasAccess, loadClients, loadApplications, loadOrders]);
 
   const recentApplications = useMemo(
-    () => getRecentApplications(applications),
+    () => applications.slice(0, 5),
     [applications]
   );
 
-  const upcomingOrders = useMemo(() => getUpcomingOrders(orders), [orders]);
+  const upcomingOrders = useMemo(() => orders.filter(o => new Date(o.delivery_date || '') > new Date()), [orders]);
 
   const stats = useMemo(
-    () => calculateStatistics(applications, orders),
-    [applications, orders]
+    () => ({
+        totalClients: clients.length,
+        newApplications: applications.filter(a => a.status === 'pending').length,
+        ordersInProgress: orders.filter(o => o.status === 'in_progress').length,
+        completedOrders: orders.filter(o => o.status === 'completed').length,
+    }),
+    [applications, orders, clients]
   );
   
     const exportSectionToPdf = async (elementId: string, fileName: string) => {
@@ -212,7 +210,7 @@ export default function Dashboard() {
           </div>
           <div className={styles.actions}>
             <button className={styles.exportButton} onClick={handleExcelExport}>
-              <DownloadIcon />
+              <FileTextIcon />
               {t('dashboard.exportExcel')}
             </button>
           </div>
@@ -223,26 +221,34 @@ export default function Dashboard() {
         ) : (
             <>
                 <div className={styles.statsGrid} id="stats-section">
-                    <StatCard
-                        icon={<UsersIcon />}
-                        label={t('dashboard.totalClients')}
-                        value={stats.totalClients}
-                    />
-                    <StatCard
-                        icon={<ClipboardListIcon />}
-                        label={t('dashboard.newApplications')}
-                        value={stats.newApplications}
-                    />
-                    <StatCard
-                        icon={<TrendingUpIcon />}
-                        label={t('dashboard.ordersInProgress')}
-                        value={stats.ordersInProgress}
-                    />
-                    <StatCard
-                        icon={<CheckCircleIcon />}
-                        label={t('dashboard.completedOrders')}
-                        value={stats.completedOrders}
-                    />
+                    <div className={styles.statCard}>
+                        <UsersIcon />
+                        <div className={styles.statCardInfo}>
+                            <span className={styles.statCardLabel}>{t('dashboard.totalClients')}</span>
+                            <span className={styles.statCardValue}>{stats.totalClients}</span>
+                        </div>
+                    </div>
+                    <div className={styles.statCard}>
+                        <BookOpenIcon />
+                        <div className={styles.statCardInfo}>
+                            <span className={styles.statCardLabel}>{t('dashboard.newApplications')}</span>
+                            <span className={styles.statCardValue}>{stats.newApplications}</span>
+                        </div>
+                    </div>
+                    <div className={styles.statCard}>
+                        <ShoppingBagIcon />
+                        <div className={styles.statCardInfo}>
+                            <span className={styles.statCardLabel}>{t('dashboard.ordersInProgress')}</span>
+                            <span className={styles.statCardValue}>{stats.ordersInProgress}</span>
+                        </div>
+                    </div>
+                    <div className={styles.statCard}>
+                        <CheckCircleIcon />
+                        <div className={styles.statCardInfo}>
+                            <span className={styles.statCardLabel}>{t('dashboard.completedOrders')}</span>
+                            <span className={styles.statCardValue}>{stats.completedOrders}</span>
+                        </div>
+                    </div>
                 </div>
                 <button onClick={() => exportSectionToPdf('stats-section', 'Statistics_Report')} className={styles.pdfExportButton}>
                     <FileTextIcon /> {t('dashboard.exportToPdf')}

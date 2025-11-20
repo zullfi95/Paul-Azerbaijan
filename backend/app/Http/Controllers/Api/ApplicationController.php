@@ -232,7 +232,6 @@ class ApplicationController extends BaseApiController
                 'contact_person' => $validatedData['name'] ?? null,
                 'email' => $validatedData['email'],
                 'phone' => $validatedData['phone'],
-                'event_type' => 'Event Planning',
                 'event_address' => $validatedData['location'],
                 'event_date' => $validatedData['eventDate'],
                 'event_time' => isset($validatedData['eventTime']) 

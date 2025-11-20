@@ -376,6 +376,37 @@ const Header: React.FC = React.memo(function Header() {
                   />
                 </div>
                 <div className="mobile-menu-header-actions">
+                  {/* Language Toggle - Mobile */}
+                  <button
+                    className="icon-button"
+                    aria-label={t('header.switchLanguage')}
+                    onClick={handleLanguageToggle}
+                    onTouchStart={() => {}}
+                    type="button"
+                  >
+                    <Globe className="icon" size={20} />
+                  </button>
+
+                  {/* Profile Icon - Mobile */}
+                  <button 
+                    className="icon-button" 
+                    aria-label={isAuthenticated ? 'Profile' : 'Login'}
+                    onClick={() => {
+                      closeMobileMenu();
+                      handleLogin();
+                    }}
+                    onTouchStart={() => {}}
+                    type="button"
+                  >
+                    <Image
+                      src="/images/userHeader.svg"
+                      alt="User"
+                      width={23}
+                      height={23}
+                      className="icon"
+                    />
+                  </button>
+
                   <button 
                     className="icon-button" 
                     aria-label="Search"

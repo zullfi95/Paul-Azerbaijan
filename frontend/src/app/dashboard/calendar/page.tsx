@@ -79,7 +79,9 @@ export default function CalendarPage() {
   // Генерация BEO файла
   const handleGenerateBEO = async (order: Order) => {
     try {
-      generateBEOFile(order);
+      const locale = document.documentElement.lang || 'ru';
+      const localeMap: Record<string, string> = { ru: 'ru-RU', en: 'en-US', az: 'az-AZ' };
+      await generateBEOFile(order, t, localeMap[locale] || 'ru-RU');
     } catch (error) {
       console.error('Error generating BEO file:', error);
       alert(t('calendar.errorCreatingBEO'));

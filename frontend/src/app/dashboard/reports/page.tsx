@@ -150,7 +150,9 @@ export default function ReportsPage() {
       return orderDate >= startDate && orderDate <= endDate;
     });
     
-    generateOrdersReport(filteredOrders, startDate, endDate);
+    const locale = document.documentElement.lang || 'ru';
+    const localeMap: Record<string, string> = { ru: 'ru-RU', en: 'en-US', az: 'az-AZ' };
+    generateOrdersReport(filteredOrders, startDate, endDate, t, localeMap[locale] || 'ru-RU');
   };
 
   if (isLoading) {

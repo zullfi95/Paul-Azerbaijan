@@ -1,6 +1,6 @@
 import type { Order } from '../types/common';
 import { formatTotalAmount, parseTotalAmount } from './numberUtils';
-import { getStatusLabel } from './statusTranslations';
+import { getStatusLabel, getTranslatedStatusLabel } from './statusTranslations';
 
 export interface BEOData {
   eventName: string;
@@ -26,6 +26,8 @@ export interface BEOData {
   staffRequired?: string[];
 }
 
+type TranslateFunction = (key: string, values?: Record<string, string | number>) => string;
+
 async function ensureUnicodeFont(doc: jsPDF): Promise<void> {
   try {
     // Ожидаем, что файл шрифта будет доступен по пути /fonts/Roboto-Regular.ttf (положить в public/fonts)
@@ -45,23 +47,23 @@ async function ensureUnicodeFont(doc: jsPDF): Promise<void> {
   }
 }
 
-function formatDate(value?: string | null): string {
-  if (!value) return 'Не указано';
+function formatDate(value: string | null | undefined, t: TranslateFunction, locale: string = 'ru-RU'): string {
+  if (!value) return t('beo.eventInfo.notSpecified');
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return String(value);
-  return d.toLocaleDateString('ru-RU');
+  return d.toLocaleDateString(locale);
 }
 
-function formatTime(value?: string | null): string {
-  if (!value) return 'Не указано';
+function formatTime(value: string | null | undefined, t: TranslateFunction, locale: string = 'ru-RU'): string {
+  if (!value) return t('beo.eventInfo.notSpecified');
   // Может прийти как HH:mm или полная дата-время
   if (/^\d{2}:\d{2}$/.test(value)) return value;
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return String(value);
-  return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
 }
 
-export async function generateBEOFile(order: Order): Promise<void> {
+export async function generateBEOFile(order: Order, t: TranslateFunction, locale: string = 'ru-RU'): Promise<void> {
   const doc = new jsPDF();
 
   // Загружаем Unicode-шрифт (для кириллицы/азербайджанского)
@@ -70,15 +72,15 @@ export async function generateBEOFile(order: Order): Promise<void> {
   // Header
   doc.setFontSize(20);
   doc.setTextColor(26, 26, 26); // #1A1A1A
-  doc.text('PAUL AZERBAIJAN', 20, 25);
+  doc.text(t('beo.title'), 20, 25);
   
   doc.setFontSize(16);
-  doc.text('BANQUET EVENT ORDER (BEO)', 20, 35);
+  doc.text(t('beo.subtitle'), 20, 35);
   
   doc.setFontSize(12);
   doc.setTextColor(74, 74, 74); // #4A4A4A
-  doc.text(`BEO #${order.id}`, 150, 25);
-  doc.text(`Дата создания: ${new Date().toLocaleDateString('ru-RU')}`, 150, 32);
+  doc.text(`${t('beo.beoNumber')}${order.id}`, 150, 25);
+  doc.text(`${t('beo.createdDate')} ${new Date().toLocaleDateString(locale)}`, 150, 32);
   
   // Линия разделитель
   doc.setDrawColor(212, 175, 55); // #D4AF37
@@ -90,18 +92,18 @@ export async function generateBEOFile(order: Order): Promise<void> {
   // Event Information
   doc.setFontSize(14);
   doc.setTextColor(26, 26, 26);
-  doc.text('ИНФОРМАЦИЯ О МЕРОПРИЯТИИ', 20, yPosition);
+  doc.text(t('beo.eventInfo.title'), 20, yPosition);
   yPosition += 10;
   
   doc.setFontSize(10);
   doc.setTextColor(74, 74, 74);
   
   const eventInfo = [
-    ['Компания/Организация:', order.company_name],
-    ['Дата мероприятия:', formatDate(order.delivery_date as string)],
-    ['Время мероприятия:', formatTime(order.delivery_time as string)],
-    ['Статус заказа:', getStatusLabel(order.status)],
-    ['Сумма заказа:', order.total_amount ? `${formatTotalAmount(order.total_amount)} ₼` : 'Не указано']
+    [t('beo.eventInfo.company'), order.company_name || t('beo.eventInfo.notSpecified')],
+    [t('beo.eventInfo.eventDate'), formatDate(order.delivery_date as string, t, locale)],
+    [t('beo.eventInfo.eventTime'), formatTime(order.delivery_time as string, t, locale)],
+    [t('beo.eventInfo.orderStatus'), getTranslatedStatusLabel(order.status, t)],
+    [t('beo.eventInfo.orderAmount'), order.total_amount ? `${formatTotalAmount(order.total_amount)} ₼` : t('beo.eventInfo.notSpecified')]
   ];
   
   eventInfo.forEach(([label, value]) => {
@@ -118,20 +120,27 @@ export async function generateBEOFile(order: Order): Promise<void> {
   if (order.menu_items && order.menu_items.length > 0) {
     doc.setFontSize(14);
     doc.setTextColor(26, 26, 26);
-    doc.text('МЕНЮ И ПОЗИЦИИ', 20, yPosition);
+    doc.text(t('beo.menu.title'), 20, yPosition);
     yPosition += 10;
     
     const menuData = order.menu_items.map((item, index: number) => [
       index + 1,
-      item.name || 'Не указано',
+      item.name || t('beo.eventInfo.notSpecified'),
       item.quantity || 1,
-      item.price ? `${item.price} ₼` : 'По запросу',
-      item.price && item.quantity ? `${(item.price * item.quantity).toFixed(2)} ₼` : 'По запросу'
+      item.price ? `${item.price} ₼` : t('beo.menu.onRequest'),
+      item.price && item.quantity ? `${(item.price * item.quantity).toFixed(2)} ₼` : t('beo.menu.onRequest')
     ]);
     
+    const headers = [
+      t('beo.menu.header1'),
+      t('beo.menu.header2'),
+      t('beo.menu.header3'),
+      t('beo.menu.header4'),
+      t('beo.menu.header5')
+    ];
     doc.autoTable({
       startY: yPosition,
-      head: [['№', 'Наименование', 'Кол-во', 'Цена за ед.', 'Сумма']],
+      head: [headers],
       body: menuData,
       theme: 'grid',
       headStyles: {
@@ -170,7 +179,7 @@ export async function generateBEOFile(order: Order): Promise<void> {
   if (hasComments) {
     doc.setFontSize(14);
     doc.setTextColor(26, 26, 26);
-    doc.text('ОСОБЫЕ ТРЕБОВАНИЯ И КОММЕНТАРИИ', 20, yPosition);
+    doc.text(t('beo.comments.title'), 20, yPosition);
     yPosition += 10;
     
     doc.setFontSize(10);
@@ -179,7 +188,7 @@ export async function generateBEOFile(order: Order): Promise<void> {
     if (order.kitchen_comment) {
       doc.setFontSize(11);
       doc.setTextColor(26, 26, 26);
-      doc.text('Для кухни:', 20, yPosition);
+      doc.text(t('beo.comments.kitchen'), 20, yPosition);
       yPosition += 6;
       doc.setFontSize(10);
       doc.setTextColor(74, 74, 74);
@@ -191,7 +200,7 @@ export async function generateBEOFile(order: Order): Promise<void> {
     if (order.operation_comment) {
       doc.setFontSize(11);
       doc.setTextColor(26, 26, 26);
-      doc.text('Для operation:', 20, yPosition);
+      doc.text(t('beo.comments.operation'), 20, yPosition);
       yPosition += 6;
       doc.setFontSize(10);
       doc.setTextColor(74, 74, 74);
@@ -203,7 +212,7 @@ export async function generateBEOFile(order: Order): Promise<void> {
     if (order.desserts_comment) {
       doc.setFontSize(11);
       doc.setTextColor(26, 26, 26);
-      doc.text('Для сладостей:', 20, yPosition);
+      doc.text(t('beo.comments.desserts'), 20, yPosition);
       yPosition += 6;
       doc.setFontSize(10);
       doc.setTextColor(74, 74, 74);
@@ -215,7 +224,7 @@ export async function generateBEOFile(order: Order): Promise<void> {
     if (order.special_instructions) {
       doc.setFontSize(11);
       doc.setTextColor(26, 26, 26);
-      doc.text('Специальные инструкции:', 20, yPosition);
+      doc.text(t('beo.comments.special'), 20, yPosition);
       yPosition += 6;
       doc.setFontSize(10);
       doc.setTextColor(74, 74, 74);
@@ -230,15 +239,15 @@ export async function generateBEOFile(order: Order): Promise<void> {
   // Service Details Section
   doc.setFontSize(14);
   doc.setTextColor(26, 26, 26);
-  doc.text('ДЕТАЛИ ОБСЛУЖИВАНИЯ', 20, yPosition);
+  doc.text(t('beo.service.title'), 20, yPosition);
   yPosition += 10;
   
   const serviceDetails = [
-    ['Время подготовки:', '1 час до начала мероприятия'],
-    ['Время подачи:', order.delivery_time || 'Согласно расписанию'],
-    ['Тип обслуживания:', 'Кейтеринг'],
-    ['Требуемый персонал:', 'Согласно стандартам PAUL'],
-    ['Необходимое оборудование:', 'Согласно меню']
+    [t('beo.service.prepTime'), t('beo.service.prepTimeValue')],
+    [t('beo.service.serviceTime'), order.delivery_time ? formatTime(order.delivery_time, t, locale) : t('beo.service.serviceTimeDefault')],
+    [t('beo.service.serviceType'), t('beo.service.serviceTypeValue')],
+    [t('beo.service.staffRequired'), t('beo.service.staffRequiredValue')],
+    [t('beo.service.equipment'), t('beo.service.equipmentValue')]
   ];
   
   doc.setFontSize(10);
@@ -261,21 +270,21 @@ export async function generateBEOFile(order: Order): Promise<void> {
   doc.setTextColor(74, 74, 74);
   
   // Signature sections
-  doc.text('Подпись менеджера:', 20, yPosition);
+  doc.text(t('beo.signatures.manager'), 20, yPosition);
   doc.text('_____________________', 20, yPosition + 7);
-  doc.text('Дата: _______________', 20, yPosition + 14);
+  doc.text(t('beo.signatures.date'), 20, yPosition + 14);
   
-  doc.text('Подпись шеф-повара:', 110, yPosition);
+  doc.text(t('beo.signatures.chef'), 110, yPosition);
   doc.text('_____________________', 110, yPosition + 7);
-  doc.text('Дата: _______________', 110, yPosition + 14);
+  doc.text(t('beo.signatures.date'), 110, yPosition + 14);
   
   yPosition += 25;
   
   // Contact information
   doc.setFontSize(8);
   doc.setTextColor(123, 94, 59); // #7B5E3B
-  doc.text('PAUL Azerbaijan | Email: info@paul.az | Телефон: +994 50 123 45 67', 20, yPosition);
-  doc.text('Адрес: г. Баку, ул. Низами, 1 | www.paul.az', 20, yPosition + 5);
+  doc.text(t('beo.contact.info'), 20, yPosition);
+  doc.text(t('beo.contact.address'), 20, yPosition + 5);
   
   // Save the PDF
   const fileName = `BEO_${order.company_name}_${order.id}_${new Date().toISOString().split('T')[0]}.pdf`;
@@ -285,7 +294,7 @@ export async function generateBEOFile(order: Order): Promise<void> {
 
 
 // Функция для генерации отчета по заказам за период
-export function generateOrdersReport(orders: Order[], startDate: Date, endDate: Date): void {
+export function generateOrdersReport(orders: Order[], startDate: Date, endDate: Date, t: TranslateFunction, locale: string = 'ru-RU'): void {
   const doc = new jsPDF();
   
   doc.setFont('helvetica');
@@ -293,15 +302,15 @@ export function generateOrdersReport(orders: Order[], startDate: Date, endDate: 
   // Header
   doc.setFontSize(20);
   doc.setTextColor(26, 26, 26);
-  doc.text('PAUL AZERBAIJAN', 20, 25);
+  doc.text(t('beo.title'), 20, 25);
   
   doc.setFontSize(16);
-  doc.text('ОТЧЕТ ПО ЗАКАЗАМ', 20, 35);
+  doc.text(t('beo.report.title'), 20, 35);
   
   doc.setFontSize(12);
   doc.setTextColor(74, 74, 74);
-  doc.text(`Период: ${startDate.toLocaleDateString('ru-RU')} - ${endDate.toLocaleDateString('ru-RU')}`, 20, 45);
-  doc.text(`Дата создания: ${new Date().toLocaleDateString('ru-RU')}`, 150, 25);
+  doc.text(`${t('beo.report.period')} ${startDate.toLocaleDateString(locale)} - ${endDate.toLocaleDateString(locale)}`, 20, 45);
+  doc.text(`${t('beo.createdDate')} ${new Date().toLocaleDateString(locale)}`, 150, 25);
   
   let yPosition = 60;
   
@@ -312,14 +321,14 @@ export function generateOrdersReport(orders: Order[], startDate: Date, endDate: 
   
   doc.setFontSize(14);
   doc.setTextColor(26, 26, 26);
-  doc.text('СТАТИСТИКА', 20, yPosition);
+  doc.text(t('beo.report.statistics.title'), 20, yPosition);
   yPosition += 10;
   
   const stats = [
-    ['Всего заказов:', totalOrders.toString()],
-    ['Завершенных заказов:', completedOrders.toString()],
-    ['Общая сумма:', `${totalAmount.toFixed(2)} ₼`],
-    ['Средний чек:', totalOrders > 0 ? `${(totalAmount / totalOrders).toFixed(2)} ₼` : '0 ₼']
+    [t('beo.report.statistics.totalOrders'), totalOrders.toString()],
+    [t('beo.report.statistics.completedOrders'), completedOrders.toString()],
+    [t('beo.report.statistics.totalAmount'), `${totalAmount.toFixed(2)} ₼`],
+    [t('beo.report.statistics.averageCheck'), totalOrders > 0 ? `${(totalAmount / totalOrders).toFixed(2)} ₼` : '0 ₼']
   ];
   
   doc.setFontSize(10);
@@ -337,20 +346,27 @@ export function generateOrdersReport(orders: Order[], startDate: Date, endDate: 
   if (orders.length > 0) {
     doc.setFontSize(14);
     doc.setTextColor(26, 26, 26);
-    doc.text('СПИСОК ЗАКАЗОВ', 20, yPosition);
+    doc.text(t('beo.report.ordersList.title'), 20, yPosition);
     yPosition += 10;
     
     const orderData = orders.map(order => [
       order.id.toString(),
-      order.company_name,
-      order.delivery_date,
-      getStatusLabel(order.status),
-      order.total_amount ? `${formatTotalAmount(order.total_amount)} ₼` : 'Не указано'
+      order.company_name || t('beo.eventInfo.notSpecified'),
+      formatDate(order.delivery_date as string, t, locale),
+      getTranslatedStatusLabel(order.status, t),
+      order.total_amount ? `${formatTotalAmount(order.total_amount)} ₼` : t('beo.eventInfo.notSpecified')
     ]);
     
+    const headers = [
+      t('beo.report.ordersList.header1'),
+      t('beo.report.ordersList.header2'),
+      t('beo.report.ordersList.header3'),
+      t('beo.report.ordersList.header4'),
+      t('beo.report.ordersList.header5')
+    ];
     doc.autoTable({
       startY: yPosition,
-      head: [['ID', 'Компания', 'Дата', 'Статус', 'Сумма']],
+      head: [headers],
       body: orderData,
       theme: 'grid',
       headStyles: {

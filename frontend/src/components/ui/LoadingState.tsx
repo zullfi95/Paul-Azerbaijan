@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 
 export interface LoadingStateProps {
   isLoading: boolean;
@@ -9,10 +10,12 @@ export interface LoadingStateProps {
 
 const LoadingState: React.FC<LoadingStateProps> = ({
   isLoading,
-  loadingText = 'Загрузка...',
+  loadingText,
   children,
   className = ''
 }) => {
+  const t = useTranslations();
+  const defaultLoadingText = loadingText || t('common.loading');
   if (isLoading) {
     return (
       <div className={`flex flex-col items-center justify-center py-12 ${className}`}>
@@ -20,7 +23,7 @@ const LoadingState: React.FC<LoadingStateProps> = ({
           <div className="w-12 h-12 border-4 border-gray-200 rounded-full animate-spin"></div>
           <div className="absolute top-0 left-0 w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
         </div>
-        <p className="mt-4 text-sm text-gray-600 font-medium">{loadingText}</p>
+        <p className="mt-4 text-sm text-gray-600 font-medium">{defaultLoadingText}</p>
       </div>
     );
   }

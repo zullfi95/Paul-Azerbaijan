@@ -978,5 +978,190 @@
     "corporate": "Корпоративный",
     "oneTime": "Разовый",
     "allClients": "Все клиенты"
+  },
+  "status": {
+    "order": {
+      "draft": "Черновик",
+      "submitted": "Отправлен",
+      "pending_payment": "Ожидает оплаты",
+      "paid": "Оплачен",
+      "processing": "В обработке",
+      "completed": "Завершен",
+      "cancelled": "Отменен"
+    },
+    "application": {
+      "new": "Новая",
+      "processing": "В обработке",
+      "approved": "Одобрена",
+      "rejected": "Отклонена"
+    },
+    "user": {
+      "active": "Активный",
+      "inactive": "Неактивный",
+      "suspended": "Заблокирован"
+    },
+    "payment": {
+      "pending": "Ожидает оплаты",
+      "authorized": "Авторизован",
+      "charged": "Списан",
+      "failed": "Неудачно",
+      "refunded": "Возвращен",
+      "credited": "Зачислен",
+      "paid": "Оплачен"
+    }
+  },
+  "errors": {
+    "loadOrder": "Ошибка загрузки заказа",
+    "loadClients": "Ошибка загрузки клиентов",
+    "loadMenu": "Ошибка загрузки меню",
+    "updateOrder": "Ошибка обновления заказа",
+    "createOrder": "Ошибка создания заказа",
+    "unknown": "Неизвестная ошибка",
+    "resetPassword": "Ошибка при сбросе пароля",
+    "checkData": "Проверьте данные и попробуйте снова"
+  },
+  "success": {
+    "orderUpdated": "Заказ успешно обновлен!",
+    "orderCreated": "Заказ успешно создан!"
+  },
+  "loading": {
+    "order": "Загрузка заказа...",
+    "access": "Проверка доступа...",
+    "cart": "Загрузка корзины...",
+    "submitting": "Отправка...",
+    "saving": "Сохранение..."
+  },
+  "notFound": {
+    "order": "Заказ не найден"
+  },
+  "orderDetails": {
+    "title": "Детали заказа",
+    "orderId": "ID заказа:",
+    "dateTime": "Дата и время:",
+    "delivery": "Доставка:",
+    "type": "Тип:",
+    "address": "Адрес:",
+    "deliveryCost": "Стоимость доставки:",
+    "discount": "Скидка:",
+    "customerPayment": {
+      "title": "Клиент и оплата",
+      "company": "Компания:",
+      "contact": "Контакт:",
+      "phone": "Телефон:",
+      "email": "Email:",
+      "payment": "Оплата:",
+      "paid": "Оплачено",
+      "pending": "Ожидает оплаты",
+      "completed": "Оплата завершена"
+    },
+    "comments": {
+      "title": "Комментарии",
+      "kitchen": "Для кухни:",
+      "operation": "Для operation:",
+      "desserts": "Для сладостей:"
+    },
+    "items": {
+      "title": "Позиции заказа",
+      "more": "еще позиций"
+    },
+    "status": {
+      "delivered": "Доставлено",
+      "inProgress": "В процессе",
+      "paymentPending": "Ожидает оплаты",
+      "draft": "Черновик",
+      "cancelled": "Отменено"
+    },
+    "deliveryType": {
+      "courier": "Курьерская доставка",
+      "pickup": "Самовывоз",
+      "buffet": "Буфетное обслуживание",
+      "standard": "Стандартная доставка"
+    }
+  },
+  "beo": {
+    "title": "PAUL AZERBAIJAN",
+    "subtitle": "BANQUET EVENT ORDER (BEO)",
+    "beoNumber": "BEO #",
+    "createdDate": "Дата создания:",
+    "eventInfo": {
+      "title": "ИНФОРМАЦИЯ О МЕРОПРИЯТИИ",
+      "company": "Компания/Организация:",
+      "eventDate": "Дата мероприятия:",
+      "eventTime": "Время мероприятия:",
+      "orderStatus": "Статус заказа:",
+      "orderAmount": "Сумма заказа:",
+      "notSpecified": "Не указано"
+    },
+    "menu": {
+      "title": "МЕНЮ И ПОЗИЦИИ",
+      "header1": "№",
+      "header2": "Наименование",
+      "header3": "Кол-во",
+      "header4": "Цена за ед.",
+      "header5": "Сумма",
+      "onRequest": "По запросу"
+    },
+    "comments": {
+      "title": "ОСОБЫЕ ТРЕБОВАНИЯ И КОММЕНТАРИИ",
+      "kitchen": "Для кухни:",
+      "operation": "Для operation:",
+      "desserts": "Для сладостей:",
+      "special": "Специальные инструкции:"
+    },
+    "service": {
+      "title": "ДЕТАЛИ ОБСЛУЖИВАНИЯ",
+      "prepTime": "Время подготовки:",
+      "prepTimeValue": "1 час до начала мероприятия",
+      "serviceTime": "Время подачи:",
+      "serviceTimeDefault": "Согласно расписанию",
+      "serviceType": "Тип обслуживания:",
+      "serviceTypeValue": "Кейтеринг",
+      "staffRequired": "Требуемый персонал:",
+      "staffRequiredValue": "Согласно стандартам PAUL",
+      "equipment": "Необходимое оборудование:",
+      "equipmentValue": "Согласно меню"
+    },
+    "signatures": {
+      "manager": "Подпись менеджера:",
+      "chef": "Подпись шеф-повара:",
+      "date": "Дата: _______________"
+    },
+    "contact": {
+      "info": "PAUL Azerbaijan | Email: info@paul.az | Телефон: +994 50 123 45 67",
+      "address": "Адрес: г. Баку, ул. Низами, 1 | www.paul.az"
+    },
+    "report": {
+      "title": "ОТЧЕТ ПО ЗАКАЗАМ",
+      "period": "Период:",
+      "statistics": {
+        "title": "СТАТИСТИКА",
+        "totalOrders": "Всего заказов:",
+        "completedOrders": "Завершенных заказов:",
+        "totalAmount": "Общая сумма:",
+        "averageCheck": "Средний чек:"
+      },
+      "ordersList": {
+        "title": "СПИСОК ЗАКАЗОВ",
+        "header1": "ID",
+        "header2": "Компания",
+        "header3": "Дата",
+        "header4": "Статус",
+        "header5": "Сумма"
+      }
+    }
+  },
+  "forms": {
+    "actions": {
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "submit": "Отправить",
+      "update": "Обновить",
+      "create": "Создать"
+    },
+    "menuItem": {
+      "saving": "Сохранение...",
+      "updateItem": "Обновить позицию",
+      "createItem": "Создать позицию"
+    }
   }
 }

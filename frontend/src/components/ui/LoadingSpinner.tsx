@@ -70,10 +70,13 @@ export interface LoadingStateProps {
 export const LoadingState: React.FC<LoadingStateProps> = ({
   isLoading,
   children,
-  loadingText = 'Загрузка...',
+  loadingText,
   className = '',
   style = {}
 }) => {
+  // Для обратной совместимости, если loadingText не передан, используем дефолтный текст
+  // Но лучше передавать его из родительского компонента с переводом
+  const defaultText = loadingText || 'Загрузка...';
   if (isLoading) {
     return (
       <div 
@@ -91,7 +94,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
       >
         <LoadingSpinner size="lg" style={{ marginBottom: '1rem' }} />
         <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>
-          {loadingText}
+          {defaultText}
         </div>
       </div>
     );

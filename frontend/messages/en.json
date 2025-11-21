@@ -976,6 +976,191 @@
     "corporate": "Corporate",
     "oneTime": "One-Time",
     "allClients": "All Clients"
+  },
+  "status": {
+    "order": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "pending_payment": "Pending Payment",
+      "paid": "Paid",
+      "processing": "Processing",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "application": {
+      "new": "New",
+      "processing": "Processing",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "user": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "suspended": "Suspended"
+    },
+    "payment": {
+      "pending": "Pending",
+      "authorized": "Authorized",
+      "charged": "Charged",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "credited": "Credited",
+      "paid": "Paid"
+    }
+  },
+  "errors": {
+    "loadOrder": "Error loading order",
+    "loadClients": "Error loading clients",
+    "loadMenu": "Error loading menu",
+    "updateOrder": "Error updating order",
+    "createOrder": "Error creating order",
+    "unknown": "Unknown error",
+    "resetPassword": "Error resetting password",
+    "checkData": "Please check your data and try again"
+  },
+  "success": {
+    "orderUpdated": "Order updated successfully!",
+    "orderCreated": "Order created successfully!"
+  },
+  "loading": {
+    "order": "Loading order...",
+    "access": "Checking access...",
+    "cart": "Loading cart...",
+    "submitting": "Submitting...",
+    "saving": "Saving..."
+  },
+  "notFound": {
+    "order": "Order not found"
+  },
+  "orderDetails": {
+    "title": "Order Details",
+    "orderId": "Order ID:",
+    "dateTime": "Date & Time:",
+    "delivery": "Delivery:",
+    "type": "Type:",
+    "address": "Address:",
+    "deliveryCost": "Delivery Cost:",
+    "discount": "Discount:",
+    "customerPayment": {
+      "title": "Customer & Payment",
+      "company": "Company:",
+      "contact": "Contact:",
+      "phone": "Phone:",
+      "email": "Email:",
+      "payment": "Payment:",
+      "paid": "Paid",
+      "pending": "Payment Pending",
+      "completed": "Payment Completed"
+    },
+    "comments": {
+      "title": "Comments",
+      "kitchen": "For kitchen:",
+      "operation": "For operation:",
+      "desserts": "For desserts:"
+    },
+    "items": {
+      "title": "Order Items",
+      "more": "more items"
+    },
+    "status": {
+      "delivered": "Delivered",
+      "inProgress": "In Progress",
+      "paymentPending": "Payment Pending",
+      "draft": "Draft",
+      "cancelled": "Cancelled"
+    },
+    "deliveryType": {
+      "courier": "Courier delivery",
+      "pickup": "Pickup",
+      "buffet": "Buffet service",
+      "standard": "Standard delivery"
+    }
+  },
+  "beo": {
+    "title": "PAUL AZERBAIJAN",
+    "subtitle": "BANQUET EVENT ORDER (BEO)",
+    "beoNumber": "BEO #",
+    "createdDate": "Created Date:",
+    "eventInfo": {
+      "title": "EVENT INFORMATION",
+      "company": "Company/Organization:",
+      "eventDate": "Event Date:",
+      "eventTime": "Event Time:",
+      "orderStatus": "Order Status:",
+      "orderAmount": "Order Amount:",
+      "notSpecified": "Not specified"
+    },
+    "menu": {
+      "title": "MENU AND ITEMS",
+      "header1": "#",
+      "header2": "Item Name",
+      "header3": "Qty",
+      "header4": "Unit Price",
+      "header5": "Amount",
+      "onRequest": "On request"
+    },
+    "comments": {
+      "title": "SPECIAL REQUIREMENTS AND COMMENTS",
+      "kitchen": "For kitchen:",
+      "operation": "For operation:",
+      "desserts": "For desserts:",
+      "special": "Special instructions:"
+    },
+    "service": {
+      "title": "SERVICE DETAILS",
+      "prepTime": "Preparation Time:",
+      "prepTimeValue": "1 hour before event start",
+      "serviceTime": "Service Time:",
+      "serviceTimeDefault": "According to schedule",
+      "serviceType": "Service Type:",
+      "serviceTypeValue": "Catering",
+      "staffRequired": "Required Staff:",
+      "staffRequiredValue": "According to PAUL standards",
+      "equipment": "Required Equipment:",
+      "equipmentValue": "According to menu"
+    },
+    "signatures": {
+      "manager": "Manager Signature:",
+      "chef": "Chef Signature:",
+      "date": "Date: _______________"
+    },
+    "contact": {
+      "info": "PAUL Azerbaijan | Email: info@paul.az | Phone: +994 50 123 45 67",
+      "address": "Address: Baku, Nizami St., 1 | www.paul.az"
+    },
+    "report": {
+      "title": "ORDERS REPORT",
+      "period": "Period:",
+      "statistics": {
+        "title": "STATISTICS",
+        "totalOrders": "Total Orders:",
+        "completedOrders": "Completed Orders:",
+        "totalAmount": "Total Amount:",
+        "averageCheck": "Average Check:"
+      },
+      "ordersList": {
+        "title": "ORDERS LIST",
+        "header1": "ID",
+        "header2": "Company",
+        "header3": "Date",
+        "header4": "Status",
+        "header5": "Amount"
+      }
+    }
+  },
+  "forms": {
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "update": "Update",
+      "create": "Create"
+    },
+    "menuItem": {
+      "saving": "Saving...",
+      "updateItem": "Update Item",
+      "createItem": "Create Item"
+    }
   }
 }
 

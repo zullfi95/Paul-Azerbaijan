@@ -9,6 +9,8 @@ import {
 import { makeApiRequest } from '../utils/apiHelpers';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../utils/queryKeys';
+import { useToast } from '../components/ui/Toast';
+import { useTranslations } from 'next-intl';
 
 interface OrderFormData {
     selected_client_id: number | null;
@@ -84,6 +86,8 @@ export const useOrderForm = () => {
     const { user } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { showToast } = useToast();
+    const t = useTranslations();
     const fromApplicationId = searchParams.get('fromApplication');
 
     const [loading, setLoading] = useState(false);
@@ -268,11 +272,11 @@ export const useOrderForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.menu_items || formData.menu_items.length === 0) {
-            alert('Необходимо выбрать хотя бы один товар из меню');
+            showToast({ type: 'error', title: t('form.noItems'), message: t('form.addFromMenuHint') });
             return;
         }
         if (!fromApplicationId && !formData.selected_client_id) {
-            alert('Необходимо выбрать клиента для заказа');
+            showToast({ type: 'error', title: t('form.client'), message: t('form.selectClient') });
             return;
         }
         if (formData.delivery_date) {
@@ -280,7 +284,7 @@ export const useOrderForm = () => {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (selectedDate < today) {
-                alert('Дата доставки должна быть сегодня или позже');
+                showToast({ type: 'error', title: t('form.deliveryDate'), message: t('checkout.deliveryDate') });
                 return;
             }
         }
@@ -308,14 +312,16 @@ export const useOrderForm = () => {
                 });
             }
             if (result.success) {
+                showToast({ type: 'success', title: t('success.orderCreated') });
                 router.push('/dashboard/orders');
             } else {
-                const errorMessage = result.message || JSON.stringify(result.errors) || 'Проверьте данные и попробуйте снова';
-                alert('Ошибка создания заказа: ' + errorMessage);
+                const errorMessage = result.message || JSON.stringify(result.errors) || t('errors.checkData');
+                showToast({ type: 'error', title: t('errors.createOrder'), message: errorMessage });
             }
         } catch (error) {
             console.error('Ошибка создания заказа:', error);
-            alert('Ошибка создания заказа: ' + (error instanceof Error ? error.message : 'Неизвестная ошибка'));
+            const errorMessage = error instanceof Error ? error.message : t('errors.unknown');
+            showToast({ type: 'error', title: t('errors.createOrder'), message: errorMessage });
         } finally {
             setLoading(false);
         }

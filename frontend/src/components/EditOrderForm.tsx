@@ -8,6 +8,8 @@ import { useAuthGuard, canCreateOrders } from "../utils/authConstants";
 import { Plus, X, ShoppingCart } from 'lucide-react';
 import { makeApiRequest } from "../utils/apiHelpers";
 import MenuSlidePanel from "./MenuSlidePanel";
+import { useToast } from "./ui/Toast";
+import { useTranslations } from 'next-intl';
 import styles from './CreateOrderForm.module.css';
 
 interface EditOrderFormProps {
@@ -17,6 +19,8 @@ interface EditOrderFormProps {
 export default function EditOrderForm({ orderId }: EditOrderFormProps) {
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
   const router = useRouter();
+  const { showToast } = useToast();
+  const t = useTranslations();
   
   const [loading, setLoading] = useState(false);
   const [loadingOrder, setLoadingOrder] = useState(true);
@@ -91,12 +95,12 @@ export default function EditOrderForm({ orderId }: EditOrderFormProps) {
             special_instructions: orderData.special_instructions || '',
           });
         } else {
-          alert('Не удалось загрузить заказ');
+          showToast({ type: 'error', title: t('errors.loadOrder') });
           router.push('/dashboard/orders');
         }
       } catch (error) {
         console.error('Ошибка загрузки заказа:', error);
-        alert('Ошибка загрузки заказа');
+        showToast({ type: 'error', title: t('errors.loadOrder') });
         router.push('/dashboard/orders');
       } finally {
         setLoadingOrder(false);
@@ -206,15 +210,16 @@ export default function EditOrderForm({ orderId }: EditOrderFormProps) {
       });
 
       if (result.success) {
-        alert('Заказ успешно обновлен!');
+        showToast({ type: 'success', title: t('success.orderUpdated') });
         router.push('/dashboard/orders');
       } else {
-        const errorMessage = result.message || JSON.stringify(result.errors) || 'Проверьте данные и попробуйте снова';
-        alert('Ошибка обновления заказа: ' + errorMessage);
+        const errorMessage = result.message || JSON.stringify(result.errors) || t('errors.checkData');
+        showToast({ type: 'error', title: t('errors.updateOrder'), message: errorMessage });
       }
     } catch (error) {
       console.error('Ошибка обновления заказа:', error);
-      alert('Ошибка обновления заказа: ' + (error instanceof Error ? error.message : 'Неизвестная ошибка'));
+      const errorMessage = error instanceof Error ? error.message : t('errors.unknown');
+      showToast({ type: 'error', title: t('errors.updateOrder'), message: errorMessage });
     } finally {
       setLoading(false);
     }

@@ -36,11 +36,46 @@ export const STATUS_BG_COLORS: Record<OrderStatus, string> = {
   [ORDER_STATUSES.cancelled]: 'bg-red-100 text-red-800'
 };
 
+type TranslateFunction = (key: string) => string;
+
 /**
- * Получить перевод статуса
+ * Получить перевод статуса (старая версия для обратной совместимости)
  */
 export function getStatusLabel(status: string): string {
   return STATUS_LABELS[status as OrderStatus] || status;
+}
+
+/**
+ * Получить перевод статуса с использованием функции перевода
+ */
+export function getTranslatedStatusLabel(status: string, t: TranslateFunction): string {
+  const statusKeyMap: Record<string, string> = {
+    draft: 'status.order.draft',
+    submitted: 'status.order.submitted',
+    pending_payment: 'status.order.pending_payment',
+    paid: 'status.order.paid',
+    processing: 'status.order.processing',
+    completed: 'status.order.completed',
+    cancelled: 'status.order.cancelled',
+    new: 'status.order.draft',
+    pending: 'status.order.pending_payment',
+    in_progress: 'status.order.processing',
+    ready_for_delivery: 'status.order.processing',
+    delivering: 'status.order.processing',
+    refunded: 'status.order.cancelled',
+  };
+  
+  const key = statusKeyMap[status] || `orders.status.${status}`;
+  try {
+    const translated = t(key);
+    // Если перевод не найден, вернется ключ, используем fallback
+    if (translated === key) {
+      return STATUS_LABELS[status as OrderStatus] || status;
+    }
+    return translated;
+  } catch {
+    return STATUS_LABELS[status as OrderStatus] || status;
+  }
 }
 
 /**

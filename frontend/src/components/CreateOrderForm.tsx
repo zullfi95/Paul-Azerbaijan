@@ -10,14 +10,11 @@ import MenuSlidePanel from "./MenuSlidePanel";
 import styles from './CreateOrderForm.module.css';
 import { useTranslations } from 'next-intl';
 
-const applicationStatusMeta: Record<string, { label: string; color: string }> = {
-    new: { label: 'Новая', color: '#2563eb' },
-    processing: { label: 'В обработке', color: '#f59e0b' },
-    approved: { label: 'Одобрена', color: '#10b981' },
-    rejected: { label: 'Отклонена', color: '#ef4444' },
-};
+// applicationStatusMeta будет создаваться динамически с использованием t()
 
-const formatDateValue = (value?: string | null) => {
+// Эти функции будут использовать локаль из контекста, но для совместимости оставляем базовую версию
+// В идеале нужно передавать локаль из контекста языка
+const formatDateValue = (value?: string | null, locale: string = 'ru-RU') => {
     if (!value) return '—';
     const normalized = value.includes('T')
         ? value.split('T')[0]
@@ -25,7 +22,7 @@ const formatDateValue = (value?: string | null) => {
             ? value.split(' ')[0]
             : value;
     const date = new Date(normalized);
-    return Number.isNaN(date.getTime()) ? normalized : date.toLocaleDateString('ru-RU');
+    return Number.isNaN(date.getTime()) ? normalized : date.toLocaleDateString(locale);
 };
 
 const formatTimeValue = (value?: string | null) => {
@@ -39,15 +36,19 @@ const formatTimeValue = (value?: string | null) => {
     return value.slice(0, 5);
 };
 
-const formatCurrency = (value?: number | null) => {
+const formatCurrency = (value?: number | null, locale: string = 'ru-RU') => {
     if (!value || Number.isNaN(value)) return '—';
-    return `₼${Number(value).toLocaleString('ru-RU', { minimumFractionDigits: 0 })}`;
+    return `₼${Number(value).toLocaleString(locale, { minimumFractionDigits: 0 })}`;
 };
 
 export default function CreateOrderForm() {
     const { isAuthenticated, isLoading: authLoading, user } = useAuth();
     const router = useRouter();
     const t = useTranslations();
+    // Получаем локаль из документа или используем дефолтную
+    const locale = typeof document !== 'undefined' ? document.documentElement.lang || 'ru' : 'ru';
+    const localeMap: Record<string, string> = { ru: 'ru-RU', en: 'en-US', az: 'az-AZ' };
+    const dateLocale = localeMap[locale] || 'ru-RU';
     const {
         loading,
         clients,
@@ -125,11 +126,11 @@ export default function CreateOrderForm() {
                                     <span
                                         className={styles.applicationBadge}
                                         style={{
-                                            color: applicationStatusMeta[application.status]?.color || '#111827',
-                                            backgroundColor: `${applicationStatusMeta[application.status]?.color || '#111827'}1a`,
+                                            color: getApplicationStatusMeta(application.status, t).color,
+                                            backgroundColor: `${getApplicationStatusMeta(application.status, t).color}1a`,
                                         }}
                                     >
-                                        {applicationStatusMeta[application.status]?.label || application.status}
+                                        {getApplicationStatusMeta(application.status, t).label}
                                     </span>
                                 </div>
 
@@ -162,7 +163,7 @@ export default function CreateOrderForm() {
                                     )}
                                     <div>
                                         <p className={styles.applicationFieldLabel}>{t('common.date')}</p>
-                                        <p className={styles.applicationFieldValue}>{formatDateValue(application.event_date)}</p>
+                                        <p className={styles.applicationFieldValue}>{formatDateValue(application.event_date, dateLocale)}</p>
                                     </div>
                                     <div>
                                         <p className={styles.applicationFieldLabel}>{t('common.time')}</p>
@@ -179,7 +180,7 @@ export default function CreateOrderForm() {
                                         )}
                                         {application.coordinator_comment && (
                                             <p>
-                                                <span>Комментарий координатора:</span> {application.coordinator_comment}
+                                                <span>{t('applications.coordinatorComment')}:</span> {application.coordinator_comment}
                                             </p>
                                         )}
                                     </div>
@@ -195,7 +196,7 @@ export default function CreateOrderForm() {
                                                         {item.name} ×{item.quantity ?? 1}
                                                     </span>
                                                     <span className={styles.applicationItemPrice}>
-                                                        {item.price ? formatCurrency(Number(item.price)) : '—'}
+                                                        {item.price ? formatCurrency(Number(item.price), dateLocale) : '—'}
                                                     </span>
                                                 </li>
                                             ))}

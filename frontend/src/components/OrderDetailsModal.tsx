@@ -2,7 +2,9 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { Order } from '@/types/unified';
+import { getTranslatedStatusLabel } from '@/utils/statusTranslations';
 import styles from './OrderDetailsModal.module.css';
 
 interface OrderDetailsModalProps {
@@ -18,6 +20,11 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
   onClose,
   onPaymentClick
 }) => {
+  const t = useTranslations();
+  const locale = typeof document !== 'undefined' ? document.documentElement.lang || 'ru' : 'ru';
+  const localeMap: Record<string, string> = { ru: 'ru-RU', en: 'en-US', az: 'az-AZ' };
+  const dateLocale = localeMap[locale] || 'ru-RU';
+
   if (!isOpen || !order) return null;
 
   const orderDate = new Date(order.created_at);
@@ -25,22 +32,24 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
   const getOrderStatus = (status: string, paymentStatus?: string) => {
     if (status === 'paid' || paymentStatus === 'paid') {
-      return { text: 'Paid', icon: '✅', isDelivered: false, needsPayment: false };
+      return { text: t('orderDetails.status.delivered'), icon: '✅', isDelivered: false, needsPayment: false };
     }
     
     switch (status) {
       case 'completed':
-        return { text: 'Delivered', icon: '✓', isDelivered: true, needsPayment: false };
+        return { text: t('orderDetails.status.delivered'), icon: '✓', isDelivered: true, needsPayment: false };
       case 'processing':
-        return { text: 'In Progress', icon: '⏳', isDelivered: false, needsPayment: false };
+      case 'in_progress':
+        return { text: t('orderDetails.status.inProgress'), icon: '⏳', isDelivered: false, needsPayment: false };
       case 'submitted':
-        return { text: 'Payment Pending', icon: '💳', isDelivered: false, needsPayment: true };
+      case 'pending_payment':
+        return { text: t('orderDetails.status.paymentPending'), icon: '💳', isDelivered: false, needsPayment: true };
       case 'draft':
-        return { text: 'Draft', icon: '📝', isDelivered: false, needsPayment: false };
+        return { text: t('orderDetails.status.draft'), icon: '📝', isDelivered: false, needsPayment: false };
       case 'cancelled':
-        return { text: 'Cancelled', icon: '❌', isDelivered: false, needsPayment: false };
+        return { text: t('orderDetails.status.cancelled'), icon: '❌', isDelivered: false, needsPayment: false };
       default:
-        return { text: status.charAt(0).toUpperCase() + status.slice(1), icon: '📋', isDelivered: false, needsPayment: false };
+        return { text: getTranslatedStatusLabel(status, t), icon: '📋', isDelivered: false, needsPayment: false };
     }
   };
 
@@ -51,7 +60,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
   };
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-GB', {
+    return date.toLocaleDateString(dateLocale, {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
@@ -59,7 +68,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
   };
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-GB', {
+    return date.toLocaleTimeString(dateLocale, {
       hour: '2-digit',
       minute: '2-digit'
     });
@@ -70,7 +79,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Order Details</h2>
+          <h2 className={styles.modalTitle}>{t('orderDetails.title')}</h2>
           <button className={styles.closeButton} onClick={onClose}>
             ×
           </button>
@@ -87,18 +96,18 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             <div className={styles.leftColumn}>
               {/* Order Details */}
               <div className={styles.infoSection}>
-                <h3 className={styles.sectionTitle}>Order Details</h3>
+                <h3 className={styles.sectionTitle}>{t('orderDetails.title')}</h3>
                 <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Order ID:</span>
+                  <span className={styles.infoLabel}>{t('orderDetails.orderId')}</span>
                   <span className={styles.infoValue}>#{order.id}</span>
                 </div>
                 <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Date & Time:</span>
+                  <span className={styles.infoLabel}>{t('orderDetails.dateTime')}</span>
                   <span className={styles.infoValue}>{formatDate(orderDate)} {formatTime(orderDate)}</span>
                 </div>
                 {deliveryDate && (
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Delivery:</span>
+                    <span className={styles.infoLabel}>{t('orderDetails.delivery')}</span>
                     <span className={styles.infoValue}>
                       {formatDate(deliveryDate)}
                       {order.delivery_time && ` ${order.delivery_time}`}
@@ -106,29 +115,29 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   </div>
                 )}
                 <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Type:</span>
+                  <span className={styles.infoLabel}>{t('orderDetails.type')}</span>
                   <span className={styles.infoValue}>
-                    {order.delivery_type === 'delivery' ? 'Courier delivery' : 
-                     order.delivery_type === 'pickup' ? 'Pickup' : 
-                     order.delivery_type === 'buffet' ? 'Buffet service' : 
-                     'Standard delivery'}
+                    {order.delivery_type === 'delivery' ? t('orderDetails.deliveryType.courier') : 
+                     order.delivery_type === 'pickup' ? t('orderDetails.deliveryType.pickup') : 
+                     order.delivery_type === 'buffet' ? t('orderDetails.deliveryType.buffet') : 
+                     t('orderDetails.deliveryType.standard')}
                   </span>
                 </div>
                 {order.delivery_address && (
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Address:</span>
+                    <span className={styles.infoLabel}>{t('orderDetails.address')}</span>
                     <span className={styles.infoValue}>{order.delivery_address}</span>
                   </div>
                 )}
                 {order.delivery_cost && order.delivery_cost > 0 && (
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Delivery Cost:</span>
+                    <span className={styles.infoLabel}>{t('orderDetails.deliveryCost')}</span>
                     <span className={styles.infoValue}>{formatCurrency(order.delivery_cost)}</span>
                   </div>
                 )}
                 {order.discount_amount && order.discount_amount > 0 && (
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Discount:</span>
+                    <span className={styles.infoLabel}>{t('orderDetails.discount')}</span>
                     <span className={styles.infoValue}>-{formatCurrency(order.discount_amount)}</span>
                   </div>
                 )}
@@ -136,35 +145,35 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
               {/* Customer & Payment */}
               <div className={styles.infoSection}>
-                <h3 className={styles.sectionTitle}>Customer & Payment</h3>
+                <h3 className={styles.sectionTitle}>{t('orderDetails.customerPayment.title')}</h3>
                 <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Company:</span>
+                  <span className={styles.infoLabel}>{t('orderDetails.customerPayment.company')}</span>
                   <span className={styles.infoValue}>{order.company_name}</span>
                 </div>
                 {order.customer?.name && (
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Contact:</span>
+                    <span className={styles.infoLabel}>{t('orderDetails.customerPayment.contact')}</span>
                     <span className={styles.infoValue}>{order.customer.name}</span>
                   </div>
                 )}
                 {order.customer?.phone && (
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Phone:</span>
+                    <span className={styles.infoLabel}>{t('orderDetails.customerPayment.phone')}</span>
                     <span className={styles.infoValue}>{order.customer.phone}</span>
                   </div>
                 )}
                 {order.customer?.email && (
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Email:</span>
+                    <span className={styles.infoLabel}>{t('orderDetails.customerPayment.email')}</span>
                     <span className={styles.infoValue}>{order.customer.email}</span>
                   </div>
                 )}
                 <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Payment:</span>
+                  <span className={styles.infoLabel}>{t('orderDetails.customerPayment.payment')}</span>
                   <span className={styles.infoValue}>
-                    {order.payment_status === 'paid' ? 'Paid' : 
-                     order.status === 'submitted' ? 'Payment Pending' : 
-                     'Payment Completed'}
+                    {order.payment_status === 'paid' ? t('orderDetails.customerPayment.paid') : 
+                     order.status === 'submitted' ? t('orderDetails.customerPayment.pending') : 
+                     t('orderDetails.customerPayment.completed')}
                   </span>
                 </div>
               </div>
@@ -172,22 +181,22 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
               {/* Comments */}
               {(order.kitchen_comment || order.operation_comment || order.desserts_comment) && (
                 <div className={styles.infoSection}>
-                  <h3 className={styles.sectionTitle}>Комментарии</h3>
+                  <h3 className={styles.sectionTitle}>{t('orderDetails.comments.title')}</h3>
                   {order.kitchen_comment && (
                     <div className={styles.commentItem}>
-                      <strong>Для кухни:</strong>
+                      <strong>{t('orderDetails.comments.kitchen')}</strong>
                       <p className={styles.commentText}>{order.kitchen_comment}</p>
                     </div>
                   )}
                   {order.operation_comment && (
                     <div className={styles.commentItem}>
-                      <strong>Для operation:</strong>
+                      <strong>{t('orderDetails.comments.operation')}</strong>
                       <p className={styles.commentText}>{order.operation_comment}</p>
                     </div>
                   )}
                   {order.desserts_comment && (
                     <div className={styles.commentItem}>
-                      <strong>Для сладостей:</strong>
+                      <strong>{t('orderDetails.comments.desserts')}</strong>
                       <p className={styles.commentText}>{order.desserts_comment}</p>
                     </div>
                   )}
@@ -198,7 +207,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             {/* Right Column - Order Items */}
             <div className={styles.rightColumn}>
               <div className={styles.menuItemsSection}>
-                <h3 className={styles.sectionTitle}>Order Items ({order.menu_items.length})</h3>
+                <h3 className={styles.sectionTitle}>{t('orderDetails.items.title')} ({order.menu_items.length})</h3>
                 <div className={`${styles.menuItemsList} ${order.menu_items.length === 1 ? styles.singleItem : ''}`}>
                   {order.menu_items.slice(0, 8).map((item, index) => (
                     <div key={index} className={`${styles.menuItem} ${order.menu_items.length === 1 ? styles.singleMenuItem : ''}`}>
@@ -224,7 +233,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   ))}
                   {order.menu_items.length > 8 && (
                     <div className={styles.moreItems}>
-                      +{order.menu_items.length - 8} more items
+                      +{order.menu_items.length - 8} {t('orderDetails.items.more')}
                     </div>
                   )}
                 </div>
@@ -235,23 +244,23 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {/* Order Summary */}
           <div className={styles.orderSummary}>
             <div className={styles.summaryRow}>
-              <span className={styles.summaryLabel}>Items Total:</span>
+              <span className={styles.summaryLabel}>{t('form.itemsTotal')}</span>
               <span className={styles.summaryValue}>{formatCurrency(order.items_total || order.total_amount)}</span>
             </div>
             {order.delivery_cost && order.delivery_cost > 0 && (
               <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Delivery:</span>
+                <span className={styles.summaryLabel}>{t('form.deliveryCostLabel')}</span>
                 <span className={styles.summaryValue}>{formatCurrency(order.delivery_cost)}</span>
               </div>
             )}
             {order.discount_amount && order.discount_amount > 0 && (
               <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Discount:</span>
+                <span className={styles.summaryLabel}>{t('form.discount')}</span>
                 <span className={styles.summaryValue}>-{formatCurrency(order.discount_amount)}</span>
               </div>
             )}
             <div className={`${styles.summaryRow} ${styles.totalRow}`}>
-              <span className={styles.summaryLabel}>Total:</span>
+              <span className={styles.summaryLabel}>{t('form.total')}</span>
               <span className={styles.summaryValue}>{formatCurrency(order.final_amount || order.total_amount)}</span>
             </div>
           </div>

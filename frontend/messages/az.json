@@ -980,6 +980,191 @@
     "corporate": "Korporativ",
     "oneTime": "Birdəfəlik",
     "allClients": "Bütün Müştərilər"
+  },
+  "status": {
+    "order": {
+      "draft": "Qaralama",
+      "submitted": "Göndərilib",
+      "pending_payment": "Ödəniş gözləyir",
+      "paid": "Ödənilib",
+      "processing": "İşlənir",
+      "completed": "Tamamlanıb",
+      "cancelled": "Ləğv edilib"
+    },
+    "application": {
+      "new": "Yeni",
+      "processing": "İşlənir",
+      "approved": "Təsdiqlənib",
+      "rejected": "Rədd edilib"
+    },
+    "user": {
+      "active": "Aktiv",
+      "inactive": "Qeyri-aktiv",
+      "suspended": "Bloklanıb"
+    },
+    "payment": {
+      "pending": "Gözləyir",
+      "authorized": "Avtorizasiya edilib",
+      "charged": "Hesabdan çıxılıb",
+      "failed": "Uğursuz",
+      "refunded": "Geri qaytarılıb",
+      "credited": "Hesaba daxil edilib",
+      "paid": "Ödənilib"
+    }
+  },
+  "errors": {
+    "loadOrder": "Sifariş yüklənməsi xətası",
+    "loadClients": "Müştərilərin yüklənməsi xətası",
+    "loadMenu": "Menyunun yüklənməsi xətası",
+    "updateOrder": "Sifariş yeniləmə xətası",
+    "createOrder": "Sifariş yaratma xətası",
+    "unknown": "Naməlum xəta",
+    "resetPassword": "Şifrə sıfırlama xətası",
+    "checkData": "Zəhmət olmasa məlumatları yoxlayın və yenidən cəhd edin"
+  },
+  "success": {
+    "orderUpdated": "Sifariş uğurla yeniləndi!",
+    "orderCreated": "Sifariş uğurla yaradıldı!"
+  },
+  "loading": {
+    "order": "Sifariş yüklənir...",
+    "access": "Giriş yoxlanılır...",
+    "cart": "Səbət yüklənir...",
+    "submitting": "Göndərilir...",
+    "saving": "Yadda saxlanılır..."
+  },
+  "notFound": {
+    "order": "Sifariş tapılmadı"
+  },
+  "orderDetails": {
+    "title": "Sifariş Detalları",
+    "orderId": "Sifariş ID:",
+    "dateTime": "Tarix və Vaxt:",
+    "delivery": "Çatdırılma:",
+    "type": "Növ:",
+    "address": "Ünvan:",
+    "deliveryCost": "Çatdırılma Qiyməti:",
+    "discount": "Endirim:",
+    "customerPayment": {
+      "title": "Müştəri və Ödəniş",
+      "company": "Şirkət:",
+      "contact": "Əlaqə:",
+      "phone": "Telefon:",
+      "email": "Email:",
+      "payment": "Ödəniş:",
+      "paid": "Ödənilib",
+      "pending": "Ödəniş gözləyir",
+      "completed": "Ödəniş tamamlandı"
+    },
+    "comments": {
+      "title": "Şərhlər",
+      "kitchen": "Mətbəx üçün:",
+      "operation": "Əməliyyat üçün:",
+      "desserts": "Şirniyyatlar üçün:"
+    },
+    "items": {
+      "title": "Sifariş Məhsulları",
+      "more": "daha çox məhsul"
+    },
+    "status": {
+      "delivered": "Çatdırılıb",
+      "inProgress": "İşləyir",
+      "paymentPending": "Ödəniş gözləyir",
+      "draft": "Qaralama",
+      "cancelled": "Ləğv edilib"
+    },
+    "deliveryType": {
+      "courier": "Kuryer çatdırılması",
+      "pickup": "Özü götürür",
+      "buffet": "Bufet xidməti",
+      "standard": "Standart çatdırılma"
+    }
+  },
+  "beo": {
+    "title": "PAUL AZERBAIJAN",
+    "subtitle": "BANQUET EVENT ORDER (BEO)",
+    "beoNumber": "BEO #",
+    "createdDate": "Yaradılma Tarixi:",
+    "eventInfo": {
+      "title": "TƏDBİR MƏLUMATI",
+      "company": "Şirkət/Təşkilat:",
+      "eventDate": "Tədbir Tarixi:",
+      "eventTime": "Tədbir Vaxtı:",
+      "orderStatus": "Sifariş Statusu:",
+      "orderAmount": "Sifariş Məbləği:",
+      "notSpecified": "Göstərilməyib"
+    },
+    "menu": {
+      "title": "MENYU VƏ MÖVQELƏR",
+      "header1": "№",
+      "header2": "Ad",
+      "header3": "Miqdar",
+      "header4": "Vahid Qiymət",
+      "header5": "Məbləğ",
+      "onRequest": "Sorğu ilə"
+    },
+    "comments": {
+      "title": "XÜSUSİ TƏLƏBLƏR VƏ ŞƏRHLƏR",
+      "kitchen": "Mətbəx üçün:",
+      "operation": "Əməliyyat üçün:",
+      "desserts": "Şirniyyatlar üçün:",
+      "special": "Xüsusi təlimatlar:"
+    },
+    "service": {
+      "title": "XİDMƏT DETALLARI",
+      "prepTime": "Hazırlıq Vaxtı:",
+      "prepTimeValue": "Tədbir başlamazdan 1 saat əvvəl",
+      "serviceTime": "Xidmət Vaxtı:",
+      "serviceTimeDefault": "Cədvələ görə",
+      "serviceType": "Xidmət Növü:",
+      "serviceTypeValue": "Katerinq",
+      "staffRequired": "Tələb olunan Personal:",
+      "staffRequiredValue": "PAUL standartlarına görə",
+      "equipment": "Lazım olan Avadanlıq:",
+      "equipmentValue": "Menyuya görə"
+    },
+    "signatures": {
+      "manager": "Menecer İmzası:",
+      "chef": "Baş Aşpaz İmzası:",
+      "date": "Tarix: _______________"
+    },
+    "contact": {
+      "info": "PAUL Azerbaijan | Email: info@paul.az | Telefon: +994 50 123 45 67",
+      "address": "Ünvan: Bakı, Nizami küç., 1 | www.paul.az"
+    },
+    "report": {
+      "title": "SİFARİŞLƏR HESABATI",
+      "period": "Dövr:",
+      "statistics": {
+        "title": "STATİSTİKA",
+        "totalOrders": "Ümumi Sifarişlər:",
+        "completedOrders": "Tamamlanmış Sifarişlər:",
+        "totalAmount": "Ümumi Məbləğ:",
+        "averageCheck": "Orta Çek:"
+      },
+      "ordersList": {
+        "title": "SİFARİŞLƏR SİYAHISI",
+        "header1": "ID",
+        "header2": "Şirkət",
+        "header3": "Tarix",
+        "header4": "Status",
+        "header5": "Məbləğ"
+      }
+    }
+  },
+  "forms": {
+    "actions": {
+      "save": "Yadda saxla",
+      "cancel": "Ləğv et",
+      "submit": "Göndər",
+      "update": "Yenilə",
+      "create": "Yarat"
+    },
+    "menuItem": {
+      "saving": "Yadda saxlanılır...",
+      "updateItem": "Mövqeni yenilə",
+      "createItem": "Mövqe yarat"
+    }
   }
 }
 

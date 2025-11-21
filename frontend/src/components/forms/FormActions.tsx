@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '../ui/Button';
 
 interface FormActionsProps {
@@ -14,12 +15,16 @@ interface FormActionsProps {
 export const FormActions: React.FC<FormActionsProps> = ({
   onCancel,
   onSubmit,
-  submitLabel = 'Сохранить',
-  cancelLabel = 'Отмена',
+  submitLabel,
+  cancelLabel,
   isLoading = false,
   disabled = false,
   className = '',
 }) => {
+  const t = useTranslations();
+  const defaultSubmitLabel = submitLabel || t('forms.actions.save');
+  const defaultCancelLabel = cancelLabel || t('forms.actions.cancel');
+  const savingText = t('forms.actions.save'); // Можно добавить отдельный ключ для "Сохранение..."
   return (
     <div className={`flex justify-end space-x-3 ${className}`}>
       <Button
@@ -28,7 +33,7 @@ export const FormActions: React.FC<FormActionsProps> = ({
         onClick={onCancel}
         disabled={isLoading}
       >
-        {cancelLabel}
+        {defaultCancelLabel}
       </Button>
       <Button
         type="submit"
@@ -37,7 +42,7 @@ export const FormActions: React.FC<FormActionsProps> = ({
         disabled={disabled || isLoading}
         className={isLoading ? 'opacity-50 cursor-not-allowed' : ''}
       >
-        {isLoading ? 'Сохранение...' : submitLabel}
+        {isLoading ? t('forms.menuItem.saving') : defaultSubmitLabel}
       </Button>
     </div>
   );

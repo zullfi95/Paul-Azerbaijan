@@ -321,6 +321,22 @@ body.menu-open {
   pointer-events: auto;
 }
 
+/* Mobile Menu Overlay */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 200;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+}
+
+.mobile-menu-container:has(.mobile-menu) .mobile-menu-overlay {
+  opacity: 1;
+}
+
 /* Mobile Menu */
 .mobile-menu {
   position: fixed;
@@ -329,7 +345,8 @@ body.menu-open {
   width: 100%;
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for mobile browsers */
-  z-index: 200;
+  z-index: 201;
+  pointer-events: none;
 }
 
 .mobile-menu-content {
@@ -342,16 +359,35 @@ body.menu-open {
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for mobile browsers */
   background: #FFFCF8;
-  animation: slideInFromRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 201;
+  z-index: 202;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
 }
 
-.mobile-menu-content.closing {
-  animation: slideOutToRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.mobile-menu-container:has(.mobile-menu) .mobile-menu-content {
+  transform: translateX(0);
+}
+
+/* Close button styling */
+.mobile-menu-close-btn {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-close-btn .icon {
+  transition: transform 0.2s ease;
+}
+
+.mobile-menu-close-btn:active .icon {
+  transform: scale(0.9);
 }
 
 .mobile-menu-header {

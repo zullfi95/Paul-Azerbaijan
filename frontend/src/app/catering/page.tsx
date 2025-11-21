@@ -490,17 +490,19 @@ export default function CateringPage() {
                     className={`${styles.categoryItem} ${selectedCategory === category.name ? styles.categoryItemActive : ''} ${category.name === 'Sets' ? styles.categoryItemSets : ''}`}
                     onClick={() => setSelectedCategory(category.name)}
                   >
-                    <div className={styles.categoryIcon}>
-                      <Image
-                        src={category.image}
-                        alt={category.name}
-                        width={60}
-                        height={60}
-                        style={{
-                          objectFit: 'contain'
-                        }}
-                      />
-                    </div>
+                    {!isMobile && (
+                      <div className={styles.categoryIcon}>
+                        <Image
+                          src={category.image}
+                          alt={category.name}
+                          width={60}
+                          height={60}
+                          style={{
+                            objectFit: 'contain'
+                          }}
+                        />
+                      </div>
+                    )}
                     <span className={`${styles.categoryName} ${selectedCategory === category.name ? styles.categoryNameActive : ''}`}>
                       {category.name}
                     </span>

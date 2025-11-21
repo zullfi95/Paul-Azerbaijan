@@ -270,11 +270,22 @@ paul-azerbaijan/
 
 ## 📋 Отчеты и документация
 
+### 📊 Анализ проекта
+- **[ANALYSIS_SUMMARY.md](ANALYSIS_SUMMARY.md)** - Краткая сводка анализа проекта (executive summary)
+- **[PROJECT_ANALYSIS_REPORT.md](PROJECT_ANALYSIS_REPORT.md)** - Полный детальный анализ проекта
+- **[ARCHITECTURE_DIAGRAM.md](ARCHITECTURE_DIAGRAM.md)** - Архитектурные диаграммы (Mermaid)
+
+### 📚 Техническая документация
 - **[REMAINING_ISSUES_REPORT.md](REMAINING_ISSUES_REPORT.md)** - Подробный отчет о текущих проблемах и плане действий
 - **[ENV_SETUP_GUIDE.md](ENV_SETUP_GUIDE.md)** - Инструкция по настройке переменных окружения
 - **[TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md)** - Техническая документация
 - **[DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md)** - Инструкция по Docker деплою
 - **[TESTING_REPORT.md](TESTING_REPORT.md)** - Результаты тестирования
+
+### 🌐 Переводы и интернационализация
+- **[TRANSLATION_AUDIT_UNTRANSLATED.md](TRANSLATION_AUDIT_UNTRANSLATED.md)** - Аудит непереведенных строк и отсутствующих ключей
+- **[CLIENT_TRANSLATION_FINAL_REPORT.md](CLIENT_TRANSLATION_FINAL_REPORT.md)** - Финальный отчет по переводам клиентской части
+- **[TRANSLATION_AUDIT_REPORT.md](TRANSLATION_AUDIT_REPORT.md)** - Общий аудит переводов
 
 ## 🚀 Недавние улучшения (3 ноября 2025)
 

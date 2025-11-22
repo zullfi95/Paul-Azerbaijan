@@ -43,7 +43,11 @@
     "page": "Page {current} of {total}",
     "previous": "Previous",
     "loadingData": "Loading data...",
-    "noDataToDisplay": "No data to display"
+    "noDataToDisplay": "No data to display",
+    "client": "Client",
+    "deliveryDate": "Delivery Date",
+    "currency": "$",
+    "id": "ID"
   },
   "header": {
     "searchPlaceholder": "search for product",
@@ -998,6 +1002,27 @@
       "inactive": "Inactive",
       "suspended": "Suspended"
     },
+    "payment": {
+      "pending": "Pending Payment",
+      "authorized": "Authorized",
+      "charged": "Charged",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "credited": "Credited"
+    }
+  },
+  "statuses": {
+    "new": "New",
+    "processing": "Processing",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "submitted": "Submitted",
+    "draft": "Draft",
+    "pending_payment": "Pending Payment",
+    "paid": "Paid",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
     "payment": {
       "pending": "Pending",
       "authorized": "Authorized",

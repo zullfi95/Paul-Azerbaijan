@@ -48,7 +48,11 @@
     "export": "Экспорт в PDF",
     "all": "Все",
     "apply": "Применить",
-    "reset": "Сбросить"
+    "reset": "Сбросить",
+    "client": "Клиент",
+    "deliveryDate": "Дата доставки",
+    "currency": "₼",
+    "id": "ID"
   },
   "header": {
     "searchPlaceholder": "поиск товара",
@@ -378,7 +382,15 @@
     "calculator": "Калькулятор цены",
     "analytics": "Аналитика заказов",
     "inSystem": "В системе",
-    "ordersOn": "Заказы на {day} {month}"
+    "ordersOn": "Заказы на {day} {month}",
+    "totalClients": "Всего клиентов",
+    "newApplications": "Новые заявки",
+    "ordersInProgress": "Заказы в работе",
+    "recentApplications": "Последние заявки",
+    "upcomingOrders": "Предстоящие заказы",
+    "exportToPdf": "Экспорт в PDF",
+    "exportExcel": "Экспорт в Excel",
+    "statistics": "Статистика"
   },
   "orders": {
     "title": "Заказы",
@@ -1006,7 +1018,21 @@
       "charged": "Списан",
       "failed": "Неудачно",
       "refunded": "Возвращен",
-      "credited": "Зачислен",
+      "credited": "Зачислен"
+    }
+  },
+  "statuses": {
+    "new": "Новая",
+    "processing": "В обработке",
+    "approved": "Одобрена",
+    "rejected": "Отклонена",
+    "submitted": "Отправлен",
+    "draft": "Черновик",
+    "pending_payment": "Ожидает оплаты",
+    "paid": "Оплачен",
+    "completed": "Завершен",
+    "cancelled": "Отменен"
+  },
       "paid": "Оплачен"
     }
   },

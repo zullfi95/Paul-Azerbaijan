@@ -45,7 +45,11 @@
     "previous": "Əvvəlki",
     "export": "PDF-ə ixrac",
     "apply": "Tətbiq et",
-    "reset": "Sıfırla"
+    "reset": "Sıfırla",
+    "client": "Müştəri",
+    "deliveryDate": "Çatdırılma tarixi",
+    "currency": "₼",
+    "id": "ID"
   },
   "header": {
     "searchPlaceholder": "məhsul axtarın",
@@ -374,11 +378,14 @@
     "inSystem": "Sistemdə",
     "ordersOn": "Sifarişlər {day} {month}",
     "totalClients": "Ümumi Müştərilər",
+    "newApplications": "Yeni müraciətlər",
+    "ordersInProgress": "İşləyən sifarişlər",
     "recentApplications": "Son Müraciətlər",
     "upcomingOrders": "Qarşıdan Gələn Sifarişlər",
     "kpi": "Əsas Göstəricilər",
     "exportExcel": "Excel-ə ixrac",
-    "exportToPdf": "PDF-ə ixrac"
+    "exportToPdf": "PDF-ə ixrac",
+    "statistics": "Statistika"
   },
   "orders": {
     "title": "Sifarişlər",
@@ -1008,7 +1015,21 @@
       "charged": "Hesabdan çıxılıb",
       "failed": "Uğursuz",
       "refunded": "Geri qaytarılıb",
-      "credited": "Hesaba daxil edilib",
+      "credited": "Hesaba daxil edilib"
+    }
+  },
+  "statuses": {
+    "new": "Yeni",
+    "processing": "İşlənir",
+    "approved": "Təsdiqlənib",
+    "rejected": "Rədd edilib",
+    "submitted": "Göndərilib",
+    "draft": "Qaralama",
+    "pending_payment": "Ödəniş gözləyir",
+    "paid": "Ödənilib",
+    "completed": "Tamamlanıb",
+    "cancelled": "Ləğv edilib"
+  },
       "paid": "Ödənilib"
     }
   },

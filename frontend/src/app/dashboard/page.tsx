@@ -18,7 +18,6 @@ import {
     FileTextIcon
 } from "../../components/Icons";
 import "../../styles/dashboard.css";
-import styles from "../../styles/dashboard.module.css";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import * as XLSX from 'xlsx';
@@ -175,17 +174,17 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className={styles.dashboard}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>{t('dashboard.title')}</h1>
-          <div className={styles.filters}>
+      <div className="dashboard-page-content">
+        <div className="dashboard-page-header-content">
+          <h1 className="dashboard-page-title-main">{t('dashboard.title')}</h1>
+          <div className="dashboard-filters-row">
             <select
                 value={filterClientType}
                 onChange={(e) => {
                     setFilterClientType(e.target.value);
                     setFilterClientId('');
                 }}
-                className={styles.filterSelect}
+                className="dashboard-filter-select"
             >
                 <option value="">{t('filters.allClientTypes')}</option>
                 <option value="corporate">{t('filters.corporate')}</option>
@@ -194,7 +193,7 @@ export default function Dashboard() {
             <select
                 value={filterClientId}
                 onChange={(e) => setFilterClientId(e.target.value)}
-                className={styles.filterSelect}
+                className="dashboard-filter-select"
                 disabled={!clients.length}
             >
                 <option value="">{t('filters.allClients')}</option>
@@ -208,8 +207,8 @@ export default function Dashboard() {
                 }
             </select>
           </div>
-          <div className={styles.actions}>
-            <button className={styles.exportButton} onClick={handleExcelExport}>
+          <div className="dashboard-actions-row">
+            <button className="dashboard-export-button" onClick={handleExcelExport}>
               <FileTextIcon />
               {t('dashboard.exportExcel')}
             </button>
@@ -220,46 +219,54 @@ export default function Dashboard() {
             <div>{t('common.loadingData')}</div>
         ) : (
             <>
-                <div className={styles.statsGrid} id="stats-section">
-                    <div className={styles.statCard}>
-                        <UsersIcon />
-                        <div className={styles.statCardInfo}>
-                            <span className={styles.statCardLabel}>{t('dashboard.totalClients')}</span>
-                            <span className={styles.statCardValue}>{stats.totalClients}</span>
+                <div className="dashboard-kpi-grid" id="stats-section">
+                    <div className="dashboard-kpi-card">
+                        <div className="dashboard-kpi-card-content">
+                            <UsersIcon />
+                            <div className="dashboard-kpi-card-info">
+                                <span className="dashboard-kpi-label">{t('dashboard.totalClients')}</span>
+                                <span className="dashboard-kpi-value">{stats.totalClients}</span>
+                            </div>
                         </div>
                     </div>
-                    <div className={styles.statCard}>
-                        <BookOpenIcon />
-                        <div className={styles.statCardInfo}>
-                            <span className={styles.statCardLabel}>{t('dashboard.newApplications')}</span>
-                            <span className={styles.statCardValue}>{stats.newApplications}</span>
+                    <div className="dashboard-kpi-card">
+                        <div className="dashboard-kpi-card-content">
+                            <BookOpenIcon />
+                            <div className="dashboard-kpi-card-info">
+                                <span className="dashboard-kpi-label">{t('dashboard.newApplications')}</span>
+                                <span className="dashboard-kpi-value">{stats.newApplications}</span>
+                            </div>
                         </div>
                     </div>
-                    <div className={styles.statCard}>
-                        <ShoppingBagIcon />
-                        <div className={styles.statCardInfo}>
-                            <span className={styles.statCardLabel}>{t('dashboard.ordersInProgress')}</span>
-                            <span className={styles.statCardValue}>{stats.ordersInProgress}</span>
+                    <div className="dashboard-kpi-card">
+                        <div className="dashboard-kpi-card-content">
+                            <ShoppingBagIcon />
+                            <div className="dashboard-kpi-card-info">
+                                <span className="dashboard-kpi-label">{t('dashboard.ordersInProgress')}</span>
+                                <span className="dashboard-kpi-value">{stats.ordersInProgress}</span>
+                            </div>
                         </div>
                     </div>
-                    <div className={styles.statCard}>
-                        <CheckCircleIcon />
-                        <div className={styles.statCardInfo}>
-                            <span className={styles.statCardLabel}>{t('dashboard.completedOrders')}</span>
-                            <span className={styles.statCardValue}>{stats.completedOrders}</span>
+                    <div className="dashboard-kpi-card">
+                        <div className="dashboard-kpi-card-content">
+                            <CheckCircleIcon />
+                            <div className="dashboard-kpi-card-info">
+                                <span className="dashboard-kpi-label">{t('dashboard.completedOrders')}</span>
+                                <span className="dashboard-kpi-value">{stats.completedOrders}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <button onClick={() => exportSectionToPdf('stats-section', 'Statistics_Report')} className={styles.pdfExportButton}>
+                <button onClick={() => exportSectionToPdf('stats-section', 'Statistics_Report')} className="dashboard-pdf-export-button">
                     <FileTextIcon /> {t('dashboard.exportToPdf')}
                 </button>
 
-                <div className={styles.columns}>
-                    <div className={styles.column} id="applications-section">
-                        <h2 className={styles.sectionTitle}>
+                <div className="dashboard-columns">
+                    <div className="dashboard-column" id="applications-section">
+                        <h2 className="dashboard-section-title">
                             {t('dashboard.recentApplications')}
                         </h2>
-                        <div className={styles.card}>
+                        <div className="dashboard-card">
                             <table>
                                 <thead>
                                     <tr>
@@ -276,7 +283,7 @@ export default function Dashboard() {
                                             <td>{app.client?.name || `${app.first_name} ${app.last_name}`}</td>
                                             <td>{new Date(app.created_at).toLocaleDateString()}</td>
                                             <td>
-                                                <span className={`${styles.status} ${styles[app.status]}`}>
+                                                <span className={`dashboard-status-badge ${app.status}`}>
                                                     {t(`statuses.${app.status}`)}
                                                 </span>
                                             </td>
@@ -285,14 +292,14 @@ export default function Dashboard() {
                                 </tbody>
                             </table>
                         </div>
-                        <button onClick={() => exportSectionToPdf('applications-section', 'Applications_Report')} className={styles.pdfExportButton}>
+                        <button onClick={() => exportSectionToPdf('applications-section', 'Applications_Report')} className="dashboard-pdf-export-button">
                             <FileTextIcon /> {t('dashboard.exportToPdf')}
                         </button>
                     </div>
 
-                    <div className={styles.column} id="orders-section">
-                        <h2 className={styles.sectionTitle}>{t('dashboard.upcomingOrders')}</h2>
-                        <div className={styles.card}>
+                    <div className="dashboard-column" id="orders-section">
+                        <h2 className="dashboard-section-title">{t('dashboard.upcomingOrders')}</h2>
+                        <div className="dashboard-card">
                             <table>
                                 <thead>
                                     <tr>
@@ -311,7 +318,7 @@ export default function Dashboard() {
                                             <td>{new Date(order.delivery_date || '').toLocaleDateString()}</td>
                                             <td>{order.total_amount} {t('common.currency')}</td>
                                             <td>
-                                                <span className={`${styles.status} ${styles[order.status]}`}>
+                                                <span className={`dashboard-status-badge ${order.status}`}>
                                                     {t(`statuses.${order.status}`)}
                                                 </span>
                                             </td>
@@ -320,7 +327,7 @@ export default function Dashboard() {
                                 </tbody>
                             </table>
                         </div>
-                        <button onClick={() => exportSectionToPdf('orders-section', 'Orders_Report')} className={styles.pdfExportButton}>
+                        <button onClick={() => exportSectionToPdf('orders-section', 'Orders_Report')} className="dashboard-pdf-export-button">
                             <FileTextIcon /> {t('dashboard.exportToPdf')}
                         </button>
                     </div>

@@ -36,7 +36,6 @@ class Application extends Model
     protected $casts = [
         'cart_items' => 'array',
         'event_date' => 'date',
-        'event_time' => 'datetime',
         'processed_at' => 'datetime',
     ];
 

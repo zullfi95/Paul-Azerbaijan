@@ -245,7 +245,7 @@ class ApplicationController extends BaseApiController
                 'event_address' => $validatedData['location'],
                 'event_date' => $validatedData['eventDate'],
                 'event_time' => isset($validatedData['eventTime']) 
-                    ? $validatedData['eventDate'] . ' ' . $validatedData['eventTime']
+                    ? $validatedData['eventTime'] . ':00' // Только время в формате HH:MM:SS
                     : null,
                 'guest_count' => (int) $validatedData['guestCount'],
                 'budget' => $validatedData['budget'],

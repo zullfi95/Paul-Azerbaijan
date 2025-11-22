@@ -120,6 +120,40 @@ export const APPLICATION_STATUS_COLORS: Record<ApplicationStatus, string> = {
 };
 
 /**
+ * Получить метаданные статуса заявки (метка и цвет) с использованием функции перевода
+ */
+export function getApplicationStatusMeta(
+  status: string,
+  t: TranslateFunction
+): { label: string; color: string } {
+  const statusKeyMap: Record<string, string> = {
+    new: 'status.application.new',
+    processing: 'status.application.processing',
+    approved: 'status.application.approved',
+    rejected: 'status.application.rejected',
+  };
+
+  const translationKey = statusKeyMap[status] || `status.application.${status}`;
+  
+  let label: string;
+  try {
+    const translated = t(translationKey);
+    // Если перевод не найден, вернется ключ, используем fallback
+    if (translated === translationKey) {
+      label = APPLICATION_STATUS_LABELS[status as ApplicationStatus] || status;
+    } else {
+      label = translated;
+    }
+  } catch {
+    label = APPLICATION_STATUS_LABELS[status as ApplicationStatus] || status;
+  }
+
+  const color = APPLICATION_STATUS_COLORS[status as ApplicationStatus] || '#3B82F6';
+
+  return { label, color };
+}
+
+/**
  * Словарь переводов статусов пользователей
  */
 

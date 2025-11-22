@@ -9,6 +9,7 @@ import { useOrderForm } from "../hooks/useOrderForm";
 import MenuSlidePanel from "./MenuSlidePanel";
 import styles from './CreateOrderForm.module.css';
 import { useTranslations } from 'next-intl';
+import { getApplicationStatusMeta } from "../utils/statusTranslations";
 
 // applicationStatusMeta будет создаваться динамически с использованием t()
 
@@ -113,26 +114,28 @@ export default function CreateOrderForm() {
                 <div className={styles.formContainer}>
                     <form onSubmit={handleSubmit} className={styles.form}>
                         {/* Application Info */}
-                        {application && (
-                            <div className={styles.applicationInfo}>
-                                <div className={styles.applicationMeta}>
-                                    <div>
-                                        <p className={styles.applicationLabel}>{t('form.applicationInformation')}</p>
-                                        <h3 className={styles.applicationName}>
-                                            {application.first_name} {application.last_name || ''}
-                                        </h3>
-                                        <p className={styles.applicationSubtle}>#{application.id}</p>
+                        {application && (() => {
+                            const statusMeta = getApplicationStatusMeta(application.status, t);
+                            return (
+                                <div className={styles.applicationInfo}>
+                                    <div className={styles.applicationMeta}>
+                                        <div>
+                                            <p className={styles.applicationLabel}>{t('form.applicationInformation')}</p>
+                                            <h3 className={styles.applicationName}>
+                                                {application.first_name} {application.last_name || ''}
+                                            </h3>
+                                            <p className={styles.applicationSubtle}>#{application.id}</p>
+                                        </div>
+                                        <span
+                                            className={styles.applicationBadge}
+                                            style={{
+                                                color: statusMeta.color,
+                                                backgroundColor: `${statusMeta.color}1a`,
+                                            }}
+                                        >
+                                            {statusMeta.label}
+                                        </span>
                                     </div>
-                                    <span
-                                        className={styles.applicationBadge}
-                                        style={{
-                                            color: getApplicationStatusMeta(application.status, t).color,
-                                            backgroundColor: `${getApplicationStatusMeta(application.status, t).color}1a`,
-                                        }}
-                                    >
-                                        {getApplicationStatusMeta(application.status, t).label}
-                                    </span>
-                                </div>
 
                                 <div className={styles.applicationGrid}>
                                     <div>
@@ -203,8 +206,9 @@ export default function CreateOrderForm() {
                                         </ul>
                                     </div>
                                 )}
-                            </div>
-                        )}
+                                </div>
+                            );
+                        })()}
 
                         {/* Client Selection */}
                         <div className={styles.formSection}>
